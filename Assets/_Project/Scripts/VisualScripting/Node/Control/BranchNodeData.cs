@@ -19,7 +19,7 @@ class BranchNode : ScriptNode
 
     public BranchNode(string title): base(title)
     {
-        InputTrigger = CreateInputTrigger(() =>
+        InputTrigger = CreateInputTrigger((vs) =>
         {
             if ((bool)Value.GetValue())
             {

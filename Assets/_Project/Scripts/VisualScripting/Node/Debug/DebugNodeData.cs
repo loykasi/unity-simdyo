@@ -17,9 +17,10 @@ class DebugNode : ScriptNode
 
     public DebugNode(string title) : base(title)
     {
-        inputTrigger = CreateInputTrigger(() =>
+        inputTrigger = CreateInputTrigger((vs) =>
         {
             LogCommand.Instance.Log(Value.GetValue());
+            Debug.Log(Value.GetValue());
             return outputTrigger;
         });
         outputTrigger = CreateOutputTrigger();

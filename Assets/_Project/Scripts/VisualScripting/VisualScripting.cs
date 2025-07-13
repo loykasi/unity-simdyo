@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,6 +10,9 @@ public class VisualScripting : MonoBehaviour
 
     public ScriptNodeData startNodeData;
     public EventNode startNode;
+
+    private int _loopIdentifier = 0;
+    private Stack<int> _loops = new Stack<int>();
 
     private void Awake()
     {
@@ -37,7 +42,52 @@ public class VisualScripting : MonoBehaviour
         // InputTrigger input = outputTrigger.Destination;
         // OutputTrigger output = input.Action();
         // Invoke(output);
-        outputTrigger.Invoke();
+        outputTrigger.Invoke(this);
+    }
+
+    public int GetCurrentLoop()
+    {
+        if (_loops.Count > 0)
+        {
+            return _loops.Peek();
+        }
+
+        return -1;
+    }
+
+    public bool IsLoopNotBroken(int loop)
+    {
+        return GetCurrentLoop() == loop;
+    }
+
+    public int StartLoop()
+    {
+        int loop = _loopIdentifier++;
+        _loops.Push(loop);
+
+        return loop;
+    }
+
+    public void BreakLoop()
+    {
+        if (GetCurrentLoop() < 0)
+        {
+            return;
+        }
+
+        _loopIdentifier--;
+        _loops.Pop();
+    }
+
+    public void ExitLoop(int loop)
+    {
+        if (loop != GetCurrentLoop())
+        {
+            return;
+        }
+
+        _loopIdentifier--;
+        _loops.Pop();
     }
 
     private void OnGUI()

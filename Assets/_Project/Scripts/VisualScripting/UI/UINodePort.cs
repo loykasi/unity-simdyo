@@ -38,6 +38,18 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 _inputField.gameObject.SetActive(false);
             }
         }
+
+        if (Port is ValueInput valueInput && _inputField != null)
+        {
+            if (valueInput.UseOptionalInput)
+            {
+                _inputField.gameObject.SetActive(true);
+            }
+            else
+            {
+                _inputField.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -67,7 +79,14 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnEndEdit(string value)
     {
-        Debug.Log("save");
-        ((ValueOutput)Port).SetValue(value);
+        if (Port is ValueOutput valueOutput)
+        {
+            valueOutput.SetValue(value);
+        }
+
+        if (Port is ValueInput valueInput)
+        {
+            valueInput.SetValue(value);
+        }
     }
 }

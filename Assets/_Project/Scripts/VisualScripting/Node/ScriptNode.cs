@@ -22,7 +22,7 @@ public abstract class ScriptNode : IScriptNode
 
     }
 
-    protected InputTrigger CreateInputTrigger(Func<OutputTrigger> action)
+    protected InputTrigger CreateInputTrigger(Func<VisualScripting, OutputTrigger> action)
     {
         InputTrigger inputTrigger = new(action)
         {
@@ -44,7 +44,17 @@ public abstract class ScriptNode : IScriptNode
 
     protected ValueInput ValueInput()
     {
-        ValueInput valueInput = new()
+        ValueInput valueInput = new(false)
+        {
+            Node = this
+        };
+        ValueInputs.Add(valueInput);
+        return valueInput;
+    }
+
+    protected ValueInput ValueInput(bool useOptionalInput)
+    {
+        ValueInput valueInput = new(useOptionalInput)
         {
             Node = this
         };

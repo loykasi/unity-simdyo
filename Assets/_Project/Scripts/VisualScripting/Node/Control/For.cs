@@ -24,28 +24,47 @@ class ForNode : ScriptNode
 
     public ForNode(string title) : base(title)
     {
-        InputTrigger = CreateInputTrigger(() =>
-        {
-            int firstIndex = (int) FirstIndex.GetValue();
-            int lastIndex = (int) LastIndex.GetValue();
-            int step = (int) Step.GetValue();
-            for (int i = firstIndex; i <= lastIndex; i += step)
-            {
-                _index = i;
-                Debug.Log($"loop {i}");
-                LoopBody.Invoke();
-            }
-            return Completed;
-        });
+        InputTrigger = CreateInputTrigger(Loop);
         Completed = CreateOutputTrigger();
         LoopBody = CreateOutputTrigger();
 
-        FirstIndex = ValueInput();
-        LastIndex = ValueInput();
-        Step = ValueInput();
+        FirstIndex = ValueInput(true);
+        LastIndex = ValueInput(true);
+        Step = ValueInput(true);
         Index = ValueOutput(() =>
         {
             return _index;
         });
+    }
+
+    private OutputTrigger Loop(VisualScripting vs)
+    {
+        int loop = vs.StartLoop();
+        // Debug.Log($"Start loop {loop}");
+
+        int firstIndex = (int)FirstIndex.GetValue();
+        int lastIndex = (int)LastIndex.GetValue();
+        int step = (int)Step.GetValue();
+        bool isAscending = firstIndex <= lastIndex;
+
+        int index = firstIndex;
+
+        while (vs.IsLoopNotBroken(loop) && CanMoveNext(index, lastIndex, isAscending))
+        {
+            // Debug.Log($"{loop} | loop {index}");
+
+            _index = index;
+            LoopBody.Invoke(vs);
+            index += step;
+        }
+
+        vs.ExitLoop(loop);
+
+        return Completed;
+    }
+
+    private bool CanMoveNext(int index, int lastIndex, bool isAscending)
+    {
+        return isAscending ? (index <= lastIndex) : (index >= lastIndex);
     }
 }

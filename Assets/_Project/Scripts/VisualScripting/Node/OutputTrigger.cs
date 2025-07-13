@@ -9,8 +9,8 @@ public class OutputTrigger : Port<InputTrigger>
         Destination = port;
     }
 
-    public void Invoke()
+    public void Invoke(VisualScripting vs)
     {
-        Destination?.Invoke();
+        Destination?.Invoke(vs);
     }
 }

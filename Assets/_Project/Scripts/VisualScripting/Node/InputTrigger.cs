@@ -2,11 +2,11 @@ using System;
 
 public class InputTrigger : Port<OutputTrigger>
 {
-    public Func<OutputTrigger> Action;
+    public Func<VisualScripting, OutputTrigger> Action;
 
     public OutputTrigger Source;
 
-    public InputTrigger(Func<OutputTrigger> action)
+    public InputTrigger(Func<VisualScripting, OutputTrigger> action)
     {
         Action = action;
     }
@@ -16,9 +16,9 @@ public class InputTrigger : Port<OutputTrigger>
         Source = port;
     }
 
-    public void Invoke()
+    public void Invoke(VisualScripting vs)
     {
-        OutputTrigger output = Action?.Invoke();
-        output?.Invoke();
+        OutputTrigger output = Action?.Invoke(vs);
+        output?.Invoke(vs);
     }
 }
