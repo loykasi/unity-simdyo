@@ -1,7 +1,9 @@
+using System;
 using UnityEngine;
 
 public class ValueInput : Port<ValueOutput>
 {
+    public Type Type { get; private set; }
     public object DefaultValue;
     public ValueOutput Source;
 
@@ -12,6 +14,12 @@ public class ValueInput : Port<ValueOutput>
     public ValueInput(bool useOptionalInput)
     {
         UseOptionalInput = useOptionalInput;
+    }
+
+    public ValueInput(bool useOptionalInput, Type type)
+    {
+        UseOptionalInput = useOptionalInput;
+        Type = type;
     }
 
     public override void Connect(ValueOutput port)
@@ -43,18 +51,39 @@ public class ValueInput : Port<ValueOutput>
 
         return DefaultValue;
     }
-    
+
     public void SetValue(string value)
     {
-        if (int.TryParse(value, out int result1))
+        if (Type == typeof(string))
         {
-            Debug.Log("Save as int");
-            _value = result1;
+            Debug.Log("Save as string");
+            _value = value;
+            return;
         }
-        else if (float.TryParse(value, out float result2))
+
+        if (Type == typeof(double))
         {
-            Debug.Log("Save as float");
-            _value = result2;
+            if (int.TryParse(value, out int result1))
+            {
+                Debug.Log("Save as int");
+                _value = result1;
+            }
+            else if (double.TryParse(value, out double result2))
+            {
+                Debug.Log("Save as double");
+                _value = result2;
+            }
+            return;
+        }
+
+        if (Type == typeof(bool))
+        {
+            if (bool.TryParse(value, out bool result3))
+            {
+                Debug.Log("Save as bool");
+                _value = result3;
+            }
+            return;
         }
     }
 }
