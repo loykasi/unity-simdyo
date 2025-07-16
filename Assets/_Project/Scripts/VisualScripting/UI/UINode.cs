@@ -9,15 +9,17 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler
 {
     public class UINodeLine
     {
-        public UINodeLine(int index, Vector3 offset, UILineRenderer lineRenderer)
+        public UINodeLine(int index, Vector3 offset, Vector3 tailOffset, UILineRenderer lineRenderer)
         {
             Index = index;
             Offset = offset;
+            TailOffset = tailOffset;
             LineRenderer = lineRenderer;
         }
 
         public int Index;
         public Vector3 Offset;
+        public Vector3 TailOffset;
         public UILineRenderer LineRenderer;
     }
 
@@ -100,24 +102,36 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
 
-        DragConnectionLines();
-    }
-
-    private void DragConnectionLines()
-    {
-        for (int i = 0; i < _connectionLines.Count; i++)
+        // DragConnectionLines();
+        for (int i = 0; i < _ports.Count; i++)
         {
-            int index = _connectionLines[i].Index;
-            Vector3 offset = _connectionLines[i].Offset;
-            _connectionLines[i].LineRenderer.Points[index] = transform.localPosition - offset;
-            _connectionLines[i].LineRenderer.UpdateVertex();
+            _ports[i].UpdateLines();
         }
     }
 
-    public void AddConnectionLine(UILineRenderer lineRenderer, Vector3 position, bool isHead)
-    {
-        Vector3 offset = transform.localPosition - position;
-        int index = isHead ? 0 : 1;
-        _connectionLines.Add(new UINodeLine(index, offset, lineRenderer));
-    }
+    // private void DragConnectionLines()
+    // {
+    //     for (int i = 0; i < _connectionLines.Count; i++)
+    //     {
+    //         int index = _connectionLines[i].Index;
+    //         Vector3 offset = _connectionLines[i].Offset;
+    //         Vector3 tailOffset = _connectionLines[i].TailOffset;
+    //         Vector3 position = transform.localPosition - offset;
+    //         bool isHead = _connectionLines[i].Index == 0;
+    //         _connectionLines[i].LineRenderer.Points[index] = position;
+    //         _connectionLines[i].LineRenderer.Points[isHead ? 1 : 2] = position + tailOffset;
+    //         _connectionLines[i].LineRenderer.UpdateVertex();
+    //     }
+    // }
+
+    // public void AddConnectionLine(UILineRenderer lineRenderer, bool isHead)
+    // {
+    //     Vector3 tailPosition = isHead ? lineRenderer.Points[0] : lineRenderer.Points[3];
+    //     Vector3 offset = transform.localPosition - tailPosition;
+    //     Vector3 tailOffset = isHead
+    //         ? lineRenderer.Points[1] - lineRenderer.Points[0]
+    //         : lineRenderer.Points[2] - lineRenderer.Points[3];
+    //     int index = isHead ? 0 : 3;
+    //     _connectionLines.Add(new UINodeLine(index, offset, tailOffset, lineRenderer));
+    // }
 }

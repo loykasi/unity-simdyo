@@ -1,14 +1,13 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public enum NodePortType
+public enum NodePortEdge
 {
-    InputTrigger,
-    OutputTrigger,
-    ValueInput,
-    ValueOutput,
+    Left,
+    Right
 }
 
 public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
@@ -16,9 +15,12 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public IPort Port;
     public UINode UINode;
 
+    [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;
     [SerializeField] private TMP_InputField _inputField;
     private NodeBoard _nodeBoard;
+
+    private List<UILineRenderer> _lines = new();
 
     private void Awake()
     {
@@ -54,7 +56,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _nodeBoard.StartPreviewConnect(UINode, UINode.Node, Port, _portHandle.position);
+        _nodeBoard.StartPreviewConnect(this, _portHandle.position, _edge);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -69,7 +71,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _nodeBoard.OnEnterPort(UINode, UINode.Node, Port, _portHandle.position);
+        _nodeBoard.OnEnterPort(this, _portHandle.position);
     }
 
     public void OnPointerExit(PointerEventData eventData)
@@ -88,5 +90,16 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         {
             valueInput.SetValue(value);
         }
+    }
+
+    public void AddConnection(UILineRenderer lineRenderer)
+    {
+        Debug.Log("add line");
+        _lines.Add(lineRenderer);
+    }
+
+    public void UpdateLines()
+    {
+        _nodeBoard.UpdateLines(_lines, _edge, _portHandle.position);
     }
 }

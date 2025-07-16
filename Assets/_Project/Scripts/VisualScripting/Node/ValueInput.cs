@@ -63,12 +63,12 @@ public class ValueInput : Port<ValueOutput>
 
         if (Type == typeof(double))
         {
-            if (int.TryParse(value, out int result1))
-            {
-                Debug.Log("Save as int");
-                _value = result1;
-            }
-            else if (double.TryParse(value, out double result2))
+            // if (int.TryParse(value, out int result1))
+            // {
+            //     Debug.Log("Save as int");
+            //     _value = result1;
+            // }
+            if (double.TryParse(value, out double result2))
             {
                 Debug.Log("Save as double");
                 _value = result2;

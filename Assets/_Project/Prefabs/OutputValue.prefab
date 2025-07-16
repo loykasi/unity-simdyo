@@ -344,6 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UINode: {fileID: 0}
+  _edge: 1
   _portHandle: {fileID: 5353080561332785913}
   _inputField: {fileID: 8916533793702225326}
 --- !u!1 &2424323182502085341

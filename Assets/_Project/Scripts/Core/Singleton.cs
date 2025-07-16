@@ -23,7 +23,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
         }
     }
 
-    [Header("Singleton")]
+    // [Header("Singleton")]
     public bool isAutoUnparentOnAwake;
     public bool isNotDestroyOnLoad;
 
