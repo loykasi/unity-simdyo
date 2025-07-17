@@ -23,7 +23,7 @@ class ModuloNode : ScriptNode
 
         OutputPort = ValueOutput(() =>
         {
-            return ValueA.GetValue<float>() % ValueB.GetValue<float>();
+            return OperatorUtility.Modulo(ValueA.GetValue(), ValueB.GetValue());
         });
     }
 }

@@ -23,7 +23,7 @@ class DivideNode : ScriptNode
 
         OutputPort = ValueOutput(() =>
         {
-            return ValueA.GetValue<float>() / ValueB.GetValue<float>();
+            return OperatorUtility.Divide(ValueA.GetValue(), ValueB.GetValue());
         });
     }
 }

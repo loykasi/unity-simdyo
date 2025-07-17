@@ -23,7 +23,7 @@ class MultiplyNode : ScriptNode
 
         OutputPort = ValueOutput(() =>
         {
-            return ValueA.GetValue<float>() * ValueB.GetValue<float>();
+            return OperatorUtility.Multiply(ValueA.GetValue(), ValueB.GetValue());
         });
     }
 }

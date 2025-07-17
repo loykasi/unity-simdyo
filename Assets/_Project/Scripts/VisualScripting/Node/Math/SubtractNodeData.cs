@@ -23,7 +23,7 @@ class SubtractNode : ScriptNode
 
         OutputPort = ValueOutput(() =>
         {
-            return ValueA.GetValue<float>() - ValueB.GetValue<float>();
+            return OperatorUtility.Subtract(ValueA.GetValue(), ValueB.GetValue());
         });
     }
 }

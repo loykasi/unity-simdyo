@@ -23,9 +23,7 @@ class AddNode : ScriptNode
 
         OutputPort = ValueOutput(() =>
         {
-            OperatorHandle.Add(ValueA.GetValue(), ValueB.GetValue());
-            // return ValueA.GetValue<float>() + ValueB.GetValue<float>();
-            return 0;
+            return OperatorUtility.Add(ValueA.GetValue(), ValueB.GetValue());;
         });
     }
 }
