@@ -21,4 +21,9 @@ public class InputTrigger : Port<OutputTrigger>
         OutputTrigger output = Action?.Invoke(vs);
         output?.Invoke(vs);
     }
+
+    protected override void DisconnectPort(OutputTrigger port)
+    {
+        Source = null;
+    }
 }

@@ -16,6 +16,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
     [Space]
     [SerializeField] private NodeConnectionPreview _nodeConnectionPreview;
+    [SerializeField] private float _sizePadding;
+
     private bool _hasPort;
 
     private UINodePort _fromUIPort;
@@ -25,6 +27,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     private UINodePort _toUIPort;
     private ScriptNode _toNode;
     private IPort _toPort;
+
+    private IGraphElement _selectedElement;
 
 
     private void OnEnable()
@@ -46,6 +50,34 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     private void Start()
     {
         LoadBoard();
+    }
+
+    public List<RaycastResult> results = new();
+    private void Update()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            var data = new PointerEventData(EventSystem.current)
+            {
+                position = Mouse.current.position.ReadValue()
+            };
+            EventSystem.current.RaycastAll(data, results);
+
+            Debug.Log(results[0]);
+
+            if (results.Count > 0 && results[0].gameObject.TryGetComponent(out _selectedElement))
+            {
+                _selectedElement.Select();
+            }
+        }
+
+        if (Keyboard.current.deleteKey.wasPressedThisFrame)
+        {
+            if (_selectedElement != null)
+            {
+                _selectedElement.Delete();
+            }
+        }
     }
 
     private void LoadBoard()
@@ -129,53 +161,81 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     {
         GameObject lineObject = new("line");
 
+        lineObject.AddComponent<CanvasRenderer>();
+        UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
         RectTransform rect = lineObject.AddComponent<RectTransform>();
+
         lineObject.transform.SetParent(_holder);
         rect.anchoredPosition = Vector2.zero;
-        lineObject.AddComponent<CanvasRenderer>();
 
         UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
+        lineRenderer.Rect = rect;
+        lineConnection.LineRenderer = lineRenderer;
+        lineConnection.Source = _fromUIPort;
+        lineConnection.Destination = _toUIPort;
+
         lineRenderer.Init(4);
-        lineRenderer.Thickness = 5;
+        lineRenderer.Thickness = 3;
         lineRenderer.CornerRadius = 30;
         lineRenderer.CornerSegment = 5;
 
-        // Vector3 startPos = ScreenToCenter.GetPostionFromCenter(_previewConnectLine.Points[0]);
-        // Vector3 endPos = ScreenToCenter.GetPostionFromCenter(_previewConnectLine.Points[1]);
-        // lineRenderer.Points[0] = startPos;
-        // lineRenderer.Points[1] = endPos;
-
+        // calculate bound;
         UILineRenderer previewLineRender = _nodeConnectionPreview.LineRenderer;
-        lineRenderer.Points[0] = previewLineRender.Points[0] - _holder.position;
-        lineRenderer.Points[1] = previewLineRender.Points[1] - _holder.position;
-        lineRenderer.Points[2] = previewLineRender.Points[2] - _holder.position;
-        lineRenderer.Points[3] = previewLineRender.Points[3] - _holder.position;
+        Vector3 size = previewLineRender.Points[3] - previewLineRender.Points[0];
+        Vector3 center = (previewLineRender.Points[0] + previewLineRender.Points[3]) / 2.0f;
 
-        // _fromUINode.AddConnectionLine(lineRenderer, true);
-        // _toUINode.AddConnectionLine(lineRenderer, false);
-        _fromUIPort.AddConnection(lineRenderer);
-        _toUIPort.AddConnection(lineRenderer);
+        lineRenderer.Points[0] = previewLineRender.Points[0] - center;
+        lineRenderer.Points[1] = previewLineRender.Points[1] - center;
+        lineRenderer.Points[2] = previewLineRender.Points[2] - center;
+        lineRenderer.Points[3] = previewLineRender.Points[3] - center;
+        rect.localPosition = center - _holder.position;
+        rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
+
+        _fromUIPort.AddConnection(lineConnection);
+        _toUIPort.AddConnection(lineConnection);
     }
 
-    public void UpdateLines(List<UILineRenderer> lines, NodePortEdge edge, Vector3 portPosition)
+    public void UpdateLines(UILineRenderer line, NodePortEdge edge, Vector3 portPosition)
     {
-        for (int i = 0; i < lines.Count; i++)
-        {
-            Vector3 position = portPosition - _holder.position;
+        Vector3 position = portPosition - line.transform.position;
 
-            switch (edge)
-            {
-                case NodePortEdge.Left:
-                    lines[i].Points[2] = position + Vector3.left * 50f;
-                    lines[i].Points[3] = position;
-                    lines[i].UpdateVertex();
-                    break;
-                case NodePortEdge.Right:
-                    lines[i].Points[0] = position;
-                    lines[i].Points[1] = position + Vector3.right * 50f;
-                    lines[i].UpdateVertex();
-                    break;
-            }
+        switch (edge)
+        {
+            case NodePortEdge.Left:
+                line.Points[2] = position + Vector3.left * 50f;
+                line.Points[3] = position;
+                break;
+            case NodePortEdge.Right:
+                line.Points[0] = position;
+                line.Points[1] = position + Vector3.right * 50f;
+                break;
         }
+
+        RecalculateLineBound(line);
+        line.UpdateVertex();
+    }
+
+    public void RecalculateLineBound(UILineRenderer lineRenderer)
+    {
+        Vector3 center = lineRenderer.transform.position;
+        Vector3 newCenter = (lineRenderer.Points[0] + lineRenderer.Points[3]) / 2.0f + lineRenderer.transform.position;
+        Vector2 size = lineRenderer.Points[3] - lineRenderer.Points[0];
+        size = new(Mathf.Abs(size.x), Mathf.Abs(size.y));
+        Vector3 offset = center - newCenter;
+
+        for (int i = 0; i < lineRenderer.Points.Length; i++)
+        {
+            lineRenderer.Points[i] += offset;
+        }
+
+        lineRenderer.Rect.sizeDelta = size;
+        lineRenderer.Rect.position = newCenter;
+
+        // lineRenderer.Points[0] = previewLineRender.Points[0] - center;
+        // lineRenderer.Points[1] = previewLineRender.Points[1] - center;
+        // lineRenderer.Points[2] = previewLineRender.Points[2] - center;
+        // lineRenderer.Points[3] = previewLineRender.Points[3] - center;
+        // rect.localPosition = center - _holder.position;
+        // rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
     }
 }

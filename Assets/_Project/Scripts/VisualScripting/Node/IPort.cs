@@ -4,4 +4,5 @@ public interface IPort
 
     bool CanConnectTo(IPort port);
     bool ConnectToPort(IPort port);
+    void Disconnect(IPort other);
 }

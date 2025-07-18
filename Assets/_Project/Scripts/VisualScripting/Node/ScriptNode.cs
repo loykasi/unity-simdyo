@@ -17,11 +17,6 @@ public abstract class ScriptNode : IScriptNode
         Title = title;
     }
 
-    public void Invoke()
-    {
-
-    }
-
     protected InputTrigger CreateInputTrigger(Func<VisualScripting, OutputTrigger> action)
     {
         InputTrigger inputTrigger = new(action)

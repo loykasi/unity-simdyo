@@ -17,6 +17,16 @@ public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
         Connect((TOtherPort)port);
         return true;
     }
-    
+
     public abstract void Connect(TOtherPort port);
+
+    public void Disconnect(IPort port)
+    {
+        if (port is TOtherPort other)
+        {
+            DisconnectPort(other);
+        }
+    }
+
+    protected abstract void DisconnectPort(TOtherPort port);
 }

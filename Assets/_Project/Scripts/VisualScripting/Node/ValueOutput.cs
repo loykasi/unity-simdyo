@@ -51,4 +51,9 @@ public class ValueOutput : Port<ValueInput>
     {
         Destination = port;
     }
+
+    protected override void DisconnectPort(ValueInput port)
+    {
+        Destination = null;
+    }
 }

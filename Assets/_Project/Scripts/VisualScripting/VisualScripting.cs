@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,9 +37,6 @@ public class VisualScripting : MonoBehaviour
 
     public void Invoke(OutputTrigger outputTrigger)
     {
-        // InputTrigger input = outputTrigger.Destination;
-        // OutputTrigger output = input.Action();
-        // Invoke(output);
         outputTrigger.Invoke(this);
     }
 

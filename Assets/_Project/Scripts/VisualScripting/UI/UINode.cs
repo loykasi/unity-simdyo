@@ -5,24 +5,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler
+public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement
 {
-    public class UINodeLine
-    {
-        public UINodeLine(int index, Vector3 offset, Vector3 tailOffset, UILineRenderer lineRenderer)
-        {
-            Index = index;
-            Offset = offset;
-            TailOffset = tailOffset;
-            LineRenderer = lineRenderer;
-        }
-
-        public int Index;
-        public Vector3 Offset;
-        public Vector3 TailOffset;
-        public UILineRenderer LineRenderer;
-    }
-
     public ScriptNode Node
     {
         get => _node;
@@ -36,7 +20,6 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler
     private ScriptNode _node;
 
     private List<UINodePort> _ports = new();
-    private List<UINodeLine> _connectionLines = new();
 
     [SerializeField] private TMP_Text _nodeTitle;
 
@@ -102,36 +85,19 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
 
-        // DragConnectionLines();
         for (int i = 0; i < _ports.Count; i++)
         {
             _ports[i].UpdateLines();
         }
     }
 
-    // private void DragConnectionLines()
-    // {
-    //     for (int i = 0; i < _connectionLines.Count; i++)
-    //     {
-    //         int index = _connectionLines[i].Index;
-    //         Vector3 offset = _connectionLines[i].Offset;
-    //         Vector3 tailOffset = _connectionLines[i].TailOffset;
-    //         Vector3 position = transform.localPosition - offset;
-    //         bool isHead = _connectionLines[i].Index == 0;
-    //         _connectionLines[i].LineRenderer.Points[index] = position;
-    //         _connectionLines[i].LineRenderer.Points[isHead ? 1 : 2] = position + tailOffset;
-    //         _connectionLines[i].LineRenderer.UpdateVertex();
-    //     }
-    // }
+    public void Select()
+    {
+        Debug.Log("Select card");
+    }
 
-    // public void AddConnectionLine(UILineRenderer lineRenderer, bool isHead)
-    // {
-    //     Vector3 tailPosition = isHead ? lineRenderer.Points[0] : lineRenderer.Points[3];
-    //     Vector3 offset = transform.localPosition - tailPosition;
-    //     Vector3 tailOffset = isHead
-    //         ? lineRenderer.Points[1] - lineRenderer.Points[0]
-    //         : lineRenderer.Points[2] - lineRenderer.Points[3];
-    //     int index = isHead ? 0 : 3;
-    //     _connectionLines.Add(new UINodeLine(index, offset, tailOffset, lineRenderer));
-    // }
+    public void Delete()
+    {
+        throw new NotImplementedException();
+    }
 }

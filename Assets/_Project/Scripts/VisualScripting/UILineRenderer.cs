@@ -2,8 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// NEED REFACTOR
-public class UILineRenderer : MaskableGraphic
+public class UILineRenderer : MaskableGraphic, ICanvasRaycastFilter
 {
+    public RectTransform Rect;
     public Vector3[] Points;
     public float Thickness;
     public float CornerRadius;
@@ -155,9 +156,6 @@ public class UILineRenderer : MaskableGraphic
         vh.AddVert(vertex);
         vertex.position = point2 + rotation * new Vector3(Thickness / 2.0f, 0f);
         vh.AddVert(vertex);
-
-        // vertex.position = point2;
-        // vh.AddVert(vertex);
     }
 
     private float GetAngleTowardTarget(Vector2 vertex, Vector2 target)
@@ -190,14 +188,42 @@ public class UILineRenderer : MaskableGraphic
         tangent1 = center - normal1 * CornerRadius;
         tangent2 = center - normal2 * CornerRadius;
 
-        // Gizmos.color = Color.green;
-        // Gizmos.DrawWireSphere(a + transform.position, 10f);
-        // Gizmos.DrawWireSphere(b + transform.position, 10f);
-        // Gizmos.DrawWireSphere(c + transform.position, 10f);
-        // Gizmos.DrawWireSphere(d + transform.position, 10f);
-
         return center;
     }
+
+    // public override bool Raycast(Vector2 screenPoint, Camera eventCamera)
+    // {
+    //     Vector3 lineDir = (Points[2] - Points[1]).normalized;
+    //     Vector3 v = (Vector3)screenPoint - Points[2];
+
+    //     float delta = Vector3.Dot(v, lineDir);
+    //     Vector3 projectPoint = Points[2] + lineDir * delta;
+
+    //     float dist = ((Vector3)screenPoint - projectPoint).sqrMagnitude;
+    //     return dist < 160000;
+    // }
+
+    public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+    {
+        Vector3 point1 = Points[1] + Rect.position;
+        Vector3 point2 = Points[2] + Rect.position;
+
+        Vector3 lineDir = (point2 - point1).normalized;
+        Vector3 v = (Vector3)screenPoint - point1;
+        float delta = Vector3.Dot(v, lineDir);
+
+        Vector3 projectPoint = point1 + lineDir * delta;
+
+        float dist = ((Vector3)screenPoint - projectPoint).sqrMagnitude;
+        return dist < 450;
+    }
+
+    // public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
+    // {
+    //     float dist1 = (Points[0] + transform.position - new Vector3(screenPoint.x, screenPoint.y)).sqrMagnitude;
+    //     float dist2 = (Points[3] + transform.position - new Vector3(screenPoint.x, screenPoint.y)).sqrMagnitude;
+    //     return dist2 < 300 || dist1 < 300;
+    // }
 
     // private void OnDrawGizmos()
     // {
