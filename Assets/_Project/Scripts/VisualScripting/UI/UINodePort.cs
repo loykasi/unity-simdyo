@@ -102,7 +102,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     {
         for (int i = 0; i < _lineConnections.Count; i++)
         {
-            _nodeBoard.UpdateLines(_lineConnections[i].LineRenderer, _edge, _portHandle.position);   
+            _nodeBoard.UpdateLines(_lineConnections[i].LineRenderer, _edge, _portHandle.position);
         }
     }
 
@@ -110,5 +110,13 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     {
         _lineConnections.Remove(lineConnection);
         Port.Disconnect(other);
+    }
+
+    public void DeleteAllLines()
+    {
+        for (int i = 0; i < _lineConnections.Count; i++)
+        {
+            _lineConnections[i].Delete();
+        }
     }
 }

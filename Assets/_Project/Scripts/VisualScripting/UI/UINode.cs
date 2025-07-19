@@ -22,6 +22,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     private List<UINodePort> _ports = new();
 
     [SerializeField] private TMP_Text _nodeTitle;
+    [SerializeField] private GameObject _selectedBorder;
 
     [SerializeField] private Transform _inputHolder;
     [SerializeField] private Transform _outputHolder;
@@ -93,11 +94,20 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void Select()
     {
-        Debug.Log("Select card");
+        _selectedBorder.SetActive(true);
     }
 
     public void Delete()
     {
-        throw new NotImplementedException();
+        for (int i = 0; i < _ports.Count; i++)
+        {
+            _ports[i].DeleteAllLines();
+        }
+        Destroy(gameObject);
+    }
+
+    public void Unselect()
+    {
+        _selectedBorder.SetActive(false);
     }
 }

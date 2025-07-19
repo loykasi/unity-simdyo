@@ -30,6 +30,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
     private IGraphElement _selectedElement;
 
+    private Vector2 _previousMousePosition;
 
     private void OnEnable()
     {
@@ -57,26 +58,52 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
+            _previousMousePosition = Mouse.current.position.ReadValue();
+        }
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            if (Mouse.current.position.ReadValue() != _previousMousePosition)
+            {
+                return;
+            }
+
             var data = new PointerEventData(EventSystem.current)
             {
                 position = Mouse.current.position.ReadValue()
             };
             EventSystem.current.RaycastAll(data, results);
 
-            Debug.Log(results[0]);
-
-            if (results.Count > 0 && results[0].gameObject.TryGetComponent(out _selectedElement))
+            if (results.Count == 0)
             {
-                _selectedElement.Select();
+                _selectedElement?.Unselect();
+                return;
             }
+
+            if (results[0].gameObject.TryGetComponent(out IGraphElement element))
+            {
+                _selectedElement?.Unselect();
+                element.Select();
+                _selectedElement = element;
+                return;
+            }
+
+            element = results[0].gameObject.GetComponentInParent<IGraphElement>();
+            if (element != null)
+            {
+                _selectedElement?.Unselect();
+                element.Select();
+                _selectedElement = element;
+                return;
+            }
+
+            _selectedElement?.Unselect();
+            _selectedElement = null;
         }
 
         if (Keyboard.current.deleteKey.wasPressedThisFrame)
         {
-            if (_selectedElement != null)
-            {
-                _selectedElement.Delete();
-            }
+            _selectedElement?.Delete();
+            _selectedElement = null;
         }
     }
 
@@ -230,12 +257,5 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
         lineRenderer.Rect.sizeDelta = size;
         lineRenderer.Rect.position = newCenter;
-
-        // lineRenderer.Points[0] = previewLineRender.Points[0] - center;
-        // lineRenderer.Points[1] = previewLineRender.Points[1] - center;
-        // lineRenderer.Points[2] = previewLineRender.Points[2] - center;
-        // lineRenderer.Points[3] = previewLineRender.Points[3] - center;
-        // rect.localPosition = center - _holder.position;
-        // rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
     }
 }

@@ -31,4 +31,10 @@ public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExi
         Destination.DeleteConnection(this, Source.Port);
         Destroy(gameObject);
     }
+
+    public void Unselect()
+    {
+        LineRenderer.color = Color.white;
+        LineRenderer.UpdateVertex();
+    }
 }

@@ -28,9 +28,9 @@ class ForNode : ScriptNode
         Completed = CreateOutputTrigger();
         LoopBody = CreateOutputTrigger();
 
-        FirstIndex = ValueInput(true);
-        LastIndex = ValueInput(true);
-        Step = ValueInput(true);
+        FirstIndex = ValueInput<double>(true);
+        LastIndex = ValueInput<double>(true);
+        Step = ValueInput<double>(true);
         Index = ValueOutput(() =>
         {
             return _index;
@@ -42,9 +42,9 @@ class ForNode : ScriptNode
         int loop = vs.StartLoop();
         // Debug.Log($"Start loop {loop}");
 
-        int firstIndex = (int)FirstIndex.GetValue();
-        int lastIndex = (int)LastIndex.GetValue();
-        int step = (int)Step.GetValue();
+        int firstIndex = (int)(double)FirstIndex.GetValue();
+        int lastIndex = (int)(double)LastIndex.GetValue();
+        int step = (int)(double)Step.GetValue();
         bool isAscending = firstIndex <= lastIndex;
 
         int index = firstIndex;
