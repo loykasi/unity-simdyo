@@ -6,21 +6,38 @@ public class VisualScripting : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
 
-    public ScriptNodeData startNodeData;
-    public EventNode startNode;
+    // public ScriptNodeData startNodeData;
+    // public EventNode startNode;
 
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new Stack<int>();
 
+    private bool _start = false;
+    private List<EventNode> _startNodes = new();
+    private List<EventNode> _updateNodes = new();
+
     private void Awake()
     {
-        startNode = startNodeData.Create() as EventNode;
+        // startNode = startNodeData.Create() as EventNode;
     }
 
     public void AddNode(ScriptNodeData nodeData)
     {
         ScriptNode node = nodeData.Create();
         OnNodeAdded?.Invoke(node);
+
+        if (node is EventNode eventNode)
+        {
+            switch (eventNode.GetHook())
+            {
+                case EventHook.Start:
+                    _startNodes.Add(eventNode);
+                    break;
+                case EventHook.Update:
+                    _updateNodes.Add(eventNode);
+                    break;
+            }
+        }
     }
 
     public bool TryConnect(ScriptNode fromNode, IPort fromPort, ScriptNode toNode, IPort toPort)
@@ -89,7 +106,32 @@ public class VisualScripting : MonoBehaviour
     {
         if (GUI.Button(new Rect(1810, 10, 100, 50), "Run"))
         {
-            Invoke(startNode.outputTrigger);
+            StartNode();
+            _start = true;
+        }
+    }
+
+    private void Update()
+    {
+        UpdateNode();
+    }
+
+    private void StartNode()
+    {
+        foreach (var item in _startNodes)
+        {
+            Invoke(item.outputTrigger);
+        }
+    }
+
+    private void UpdateNode()
+    {
+        if (_start)
+        {
+            for (int i = 0; i < _updateNodes.Count; i++)
+            {
+                Invoke(_updateNodes[i].outputTrigger);
+            }
         }
     }
 }

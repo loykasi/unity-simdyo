@@ -165,43 +165,59 @@ public class UILineRenderer : MaskableGraphic, ICanvasRaycastFilter
 
     private Vector3 GetCircleCenter(Vector3 point1, Vector3 point2, Vector3 point3, out Vector3 tangent1, out Vector3 tangent2)
     {
+        float line1Dist = (point2 - point1).sqrMagnitude;
+        float line2Dist = (point2 - point3).sqrMagnitude;
+
         Vector3 dir1 = (point2 - point1).normalized;
         Vector3 dir2 = (point3 - point2).normalized;
+
+        float angle = Vector3.Angle(dir1, dir2);
+        float angleDelta = Mathf.Min(angle / 90.0f, 1.0f) * Mathf.Min((180.0f - angle) / 90.0f, 1.0f);
+        float distDelta = Mathf.Min(line1Dist / (CornerRadius * CornerRadius), 1.0f) * Mathf.Min(line2Dist / (CornerRadius * CornerRadius), 1.0f);
+        float radius = Mathf.Lerp(0, CornerRadius, angleDelta * distDelta);
+
+        Debug.Log(radius);
 
         float dot = Vector3.Dot(new Vector3(dir1.y, -dir1.x), dir2);
 
         Vector3 normal1 = dot >= 0 ? new(dir1.y, -dir1.x, 0f) : new(-dir1.y, dir1.x, 0f);
         Vector3 normal2 = dot >= 0 ? new(dir2.y, -dir2.x, 0f) : new(-dir2.y, dir2.x, 0f);
 
-        Vector3 a = point1 + normal1 * CornerRadius;
-        Vector3 b = point2 + normal1 * CornerRadius;
-        Vector3 c = point2 + normal2 * CornerRadius;
-        Vector3 d = point3 + normal2 * CornerRadius;
+        Vector3 a = point1 + normal1 * radius;
+        Vector3 b = point2 + normal1 * radius;
+        Vector3 c = point2 + normal2 * radius;
+        Vector3 d = point3 + normal2 * radius;
 
         Vector3 v1 = b - a;
         Vector3 v2 = d - c;
 
         float den = v1.x * v2.y - v1.y * v2.x;
-        float k = (v2.y * (c - a).x - v2.x * (c - a).y) / den;
+        float k = den == 0 ? 0 : (v2.y * (c - a).x - v2.x * (c - a).y) / den;
 
         Vector3 center = a + k * v1;
-        tangent1 = center - normal1 * CornerRadius;
-        tangent2 = center - normal2 * CornerRadius;
+        tangent1 = center - normal1 * radius;
+        tangent2 = center - normal2 * radius;
+
+        float tangent1Dist = (point2 - tangent1).sqrMagnitude;
+        float tangent2Dist = (point2 - tangent2).sqrMagnitude;
+
+        if (line1Dist < tangent1Dist)
+        {
+            Vector3 offset = point1 - tangent1;
+            center += offset;
+            tangent1 += offset;
+            tangent2 += offset;
+        }
+        else if (line2Dist < tangent2Dist)
+        {
+            Vector3 offset = point3 - tangent2;
+            center += offset;
+            tangent1 += offset;
+            tangent2 += offset;
+        }
 
         return center;
     }
-
-    // public override bool Raycast(Vector2 screenPoint, Camera eventCamera)
-    // {
-    //     Vector3 lineDir = (Points[2] - Points[1]).normalized;
-    //     Vector3 v = (Vector3)screenPoint - Points[2];
-
-    //     float delta = Vector3.Dot(v, lineDir);
-    //     Vector3 projectPoint = Points[2] + lineDir * delta;
-
-    //     float dist = ((Vector3)screenPoint - projectPoint).sqrMagnitude;
-    //     return dist < 160000;
-    // }
 
     public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
     {
@@ -218,43 +234,39 @@ public class UILineRenderer : MaskableGraphic, ICanvasRaycastFilter
         return dist < 450;
     }
 
-    // public bool IsRaycastLocationValid(Vector2 screenPoint, Camera eventCamera)
-    // {
-    //     float dist1 = (Points[0] + transform.position - new Vector3(screenPoint.x, screenPoint.y)).sqrMagnitude;
-    //     float dist2 = (Points[3] + transform.position - new Vector3(screenPoint.x, screenPoint.y)).sqrMagnitude;
-    //     return dist2 < 300 || dist1 < 300;
-    // }
+    private void OnDrawGizmos()
+    {
+        if (!Application.isPlaying) return;
+        if (Points == null || Points.Length < 2)
+            return;
 
-    // private void OnDrawGizmos()
-    // {
-    //     if (Points == null || Points.Length < 2)
-    //         return;
+        for (int i = 0; i < Points.Length; i++)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(Points[i] + transform.position, 15f);
+        }
 
-    //     for (int i = 0; i < Points.Length; i++)
-    //     {
-    //         Gizmos.color = Color.red;
-    //         Gizmos.DrawWireSphere(Points[i] + transform.position, 15f);
-    //     }
+        for (int i = 0; i < Points.Length - 3; i++)
+        {
+            Vector3 center = GetCircleCenter(Points[i], Points[i + 1], Points[i + 2], out Vector3 tangent1, out Vector3 tangent2);
+            // Gizmos.color = Color.blue;
+            // Gizmos.DrawWireSphere(center + transform.position, CornerRadius);
 
-    //     Vector3 center = GetCircleCenter(Points[0], Points[1], Points[2], out Vector3 tangent1, out Vector3 tangent2);
-    //     Gizmos.color = Color.blue;
-    //     Gizmos.DrawWireSphere(center + transform.position, CornerRadius);
-
-    //     Gizmos.color = Color.yellow;
-    //     Gizmos.DrawWireSphere(tangent1 + transform.position, 10f);
-    //     Gizmos.DrawWireSphere(tangent2 + transform.position, 10f);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(tangent1 + transform.position, 10f);
+            Gizmos.DrawWireSphere(tangent2 + transform.position, 10f);
 
 
-
-    //     Vector3 v1 = tangent1 - center;
-    //     Vector3 v2 = tangent2 - center;
-    //     float angle = Vector3.Angle(v1, v2);
-    //     float step = angle / CornerSegment;
-    //     for (int i = 1; i <= CornerSegment - 1; i++)
-    //     {
-    //         Vector3 point = Quaternion.AngleAxis(step * i, Vector3.back) * v1;
-    //         Gizmos.color = Color.cyan;
-    //         Gizmos.DrawWireSphere(point + center + transform.position, 5f);
-    //     }
-    // }
+            Vector3 v1 = tangent1 - center;
+            Vector3 v2 = tangent2 - center;
+            float angle = Vector3.Angle(v1, v2);
+            float step = angle / CornerSegment;
+            for (int j = 1; j <= CornerSegment - 1; j++)
+            {
+                Vector3 point = Quaternion.AngleAxis(step * j, Vector3.back) * v1;
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(point + center + transform.position, 5f);
+            }   
+        }
+    }
 }

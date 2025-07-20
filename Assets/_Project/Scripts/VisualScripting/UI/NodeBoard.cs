@@ -109,11 +109,11 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
     private void LoadBoard()
     {
-        if (TargetVisualScripting.startNode != null)
-        {
-            UINode node = Instantiate(_nodePrefab, _holder);
-            node.Node = TargetVisualScripting.startNode;
-        }
+        // if (TargetVisualScripting.startNode != null)
+        // {
+        //     UINode node = Instantiate(_nodePrefab, _holder);
+        //     node.Node = TargetVisualScripting.startNode;
+        // }
     }
 
     public void OnBeginDrag(PointerEventData eventData)

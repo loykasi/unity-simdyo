@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea338d258c89ac54e82bb4cf7fed4d29, type: 3}
-  m_Name: StartNode
+  m_Script: {fileID: 11500000, guid: 75a376465c283aa46976d98d6184b48c, type: 3}
+  m_Name: Update
   m_EditorClassIdentifier: 
-  Title: Start
+  Title: Update
