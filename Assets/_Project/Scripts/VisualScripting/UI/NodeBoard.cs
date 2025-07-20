@@ -180,8 +180,35 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
         if (TargetVisualScripting.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
         {
             AddConnectionLine();
-        }
 
+            AfterAdd();
+        }
+    }
+
+    private void AfterAdd()
+    {
+        {
+            if (_fromPort is OutputTrigger fromPort)
+            {
+                _fromUIPort.ValidConnection(fromPort.Destination);
+            }
+
+            if (_toPort is OutputTrigger toPort)
+            {
+                _toUIPort.ValidConnection(toPort.Destination);
+            }
+        }
+        {
+            if (_fromPort is ValueInput fromPort)
+            {
+                _fromUIPort.ValidConnection(fromPort.Source);
+            }
+
+            if (_toPort is ValueInput toPort)
+            {
+                _toUIPort.ValidConnection(toPort.Source);
+            }
+        }
     }
 
     private void AddConnectionLine()

@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ValueOutput : Port<ValueInput>
 {
     public Func<object> action;
-    public ValueInput Destination;
+    public List<ValueInput> Destinations = new();
     public bool IsUseInputField = false;
     private object _value;
 
@@ -49,11 +50,14 @@ public class ValueOutput : Port<ValueInput>
 
     public override void Connect(ValueInput port)
     {
-        Destination = port;
+        Destinations.Add(port);
     }
 
     protected override void DisconnectPort(ValueInput port)
     {
-        Destination = null;
+        if (!Destinations.Contains(port))
+        {
+            Destinations.Remove(port);
+        }
     }
 }

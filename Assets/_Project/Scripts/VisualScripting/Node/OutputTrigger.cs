@@ -6,6 +6,7 @@ public class OutputTrigger : Port<InputTrigger>
 
     public override void Connect(InputTrigger port)
     {
+        DisconnectPort(Destination);
         Destination = port;
     }
 
@@ -16,6 +17,10 @@ public class OutputTrigger : Port<InputTrigger>
 
     protected override void DisconnectPort(InputTrigger port)
     {
+        if (Destination != port)
+        {
+            return;
+        }
         Destination = null;
     }
 }

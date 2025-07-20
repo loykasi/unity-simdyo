@@ -89,6 +89,10 @@ public class ValueInput : Port<ValueOutput>
 
     protected override void DisconnectPort(ValueOutput port)
     {
+        if (Source != port)
+        {
+            return;
+        }
         Source = null;
     }
 }

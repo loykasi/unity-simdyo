@@ -20,8 +20,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     [SerializeField] private TMP_InputField _inputField;
     private NodeBoard _nodeBoard;
 
-    // private List<UILineRenderer> _lines = new();
-    private List<UILineConnection> _lineConnections = new();
+    protected List<UILineConnection> _lineConnections = new();
 
     private void Awake()
     {
@@ -117,6 +116,17 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         for (int i = 0; i < _lineConnections.Count; i++)
         {
             _lineConnections[i].Delete();
+        }
+    }
+
+    public virtual void ValidConnection(IPort port)
+    {
+        for (int i = 0; i < _lineConnections.Count; i++)
+        {
+            if (_lineConnections[i].Destination.Port != port)
+            {
+                _lineConnections[i].Delete();
+            }
         }
     }
 }

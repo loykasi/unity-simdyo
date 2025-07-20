@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 
 public class InputTrigger : Port<OutputTrigger>
 {
     public Func<VisualScripting, OutputTrigger> Action;
 
-    public OutputTrigger Source;
+    public List<OutputTrigger> Sources = new();
 
     public InputTrigger(Func<VisualScripting, OutputTrigger> action)
     {
@@ -13,7 +14,7 @@ public class InputTrigger : Port<OutputTrigger>
 
     public override void Connect(OutputTrigger port)
     {
-        Source = port;
+        Sources.Add(port);
     }
 
     public void Invoke(VisualScripting vs)
@@ -24,6 +25,9 @@ public class InputTrigger : Port<OutputTrigger>
 
     protected override void DisconnectPort(OutputTrigger port)
     {
-        Source = null;
+        if (!Sources.Contains(port))
+        {
+            Sources.Remove(port);
+        }
     }
 }
