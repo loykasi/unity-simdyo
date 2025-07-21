@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ValueOutput : Port<ValueInput>
 {
+    public Variable Type { get; private set; }
     public Func<object> action;
     public List<ValueInput> Destinations = new();
     public bool IsUseInputField = false;
@@ -12,18 +13,28 @@ public class ValueOutput : Port<ValueInput>
     public ValueOutput(Func<object> getValue)
     {
         action = getValue;
+        Type = Variable.Any;
     }
 
-    public ValueOutput()
+    public ValueOutput(Func<object> getValue, Variable type)
     {
-        IsUseInputField = true;
+        action = getValue;
+        Type = type;
     }
 
     public object GetValue()
     {
         if (IsUseInputField)
         {
-            return _value;
+            switch (Type)
+            {
+                case Variable.String:
+                    return (string)_value;
+                case Variable.Number:
+                    return (double)_value;
+                case Variable.Boolean:
+                    return (bool)_value;
+            }
         }
 
         return action();
@@ -59,5 +70,11 @@ public class ValueOutput : Port<ValueInput>
         {
             Destinations.Remove(port);
         }
+    }
+
+    public override bool CanConnectTo(ValueInput port)
+    {
+        Debug.Log($"{GetType()} | {Type} | {port.Type}");
+        return port.Type == Variable.Any || port.Type == Type;
     }
 }

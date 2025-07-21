@@ -2,10 +2,12 @@ public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
 {
     public IScriptNode Node { get; set; }
 
-    public bool CanConnectTo(IPort port)
+    public virtual bool CanConnect(IPort port)
     {
-        return Node != port.Node && port is TOtherPort;
+        return Node != port.Node && port is TOtherPort other && CanConnectTo(other);
     }
+
+    public abstract bool CanConnectTo(TOtherPort port);
 
     public bool ConnectToPort(IPort port)
     {

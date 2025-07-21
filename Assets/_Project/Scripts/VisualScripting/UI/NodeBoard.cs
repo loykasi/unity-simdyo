@@ -157,7 +157,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     {
         IPort port = toPort.Port;
         if (_fromPort == null) return;
-        if (!_fromPort.CanConnectTo(port)) return;
+        if (!_fromPort.CanConnect(port) || !port.CanConnect(_fromPort)) return;
 
         _toUIPort = toPort;
         _toNode = toPort.UINode.Node;
@@ -225,8 +225,16 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
         UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
         lineRenderer.Rect = rect;
         lineConnection.LineRenderer = lineRenderer;
-        lineConnection.Source = _fromUIPort;
-        lineConnection.Destination = _toUIPort;
+        if (_fromUIPort.Edge == NodePortEdge.Right)
+        {
+            lineConnection.Source = _fromUIPort;
+            lineConnection.Destination = _toUIPort;
+        }
+        else
+        {
+            lineConnection.Source = _toUIPort;
+            lineConnection.Destination = _fromUIPort;
+        }
 
         lineRenderer.Init(4);
         lineRenderer.Thickness = 3;

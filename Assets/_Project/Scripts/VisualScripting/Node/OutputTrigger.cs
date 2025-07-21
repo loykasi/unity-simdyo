@@ -4,6 +4,11 @@ public class OutputTrigger : Port<InputTrigger>
 
     public InputTrigger Destination;
 
+    public override bool CanConnectTo(InputTrigger port)
+    {
+        return true;
+    }
+
     public override void Connect(InputTrigger port)
     {
         DisconnectPort(Destination);

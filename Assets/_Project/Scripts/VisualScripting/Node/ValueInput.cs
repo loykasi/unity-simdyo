@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ValueInput : Port<ValueOutput>
 {
-    public Type Type { get; private set; }
+    public Variable Type { get; private set; }
     public object DefaultValue;
     public ValueOutput Source;
 
@@ -14,9 +14,10 @@ public class ValueInput : Port<ValueOutput>
     public ValueInput(bool useOptionalInput)
     {
         UseOptionalInput = useOptionalInput;
+        Type = Variable.Any;
     }
 
-    public ValueInput(bool useOptionalInput, Type type)
+    public ValueInput(bool useOptionalInput, Variable type)
     {
         UseOptionalInput = useOptionalInput;
         Type = type;
@@ -54,14 +55,14 @@ public class ValueInput : Port<ValueOutput>
 
     public void SetValue(string value)
     {
-        if (Type == typeof(string))
+        if (Type == Variable.String)
         {
             Debug.Log("Save as string");
             _value = value;
             return;
         }
 
-        if (Type == typeof(double))
+        if (Type == Variable.Number)
         {
             // if (int.TryParse(value, out int result1))
             // {
@@ -76,7 +77,7 @@ public class ValueInput : Port<ValueOutput>
             return;
         }
 
-        if (Type == typeof(bool))
+        if (Type == Variable.Boolean)
         {
             if (bool.TryParse(value, out bool result3))
             {
@@ -94,5 +95,11 @@ public class ValueInput : Port<ValueOutput>
             return;
         }
         Source = null;
+    }
+
+    public override bool CanConnectTo(ValueOutput port)
+    {
+        Debug.Log($"{GetType()} | {port.Type} | {Type}");
+        return Type == Variable.Any || port.Type == Type;
     }
 }

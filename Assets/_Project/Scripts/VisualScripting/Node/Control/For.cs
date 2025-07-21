@@ -28,9 +28,9 @@ class ForNode : ScriptNode
         Completed = CreateOutputTrigger();
         LoopBody = CreateOutputTrigger();
 
-        FirstIndex = ValueInput<double>(true);
-        LastIndex = ValueInput<double>(true);
-        Step = ValueInput<double>(true);
+        FirstIndex = ValueInput(Variable.Number, true);
+        LastIndex = ValueInput(Variable.Number, true);
+        Step = ValueInput(Variable.Number, true);
         Index = ValueOutput(() =>
         {
             return _index;

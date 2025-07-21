@@ -176,7 +176,7 @@ public class UILineRenderer : MaskableGraphic, ICanvasRaycastFilter
         float distDelta = Mathf.Min(line1Dist / (CornerRadius * CornerRadius), 1.0f) * Mathf.Min(line2Dist / (CornerRadius * CornerRadius), 1.0f);
         float radius = Mathf.Lerp(0, CornerRadius, angleDelta * distDelta);
 
-        Debug.Log(radius);
+        // Debug.Log(radius);
 
         float dot = Vector3.Dot(new Vector3(dir1.y, -dir1.x), dir2);
 

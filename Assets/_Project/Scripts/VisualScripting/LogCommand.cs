@@ -7,6 +7,6 @@ public class LogCommand : Singleton<LogCommand>
 
     public void Log(object message)
     {
-        _textBox.SetText(message.ToString());
+        _textBox.SetText(_textBox.text + "\n" + message.ToString());
     }
 }

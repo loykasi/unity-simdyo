@@ -14,6 +14,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 {
     public IPort Port;
     public UINode UINode;
+    public NodePortEdge Edge => _edge;
 
     [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;

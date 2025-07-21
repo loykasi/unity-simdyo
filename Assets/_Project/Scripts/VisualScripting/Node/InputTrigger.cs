@@ -12,6 +12,11 @@ public class InputTrigger : Port<OutputTrigger>
         Action = action;
     }
 
+    public override bool CanConnectTo(OutputTrigger port)
+    {
+        return true;
+    }
+
     public override void Connect(OutputTrigger port)
     {
         Sources.Add(port);

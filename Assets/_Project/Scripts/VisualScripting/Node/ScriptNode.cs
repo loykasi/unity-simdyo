@@ -57,9 +57,9 @@ public abstract class ScriptNode : IScriptNode
         return valueInput;
     }
 
-    protected ValueInput ValueInput<T>(bool useOptionalInput)
+    protected ValueInput ValueInput(Variable type, bool useOptionalInput)
     {
-        ValueInput valueInput = new(useOptionalInput, typeof(T))
+        ValueInput valueInput = new(useOptionalInput, type)
         {
             Node = this
         };
@@ -76,10 +76,10 @@ public abstract class ScriptNode : IScriptNode
         ValueOutputs.Add(valueOutput);
         return valueOutput;
     }
-    
-    protected ValueOutput ValueOutput()
+
+    protected ValueOutput ValueOutput(Variable type, Func<object> getValue)
     {
-        ValueOutput valueOutput = new()
+        ValueOutput valueOutput = new(getValue, type)
         {
             Node = this
         };
