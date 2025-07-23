@@ -32,25 +32,82 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
     private Vector2 _previousMousePosition;
 
-    private void OnEnable()
+    private List<UINode> _nodes = new();
+    private List<GameObject> _lineObjects = new();
+
+    public void SetVisualScripting(VisualScripting vs)
     {
+        if (vs == null)
+        {
+            return;
+        }
+
+        ClearBoard();
+
+        if (TargetVisualScripting != null)
+        {
+            TargetVisualScripting.OnNodeAdded -= OnNodeAdded;
+        }
+
+        TargetVisualScripting = vs;
         TargetVisualScripting.OnNodeAdded += OnNodeAdded;
+
+        LoadBoard();
     }
 
-    private void OnDisable()
+    private void ClearBoard()
     {
-        TargetVisualScripting.OnNodeAdded -= OnNodeAdded;
+        for (int i = 0; i < _nodes.Count; i++)
+        {
+            Destroy(_nodes[i].gameObject);
+        }
+        for (int i = 0; i < _lineObjects.Count; i++)
+        {
+            Destroy(_lineObjects[i]);
+        }
+
+        _nodes.Clear();
+        _lineObjects.Clear();
+    }
+
+    private void LoadBoard()
+    {
+        List<ScriptNode> nodes = TargetVisualScripting.Nodes;
+        List<NodeConnection> connections = TargetVisualScripting.Connections;
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            OnNodeAdded(nodes[i]);
+        }
+        for (int i = 0; i < connections.Count; i++)
+        {
+            NodeConnection connection = connections[i];
+            
+            UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
+            UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
+            UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
+            UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
+
+            Debug.Log($"{sourcePort} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
+            // if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
+            // {
+            //     Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
+            //     return;
+            // }
+            Connect(sourcePort, connection.Source, source.Node, destinationPort, connection.Destination, destination.Node);
+        }
     }
 
     private void OnNodeAdded(ScriptNode scriptNode)
     {
+        Debug.Log("add node");
         UINode node = Instantiate(_nodePrefab, _holder);
         node.Node = scriptNode;
+        _nodes.Add(node);
     }
 
-    private void Start()
+    public void AddNode(ScriptNodeData nodeData)
     {
-        LoadBoard();
+        TargetVisualScripting.AddNode(nodeData);
     }
 
     public List<RaycastResult> results = new();
@@ -105,15 +162,6 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
             _selectedElement?.Delete();
             _selectedElement = null;
         }
-    }
-
-    private void LoadBoard()
-    {
-        // if (TargetVisualScripting.startNode != null)
-        // {
-        //     UINode node = Instantiate(_nodePrefab, _holder);
-        //     node.Node = TargetVisualScripting.startNode;
-        // }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -173,15 +221,45 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
         _nodeConnectionPreview.ExitPort();
     }
 
+    private void Connect(UINodePort fromUIPort, IPort fromPort, ScriptNode fromNode, UINodePort toUIPort, IPort toPort, ScriptNode toNode)
+    {
+        _fromUIPort = fromUIPort;
+        _fromPort = fromPort;
+        _fromNode = fromNode;
+        _toUIPort = toUIPort;
+        _toPort = toPort;
+        _toNode = toNode;
+
+        AddConnectionLine();
+        _fromUIPort = null;
+        _fromPort = null;
+        _fromNode = null;
+        _toUIPort = null;
+        _toPort = null;
+        _toNode = null;
+    }
+
     private void TryConnect()
     {
         if (!_hasPort) return;
 
-        if (TargetVisualScripting.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
+        if (_fromUIPort.Edge == NodePortEdge.Right)
         {
-            AddConnectionLine();
+            if (TargetVisualScripting.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
+            {
+                AddConnectionLine();
 
-            AfterAdd();
+                AfterAdd();
+            }
+        }
+        else
+        {
+            if (TargetVisualScripting.TryConnect(_toNode, _toPort, _fromNode, _fromPort))
+            {
+                AddConnectionLine();
+
+                AfterAdd();
+            }
         }
     }
 
@@ -214,6 +292,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     private void AddConnectionLine()
     {
         GameObject lineObject = new("line");
+        _lineObjects.Add(lineObject);
 
         lineObject.AddComponent<CanvasRenderer>();
         UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
@@ -242,14 +321,29 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
         lineRenderer.CornerSegment = 5;
 
         // calculate bound;
-        UILineRenderer previewLineRender = _nodeConnectionPreview.LineRenderer;
-        Vector3 size = previewLineRender.Points[3] - previewLineRender.Points[0];
-        Vector3 center = (previewLineRender.Points[0] + previewLineRender.Points[3]) / 2.0f;
+        Vector3 headPosition;
+        Vector3 tailPosition;
 
-        lineRenderer.Points[0] = previewLineRender.Points[0] - center;
-        lineRenderer.Points[1] = previewLineRender.Points[1] - center;
-        lineRenderer.Points[2] = previewLineRender.Points[2] - center;
-        lineRenderer.Points[3] = previewLineRender.Points[3] - center;
+        if (_fromUIPort.Edge == NodePortEdge.Right)
+        {
+            headPosition = _fromUIPort.HandlePosition;
+            tailPosition = _toUIPort.HandlePosition;
+        }
+        else
+        {
+            headPosition = _toUIPort.HandlePosition;
+            tailPosition = _fromUIPort.HandlePosition;
+        }
+
+        Debug.Log($"{headPosition} | {tailPosition}");
+
+        Vector3 size = headPosition - tailPosition;
+        Vector3 center = (headPosition + tailPosition) / 2.0f;
+
+        lineRenderer.Points[0] = headPosition - center;
+        lineRenderer.Points[1] = headPosition + Vector3.right * 50f - center;
+        lineRenderer.Points[2] = tailPosition + Vector3.left * 50f - center;
+        lineRenderer.Points[3] = tailPosition - center;
         rect.localPosition = center - _holder.position;
         rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
 

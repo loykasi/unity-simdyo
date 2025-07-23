@@ -4,6 +4,7 @@ using UnityEngine;
 
 public abstract class ScriptNode : IScriptNode
 {
+    public Vector2 Positon { get; set; }
     public string Title;
 
     public List<InputTrigger> InputTriggers = new();

@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement
 {
@@ -19,13 +20,13 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     private ScriptNode _node;
 
-    private List<UINodePort> _ports = new();
+    public List<UINodePort> Ports = new();
 
     [SerializeField] private TMP_Text _nodeTitle;
     [SerializeField] private GameObject _selectedBorder;
 
-    [SerializeField] private Transform _inputHolder;
-    [SerializeField] private Transform _outputHolder;
+    [SerializeField] private RectTransform _inputHolder;
+    [SerializeField] private RectTransform _outputHolder;
 
     [SerializeField] private UINodePort _inputTriggerPrefab;
     [SerializeField] private UINodePort _inputValuePrefab;
@@ -38,6 +39,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     {
         if (Node == null) return;
 
+        transform.localPosition = Node.Positon;
         _nodeTitle.SetText(Node.Title);
 
         for (int i = 0; i < Node.InputTriggers.Count; i++)
@@ -46,7 +48,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.UINode = this;
             port.Port = Node.InputTriggers[i];
             port.Init();
-            _ports.Add(port);
+            Ports.Add(port);
         }
 
         for (int i = 0; i < Node.OutputTriggers.Count; i++)
@@ -55,7 +57,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.UINode = this;
             port.Port = Node.OutputTriggers[i];
             port.Init();
-            _ports.Add(port);
+            Ports.Add(port);
         }
 
         for (int i = 0; i < Node.ValueInputs.Count; i++)
@@ -64,7 +66,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.UINode = this;
             port.Port = Node.ValueInputs[i];
             port.Init();
-            _ports.Add(port);
+            Ports.Add(port);
         }
 
         for (int i = 0; i < Node.ValueOutputs.Count; i++)
@@ -73,8 +75,11 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.UINode = this;
             port.Port = Node.ValueOutputs[i];
             port.Init();
-            _ports.Add(port);
+            Ports.Add(port);
         }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -85,10 +90,11 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
+        Node.Positon = transform.localPosition;
 
-        for (int i = 0; i < _ports.Count; i++)
+        for (int i = 0; i < Ports.Count; i++)
         {
-            _ports[i].UpdateLines();
+            Ports[i].UpdateLines();
         }
     }
 
@@ -99,9 +105,9 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void Delete()
     {
-        for (int i = 0; i < _ports.Count; i++)
+        for (int i = 0; i < Ports.Count; i++)
         {
-            _ports[i].DeleteAllLines();
+            Ports[i].DeleteAllLines();
         }
         Destroy(gameObject);
     }

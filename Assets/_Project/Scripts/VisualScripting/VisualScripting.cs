@@ -6,24 +6,20 @@ public class VisualScripting : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
 
-    // public ScriptNodeData startNodeData;
-    // public EventNode startNode;
+    public List<ScriptNode> Nodes = new();
+    public List<NodeConnection> Connections = new();
 
     private int _loopIdentifier = 0;
-    private Stack<int> _loops = new Stack<int>();
+    private Stack<int> _loops = new();
 
     private bool _start = false;
     private List<EventNode> _startNodes = new();
     private List<EventNode> _updateNodes = new();
 
-    private void Awake()
-    {
-        // startNode = startNodeData.Create() as EventNode;
-    }
-
     public void AddNode(ScriptNodeData nodeData)
     {
         ScriptNode node = nodeData.Create();
+        Nodes.Add(node);
         OnNodeAdded?.Invoke(node);
 
         if (node is EventNode eventNode)
@@ -44,6 +40,7 @@ public class VisualScripting : MonoBehaviour
     {
         if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
         {
+            Connections.Add(new NodeConnection(fromPort, toPort));
             Debug.Log($"Connect successful");
             return true;
         }
