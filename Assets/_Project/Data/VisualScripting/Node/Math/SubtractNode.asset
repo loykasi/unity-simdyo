@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 314e3138c962ff54ea374e4ed01f9e84, type: 3}
   m_Name: SubtractNode
   m_EditorClassIdentifier: 
-  Title: Subtract
+  Title: SubtractNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

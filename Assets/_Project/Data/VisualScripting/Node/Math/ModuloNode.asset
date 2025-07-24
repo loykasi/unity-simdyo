@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c188a01eba54d214a8ab709a8e66fce7, type: 3}
   m_Name: ModuloNode
   m_EditorClassIdentifier: 
-  Title: Modulo
+  Title: ModuloNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

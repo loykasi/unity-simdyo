@@ -12,8 +12,7 @@ public class VisualScripting : MonoBehaviour
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new();
 
-    private bool _start = false;
-    private List<EventNode> _startNodes = new();
+        private List<EventNode> _startNodes = new();
     private List<EventNode> _updateNodes = new();
 
     public void AddNode(ScriptNodeData nodeData)
@@ -99,21 +98,7 @@ public class VisualScripting : MonoBehaviour
         _loops.Pop();
     }
 
-    private void OnGUI()
-    {
-        if (GUI.Button(new Rect(1810, 10, 100, 50), "Run"))
-        {
-            StartNode();
-            _start = true;
-        }
-    }
-
-    private void Update()
-    {
-        UpdateNode();
-    }
-
-    private void StartNode()
+    public void StartVS()
     {
         foreach (var item in _startNodes)
         {
@@ -121,14 +106,11 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
-    private void UpdateNode()
+    public void UpdateVS()
     {
-        if (_start)
+        for (int i = 0; i < _updateNodes.Count; i++)
         {
-            for (int i = 0; i < _updateNodes.Count; i++)
-            {
-                Invoke(_updateNodes[i].outputTrigger);
-            }
+            Invoke(_updateNodes[i].outputTrigger);
         }
     }
 }

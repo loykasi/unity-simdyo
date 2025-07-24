@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
+public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public VisualScripting TargetVisualScripting;
 
@@ -17,6 +17,9 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     [Space]
     [SerializeField] private NodeConnectionPreview _nodeConnectionPreview;
     [SerializeField] private float _sizePadding;
+
+    [Space]
+    [SerializeField] private GameObject _nodeMenu;
 
     private bool _hasPort;
 
@@ -34,6 +37,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
 
     private List<UINode> _nodes = new();
     private List<GameObject> _lineObjects = new();
+
+    private bool _isHover = false;
 
     public void SetVisualScripting(VisualScripting vs)
     {
@@ -87,12 +92,12 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
             UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
             UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
 
-            Debug.Log($"{sourcePort} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
-            // if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
-            // {
-            //     Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
-            //     return;
-            // }
+            // Debug.Log($"{sourcePort} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
+            if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
+            {
+                Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
+                return;
+            }
             Connect(sourcePort, connection.Source, source.Node, destinationPort, connection.Destination, destination.Node);
         }
     }
@@ -162,6 +167,12 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
             _selectedElement?.Delete();
             _selectedElement = null;
         }
+
+        if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
+        {
+            _nodeMenu.SetActive(true);
+            _nodeMenu.transform.position = Mouse.current.position.ReadValue();
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -172,6 +183,16 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler
     public void OnDrag(PointerEventData eventData)
     {
         _holder.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _isHover = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _isHover = false;
     }
 
     public void StartPreviewConnect(UINodePort fromPort, Vector3 startPosition, NodePortEdge edge)

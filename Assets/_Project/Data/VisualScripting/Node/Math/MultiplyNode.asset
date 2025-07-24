@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9243c3086029cda4dadb5e28426cebdc, type: 3}
   m_Name: MultiplyNode
   m_EditorClassIdentifier: 
-  Title: Multiply
+  Title: MultiplyNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

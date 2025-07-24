@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2151d81fcbac349be1ba5391c170b8, type: 3}
   m_Name: GreaterNode
   m_EditorClassIdentifier: 
-  Title: Greater
+  Title: GreaterNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

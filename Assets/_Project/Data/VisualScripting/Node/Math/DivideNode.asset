@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de40eed49015a44388fae7d4129be8c, type: 3}
   m_Name: DivideNode
   m_EditorClassIdentifier: 
-  Title: Divide
+  Title: DivideNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

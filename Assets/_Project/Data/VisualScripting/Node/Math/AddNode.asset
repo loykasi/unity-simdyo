@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db193f61b6923bc4facc2527fa6f38e2, type: 3}
   m_Name: AddNode
   m_EditorClassIdentifier: 
-  Title: Add
+  Title: AddNodeData
+  Category: {fileID: 11400000, guid: 39bbd7e913af5814e8ee2ef85a636a68, type: 2}

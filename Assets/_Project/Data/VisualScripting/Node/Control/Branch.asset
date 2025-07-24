@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fafc9fb2f6a72ad4db2a5169101ff63c, type: 3}
   m_Name: Branch
   m_EditorClassIdentifier: 
-  Title: Branch
+  Title: BranchNodeData
+  Category: {fileID: 11400000, guid: c703cc2134b71ea47a2b4062d72a5a71, type: 2}
