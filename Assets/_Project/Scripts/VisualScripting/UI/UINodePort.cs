@@ -13,13 +13,12 @@ public enum NodePortEdge
 public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public IPort Port;
-    public UINode UINode;
+    public UINode UINode { get; set; }
     public NodePortEdge Edge => _edge;
     public Vector3 HandlePosition => _portHandle.transform.position;
 
     [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;
-    [SerializeField] private TMP_InputField _inputField;
     private NodeBoard _nodeBoard;
 
     protected List<UILineConnection> _lineConnections = new();
@@ -29,31 +28,8 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         _nodeBoard = NodeBoard.Instance;
     }
 
-    public void Init()
+    public virtual void Init()
     {
-        if (Port is ValueOutput valueOutput && _inputField != null)
-        {
-            if (valueOutput.IsUseInputField)
-            {
-                _inputField.gameObject.SetActive(true);
-            }
-            else
-            {
-                _inputField.gameObject.SetActive(false);
-            }
-        }
-
-        if (Port is ValueInput valueInput && _inputField != null)
-        {
-            if (valueInput.UseOptionalInput)
-            {
-                _inputField.gameObject.SetActive(true);
-            }
-            else
-            {
-                _inputField.gameObject.SetActive(false);
-            }
-        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -83,11 +59,6 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnEndEdit(string value)
     {
-        if (Port is ValueOutput valueOutput)
-        {
-            valueOutput.SetValue(value);
-        }
-
         if (Port is ValueInput valueInput)
         {
             valueInput.SetValue(value);

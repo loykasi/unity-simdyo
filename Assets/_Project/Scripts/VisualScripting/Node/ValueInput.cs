@@ -4,7 +4,7 @@ using UnityEngine;
 public class ValueInput : Port<ValueOutput>
 {
     public Variable Type { get; private set; }
-    public object DefaultValue;
+    public object Value => _value;
     public ValueOutput Source;
 
     public bool UseOptionalInput;
@@ -35,7 +35,7 @@ public class ValueInput : Port<ValueOutput>
             return (T)Source.GetValue();
         }
 
-        return (T)DefaultValue;
+        return (T)Value;
     }
 
     public object GetValue()
@@ -45,12 +45,7 @@ public class ValueInput : Port<ValueOutput>
             return Source.GetValue();
         }
 
-        if (UseOptionalInput)
-        {
-            return _value;
-        }
-
-        return DefaultValue;
+        return Value;
     }
 
     public void SetValue(string value)

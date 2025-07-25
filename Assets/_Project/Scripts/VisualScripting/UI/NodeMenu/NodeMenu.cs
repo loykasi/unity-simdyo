@@ -62,8 +62,8 @@ public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
     public void AddNode(ScriptNodeData nodeData)
     {
-        NodeBoard.Instance.AddNode(nodeData);
         Close();
+        NodeBoard.Instance.AddNode(nodeData);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
