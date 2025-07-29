@@ -21,9 +21,9 @@ class SubtractNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return OperatorUtility.Subtract(ValueA.GetValue(), ValueB.GetValue());
+            return OperatorUtility.Subtract(ValueA.GetValue(vs), ValueB.GetValue(vs));
         });
     }
 }

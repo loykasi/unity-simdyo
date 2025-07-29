@@ -21,9 +21,9 @@ class DivideNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return OperatorUtility.Divide(ValueA.GetValue(), ValueB.GetValue());
+            return OperatorUtility.Divide(ValueA.GetValue(vs), ValueB.GetValue(vs));
         });
     }
 }

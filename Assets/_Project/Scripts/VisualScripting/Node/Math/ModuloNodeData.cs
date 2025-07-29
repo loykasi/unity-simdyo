@@ -21,9 +21,9 @@ class ModuloNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return OperatorUtility.Modulo(ValueA.GetValue(), ValueB.GetValue());
+            return OperatorUtility.Modulo(ValueA.GetValue(vs), ValueB.GetValue(vs));
         });
     }
 }

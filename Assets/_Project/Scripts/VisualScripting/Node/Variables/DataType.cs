@@ -1,4 +1,4 @@
-public enum Variable
+public enum DataType
 {
     Any,
     String,

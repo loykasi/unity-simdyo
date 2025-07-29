@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e750e0a46c90004391cd517990dbcd5, type: 3}
-  m_Name: LogNode
+  m_Script: {fileID: 11500000, guid: 9ba9ea5c6c458434b90b463b8ac476cb, type: 3}
+  m_Name: GetVariable
   m_EditorClassIdentifier: 
-  Title: DebugNodeData
-  Category: {fileID: 11400000, guid: ddf063f59705d324994641150b5039b3, type: 2}
+  Title: GetVariable
+  Category: {fileID: 11400000, guid: 2dbd8d7dfa1b1c44d877978ed46ac29b, type: 2}

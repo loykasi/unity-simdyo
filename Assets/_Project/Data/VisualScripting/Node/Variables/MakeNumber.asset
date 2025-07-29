@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eb7ade88c395b74bbc25944eaca8082, type: 3}
   m_Name: MakeNumber
   m_EditorClassIdentifier: 
-  Title: Make Number
+  Title: MakeNumber
+  Category: {fileID: 11400000, guid: 03f39a6bf2c40834287c234d1d2aac5a, type: 2}

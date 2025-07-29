@@ -21,9 +21,9 @@ class AddNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return OperatorUtility.Add(ValueA.GetValue(), ValueB.GetValue());;
+            return OperatorUtility.Add(ValueA.GetValue(vs), ValueB.GetValue(vs));;
         });
     }
 }

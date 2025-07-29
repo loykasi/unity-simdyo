@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MakeBoolean
   m_EditorClassIdentifier: 
   Title: MakeBoolen
+  Category: {fileID: 11400000, guid: 03f39a6bf2c40834287c234d1d2aac5a, type: 2}

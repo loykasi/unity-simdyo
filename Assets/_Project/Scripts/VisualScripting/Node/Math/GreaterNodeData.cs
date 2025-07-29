@@ -21,9 +21,9 @@ class GreaterNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return ValueA.GetValue<float>() > ValueB.GetValue<float>();
+            return ValueA.GetValue<float>(vs) > ValueB.GetValue<float>(vs);
         });
     }
 }

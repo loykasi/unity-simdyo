@@ -58,7 +58,7 @@ public abstract class ScriptNode : IScriptNode
         return valueInput;
     }
 
-    protected ValueInput ValueInput(Variable type, bool useOptionalInput)
+    protected ValueInput ValueInput(DataType type, bool useOptionalInput)
     {
         ValueInput valueInput = new(useOptionalInput, type)
         {
@@ -68,7 +68,7 @@ public abstract class ScriptNode : IScriptNode
         return valueInput;
     }
 
-    protected ValueOutput ValueOutput(Func<object> getValue)
+    protected ValueOutput ValueOutput(Func<VisualScripting, object> getValue)
     {
         ValueOutput valueOutput = new(getValue)
         {
@@ -78,7 +78,7 @@ public abstract class ScriptNode : IScriptNode
         return valueOutput;
     }
 
-    protected ValueOutput ValueOutput(Variable type, Func<object> getValue)
+    protected ValueOutput ValueOutput(DataType type, Func<VisualScripting, object> getValue)
     {
         ValueOutput valueOutput = new(getValue, type)
         {

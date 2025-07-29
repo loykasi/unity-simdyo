@@ -39,6 +39,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     private List<GameObject> _lineObjects = new();
 
     private bool _isHover = false;
+    private Vector3 _openMenuPosition;
 
     public void SetVisualScripting(VisualScripting vs)
     {
@@ -81,7 +82,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
         List<NodeConnection> connections = TargetVisualScripting.Connections;
         for (int i = 0; i < nodes.Count; i++)
         {
-            OnNodeAdded(nodes[i]);
+            AddNodeToBoard(nodes[i]);
         }
         for (int i = 0; i < connections.Count; i++)
         {
@@ -104,9 +105,20 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
     private void OnNodeAdded(ScriptNode scriptNode)
     {
-        Debug.Log("add node");
         UINode node = Instantiate(_nodePrefab, _holder);
+     
         node.Node = scriptNode;
+        node.transform.position = _openMenuPosition;
+
+        _nodes.Add(node);
+    }
+
+    private void AddNodeToBoard(ScriptNode scriptNode)
+    {
+        UINode node = Instantiate(_nodePrefab, _holder);
+     
+        node.Node = scriptNode;
+
         _nodes.Add(node);
     }
 
@@ -170,8 +182,11 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
         if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
         {
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
             _nodeMenu.SetActive(true);
-            _nodeMenu.transform.position = Mouse.current.position.ReadValue();
+            _nodeMenu.transform.position = mousePosition;
+
+            _openMenuPosition = mousePosition;
         }
     }
 

@@ -21,9 +21,9 @@ class MultiplyNode : ScriptNode
         ValueA = ValueInput();
         ValueB = ValueInput();
 
-        OutputPort = ValueOutput(() =>
+        OutputPort = ValueOutput((vs) =>
         {
-            return OperatorUtility.Multiply(ValueA.GetValue(), ValueB.GetValue());
+            return OperatorUtility.Multiply(ValueA.GetValue(vs), ValueB.GetValue(vs));
         });
     }
 }

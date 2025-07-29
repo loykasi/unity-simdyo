@@ -12,8 +12,10 @@ public class VisualScripting : MonoBehaviour
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new();
 
-        private List<EventNode> _startNodes = new();
+    private List<EventNode> _startNodes = new();
     private List<EventNode> _updateNodes = new();
+
+    private Dictionary<string, Variable> _variables = new();
 
     public void AddNode(ScriptNodeData nodeData)
     {
@@ -112,5 +114,53 @@ public class VisualScripting : MonoBehaviour
         {
             Invoke(_updateNodes[i].outputTrigger);
         }
+    }
+
+    public bool AddVariable(string name)
+    {
+        if (name.Equals(string.Empty))
+        {
+            Debug.Log("Variable cannot be empty");
+            return false;
+        }
+
+        if (!_variables.ContainsKey(name))
+        {
+            _variables.Add(name, new Variable(DataType.String, ""));
+            Debug.Log("Add variable");
+            return true;
+        }
+
+        return false;
+    }
+
+    public void UpdateVariable(string name, DataType type, object value)
+    {
+        Debug.Log($"Update variable |{name}|");
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            Debug.Log("Update variable value: " + value);
+            variable.Type = type;
+            variable.Value = value;
+        }
+    }
+
+    public void UpdateVariable(string name, object value)
+    {
+        Debug.Log($"Update variable |{name}|");
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            Debug.Log("Update variable value: " + value);
+            variable.Value = value;
+        }
+    }
+
+    public object GetVariable(string name)
+    {
+        if (_variables.TryGetValue(name, out Variable value))
+        {
+            return value.Value;
+        }
+        return null;
     }
 }

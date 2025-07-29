@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ValueInput : Port<ValueOutput>
 {
-    public Variable Type { get; private set; }
+    public DataType Type { get; set; }
     public object Value => _value;
     public ValueOutput Source;
 
@@ -14,10 +14,10 @@ public class ValueInput : Port<ValueOutput>
     public ValueInput(bool useOptionalInput)
     {
         UseOptionalInput = useOptionalInput;
-        Type = Variable.Any;
+        Type = DataType.Any;
     }
 
-    public ValueInput(bool useOptionalInput, Variable type)
+    public ValueInput(bool useOptionalInput, DataType type)
     {
         UseOptionalInput = useOptionalInput;
         Type = type;
@@ -28,21 +28,21 @@ public class ValueInput : Port<ValueOutput>
         Source = port;
     }
 
-    public T GetValue<T>()
+    public T GetValue<T>(VisualScripting vs)
     {
         if (Source != null)
         {
-            return (T)Source.GetValue();
+            return (T)Source.GetValue(vs);
         }
 
         return (T)Value;
     }
 
-    public object GetValue()
+    public object GetValue(VisualScripting vs)
     {
         if (Source != null)
         {
-            return Source.GetValue();
+            return Source.GetValue(vs);
         }
 
         return Value;
@@ -50,20 +50,15 @@ public class ValueInput : Port<ValueOutput>
 
     public void SetValue(string value)
     {
-        if (Type == Variable.String)
+        if (Type == DataType.String)
         {
             Debug.Log("Save as string");
             _value = value;
             return;
         }
 
-        if (Type == Variable.Number)
+        if (Type == DataType.Number)
         {
-            // if (int.TryParse(value, out int result1))
-            // {
-            //     Debug.Log("Save as int");
-            //     _value = result1;
-            // }
             if (double.TryParse(value, out double result2))
             {
                 Debug.Log("Save as double");
@@ -72,7 +67,7 @@ public class ValueInput : Port<ValueOutput>
             return;
         }
 
-        if (Type == Variable.Boolean)
+        if (Type == DataType.Boolean)
         {
             if (bool.TryParse(value, out bool result3))
             {
@@ -81,6 +76,8 @@ public class ValueInput : Port<ValueOutput>
             }
             return;
         }
+
+        _value = value;
     }
 
     protected override void DisconnectPort(ValueOutput port)
@@ -94,7 +91,6 @@ public class ValueInput : Port<ValueOutput>
 
     public override bool CanConnectTo(ValueOutput port)
     {
-        Debug.Log($"{GetType()} | {port.Type} | {Type}");
-        return Type == Variable.Any || port.Type == Type;
+        return Type == DataType.Any || port.Type == Type;
     }
 }

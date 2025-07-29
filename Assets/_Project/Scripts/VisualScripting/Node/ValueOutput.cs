@@ -4,25 +4,25 @@ using UnityEngine;
 
 public class ValueOutput : Port<ValueInput>
 {
-    public Variable Type { get; private set; }
-    public Func<object> action;
+    public DataType Type { get; private set; }
+    public Func<VisualScripting, object> action;
     public List<ValueInput> Destinations = new();
 
-    public ValueOutput(Func<object> getValue)
+    public ValueOutput(Func<VisualScripting, object> getValue)
     {
         action = getValue;
-        Type = Variable.Any;
+        Type = DataType.Any;
     }
 
-    public ValueOutput(Func<object> getValue, Variable type)
+    public ValueOutput(Func<VisualScripting, object> getValue, DataType type)
     {
         action = getValue;
         Type = type;
     }
 
-    public object GetValue()
+    public object GetValue(VisualScripting vs)
     {
-        return action();
+        return action(vs);
     }
 
     public override void Connect(ValueInput port)
@@ -40,7 +40,6 @@ public class ValueOutput : Port<ValueInput>
 
     public override bool CanConnectTo(ValueInput port)
     {
-        Debug.Log($"{GetType()} | {Type} | {port.Type}");
-        return port.Type == Variable.Any || port.Type == Type;
+        return port.Type == DataType.Any || port.Type == Type;
     }
 }

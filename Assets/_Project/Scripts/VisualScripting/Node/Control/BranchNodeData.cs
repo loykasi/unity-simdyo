@@ -21,7 +21,7 @@ class BranchNode : ScriptNode
     {
         InputTrigger = CreateInputTrigger((vs) =>
         {
-            if ((bool)Value.GetValue())
+            if ((bool)Value.GetValue(vs))
             {
                 return OutputTriggerA;
             }
