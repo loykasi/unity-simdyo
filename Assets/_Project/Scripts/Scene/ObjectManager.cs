@@ -1,17 +1,12 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class EngineManager : Singleton<EngineManager>
+public class ObjectManager : Singleton<ObjectManager>
 {
-    public GameObject SelectedObject;
-
-    public List<VisualScripting> _visualScriptings;
+    public GameObject SelectedObject { get; set; }
 
     [SerializeField] private float _selectRadius;
     [SerializeField] private int _defaultLayer;
     [SerializeField] private int _selectLayer;
-
-    private bool _isRunning = false;
 
     public void Select(Vector3 worldPoint)
     {
@@ -39,43 +34,5 @@ public class EngineManager : Singleton<EngineManager>
 
         VisualScripting vs = SelectedObject.GetComponent<VisualScripting>();
         NodeBoard.Instance.SetVisualScripting(vs);
-    }
-
-    private void Update()
-    {
-        UpdateGame();   
-    }
-
-    public void Play()
-    {
-        StartGame();
-    }
-
-    public void Stop()
-    {
-        _isRunning = false;
-    }
-
-    private void StartGame()
-    {
-        for (int i = 0; i < _visualScriptings.Count; i++)
-        {
-            _visualScriptings[i].StartVS();
-        }
-
-        _isRunning = true;
-    }
-
-    private void UpdateGame()
-    {
-        if (!_isRunning)
-        {
-            return;
-        }
-
-        for (int i = 0; i < _visualScriptings.Count; i++)
-        {
-            _visualScriptings[i].UpdateVS();
-        }
     }
 }

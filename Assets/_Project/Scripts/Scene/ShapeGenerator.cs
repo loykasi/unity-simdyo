@@ -1,28 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShapeGenerator : MonoBehaviour
+public class ShapeGenerator : Singleton<ShapeGenerator>
 {
     [SerializeField] private Material _material;
     [SerializeField] private Material _circleMaterial;
-    [SerializeField] private float _radius;
     [SerializeField] private float _totalVert;
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
-    public void AddBox()
+    public void AddBox(Vector3 from, Vector3 to)
     {
-        GameObject shape = new();
-        shape.name = "Box";
+        GameObject shape = new()
+        {
+            name = "Box"
+        };
         MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
 
+        Vector3 center = (from + to) / 2f;
+        float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
+        float halfHeight = Mathf.Abs(from.y - to.y) / 2f;
+
+        shape.transform.position = center;
+
         List<Vector3> points = new List<Vector3>()
         {
-            new Vector3(-1, 1),
-            new Vector3(1, 1),
-            new Vector3(-1, -1),
-            new Vector3(1, -1),
+            new Vector3(- halfWidth, halfHeight),
+            new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, - halfHeight),
+            new Vector3(halfWidth, - halfHeight),
         };
 
         int[] triangles = new int[]{
@@ -42,14 +49,23 @@ public class ShapeGenerator : MonoBehaviour
         meshRenderer.material.color = Random.ColorHSV();
     }
 
-    public void AddCircle()
+    [ContextMenu("AddCircle")]
+    public void AddCircle(Vector3 from, Vector3 to)
     {
-        GameObject shape = new();
-        shape.name = "Circle";
+        GameObject shape = new()
+        {
+            name = "Circle"
+        };
+        
         MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
 
-        float vertRadius = _radius / Mathf.Cos(Mathf.PI / _totalVert);
+        Vector3 center = (from + to) / 2f;
+        float radius = Vector3.Distance(from, to);
+
+        shape.transform.position = center;
+
+        float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
         List<Vector3> points = new List<Vector3>();
         for (int i = 0; i < _totalVert; i++)
         {
@@ -77,6 +93,6 @@ public class ShapeGenerator : MonoBehaviour
         meshFilter.sharedMesh = mesh;
         meshRenderer.material = _circleMaterial;
         meshRenderer.material.color = Random.ColorHSV();
-        meshRenderer.material.SetFloat(_radiusProperty, _radius);
+        meshRenderer.material.SetFloat(_radiusProperty, radius);
     }
 }
