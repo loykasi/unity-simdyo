@@ -13,9 +13,9 @@ public class MoveTool : ITool
     
     private void HandleMoving(Vector3 mousePosition)
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
-            GameObject selected = ObjectManager.Instance.SelectedObject;
+            var selected = ObjectManager.Instance.SelectedObject;
             if (selected == null)
             {
                 return;
@@ -31,7 +31,7 @@ public class MoveTool : ITool
 
         if (_onMovingObject)
         {
-            GameObject selected = ObjectManager.Instance.SelectedObject;
+            var selected = ObjectManager.Instance.SelectedObject;
             selected.transform.position = mousePosition + _offsetFromMouse;
         }
     }

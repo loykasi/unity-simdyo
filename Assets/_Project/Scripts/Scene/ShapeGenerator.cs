@@ -11,12 +11,18 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
     public void AddBox(Vector3 from, Vector3 to)
     {
+        if (from == to)
+        {
+            return;
+        }
+
         GameObject shape = new()
         {
             name = "Box"
         };
         MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
+        BoxCollider2D collider = shape.AddComponent<BoxCollider2D>();
 
         Vector3 center = (from + to) / 2f;
         float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
@@ -47,6 +53,12 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         meshFilter.sharedMesh = mesh;
         meshRenderer.material = _material;
         meshRenderer.material.color = Random.ColorHSV();
+
+        collider.size = new Vector2(halfWidth * 2, halfHeight * 2);
+
+        VisualScripting vs = shape.AddComponent<VisualScripting>();
+        SceneEntity sceneEntity = shape.AddComponent<SceneEntity>();
+        sceneEntity.VisualScripting = vs;
     }
 
     [ContextMenu("AddCircle")]
@@ -56,9 +68,10 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         {
             name = "Circle"
         };
-        
+
         MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
+        CircleCollider2D collider = shape.AddComponent<CircleCollider2D>();
 
         Vector3 center = (from + to) / 2f;
         float radius = Vector3.Distance(from, to);
@@ -94,5 +107,11 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         meshRenderer.material = _circleMaterial;
         meshRenderer.material.color = Random.ColorHSV();
         meshRenderer.material.SetFloat(_radiusProperty, radius);
+
+        collider.radius = radius;
+
+        VisualScripting vs = shape.AddComponent<VisualScripting>();
+        SceneEntity sceneEntity = shape.AddComponent<SceneEntity>();
+        sceneEntity.VisualScripting = vs;
     }
 }

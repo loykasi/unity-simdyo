@@ -8,10 +8,10 @@ public class RotateTool : ITool
     private float _startAngle;
 
     public void OnUpdate(Vector3 mousePosition)
-    {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+    {   
+        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
-            GameObject selected = ObjectManager.Instance.SelectedObject;
+            var selected = ObjectManager.Instance.SelectedObject;
             if (selected == null)
             {
                 return;
@@ -29,7 +29,7 @@ public class RotateTool : ITool
 
         if (_onRotation)
         {
-            GameObject selected = ObjectManager.Instance.SelectedObject;
+            var selected = ObjectManager.Instance.SelectedObject;
             Vector3 toDirection = mousePosition - selected.transform.position;
 
             float angle = Vector3.SignedAngle(_fromDirection, toDirection, Vector3.forward);

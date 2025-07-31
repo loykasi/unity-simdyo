@@ -15,6 +15,7 @@ public class VisualScripting : MonoBehaviour
     private List<EventNode> _startNodes = new();
     private List<EventNode> _updateNodes = new();
 
+    public Dictionary<string, Variable> Variables => _variables;
     private Dictionary<string, Variable> _variables = new();
 
     public void AddNode(ScriptNodeData nodeData)

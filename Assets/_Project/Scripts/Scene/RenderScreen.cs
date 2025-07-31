@@ -13,7 +13,7 @@ public class RenderScreen : MonoBehaviour, IPointerDownHandler
             Vector2 normalizedPoint = Rect.PointToNormalized(_rectTransform.rect, localPoint);
             Vector3 worldPoint = _camera.ViewportToWorldPoint(normalizedPoint);
 
-            EngineManager.Instance.Select(worldPoint);
+            ObjectManager.Instance.Select(worldPoint);
         }
     }
 }

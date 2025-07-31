@@ -19,7 +19,7 @@ public class NodeConnectionPreview : MonoBehaviour
 
     public void StartPreviewConnect(Vector3 startPosition, NodePortEdge edge)
     {
-        _startPosition = startPosition;
+        _startPosition = startPosition - _previewLine.transform.position;
         _edge = edge;
         _previewLine.gameObject.SetActive(true);
 
@@ -38,6 +38,7 @@ public class NodeConnectionPreview : MonoBehaviour
 
     public void DragPreviewConnect(Vector3 mousePosition)
     {
+        Vector3 endPosition = mousePosition - _previewLine.transform.position;
         float dist = (mousePosition - _startPosition).sqrMagnitude;
         float delta = dist / (_maxDistance * _maxDistance);
         float radius = Mathf.Lerp(_cornerRadiusMinMax.x, _cornerRadiusMinMax.y, delta);
@@ -47,12 +48,12 @@ public class NodeConnectionPreview : MonoBehaviour
         switch (_edge)
         {
             case NodePortEdge.Left:
-                _previewLine.Points[0] = mousePosition;
-                _previewLine.Points[1] = mousePosition + Vector3.right * _offset;
+                _previewLine.Points[0] = endPosition;
+                _previewLine.Points[1] = endPosition + Vector3.right * _offset;
                 break;
             case NodePortEdge.Right:
-                _previewLine.Points[2] = mousePosition + Vector3.left * _offset;
-                _previewLine.Points[3] = mousePosition;
+                _previewLine.Points[2] = endPosition + Vector3.left * _offset;
+                _previewLine.Points[3] = endPosition;
                 break;
         }
         _previewLine.UpdateVertex();
@@ -66,22 +67,23 @@ public class NodeConnectionPreview : MonoBehaviour
 
     public void EnterPort(Vector3 position)
     {
+        Vector3 localPosition = position - _connectedPreviewLine.transform.position;
         _hasPort = true;
         _connectedPreviewLine.gameObject.SetActive(true);
 
         switch (_edge)
         {
             case NodePortEdge.Left:
-                _connectedPreviewLine.Points[0] = position;
-                _connectedPreviewLine.Points[1] = position + Vector3.right * _offset;
+                _connectedPreviewLine.Points[0] = localPosition;
+                _connectedPreviewLine.Points[1] = localPosition + Vector3.right * _offset;
                 _connectedPreviewLine.Points[2] = _previewLine.Points[2];
                 _connectedPreviewLine.Points[3] = _previewLine.Points[3];
                 break;
             case NodePortEdge.Right:
                 _connectedPreviewLine.Points[0] = _previewLine.Points[0];
                 _connectedPreviewLine.Points[1] = _previewLine.Points[1];
-                _connectedPreviewLine.Points[2] = position + Vector3.left * _offset;
-                _connectedPreviewLine.Points[3] = position;
+                _connectedPreviewLine.Points[2] = localPosition + Vector3.left * _offset;
+                _connectedPreviewLine.Points[3] = localPosition;
                 break;
         }
         _connectedPreviewLine.UpdateVertex();

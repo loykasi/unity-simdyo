@@ -3,43 +3,9 @@ using UnityEngine;
 
 public class EngineManager : Singleton<EngineManager>
 {
-    public GameObject SelectedObject;
-
     public List<VisualScripting> _visualScriptings;
 
-    [SerializeField] private float _selectRadius;
-    [SerializeField] private int _defaultLayer;
-    [SerializeField] private int _selectLayer;
-
     private bool _isRunning = false;
-
-    public void Select(Vector3 worldPoint)
-    {
-        worldPoint.z = 0;
-
-        Collider2D collider = Physics2D.OverlapCircle(worldPoint, _selectRadius);
-
-        if (collider == null)
-        {
-            if (SelectedObject != null)
-            {
-                SelectedObject.layer = _defaultLayer;
-                SelectedObject = null;
-            }
-            return;
-        }
-
-        if (SelectedObject != null)
-        {
-            SelectedObject.layer = _defaultLayer;
-        }
-
-        SelectedObject = collider.gameObject;
-        SelectedObject.layer = _selectLayer;
-
-        VisualScripting vs = SelectedObject.GetComponent<VisualScripting>();
-        NodeBoard.Instance.SetVisualScripting(vs);
-    }
 
     private void Update()
     {

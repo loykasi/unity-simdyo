@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 
 public class VariableBoard : MonoBehaviour
 {
@@ -11,6 +9,37 @@ public class VariableBoard : MonoBehaviour
 
     [Space]
     [SerializeField] private TMP_InputField _nameInputField;
+
+    private List<VariableBoardItem> _variableItems = new();
+
+    public void Init()
+    {
+        Clear();
+        Load();
+    }
+
+    private void Clear()
+    {
+        for (int i = 0; i < _variableItems.Count; i++)
+        {
+            Destroy(_variableItems[i].gameObject);
+        }
+
+        _variableItems.Clear();
+    }
+
+    private void Load()
+    {
+        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+
+        foreach (var item in vs.Variables)
+        {
+            string name = item.Key;
+            AddVariableItem(name, item.Value);
+        }
+
+        Debug.Log(_variableItems.Count);
+    }
 
     public void AddVariable()
     {
@@ -22,8 +51,16 @@ public class VariableBoard : MonoBehaviour
             {
                 VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
                 item.Init(name, this);
+                _variableItems.Add(item);
             }
         }
+    }
+
+    private void AddVariableItem(string name, Variable variable)
+    {
+        VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
+        item.Init(name, variable.Type, variable.Value, this);
+        _variableItems.Add(item);
     }
 
     public void UpdateVariable(string name, DataType type, object value)
@@ -31,29 +68,4 @@ public class VariableBoard : MonoBehaviour
         VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
         vs.UpdateVariable(name, type, value);
     }
-
-    // public List<RaycastResult> results = new();
-    // private void Update()
-    // {
-    //     if (Mouse.current.leftButton.wasPressedThisFrame)
-    //     {
-    //         var data = new PointerEventData(EventSystem.current)
-    //         {
-    //             position = Mouse.current.position.ReadValue()
-    //         };
-    //         EventSystem.current.RaycastAll(data, results);
-
-    //         if (results.Count == 0)
-    //         {
-    //             return;
-    //         }
-
-    //         Debug.Log($"{results[0]}");
-    //     }
-
-    //     if (Mouse.current.leftButton.wasReleasedThisFrame)
-    //     {
-
-    //     }
-    // }
 }

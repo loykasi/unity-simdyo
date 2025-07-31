@@ -36,6 +36,34 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         OnTypeChanged(_stringTypeIndex);
     }
 
+    public void Init(string name, DataType type, object value, VariableBoard variableBoard)
+    {
+        _nameInputField.text = name;
+        _typeDropdown.SetValueWithoutNotify(GetDataTypeIndex(type));
+        _value = value;
+
+        _variableBoard = variableBoard;
+        
+        switch (GetDataTypeIndex(type))
+        {
+            case _stringTypeIndex:
+                _valueInputField.gameObject.SetActive(true);
+                _valueToggleField.gameObject.SetActive(false);
+                _valueInputField.text = _value.ToString();
+                break;
+            case _numberTypeIndex:
+                _valueInputField.gameObject.SetActive(true);
+                _valueToggleField.gameObject.SetActive(false);
+                _valueInputField.text = _value.ToString();
+                break;
+            case _booleanTypeIndex:
+                _valueInputField.gameObject.SetActive(false);
+                _valueToggleField.gameObject.SetActive(true);
+                _valueToggleField.isOn = (bool)_value;
+                break;
+        }
+    }
+
     private void OnTypeChanged(int index)
     {
         switch (index)
@@ -115,6 +143,17 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             _numberTypeIndex => DataType.Number,
             _booleanTypeIndex => DataType.Boolean,
             _ => DataType.Any,
+        };
+    }
+
+    private int GetDataTypeIndex(DataType type)
+    {
+        return type switch
+        {
+            DataType.String => _stringTypeIndex,
+            DataType.Number => _numberTypeIndex,
+            DataType.Boolean => _booleanTypeIndex,
+            _ => 0,
         };
     }
 

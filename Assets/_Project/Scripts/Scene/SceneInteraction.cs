@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class SceneInteraction : MonoBehaviour
@@ -13,6 +15,8 @@ public class SceneInteraction : MonoBehaviour
         new BoxTool(),
         new CircleTool()
     };
+
+    public List<RaycastResult> raycastResults = new();
 
     private void Start()
     {
@@ -30,6 +34,11 @@ public class SceneInteraction : MonoBehaviour
     {
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {
+            if (ScreenInteractionUtils.IsOverUI())
+            {
+                return;
+            }
+            
             Vector3 mousePosition = Mouse.current.position.ReadValue();
             Vector3 worldPoint = _camera.ScreenToWorldPoint(mousePosition);
 
@@ -48,5 +57,10 @@ public class SceneInteraction : MonoBehaviour
     public void SwitchTool(int index)
     {
         _tool = _tools[index];
+    }
+
+    public void OpenGraph()
+    {
+        ScriptGraph.Instance.TogglePanel();
     }
 }

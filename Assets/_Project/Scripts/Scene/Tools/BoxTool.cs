@@ -15,7 +15,7 @@ public class BoxTool : ITool
 
     private void Create(Vector3 mousePosition)
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
             _startPosition = mousePosition;
 

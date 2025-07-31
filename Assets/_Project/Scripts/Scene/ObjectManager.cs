@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ObjectManager : Singleton<ObjectManager>
 {
-    public GameObject SelectedObject { get; set; }
+    public SceneEntity SelectedObject { get; set; }
 
     [SerializeField] private float _selectRadius;
     [SerializeField] private int _defaultLayer;
@@ -18,7 +18,7 @@ public class ObjectManager : Singleton<ObjectManager>
         {
             if (SelectedObject != null)
             {
-                SelectedObject.layer = _defaultLayer;
+                SelectedObject.gameObject.layer = _defaultLayer;
                 SelectedObject = null;
             }
             return;
@@ -26,13 +26,10 @@ public class ObjectManager : Singleton<ObjectManager>
 
         if (SelectedObject != null)
         {
-            SelectedObject.layer = _defaultLayer;
+            SelectedObject.gameObject.layer = _defaultLayer;
         }
 
-        SelectedObject = collider.gameObject;
-        SelectedObject.layer = _selectLayer;
-
-        VisualScripting vs = SelectedObject.GetComponent<VisualScripting>();
-        NodeBoard.Instance.SetVisualScripting(vs);
+        SelectedObject = collider.GetComponent<SceneEntity>();
+        SelectedObject.gameObject.layer = _selectLayer;
     }
 }
