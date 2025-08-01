@@ -19,6 +19,7 @@ public class CircleTool : ITool
             _startPosition = mousePosition;
 
             _onMouseMove = true;
+            ShapePreview.Instance.StartCirclePreview();
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && _onMouseMove)
@@ -26,12 +27,14 @@ public class CircleTool : ITool
             _onMouseMove = false;
 
             ShapeGenerator.Instance.AddCircle(_startPosition, mousePosition);
+            ShapePreview.Instance.StopCirclePreview();
         }
 
         if (_onMouseMove)
         {
             Debug.DrawRay(_startPosition, Vector3.up, Color.red);
             Debug.DrawRay(mousePosition, Vector3.up, Color.red);
+            ShapePreview.Instance.PreviewCircle(_startPosition, mousePosition);
         }
     }
 }

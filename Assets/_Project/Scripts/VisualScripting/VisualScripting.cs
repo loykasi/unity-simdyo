@@ -137,10 +137,9 @@ public class VisualScripting : MonoBehaviour
 
     public void UpdateVariable(string name, DataType type, object value)
     {
-        Debug.Log($"Update variable |{name}|");
         if (_variables.TryGetValue(name, out Variable variable))
         {
-            Debug.Log("Update variable value: " + value);
+            Debug.Log($"Update variable {name} =  {value}");
             variable.Type = type;
             variable.Value = value;
         }
@@ -148,10 +147,9 @@ public class VisualScripting : MonoBehaviour
 
     public void UpdateVariable(string name, object value)
     {
-        Debug.Log($"Update variable |{name}|");
         if (_variables.TryGetValue(name, out Variable variable))
         {
-            Debug.Log("Update variable value: " + value);
+            Debug.Log($"Update {name} = {value}");
             variable.Value = value;
         }
     }
@@ -163,5 +161,31 @@ public class VisualScripting : MonoBehaviour
             return value.Value;
         }
         return null;
+    }
+
+    public bool RemoveVariable(string name)
+    {
+        if (_variables.ContainsKey(name))
+        {
+            _variables.Remove(name);
+            return true;
+        }
+        return false;
+    }
+
+    public void OnSceneStart()
+    {
+        foreach (var item in _variables)
+        {
+            item.Value.OnSceneStart();
+        }
+    }
+
+    public void OnSceneStop()
+    {
+        foreach (var item in _variables)
+        {
+            item.Value.OnSceneStop();
+        }
     }
 }

@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectManager : Singleton<ObjectManager>
 {
+    public List<SceneEntity> SceneEntities = new();
     public SceneEntity SelectedObject { get; set; }
 
     [SerializeField] private float _selectRadius;
@@ -31,5 +33,10 @@ public class ObjectManager : Singleton<ObjectManager>
 
         SelectedObject = collider.GetComponent<SceneEntity>();
         SelectedObject.gameObject.layer = _selectLayer;
+    }
+
+    public void AddEntity(SceneEntity entity)
+    {
+        SceneEntities.Add(entity);
     }
 }

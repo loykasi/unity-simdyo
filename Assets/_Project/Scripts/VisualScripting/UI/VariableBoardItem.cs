@@ -16,6 +16,8 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     [SerializeField] private TMP_InputField _valueInputField;
     [SerializeField] private Toggle _valueToggleField;
 
+    [SerializeField] private Button _removeButton;
+
     private VariableBoard _variableBoard;
     private object _value;
 
@@ -24,6 +26,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
         _valueInputField.onEndEdit.AddListener(OnValueChanged);
         _valueToggleField.onValueChanged.AddListener(OnValueToggleChanged);
+        _removeButton.onClick.AddListener(OnRemove);
     }
 
     public void Init(string name, VariableBoard variableBoard)
@@ -155,6 +158,11 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             DataType.Boolean => _booleanTypeIndex,
             _ => 0,
         };
+    }
+
+    private void OnRemove()
+    {
+        _variableBoard.RemoveVariable(_nameInputField.text, this);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

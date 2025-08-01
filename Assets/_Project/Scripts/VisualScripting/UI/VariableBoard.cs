@@ -52,6 +52,7 @@ public class VariableBoard : MonoBehaviour
                 VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
                 item.Init(name, this);
                 _variableItems.Add(item);
+                _nameInputField.text = string.Empty;
             }
         }
     }
@@ -67,5 +68,15 @@ public class VariableBoard : MonoBehaviour
     {
         VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
         vs.UpdateVariable(name, type, value);
+    }
+
+    public void RemoveVariable(string name, VariableBoardItem variableItem)
+    {
+        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+        if (vs.RemoveVariable(name))
+        {
+            _variableItems.Remove(variableItem);
+            Destroy(variableItem.gameObject);
+        }
     }
 }

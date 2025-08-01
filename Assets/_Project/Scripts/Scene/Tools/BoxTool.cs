@@ -20,12 +20,14 @@ public class BoxTool : ITool
             _startPosition = mousePosition;
 
             _onMouseMove = true;
+            ShapePreview.Instance.StartBoxPreview();
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && _onMouseMove)
         {
             _onMouseMove = false;
 
+            ShapePreview.Instance.StopBoxPreview();
             ShapeGenerator.Instance.AddBox(_startPosition, mousePosition);
         }
 
@@ -33,6 +35,7 @@ public class BoxTool : ITool
         {
             Debug.DrawRay(_startPosition, Vector3.up, Color.red);
             Debug.DrawRay(mousePosition, Vector3.up, Color.red);
+            ShapePreview.Instance.PreviewBox(_startPosition, mousePosition);
         }
     }
 }

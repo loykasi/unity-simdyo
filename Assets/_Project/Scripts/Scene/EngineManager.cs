@@ -3,8 +3,6 @@ using UnityEngine;
 
 public class EngineManager : Singleton<EngineManager>
 {
-    public List<VisualScripting> _visualScriptings;
-
     private bool _isRunning = false;
 
     private void Update()
@@ -20,13 +18,21 @@ public class EngineManager : Singleton<EngineManager>
     public void Stop()
     {
         _isRunning = false;
+
+        var entities = ObjectManager.Instance.SceneEntities;
+        for (int i = 0; i < entities.Count; i++)
+        {
+            entities[i].OnSceneStop();
+        }
     }
 
     private void StartGame()
     {
-        for (int i = 0; i < _visualScriptings.Count; i++)
+        var entities = ObjectManager.Instance.SceneEntities;
+        for (int i = 0; i < entities.Count; i++)
         {
-            _visualScriptings[i].StartVS();
+            entities[i].OnSceneStart();
+            entities[i].VisualScripting.StartVS();
         }
 
         _isRunning = true;
@@ -39,9 +45,10 @@ public class EngineManager : Singleton<EngineManager>
             return;
         }
 
-        for (int i = 0; i < _visualScriptings.Count; i++)
+        var entities = ObjectManager.Instance.SceneEntities;
+        for (int i = 0; i < entities.Count; i++)
         {
-            _visualScriptings[i].UpdateVS();
+            entities[i].VisualScripting.UpdateVS();
         }
     }
 }
