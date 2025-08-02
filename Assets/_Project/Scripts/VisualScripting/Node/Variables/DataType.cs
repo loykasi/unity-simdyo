@@ -3,5 +3,6 @@ public enum DataType
     Any,
     String,
     Number,
-    Boolean
+    Boolean,
+    Vector
 }

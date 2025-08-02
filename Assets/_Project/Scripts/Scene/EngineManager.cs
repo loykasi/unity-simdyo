@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class EngineManager : Singleton<EngineManager>
 {
+    public Camera Camera;
+
     private bool _isRunning = false;
 
     private void Update()
@@ -32,7 +34,7 @@ public class EngineManager : Singleton<EngineManager>
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].OnSceneStart();
-            entities[i].VisualScripting.StartVS();
+            entities[i].Script.StartVS();
         }
 
         _isRunning = true;
@@ -48,7 +50,7 @@ public class EngineManager : Singleton<EngineManager>
         var entities = ObjectManager.Instance.SceneEntities;
         for (int i = 0; i < entities.Count; i++)
         {
-            entities[i].VisualScripting.UpdateVS();
+            entities[i].Script.UpdateVS();
         }
     }
 }

@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class SceneEntity : MonoBehaviour
 {
-    public Collider2D Collider { get; set; }
-    public VisualScripting VisualScripting { get; set; }
+    public MeshFilter MeshFilter;
+    public MeshRenderer Renderer;
+    public Collider2D Collider;
+    public VisualScripting Script;
 
     private Vector3 _position;
     private Quaternion _rotation;
@@ -11,12 +13,12 @@ public class SceneEntity : MonoBehaviour
     public void OnSceneStart()
     {
         transform.GetPositionAndRotation(out _position, out _rotation);
-        VisualScripting.OnSceneStart();
+        Script.OnSceneStart();
     }
 
     public void OnSceneStop()
     {
         transform.SetPositionAndRotation(_position, _rotation);
-        VisualScripting.OnSceneStop();
+        Script.OnSceneStop();
     }
 }

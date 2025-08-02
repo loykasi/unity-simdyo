@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement
+public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement, IPointerEnterHandler, IPointerExitHandler
 {
     public ScriptNode Node
     {
@@ -34,6 +34,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     [SerializeField] private UINodePort _outputValuePrefab;
 
     private Vector2 _offsetFromMouse;
+    private bool _isMouseOver = false;
 
     private void UpdateNodeUI()
     {
@@ -115,5 +116,15 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     public void Unselect()
     {
         _selectedBorder.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _isMouseOver = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _isMouseOver = false;
     }
 }

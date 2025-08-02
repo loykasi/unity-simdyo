@@ -6,6 +6,8 @@ public class VisualScripting : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
 
+    public SceneEntity Entity;
+
     public List<ScriptNode> Nodes = new();
     public List<NodeConnection> Connections = new();
 

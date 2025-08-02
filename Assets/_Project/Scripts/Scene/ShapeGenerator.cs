@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ShapeGenerator : Singleton<ShapeGenerator>
 {
+    [SerializeField] private SceneEntity _sceneEntityPrefab;
     [SerializeField] private Material _material;
     [SerializeField] private Material _circleMaterial;
     [SerializeField] private float _totalVert;
@@ -16,19 +17,15 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             return;
         }
 
-        GameObject shape = new()
-        {
-            name = "Box"
-        };
-        MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
-        BoxCollider2D collider = shape.AddComponent<BoxCollider2D>();
+        SceneEntity sceneEntity = Instantiate(_sceneEntityPrefab);
+        sceneEntity.name = "Box";
+        BoxCollider2D collider = sceneEntity.gameObject.AddComponent<BoxCollider2D>();
 
         Vector3 center = (from + to) / 2f;
         float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
         float halfHeight = Mathf.Abs(from.y - to.y) / 2f;
 
-        shape.transform.position = center;
+        sceneEntity.transform.position = center;
 
         List<Vector3> points = new List<Vector3>()
         {
@@ -50,15 +47,11 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         mesh.SetVertices(points);
         mesh.triangles = triangles;
 
-        meshFilter.sharedMesh = mesh;
-        meshRenderer.material = _material;
-        meshRenderer.material.color = Random.ColorHSV();
+        sceneEntity.MeshFilter.sharedMesh = mesh;
+        sceneEntity.Renderer.material = _material;
+        sceneEntity.Renderer.material.color = Random.ColorHSV();
 
         collider.size = new Vector2(halfWidth * 2, halfHeight * 2);
-
-        VisualScripting vs = shape.AddComponent<VisualScripting>();
-        SceneEntity sceneEntity = shape.AddComponent<SceneEntity>();
-        sceneEntity.VisualScripting = vs;
 
         ObjectManager.Instance.AddEntity(sceneEntity);
     }
@@ -70,19 +63,14 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             return;
         }
 
-        GameObject shape = new()
-        {
-            name = "Circle"
-        };
-
-        MeshFilter meshFilter = shape.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = shape.AddComponent<MeshRenderer>();
-        CircleCollider2D collider = shape.AddComponent<CircleCollider2D>();
+        SceneEntity sceneEntity = Instantiate(_sceneEntityPrefab);
+        sceneEntity.name = "Box";
+        CircleCollider2D collider = sceneEntity.gameObject.AddComponent<CircleCollider2D>();
 
         Vector3 center = from;
         float radius = Vector3.Distance(from, to);
 
-        shape.transform.position = center;
+        sceneEntity.transform.position = center;
 
         float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
         List<Vector3> points = new List<Vector3>();
@@ -109,16 +97,12 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         mesh.SetVertices(points);
         mesh.triangles = triangles;
 
-        meshFilter.sharedMesh = mesh;
-        meshRenderer.material = _circleMaterial;
-        meshRenderer.material.color = Random.ColorHSV();
-        meshRenderer.material.SetFloat(_radiusProperty, radius);
+        sceneEntity.MeshFilter.sharedMesh = mesh;
+        sceneEntity.Renderer.material = _circleMaterial;
+        sceneEntity.Renderer.material.color = Random.ColorHSV();
+        sceneEntity.Renderer.material.SetFloat(_radiusProperty, radius);
 
         collider.radius = radius;
-
-        VisualScripting vs = shape.AddComponent<VisualScripting>();
-        SceneEntity sceneEntity = shape.AddComponent<SceneEntity>();
-        sceneEntity.VisualScripting = vs;
 
         ObjectManager.Instance.AddEntity(sceneEntity);
     }

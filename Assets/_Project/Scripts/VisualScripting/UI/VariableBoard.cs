@@ -37,8 +37,6 @@ public class VariableBoard : MonoBehaviour
             string name = item.Key;
             AddVariableItem(name, item.Value);
         }
-
-        Debug.Log(_variableItems.Count);
     }
 
     public void AddVariable()

@@ -10,14 +10,19 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
     public void TogglePanel()
     {
+        SceneEntity selected = ObjectManager.Instance.SelectedObject;
+
+        if (selected == null)
+        {
+            return;
+        }
+
         _isOpen = !_isOpen;
         _panel.SetActive(_isOpen);
 
-        SceneEntity selected = ObjectManager.Instance.SelectedObject;
-
         if (_isOpen)
         {
-            _nodeBoard.SetVisualScripting(selected.VisualScripting);
+            _nodeBoard.SetVisualScripting(selected.Script);
             _variableBoard.Init();
         }
     }

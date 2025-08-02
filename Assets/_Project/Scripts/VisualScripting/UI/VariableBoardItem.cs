@@ -9,31 +9,32 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private const int _stringTypeIndex = 0;
     private const int _numberTypeIndex = 1;
     private const int _booleanTypeIndex = 2;
+    private const int _vectorTypeIndex = 3;
 
     [SerializeField] private TMP_InputField _nameInputField;
     [SerializeField] private TMP_Dropdown _typeDropdown;
-
-    [SerializeField] private TMP_InputField _valueInputField;
-    [SerializeField] private Toggle _valueToggleField;
-
     [SerializeField] private Button _removeButton;
 
+    [SerializeField] private VariableInput[] _variableInputs;
+
+    private int _currentType;
     private VariableBoard _variableBoard;
-    private object _value;
 
     private void Awake()
     {
         _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
-        _valueInputField.onEndEdit.AddListener(OnValueChanged);
-        _valueToggleField.onValueChanged.AddListener(OnValueToggleChanged);
         _removeButton.onClick.AddListener(OnRemove);
+
+        foreach (var item in _variableInputs)
+        {
+            item.OnValueUpdated += UpdateVariable;
+        }
     }
 
     public void Init(string name, VariableBoard variableBoard)
     {
         _nameInputField.text = name;
         _typeDropdown.value = _stringTypeIndex;
-        _value = "";
 
         _variableBoard = variableBoard;
         OnTypeChanged(_stringTypeIndex);
@@ -41,101 +42,37 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void Init(string name, DataType type, object value, VariableBoard variableBoard)
     {
+        _currentType = GetDataTypeIndex(type);
+
         _nameInputField.text = name;
-        _typeDropdown.SetValueWithoutNotify(GetDataTypeIndex(type));
-        _value = value;
+        _typeDropdown.SetValueWithoutNotify(_currentType);
 
         _variableBoard = variableBoard;
-        
-        switch (GetDataTypeIndex(type))
+
+        for (int i = 0; i < _variableInputs.Length; i++)
         {
-            case _stringTypeIndex:
-                _valueInputField.gameObject.SetActive(true);
-                _valueToggleField.gameObject.SetActive(false);
-                _valueInputField.text = _value.ToString();
-                break;
-            case _numberTypeIndex:
-                _valueInputField.gameObject.SetActive(true);
-                _valueToggleField.gameObject.SetActive(false);
-                _valueInputField.text = _value.ToString();
-                break;
-            case _booleanTypeIndex:
-                _valueInputField.gameObject.SetActive(false);
-                _valueToggleField.gameObject.SetActive(true);
-                _valueToggleField.isOn = (bool)_value;
-                break;
+            _variableInputs[i].Disable();
         }
+        _variableInputs[_currentType].Enable();
+        _variableInputs[_currentType].SetValue(value);
     }
 
     private void OnTypeChanged(int index)
     {
-        switch (index)
+        _currentType = index;
+        for (int i = 0; i < _variableInputs.Length; i++)
         {
-            case _stringTypeIndex:
-                _valueInputField.gameObject.SetActive(true);
-                _valueToggleField.gameObject.SetActive(false);
-                _valueInputField.text = "";
-                _value = "";
-                break;
-            case _numberTypeIndex:
-                _valueInputField.gameObject.SetActive(true);
-                _valueToggleField.gameObject.SetActive(false);
-                _valueInputField.text = "0.0";
-                _value = 0.0;
-                break;
-            case _booleanTypeIndex:
-                _valueInputField.gameObject.SetActive(false);
-                _valueToggleField.gameObject.SetActive(true);
-                _valueToggleField.isOn = false;
-                _value = false;
-                break;
+            _variableInputs[i].Disable();
         }
-
-        UpdateVariable();
-    }
-
-    private void OnValueToggleChanged(bool value)
-    {
-        if (_typeDropdown.value != _booleanTypeIndex)
-        {
-            return;
-        }
-
-        _value = value;
-        UpdateVariable();
-    }
-
-    private void OnValueChanged(string value)
-    {
-        if (_typeDropdown.value == _booleanTypeIndex)
-        {
-            return;
-        }
-
-        if (_typeDropdown.value == _numberTypeIndex)
-        {
-            if (double.TryParse(value, out double result))
-            {
-                _valueInputField.SetTextWithoutNotify(result.ToString());
-                _value = result;
-            }
-            else
-            {
-                _valueInputField.SetTextWithoutNotify("0");
-                _value = 0.0;
-            }
-        }
-        else
-        {
-            _value = value;
-        }
+        _variableInputs[_currentType].Enable();
 
         UpdateVariable();
     }
 
     private void UpdateVariable()
     {
-        _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), _value);
+        VariableInput input = _variableInputs[_currentType];
+        _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
     }
 
     private DataType GetDataType()
@@ -145,6 +82,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             _stringTypeIndex => DataType.String,
             _numberTypeIndex => DataType.Number,
             _booleanTypeIndex => DataType.Boolean,
+            _vectorTypeIndex => DataType.Vector,
             _ => DataType.Any,
         };
     }
@@ -156,6 +94,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             DataType.String => _stringTypeIndex,
             DataType.Number => _numberTypeIndex,
             DataType.Boolean => _booleanTypeIndex,
+            DataType.Vector => _vectorTypeIndex,
             _ => 0,
         };
     }

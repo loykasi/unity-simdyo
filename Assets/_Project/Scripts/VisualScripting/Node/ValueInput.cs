@@ -59,9 +59,9 @@ public class ValueInput : Port<ValueOutput>
 
         if (Type == DataType.Number)
         {
-            if (double.TryParse(value, out double result2))
+            if (float.TryParse(value, out float result2))
             {
-                Debug.Log("Save as double");
+                Debug.Log("Save as float");
                 _value = result2;
             }
             return;

@@ -13,7 +13,8 @@ public class SceneInteraction : MonoBehaviour
         new MoveTool(),
         new RotateTool(),
         new BoxTool(),
-        new CircleTool()
+        new CircleTool(),
+        new PanTool()
     };
 
     public List<RaycastResult> raycastResults = new();
