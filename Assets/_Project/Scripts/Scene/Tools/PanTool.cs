@@ -10,6 +10,7 @@ public class PanTool : ITool
     public void OnUpdate(Vector3 mousePosition)
     {
         Pan(mousePosition);
+        Zoom();
     }
 
     public void Pan(Vector3 mousePosition)
@@ -28,7 +29,18 @@ public class PanTool : ITool
         if (_onMouseDown)
         {
             Vector3 delta = _origin - mousePosition;
-            EngineManager.Instance.Camera.transform.position += delta;
+            EngineManager.Instance.EditorCamera.transform.position += delta;
         }
+    }
+
+    public void Zoom()
+    {
+        if (ScreenInteractionUtils.IsOverUI())
+        {
+            return;
+        }
+
+        float scroll = Mouse.current.scroll.ReadValue().y;
+        EngineManager.Instance.EditorCamera.orthographicSize -= scroll;
     }
 }

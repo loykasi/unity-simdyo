@@ -19,13 +19,13 @@ public class MakeVectorNode : ScriptNode
     {
         inputX = ValueInput(DataType.Number, true);
         inputY = ValueInput(DataType.Number, true);
-        output = ValueOutput(Get);
+        output = ValueOutput(DataType.Vector, Get);
     }
 
     private object Get(VisualScripting vs)
     {
         float x = (float)inputX.GetValue(vs);
         float y = (float)inputY.GetValue(vs);
-        return new Vector2(x, y);
+        return new Vector3(x, y);
     }
 }

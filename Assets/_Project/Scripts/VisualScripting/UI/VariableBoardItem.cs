@@ -10,6 +10,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private const int _numberTypeIndex = 1;
     private const int _booleanTypeIndex = 2;
     private const int _vectorTypeIndex = 3;
+    private const int _listTypeIndex = 4;
 
     [SerializeField] private TMP_InputField _nameInputField;
     [SerializeField] private TMP_Dropdown _typeDropdown;
@@ -19,6 +20,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     private int _currentType;
     private VariableBoard _variableBoard;
+    private VisualScripting _vs;
 
     private void Awake()
     {
@@ -27,7 +29,12 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         foreach (var item in _variableInputs)
         {
-            item.OnValueUpdated += UpdateVariable;
+            item.VariableItem = this;   
+        }
+
+        for (int i = 0; i < _vectorTypeIndex; i++)
+        {
+            _variableInputs[i].OnValueUpdated += UpdateVariable;
         }
     }
 
@@ -38,6 +45,14 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         _variableBoard = variableBoard;
         OnTypeChanged(_stringTypeIndex);
+
+        _vs = NodeBoard.Instance.TargetVisualScripting;
+
+        for (int i = 0; i < _variableInputs.Length; i++)
+        {
+            _variableInputs[i].Disable();
+        }
+        _variableInputs[_currentType].Enable();
     }
 
     public void Init(string name, DataType type, object value, VariableBoard variableBoard)
@@ -55,6 +70,8 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         }
         _variableInputs[_currentType].Enable();
         _variableInputs[_currentType].SetValue(value);
+
+        _vs = NodeBoard.Instance.TargetVisualScripting;
     }
 
     private void OnTypeChanged(int index)
@@ -71,8 +88,41 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     private void UpdateVariable()
     {
-        VariableInput input = _variableInputs[_currentType];
-        _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
+        if (GetDataType() != DataType.List)
+        {
+            VariableInput input = _variableInputs[_currentType];
+            _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
+        }
+        else
+        {
+            UpdateListVariable();
+        }
+    }
+
+    // private void UpdateListVariable()
+    // {
+    //     VariableInput input = _variableInputs[_currentType];
+    //     _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
+    // }
+
+    public void UpdateListVariable()
+    {
+        _vs.UpdateListVariable(_nameInputField.text);
+    }
+
+    public void InsertListItem(object value)
+    {
+        _vs.InsertListItem(_nameInputField.text, value);
+    }
+
+    public void UpdateListItem(int index, object value)
+    {
+        _vs.UpdateListItem(_nameInputField.text, index, value);
+    }
+
+    public void RemoveListItem(int index)
+    {
+        _vs.RemoveListItem(_nameInputField.text, index);
     }
 
     private DataType GetDataType()
@@ -83,6 +133,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             _numberTypeIndex => DataType.Number,
             _booleanTypeIndex => DataType.Boolean,
             _vectorTypeIndex => DataType.Vector,
+            _listTypeIndex => DataType.List,
             _ => DataType.Any,
         };
     }
@@ -95,6 +146,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             DataType.Number => _numberTypeIndex,
             DataType.Boolean => _booleanTypeIndex,
             DataType.Vector => _vectorTypeIndex,
+            DataType.List => _listTypeIndex,
             _ => 0,
         };
     }

@@ -4,5 +4,6 @@ public enum DataType
     String,
     Number,
     Boolean,
-    Vector
+    Vector,
+    List
 }

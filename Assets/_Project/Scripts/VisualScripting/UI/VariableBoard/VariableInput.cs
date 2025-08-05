@@ -5,6 +5,7 @@ using UnityEngine.Events;
 public abstract class VariableInput : MonoBehaviour, IVariableInput
 {
     public UnityAction OnValueUpdated;
+    public VariableBoardItem VariableItem;
     
     public abstract void Disable();
     public abstract void Enable();

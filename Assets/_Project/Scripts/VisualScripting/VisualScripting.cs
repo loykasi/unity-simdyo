@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -119,6 +120,22 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
+    public void OnSceneStart()
+    {
+        foreach (var item in _variables)
+        {
+            item.Value.OnSceneStart();
+        }
+    }
+
+    public void OnSceneStop()
+    {
+        foreach (var item in _variables)
+        {
+            item.Value.OnSceneStop();
+        }
+    }
+
     public bool AddVariable(string name)
     {
         if (name.Equals(string.Empty))
@@ -156,6 +173,43 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
+    public void UpdateListVariable(string name)
+    {
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            Debug.Log("UpdateListVariable");
+            variable.Value = new List<string>();
+            variable.Type = DataType.List;
+        }
+    }
+
+    public void InsertListItem(string name, object value)
+    {
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            IList list = (IList)variable.Value;
+            list.Add(value);
+        }
+    }
+
+    public void UpdateListItem(string name, int index, object value)
+    {
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            IList list = (IList)variable.Value;
+            list[index] = (string)value;
+        }
+    }
+
+    public void RemoveListItem(string name, int index)
+    {
+        if (_variables.TryGetValue(name, out Variable variable))
+        {
+            IList list = (IList)variable.Value;
+            list.RemoveAt(index);
+        }
+    }
+
     public object GetVariable(string name)
     {
         if (_variables.TryGetValue(name, out Variable value))
@@ -173,21 +227,5 @@ public class VisualScripting : MonoBehaviour
             return true;
         }
         return false;
-    }
-
-    public void OnSceneStart()
-    {
-        foreach (var item in _variables)
-        {
-            item.Value.OnSceneStart();
-        }
-    }
-
-    public void OnSceneStop()
-    {
-        foreach (var item in _variables)
-        {
-            item.Value.OnSceneStop();
-        }
     }
 }

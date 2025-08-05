@@ -57,7 +57,7 @@ Material:
     - _EnableExternalAlpha: 0
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _Radius: 0.72411513
+    - _Radius: 1.4290445
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 0.6981132, g: 0.6981132, b: 0.6981132, a: 1}

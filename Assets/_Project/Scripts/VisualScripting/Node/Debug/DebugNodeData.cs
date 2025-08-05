@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "LogNode", menuName = "Scriptable Objects/Visual Scripting/Node/Log")]
@@ -19,8 +20,23 @@ class DebugNode : ScriptNode
     {
         inputTrigger = CreateInputTrigger((vs) =>
         {
-            LogCommand.Instance.Log(Value.GetValue(vs));
-            Debug.Log(Value.GetValue(vs));
+            var value = Value.GetValue(vs);
+            LogCommand.Instance.Log(value);
+
+            if (value is IList list)
+            {
+                string listValue = "";
+                foreach (var item in list)
+                {
+                    listValue += item.ToString() + " | ";
+                }
+                Debug.Log($"list: {listValue}");
+            }
+            else
+            {
+                Debug.Log(value);
+            }
+            
             return outputTrigger;
         });
         outputTrigger = CreateOutputTrigger();
