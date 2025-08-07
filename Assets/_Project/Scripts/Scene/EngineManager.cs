@@ -6,6 +6,7 @@ public class EngineManager : Singleton<EngineManager>
     public Camera SceneCamera;
     [SerializeField] private GameObject _playModeCanvas;
 
+    public bool IsRunning => _isRunning;
     private bool _isRunning = false;
 
     private void Update()
@@ -20,6 +21,7 @@ public class EngineManager : Singleton<EngineManager>
 
     public void Stop()
     {
+        Time.timeScale = 0;
         EditorCamera.gameObject.SetActive(true);
         SceneCamera.gameObject.SetActive(false);
         _playModeCanvas.SetActive(false);
@@ -35,6 +37,7 @@ public class EngineManager : Singleton<EngineManager>
 
     private void StartGame()
     {
+        Time.timeScale = 1;
         EditorCamera.gameObject.SetActive(false);
         SceneCamera.gameObject.SetActive(true);
         _playModeCanvas.SetActive(true);

@@ -41,9 +41,9 @@ public class SceneInteraction : MonoBehaviour
             }
             
             Vector3 mousePosition = Mouse.current.position.ReadValue();
-            Vector3 worldPoint = _camera.ScreenToWorldPoint(mousePosition);
+            // Vector3 worldPoint = _camera.ScreenToWorldPoint(mousePosition);
 
-            ObjectManager.Instance.Select(worldPoint);
+            ObjectManager.Instance.Select(mousePosition);
         }
     }
 

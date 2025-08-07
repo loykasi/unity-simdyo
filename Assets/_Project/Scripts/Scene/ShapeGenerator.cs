@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class ShapeGenerator : Singleton<ShapeGenerator>
 {
+    [SerializeField] private BoxEntity _boxEntityPrefab;
     [SerializeField] private SceneEntity _sceneEntityPrefab;
     [SerializeField] private Material _material;
     [SerializeField] private Material _circleMaterial;
@@ -17,9 +18,8 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             return;
         }
 
-        SceneEntity sceneEntity = Instantiate(_sceneEntityPrefab);
+        BoxEntity sceneEntity = Instantiate(_boxEntityPrefab);
         sceneEntity.name = "Box";
-        BoxCollider2D collider = sceneEntity.gameObject.AddComponent<BoxCollider2D>();
 
         Vector3 center = (from + to) / 2f;
         float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
@@ -50,10 +50,10 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _material;
         sceneEntity.Renderer.material.color = Random.ColorHSV();
-
-        collider.size = new Vector2(halfWidth * 2, halfHeight * 2);
+        sceneEntity.SetSize(halfWidth * 2, halfHeight * 2);
 
         ObjectManager.Instance.AddEntity(sceneEntity);
+        Physics2D.SyncTransforms();
     }
 
     public void AddCircle(Vector3 from, Vector3 to)
@@ -66,6 +66,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         SceneEntity sceneEntity = Instantiate(_sceneEntityPrefab);
         sceneEntity.name = "Box";
         CircleCollider2D collider = sceneEntity.gameObject.AddComponent<CircleCollider2D>();
+        sceneEntity.AssignCollider(collider);
 
         Vector3 center = from;
         float radius = Vector3.Distance(from, to);
@@ -105,6 +106,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         collider.radius = radius;
 
         ObjectManager.Instance.AddEntity(sceneEntity);
+        Physics2D.SyncTransforms();
     }
 
     [ContextMenu("Add Circle")]

@@ -27,6 +27,7 @@ public class MoveTool : ITool
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             _onMovingObject = false;
+            Physics2D.SyncTransforms();
         }
 
         if (_onMovingObject)

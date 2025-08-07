@@ -21,8 +21,6 @@ public class ShapePreview : Singleton<ShapePreview>
 
     public void PreviewBox(Vector3 from, Vector3 to)
     {
-        Debug.Log($"{from} -> {to}");
-
         Vector3 center = (from + to) / 2f;
         float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
         float halfHeight = Mathf.Abs(from.y - to.y) / 2f;
@@ -51,8 +49,6 @@ public class ShapePreview : Singleton<ShapePreview>
 
     public void PreviewCircle(Vector3 from, Vector3 to)
     {
-        Debug.Log($"{from} -> {to}");
-
         Vector3 center = from;
         float radius = Vector3.Distance(from, to);
 

@@ -1,0 +1,134 @@
+using UnityEngine;
+
+public class BoxEntity : SceneEntity
+{
+    public float Width;
+    public float Height;
+
+    public Vector3 TopLeft
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(- Width / 2f, Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 TopRight
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(Width / 2f, Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 BottomRight
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(Width / 2f, - Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 BottomLeft
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(- Width / 2f, - Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 Left
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(- Width / 2f, 0f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 Right
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(Width / 2f, 0f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 Top
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(0f, Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+    public Vector3 Bottom
+    {
+        get
+        {
+            Vector3 point = transform.position + new Vector3(0f, - Height / 2f, 0f);
+            return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
+        }
+    }
+
+
+    public void SetSize(float width, float height)
+    {
+        Width = width;
+        Height = height;
+        ((BoxCollider2D)Collider).size = new Vector2(width, height);
+
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
+
+        Vector3[] vertices = new Vector3[4]
+        {
+            new Vector3(- halfWidth, halfHeight),
+            new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, - halfHeight),
+            new Vector3(halfWidth, - halfHeight),
+        };
+        MeshFilter.mesh.vertices = vertices;
+    }
+
+    public void UpdateBox(Vector3 from, Vector3 to)
+    {
+        UpdateSize(from, to);
+
+        Vector3 center = (from + to) / 2f;
+        float halfWidth = Width / 2f;
+        float halfHeight = Height / 2f;
+
+        transform.position = center;
+
+        Vector3[] vertices = new Vector3[4]
+        {
+            new Vector3(- halfWidth, halfHeight),
+            new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, - halfHeight),
+            new Vector3(halfWidth, - halfHeight),
+        };
+        MeshFilter.mesh.vertices = vertices;
+
+        ((BoxCollider2D)Collider).size = new Vector2(Width, Height);
+    }
+
+    private void UpdateSize(Vector3 from, Vector3 to)
+    {
+        Vector3 right = transform.right;
+        Vector3 xRight = Vector3Utils.ProjectOnVector(from, transform.position, right);
+        Vector3 xLeft = Vector3Utils.ProjectOnVector(to, transform.position, right);
+        Width = Vector3.Distance(xLeft, xRight);
+
+        Vector3 up = transform.up;
+        Vector3 yTop = Vector3Utils.ProjectOnVector(from, transform.position, up);
+        Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
+        Height = Vector3.Distance(yTop, yBottom);
+    }
+}
