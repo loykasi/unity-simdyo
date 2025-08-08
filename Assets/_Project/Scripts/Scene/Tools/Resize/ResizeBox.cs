@@ -37,7 +37,7 @@ public class ResizeBox: IResize
         }
         else
         {
-            to = GetToPoint(direction, position);
+            to = position;
         }
 
         Debug.DrawRay(to, Vector3.up, Color.black);
@@ -89,7 +89,7 @@ public class ResizeBox: IResize
         };
     }
 
-    private Vector4 GetToPoint(BoundsHandleDirection direction, Vector3 point)
+    private Vector3 GetToPoint(BoundsHandleDirection direction, Vector3 point)
     {
         return direction switch
         {
@@ -97,11 +97,6 @@ public class ResizeBox: IResize
             BoundsHandleDirection.Left => point + GetRotatedPoint(new Vector3(0f, - _entity.Height / 2f, 0f)),
             BoundsHandleDirection.Top => point + GetRotatedPoint(new Vector3(_entity.Width / 2f, 0f, 0f)),
             BoundsHandleDirection.Bottom => point + GetRotatedPoint(new Vector3(_entity.Width / 2f, 0f, 0f)),
-
-            BoundsHandleDirection.TopLeft => point,
-            BoundsHandleDirection.TopRight => point,
-            BoundsHandleDirection.BottomLeft => point,
-            BoundsHandleDirection.BottomRight => point,
             _ => Vector3.zero,
         };
     }

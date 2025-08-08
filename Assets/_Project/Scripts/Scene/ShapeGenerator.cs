@@ -4,10 +4,11 @@ using UnityEngine;
 public class ShapeGenerator : Singleton<ShapeGenerator>
 {
     [SerializeField] private BoxEntity _boxEntityPrefab;
+    [SerializeField] private CircleEntity _circleEntityPrefab;
     [SerializeField] private SceneEntity _sceneEntityPrefab;
     [SerializeField] private Material _material;
     [SerializeField] private Material _circleMaterial;
-    [SerializeField] private float _totalVert;
+    [SerializeField] private int _totalVert;
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
@@ -63,10 +64,8 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             return;
         }
 
-        SceneEntity sceneEntity = Instantiate(_sceneEntityPrefab);
-        sceneEntity.name = "Box";
-        CircleCollider2D collider = sceneEntity.gameObject.AddComponent<CircleCollider2D>();
-        sceneEntity.AssignCollider(collider);
+        CircleEntity sceneEntity = Instantiate(_circleEntityPrefab);
+        sceneEntity.name = "Circle";
 
         Vector3 center = from;
         float radius = Vector3.Distance(from, to);
@@ -102,8 +101,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.Renderer.material = _circleMaterial;
         sceneEntity.Renderer.material.color = Random.ColorHSV();
         sceneEntity.Renderer.material.SetFloat(_radiusProperty, radius);
-
-        collider.radius = radius;
+        sceneEntity.SetRadius(radius, _totalVert);
 
         ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();

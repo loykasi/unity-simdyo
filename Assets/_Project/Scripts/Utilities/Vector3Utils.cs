@@ -4,7 +4,7 @@ public static class Vector3Utils
 {
     public static Vector3 ProjectOnVector(Vector3 point, Vector3 startPoint, Vector3 direction)
     {
-        Vector3 vec = point - direction;
+        Vector3 vec = point - startPoint;
         float dot = Vector3.Dot(direction, vec);
         return startPoint + dot * direction;
     }
