@@ -6,6 +6,16 @@ public class MoveTool : ITool
     private bool _onMovingObject = false;
     private Vector3 _offsetFromMouse;
 
+    public void Disable()
+    {
+        
+    }
+
+    public void Enable()
+    {
+        
+    }
+
     public void OnUpdate(Vector3 mousePosition)
     {
         HandleMoving(mousePosition);

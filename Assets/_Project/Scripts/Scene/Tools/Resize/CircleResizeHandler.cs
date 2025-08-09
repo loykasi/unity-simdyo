@@ -3,6 +3,7 @@ using UnityEngine;
 public class CircleResizeHandler : IResize
 {
     private CircleEntity _entity;
+    private RectTransform _bound;
 
     private Vector3 _from;
     private Vector3 _direction;
@@ -12,9 +13,24 @@ public class CircleResizeHandler : IResize
     private Vector3 _bottomLeftDirection = new Vector3(-1f, -1f).normalized;
     private Vector3 _bottomRightDirection = new Vector3(1f, -1f).normalized;
 
-    public void Init(SceneEntity entity)
+    public void Init(SceneEntity entity, RectTransform bound)
     {
         _entity = (CircleEntity)entity;
+        _bound = bound;
+
+        UpdateBound();
+    }
+
+    public void UpdateBound()
+    {
+        _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
+        float diameter = _entity.Radius * 2;
+
+        Camera camera = EngineManager.Instance.EditorCamera;
+        float scale = Screen.height / (camera.orthographicSize * 2);
+
+        _bound.position = camera.WorldToScreenPoint(position);
+        _bound.sizeDelta = diameter * scale * Vector2.one;
     }
 
     public void BeginResize(BoundsHandleDirection direction)

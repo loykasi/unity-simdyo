@@ -6,6 +6,15 @@ public class CircleTool : ITool
     private bool _onMouseMove;
     private Vector3 _startPosition;
 
+    public void Disable()
+    {
+        
+    }
+
+    public void Enable()
+    {
+        
+    }
 
     public void OnUpdate(Vector3 mousePosition)
     {

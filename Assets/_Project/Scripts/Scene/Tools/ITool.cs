@@ -2,5 +2,7 @@ using UnityEngine;
 
 public interface ITool
 {
-    public void OnUpdate(Vector3 mousePosition);
+    void Enable();
+    void Disable();
+    void OnUpdate(Vector3 mousePosition);
 }

@@ -7,6 +7,16 @@ public class RotateTool : ITool
     private Vector3 _fromDirection;
     private float _startAngle;
 
+    public void Disable()
+    {
+        
+    }
+
+    public void Enable()
+    {
+        
+    }
+
     public void OnUpdate(Vector3 mousePosition)
     {   
         if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())

@@ -14,7 +14,8 @@ public class SceneInteraction : MonoBehaviour
         new RotateTool(),
         new BoxTool(),
         new CircleTool(),
-        new PanTool()
+        new PanTool(),
+        new ResizeTool()
     };
 
     public List<RaycastResult> raycastResults = new();
@@ -57,7 +58,9 @@ public class SceneInteraction : MonoBehaviour
 
     public void SwitchTool(int index)
     {
+        _tool?.Disable();
         _tool = _tools[index];
+        _tool.Enable();
     }
 
     public void OpenGraph()

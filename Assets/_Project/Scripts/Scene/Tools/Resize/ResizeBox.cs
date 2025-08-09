@@ -3,12 +3,30 @@ using UnityEngine;
 public class ResizeBox: IResize
 {
     private BoxEntity _entity;
+    private RectTransform _bound;
+
     private Vector3 _pivotPoint;
     private Vector3 _fromPoint;
 
-    public void Init(SceneEntity entity)
+    public void Init(SceneEntity entity, RectTransform bound)
     {
         _entity = (BoxEntity)entity;
+        _bound = bound;
+
+        UpdateBound();
+    }
+
+    public void UpdateBound()
+    {
+        _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
+        Vector2 size = new(_entity.Width, _entity.Height);
+
+        Camera camera = EngineManager.Instance.EditorCamera;
+        float scale = Screen.height / (camera.orthographicSize * 2);
+
+        _bound.position = camera.WorldToScreenPoint(position);
+        _bound.rotation = rotation;
+        _bound.sizeDelta = size * scale;
     }
 
     public void BeginResize(BoundsHandleDirection direction)

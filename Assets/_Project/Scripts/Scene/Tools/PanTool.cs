@@ -7,6 +7,16 @@ public class PanTool : ITool
     private Vector3 _origin;
     private Vector3 _pre;
 
+    public void Disable()
+    {
+        
+    }
+
+    public void Enable()
+    {
+        
+    }
+
     public void OnUpdate(Vector3 mousePosition)
     {
         Pan(mousePosition);
