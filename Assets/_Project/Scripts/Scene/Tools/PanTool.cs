@@ -51,6 +51,9 @@ public class PanTool : ITool
         }
 
         float scroll = Mouse.current.scroll.ReadValue().y;
-        EngineManager.Instance.EditorCamera.orthographicSize -= scroll;
+        Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
+        float height = EngineManager.Instance.EditorCamera.orthographicSize;
+        height = Mathf.Clamp(height - scroll, limit.x, limit.y);
+        EngineManager.Instance.EditorCamera.orthographicSize = height;
     }
 }

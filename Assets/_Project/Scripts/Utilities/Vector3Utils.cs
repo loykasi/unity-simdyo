@@ -13,4 +13,9 @@ public static class Vector3Utils
     {
         return rotation * (point - center) + center;
     }
+
+    public static Vector3 GetGridPosition(Vector3 position)
+    {
+        return GridController.Instance.GetPosition(position);
+    }
 }

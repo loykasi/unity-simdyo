@@ -25,7 +25,7 @@ public class CircleTool : ITool
     {
         if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
-            _startPosition = mousePosition;
+            _startPosition = Vector3Utils.GetGridPosition(mousePosition);
 
             _onMouseMove = true;
             ShapePreview.Instance.StartCirclePreview();
@@ -35,15 +35,15 @@ public class CircleTool : ITool
         {
             _onMouseMove = false;
 
-            ShapeGenerator.Instance.AddCircle(_startPosition, mousePosition);
+            ShapeGenerator.Instance.AddCircle(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
             ShapePreview.Instance.StopCirclePreview();
         }
 
         if (_onMouseMove)
         {
             Debug.DrawRay(_startPosition, Vector3.up, Color.red);
-            Debug.DrawRay(mousePosition, Vector3.up, Color.red);
-            ShapePreview.Instance.PreviewCircle(_startPosition, mousePosition);
+            Debug.DrawRay(Vector3Utils.GetGridPosition(mousePosition), Vector3.up, Color.red);
+            ShapePreview.Instance.PreviewCircle(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
         }
     }
 }

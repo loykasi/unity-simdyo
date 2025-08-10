@@ -38,8 +38,11 @@ public class SceneEntity : MonoBehaviour
         transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
         ToggleCollider(_defaultState.ColliderEnabled);
         ToggleGravity(_defaultState.GravityEnabled);
-        Rigidbody.linearVelocity = _defaultState.Velocity;
-        Rigidbody.angularVelocity = _defaultState.AngularVelocity;
+        if (_defaultState.GravityEnabled)
+        {
+            Rigidbody.linearVelocity = _defaultState.Velocity;
+            Rigidbody.angularVelocity = _defaultState.AngularVelocity;
+        }
 
         Script.OnSceneStop();
     }

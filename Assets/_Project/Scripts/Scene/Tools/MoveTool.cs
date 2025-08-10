@@ -30,7 +30,7 @@ public class MoveTool : ITool
             {
                 return;
             }
-            _offsetFromMouse = selected.transform.position - mousePosition;
+            _offsetFromMouse = selected.transform.position - Vector3Utils.GetGridPosition(mousePosition);
             _onMovingObject = true;
         }
 
@@ -43,7 +43,7 @@ public class MoveTool : ITool
         if (_onMovingObject)
         {
             var selected = ObjectManager.Instance.SelectedObject;
-            selected.transform.position = mousePosition + _offsetFromMouse;
+            selected.transform.position = Vector3Utils.GetGridPosition(mousePosition) + _offsetFromMouse;
         }
     }
 }

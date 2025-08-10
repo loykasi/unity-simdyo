@@ -6,6 +6,9 @@ public class EngineManager : Singleton<EngineManager>
     public Camera SceneCamera;
     [SerializeField] private GameObject _playModeCanvas;
 
+    [Header("Settings")]
+    public Vector2 ZoomHeighLimit;
+
     public bool IsRunning => _isRunning;
     private bool _isRunning = false;
 
