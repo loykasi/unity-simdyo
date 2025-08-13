@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AddNode", menuName = "Scriptable Objects/Visual Scripting/Node/Add")]
 public class AddNodeData : ScriptNodeData
 {
+    public string InputA;
+    public string InputB;
+
     public override ScriptNode Create()
     {
         return new AddNode(Title);
@@ -11,19 +14,22 @@ public class AddNodeData : ScriptNodeData
 
 class AddNode : ScriptNode
 {
-    public ValueInput ValueA;
-    public ValueInput ValueB;
+    public InputValue A;
+    public InputValue B;
 
-    public ValueOutput OutputPort;
+    public OutputValue Value;
 
     public AddNode(string title): base(title)
     {
-        ValueA = ValueInput();
-        ValueB = ValueInput();
+        A = InputValue(nameof(A));
+        B = InputValue(nameof(B));
 
-        OutputPort = ValueOutput((vs) =>
-        {
-            return OperatorUtility.Add(ValueA.GetValue(vs), ValueB.GetValue(vs));;
-        });
+        Value = OutputValue(
+            nameof(Value),
+            (vs) =>
+            {
+                return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs));;
+            }
+        );
     }
 }

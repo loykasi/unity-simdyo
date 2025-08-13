@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class CircleEntity : SceneEntity
 {
+    public override EntityType EntityType => EntityType.Circle;
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
     public int TotalVert;

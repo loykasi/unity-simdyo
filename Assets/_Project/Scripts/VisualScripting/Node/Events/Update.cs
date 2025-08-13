@@ -15,8 +15,5 @@ public class UpdateNode : EventNode
     {
     }
 
-    public override EventHook GetHook()
-    {
-        return EventHook.Update;
-    }
+    public override EventHook Hook => EventHook.Update;
 }

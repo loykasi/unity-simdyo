@@ -16,14 +16,14 @@ class ClearListNode : ScriptNode
     public InputTrigger Enter;
     public OutputTrigger Exit;
 
-    public ValueInput ListInput;
+    public InputValue ListInput;
 
     public ClearListNode(string title) : base(title)
     {
-        Enter = CreateInputTrigger(Clear);
-        Exit = CreateOutputTrigger();
+        Enter = InputTrigger(nameof(Enter), Clear);
+        Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = ValueInput(DataType.List, false);
+        ListInput = InputValue(nameof(ListInput), DataType.List, false);
     }
 
     private OutputTrigger Clear(VisualScripting vs)

@@ -16,24 +16,24 @@ class RemoveListItemNode : ScriptNode
     public InputTrigger Enter;
     public OutputTrigger Exit;
 
-    public ValueInput ListInput;
-    public ValueInput IndexInput;
-    public ValueOutput Output;
+    public InputValue ListInput;
+    public InputValue Index;
+    public OutputValue Output;
 
     public RemoveListItemNode(string title) : base(title)
     {
-        Enter = CreateInputTrigger(Set);
-        Exit = CreateOutputTrigger();
+        Enter = InputTrigger(nameof(Enter), Set);
+        Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = ValueInput(DataType.List, false);
-        IndexInput = ValueInput(true);
-        Output = ValueOutput(DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        Index = InputValue(nameof(Index), true);
+        Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
     private OutputTrigger Set(VisualScripting vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
-        int index = (int)(float)IndexInput.GetValue(vs);
+        int index = (int)(float)Index.GetValue(vs);
         list.RemoveAt(index);
         return Exit;
     }

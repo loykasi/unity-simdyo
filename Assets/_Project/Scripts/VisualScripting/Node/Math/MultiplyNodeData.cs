@@ -11,19 +11,22 @@ public class MultiplyNodeData : ScriptNodeData
 
 class MultiplyNode : ScriptNode
 {
-    public ValueInput ValueA;
-    public ValueInput ValueB;
+    public InputValue A;
+    public InputValue B;
 
-    public ValueOutput OutputPort;
+    public OutputValue Output;
 
     public MultiplyNode(string title): base(title)
     {
-        ValueA = ValueInput();
-        ValueB = ValueInput();
+        A = InputValue(nameof(A));
+        B = InputValue(nameof(B));
 
-        OutputPort = ValueOutput((vs) =>
-        {
-            return OperatorUtility.Multiply(ValueA.GetValue(vs), ValueB.GetValue(vs));
-        });
+        Output = OutputValue(
+            nameof(Output),
+            (vs) =>
+            {
+                return OperatorUtility.Multiply(A.GetValue(vs), B.GetValue(vs));
+            }
+        );
     }
 }

@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ValueOutput : Port<ValueInput>
+public class OutputValue : Port<InputValue>
 {
     public DataType Type { get; private set; }
     public Func<VisualScripting, object> action;
-    public List<ValueInput> Destinations = new();
+    public List<InputValue> Destinations = new();
 
-    public ValueOutput(Func<VisualScripting, object> getValue)
+    public OutputValue(string key, Func<VisualScripting, object> getValue): base(key)
     {
         action = getValue;
         Type = DataType.Any;
     }
 
-    public ValueOutput(Func<VisualScripting, object> getValue, DataType type)
+    public OutputValue(string key, Func<VisualScripting, object> getValue, DataType type): base(key)
     {
         action = getValue;
         Type = type;
@@ -25,12 +25,12 @@ public class ValueOutput : Port<ValueInput>
         return action(vs);
     }
 
-    public override void Connect(ValueInput port)
+    public override void Connect(InputValue port)
     {
         Destinations.Add(port);
     }
 
-    protected override void DisconnectPort(ValueInput port)
+    protected override void DisconnectPort(InputValue port)
     {
         if (!Destinations.Contains(port))
         {
@@ -38,7 +38,7 @@ public class ValueOutput : Port<ValueInput>
         }
     }
 
-    public override bool CanConnectTo(ValueInput port)
+    public override bool CanConnectTo(InputValue port)
     {
         return port.Type == DataType.Any || port.Type == Type;
     }

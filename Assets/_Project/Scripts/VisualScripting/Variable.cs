@@ -1,8 +1,13 @@
+
 public class Variable
 {
     public DataType Type;
     public object Value;
     private object _default;
+
+    public Variable()
+    {
+    }
 
     public Variable(DataType type, object value)
     {

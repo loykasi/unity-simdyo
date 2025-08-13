@@ -1,13 +1,28 @@
-using System;
 using UnityEngine;
 
 public class SceneEntity : MonoBehaviour
 {
+    public virtual EntityType EntityType => EntityType.Polygon;
+
     public MeshFilter MeshFilter;
     public MeshRenderer Renderer;
     public Collider2D Collider;
     public Rigidbody2D Rigidbody;
     public VisualScripting Script;
+
+    public ColorHSV CurrentColor
+    {
+        get
+        {
+            return _currentColor;
+        }
+        set
+        {
+            _currentColor = value;
+            UpdateColor();
+        }
+    }
+    private ColorHSV _currentColor = new();
 
     public bool IsColliderEnabled => Collider.enabled;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
@@ -62,5 +77,20 @@ public class SceneEntity : MonoBehaviour
         {
             Rigidbody.bodyType = RigidbodyType2D.Static;
         }
+    }
+
+    public void SetColor(Color color)
+    {
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        float a = color.a;
+
+        CurrentColor = new ColorHSV(h, s, v, a);
+    }
+
+    private void UpdateColor()
+    {
+        Color color = Color.HSVToRGB(CurrentColor.H, CurrentColor.S, CurrentColor.V);
+        color.a = CurrentColor.A;
+        Renderer.material.color = color;
     }
 }

@@ -12,13 +12,13 @@ public class GetListLength : ScriptNodeData
 
 class GetListLengthNode : ScriptNode
 {
-    public ValueInput ListInput;
-    public ValueOutput Output;
+    public InputValue ListInput;
+    public OutputValue Output;
 
     public GetListLengthNode(string title) : base(title)
     {
-        ListInput = ValueInput(DataType.List, false);
-        Output = ValueOutput(DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
     private object Get(VisualScripting vs)

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class BoxEntity : SceneEntity
 {
+    public override EntityType EntityType => EntityType.Box;
+
     public float Width;
     public float Height;
 

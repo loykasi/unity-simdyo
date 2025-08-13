@@ -109,6 +109,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
      
         node.Node = scriptNode;
         node.transform.position = _openMenuPosition;
+        scriptNode.Positon = _openMenuPosition;
 
         _nodes.Add(node);
     }
@@ -313,12 +314,12 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
             }
         }
         {
-            if (_fromPort is ValueInput fromPort)
+            if (_fromPort is InputValue fromPort)
             {
                 _fromUIPort.ValidConnection(fromPort.Source);
             }
 
-            if (_toPort is ValueInput toPort)
+            if (_toPort is InputValue toPort)
             {
                 _toUIPort.ValidConnection(toPort.Source);
             }

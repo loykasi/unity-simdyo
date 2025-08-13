@@ -15,11 +15,45 @@ public class VisualScripting : MonoBehaviour
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new();
 
-    private List<EventNode> _startNodes = new();
-    private List<EventNode> _updateNodes = new();
+    // private List<EventNode> _startNodes = new();
+    // private List<EventNode> _updateNodes = new();
 
-    public Dictionary<string, Variable> Variables => _variables;
+    private Dictionary<EventHook, List<EventNode>> _eventNodes = new(); 
+
+    public Dictionary<string, Variable> Variables
+    {
+        get => _variables;
+        set => _variables = value;
+    }
     private Dictionary<string, Variable> _variables = new();
+
+    public void Load()
+    {
+        foreach (var node in Nodes)
+        {
+            if (node is EventNode eventNode)
+            {
+                eventNode.Register(this);
+            }
+        }
+        foreach (var connection in Connections)
+        {
+            connection.Load(this);
+        }
+
+        foreach (var item in _variables)
+        {
+            switch (item.Value.Type)
+            {
+                case DataType.Number:
+                    item.Value.Value = float.Parse(item.Value.Value.ToString());
+                    break;
+                case DataType.Boolean:
+                    item.Value.Value = bool.Parse(item.Value.Value.ToString());
+                    break;
+            }
+        }
+    }
 
     public void AddNode(ScriptNodeData nodeData)
     {
@@ -29,15 +63,16 @@ public class VisualScripting : MonoBehaviour
 
         if (node is EventNode eventNode)
         {
-            switch (eventNode.GetHook())
-            {
-                case EventHook.Start:
-                    _startNodes.Add(eventNode);
-                    break;
-                case EventHook.Update:
-                    _updateNodes.Add(eventNode);
-                    break;
-            }
+            eventNode.Register(this);
+            // switch (eventNode.GetHook())
+            // {
+            //     case EventHook.Start:
+            //         _startNodes.Add(eventNode);
+            //         break;
+            //     case EventHook.Update:
+            //         _updateNodes.Add(eventNode);
+            //         break;
+            // }
         }
     }
 
@@ -106,18 +141,20 @@ public class VisualScripting : MonoBehaviour
 
     public void StartVS()
     {
-        foreach (var item in _startNodes)
-        {
-            Invoke(item.outputTrigger);
-        }
+        // foreach (var item in _startNodes)
+        // {
+        //     Invoke(item.Exit);
+        // }
+        TriggerEvent(EventHook.Start);
     }
 
     public void UpdateVS()
     {
-        for (int i = 0; i < _updateNodes.Count; i++)
-        {
-            Invoke(_updateNodes[i].outputTrigger);
-        }
+        // for (int i = 0; i < _updateNodes.Count; i++)
+        // {
+        //     Invoke(_updateNodes[i].Exit);
+        // }
+        TriggerEvent(EventHook.Update);
     }
 
     public void OnSceneStart()
@@ -135,6 +172,32 @@ public class VisualScripting : MonoBehaviour
             item.Value.OnSceneStop();
         }
     }
+
+    // Events
+
+    public void RegisterEventNode(EventHook hook, EventNode node)
+    {
+        if (!_eventNodes.TryGetValue(hook, out var nodes))
+        {
+            nodes = new List<EventNode>();
+            _eventNodes.Add(hook, nodes);
+        }
+
+        nodes.Add(node);
+    }
+
+    public void TriggerEvent(EventHook hook)
+    {
+        if (_eventNodes.TryGetValue(hook, out var nodes))
+        {
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                Invoke(nodes[i].Exit);
+            }
+        }
+    }
+
+    // Variables
 
     public bool AddVariable(string name)
     {

@@ -19,6 +19,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;
+    [SerializeField] protected TextMeshProUGUI _label;
     private NodeBoard _nodeBoard;
 
     protected List<UILineConnection> _lineConnections = new();
@@ -30,6 +31,17 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public virtual void Init()
     {
+        if (_label != null)
+        {
+            if (Port.ShouldShowLabel)
+            {
+                _label.text = Port.Key;
+            }
+            else
+            {
+                _label.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -59,7 +71,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnEndEdit(string value)
     {
-        if (Port is ValueInput valueInput)
+        if (Port is InputValue valueInput)
         {
             valueInput.SetValue(value);
         }

@@ -1,26 +1,58 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public abstract class ScriptNode : IScriptNode
 {
+    public Guid ID { get; set; }
     public Vector2 Positon { get; set; }
+    public Dictionary<string, object> DefaultValues { get; set; } = new();
+
+    [JsonIgnore]
     public string Title;
 
+    [JsonIgnore]
     public List<InputTrigger> InputTriggers = new();
+
+    [JsonIgnore]
     public List<OutputTrigger> OutputTriggers = new();
 
-    public List<ValueInput> ValueInputs = new();
-    public List<ValueOutput> ValueOutputs = new();
+    [JsonIgnore]
+    public List<InputValue> ValueInputs = new();
+
+    [JsonIgnore]
+    public List<OutputValue> ValueOutputs = new();
+
+    public IEnumerable<IPort> Ports()
+    {
+        foreach (var item in InputTriggers)
+        {
+            yield return item;
+        }
+        foreach (var item in OutputTriggers)
+        {
+            yield return item;
+        }
+        foreach (var item in ValueInputs)
+        {
+            yield return item;
+        }
+        foreach (var item in ValueOutputs)
+        {
+            yield return item;
+        }
+    }
 
     public ScriptNode(string title)
     {
+        ID = Guid.NewGuid();
         Title = title;
     }
 
-    protected InputTrigger CreateInputTrigger(Func<VisualScripting, OutputTrigger> action)
+    protected InputTrigger InputTrigger(string key, Func<VisualScripting, OutputTrigger> action)
     {
-        InputTrigger inputTrigger = new(action)
+        InputTrigger inputTrigger = new(key, action)
         {
             Node = this
         };
@@ -28,9 +60,9 @@ public abstract class ScriptNode : IScriptNode
         return inputTrigger;
     }
 
-    protected OutputTrigger CreateOutputTrigger()
+    protected OutputTrigger OutputTrigger(string key)
     {
-        OutputTrigger outputTrigger = new()
+        OutputTrigger outputTrigger = new(key)
         {
             Node = this
         };
@@ -38,39 +70,42 @@ public abstract class ScriptNode : IScriptNode
         return outputTrigger;
     }
 
-    protected ValueInput ValueInput()
+    protected InputValue InputValue(string key)
     {
-        ValueInput valueInput = new(false)
+        InputValue valueInput = new(key, false)
         {
             Node = this
         };
+        valueInput.UpdateDefaultValue();
         ValueInputs.Add(valueInput);
         return valueInput;
     }
 
-    protected ValueInput ValueInput(bool useOptionalInput)
+    protected InputValue InputValue(string key, bool useOptionalInput)
     {
-        ValueInput valueInput = new(useOptionalInput)
+        InputValue valueInput = new(key, useOptionalInput)
         {
             Node = this
         };
+        valueInput.UpdateDefaultValue();
         ValueInputs.Add(valueInput);
         return valueInput;
     }
 
-    protected ValueInput ValueInput(DataType type, bool useOptionalInput)
+    protected InputValue InputValue(string key, DataType type, bool useOptionalInput)
     {
-        ValueInput valueInput = new(useOptionalInput, type)
+        InputValue valueInput = new(key, useOptionalInput, type)
         {
             Node = this
         };
+        valueInput.UpdateDefaultValue();
         ValueInputs.Add(valueInput);
         return valueInput;
     }
 
-    protected ValueOutput ValueOutput(Func<VisualScripting, object> getValue)
+    protected OutputValue OutputValue(string key, Func<VisualScripting, object> getValue)
     {
-        ValueOutput valueOutput = new(getValue)
+        OutputValue valueOutput = new(key, getValue)
         {
             Node = this
         };
@@ -78,9 +113,9 @@ public abstract class ScriptNode : IScriptNode
         return valueOutput;
     }
 
-    protected ValueOutput ValueOutput(DataType type, Func<VisualScripting, object> getValue)
+    protected OutputValue OutputValue(string key, DataType type, Func<VisualScripting, object> getValue)
     {
-        ValueOutput valueOutput = new(getValue, type)
+        OutputValue valueOutput = new(key, getValue, type)
         {
             Node = this
         };

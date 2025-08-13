@@ -11,13 +11,16 @@ public class GetPosition : ScriptNodeData
 
 class GetPositionNode : ScriptNode
 {
-    public ValueOutput Output;
+    public OutputValue Value;
 
     public GetPositionNode(string title) : base(title)
     {
-        Output = ValueOutput((vs) =>
-        {
-            return vs.Entity.transform.position;
-        });
+        Value = OutputValue(
+            nameof(Value),
+            (vs) =>
+            {
+                return vs.Entity.transform.position;
+            }
+        );
     }
 }

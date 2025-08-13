@@ -1,6 +1,14 @@
 public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
 {
     public IScriptNode Node { get; set; }
+    public string Key { get; set; }
+
+    public bool ShouldShowLabel { get; set; } = true;
+
+    public Port(string key)
+    {
+        Key = key;
+    }
 
     public virtual bool CanConnect(IPort port)
     {

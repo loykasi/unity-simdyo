@@ -1,8 +1,17 @@
 public class OutputTrigger : Port<InputTrigger>
 {
     public string Name;
-
     public InputTrigger Destination;
+
+    public OutputTrigger(string key) : base(key)
+    {
+    }
+
+    public OutputTrigger HideLabel()
+    {
+        ShouldShowLabel = false;
+        return this;
+    }
 
     public override bool CanConnectTo(InputTrigger port)
     {

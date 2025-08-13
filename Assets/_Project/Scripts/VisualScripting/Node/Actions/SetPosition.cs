@@ -11,23 +11,23 @@ public class SetPosition : ScriptNodeData
 
 class SetPositionNode : ScriptNode
 {
-    public InputTrigger Trigger;
-    public OutputTrigger Triggered;
+    public InputTrigger Enter;
+    public OutputTrigger Exit;
 
-    public ValueInput Input;
+    public InputValue Input;
 
     public SetPositionNode(string title) : base(title)
     {
-        Trigger = CreateInputTrigger(Set);
-        Triggered = CreateOutputTrigger();
+        Enter = InputTrigger(nameof(Enter), Set);
+        Exit = OutputTrigger(nameof(Exit));
 
-        Input = ValueInput(DataType.Vector, true);
+        Input = InputValue(nameof(Input), DataType.Vector, true);
     }
 
     public OutputTrigger Set(VisualScripting vs)
     {
         Vector3 value = (Vector3)Input.GetValue(vs);
         vs.Entity.transform.position = value;
-        return Triggered;
+        return Exit;
     }
 }

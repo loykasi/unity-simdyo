@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 public class InputTrigger : Port<OutputTrigger>
 {
     public Func<VisualScripting, OutputTrigger> Action;
-
     public List<OutputTrigger> Sources = new();
 
-    public InputTrigger(Func<VisualScripting, OutputTrigger> action)
+    public InputTrigger(string key, Func<VisualScripting, OutputTrigger> action) : base(key)
     {
         Action = action;
     }

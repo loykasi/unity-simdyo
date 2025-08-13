@@ -15,8 +15,5 @@ public class StartNode : EventNode
     {
     }
 
-    public override EventHook GetHook()
-    {
-        return EventHook.Start;
-    }
+    public override EventHook Hook => EventHook.Start;
 }

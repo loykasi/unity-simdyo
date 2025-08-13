@@ -11,18 +11,18 @@ public class GetVariable : ScriptNodeData
 
 public class GetVariableNode : ScriptNode
 {
-    public ValueInput input;
-    public ValueOutput output;
+    public InputValue Input;
+    public OutputValue Output;
 
     public GetVariableNode(string title) : base(title)
     {
-        input = ValueInput(true);
-        output = ValueOutput(Get);
+        Input = InputValue(nameof(Input), true);
+        Output = OutputValue(nameof(Output), Get);
     }
 
     private object Get(VisualScripting vs)
     {
-        string name = input.GetValue(vs).ToString();
+        string name = Input.GetValue(vs).ToString();
         return vs.GetVariable(name);
     }
 }

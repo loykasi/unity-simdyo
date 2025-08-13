@@ -11,25 +11,25 @@ public class SetVariable : ScriptNodeData
 
 public class SetVariableNode : ScriptNode
 {
-    public InputTrigger InputTrigger;
-    public OutputTrigger OuputTrigger;
+    public InputTrigger Enter;
+    public OutputTrigger Exit;
 
-    public ValueInput inputVariable;
-    public ValueInput inputValue;
+    public InputValue Variable;
+    public InputValue Value;
 
     public SetVariableNode(string title) : base(title)
     {
-        InputTrigger = CreateInputTrigger(Set);
-        OuputTrigger = CreateOutputTrigger();
-        inputVariable = ValueInput(true);
-        inputValue = ValueInput(true);
+        Enter = InputTrigger(nameof(Enter), Set);
+        Exit = OutputTrigger(nameof(Exit));
+        Variable = InputValue(nameof(Variable), true);
+        Value = InputValue(nameof(Value), true);
     }
 
     private OutputTrigger Set(VisualScripting vs)
     {
-        string name = inputVariable.GetValue(vs).ToString();
-        object value = inputValue.GetValue(vs);
+        string name = Variable.GetValue(vs).ToString();
+        object value = Value.GetValue(vs);
         vs.UpdateVariable(name, value);
-        return OuputTrigger;
+        return Exit;
     }
 }

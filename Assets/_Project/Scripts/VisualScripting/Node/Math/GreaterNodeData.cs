@@ -11,19 +11,22 @@ public class GreaterNodeData : ScriptNodeData
 
 class GreaterNode : ScriptNode
 {
-    public ValueInput ValueA;
-    public ValueInput ValueB;
+    public InputValue A;
+    public InputValue B;
 
-    public ValueOutput OutputPort;
+    public OutputValue Output;
 
     public GreaterNode(string title): base(title)
     {
-        ValueA = ValueInput();
-        ValueB = ValueInput();
+        A = InputValue(nameof(A));
+        B = InputValue(nameof(B));
 
-        OutputPort = ValueOutput((vs) =>
-        {
-            return ValueA.GetValue<float>(vs) > ValueB.GetValue<float>(vs);
-        });
+        Output = OutputValue(
+            nameof(Output),
+            (vs) =>
+            {
+                return A.GetValue<float>(vs) > B.GetValue<float>(vs);
+            }
+        );
     }
 }

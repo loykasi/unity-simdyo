@@ -12,21 +12,21 @@ public class GetListItem : ScriptNodeData
 
 class GetListItemNode : ScriptNode
 {
-    public ValueInput ListInput;
-    public ValueInput IndexInput;
-    public ValueOutput Output;
+    public InputValue ListInput;
+    public InputValue Index;
+    public OutputValue Output;
 
     public GetListItemNode(string title) : base(title)
     {
-        ListInput = ValueInput(DataType.List, false);
-        IndexInput = ValueInput(DataType.Number, true);
-        Output = ValueOutput(DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        Index = InputValue(nameof(Index), DataType.Number, true);
+        Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
     private object Get(VisualScripting vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
-        int index = (int)(float)IndexInput.GetValue(vs);
+        int index = (int)(float)Index.GetValue(vs);
         return list[index];
     }
 }

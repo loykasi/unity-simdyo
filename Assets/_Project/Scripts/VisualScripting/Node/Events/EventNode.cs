@@ -1,11 +1,21 @@
+using System.Diagnostics;
+using Newtonsoft.Json;
+
 public abstract class EventNode : ScriptNode
 {
-    public OutputTrigger outputTrigger;
+    [JsonIgnore]
+    public OutputTrigger Exit;
+
+    [JsonIgnore]
+    public abstract EventHook Hook { get; }
 
     public EventNode(string title) : base(title)
     {
-        outputTrigger = CreateOutputTrigger();
+        Exit = OutputTrigger(nameof(Exit)).HideLabel();
     }
 
-    public abstract EventHook GetHook();
+    public void Register(VisualScripting vs)
+    {
+        vs.RegisterEventNode(Hook, this);
+    }
 }

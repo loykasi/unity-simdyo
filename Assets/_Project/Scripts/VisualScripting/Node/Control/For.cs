@@ -11,30 +11,33 @@ public class For : ScriptNodeData
 
 class ForNode : ScriptNode
 {
-    public InputTrigger InputTrigger;
+    public InputTrigger Enter;
     public OutputTrigger Completed;
     public OutputTrigger LoopBody;
 
-    public ValueInput FirstIndex;
-    public ValueInput LastIndex;
-    public ValueInput Step;
-    public ValueOutput Index;
+    public InputValue FirstIndex;
+    public InputValue LastIndex;
+    public InputValue Step;
+    public OutputValue Index;
 
     private int _index;
 
     public ForNode(string title) : base(title)
     {
-        InputTrigger = CreateInputTrigger(Loop);
-        Completed = CreateOutputTrigger();
-        LoopBody = CreateOutputTrigger();
+        Enter = InputTrigger(nameof(Enter), Loop);
+        Completed = OutputTrigger(nameof(Completed));
+        LoopBody = OutputTrigger(nameof(LoopBody));
 
-        FirstIndex = ValueInput(DataType.Number, true);
-        LastIndex = ValueInput(DataType.Number, true);
-        Step = ValueInput(DataType.Number, true);
-        Index = ValueOutput((vs) =>
-        {
-            return _index;
-        });
+        FirstIndex = InputValue(nameof(FirstIndex), DataType.Number, true);
+        LastIndex = InputValue(nameof(LastIndex), DataType.Number, true);
+        Step = InputValue(nameof(Step), DataType.Number, true);
+        Index = OutputValue(
+            nameof(Index),
+            (vs) =>
+            {
+                return _index;
+            }
+        );
     }
 
     private OutputTrigger Loop(VisualScripting vs)

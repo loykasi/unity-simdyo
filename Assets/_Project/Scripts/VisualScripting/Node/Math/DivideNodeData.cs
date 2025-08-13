@@ -11,19 +11,22 @@ public class DivideNodeData : ScriptNodeData
 
 class DivideNode : ScriptNode
 {
-    public ValueInput ValueA;
-    public ValueInput ValueB;
+    public InputValue A;
+    public InputValue B;
 
-    public ValueOutput OutputPort;
+    public OutputValue Output;
 
     public DivideNode(string title): base(title)
     {
-        ValueA = ValueInput();
-        ValueB = ValueInput();
+        A = InputValue(nameof(A));
+        B = InputValue(nameof(B));
 
-        OutputPort = ValueOutput((vs) =>
-        {
-            return OperatorUtility.Divide(ValueA.GetValue(vs), ValueB.GetValue(vs));
-        });
+        Output = OutputValue(
+            nameof(Output),
+            (vs) =>
+            {
+                return OperatorUtility.Divide(A.GetValue(vs), B.GetValue(vs));
+            }
+        );
     }
 }

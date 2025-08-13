@@ -12,21 +12,30 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
-    public void AddBox(Vector3 from, Vector3 to)
+    public BoxEntity AddBox(Vector3 from, Vector3 to)
     {
         if (from == to)
         {
-            return;
+            return null;
         }
+
+        Vector3 position = (from + to) / 2f;
+        float width = Mathf.Abs(from.x - to.x);
+        float height = Mathf.Abs(from.y - to.y);
+
+        return AddBox(position, width, height);
+    }
+
+    public BoxEntity AddBox(Vector3 position, float width, float height)
+    {
 
         BoxEntity sceneEntity = Instantiate(_boxEntityPrefab);
         sceneEntity.name = "Box";
 
-        Vector3 center = (from + to) / 2f;
-        float halfWidth = Mathf.Abs(from.x - to.x) / 2f;
-        float halfHeight = Mathf.Abs(from.y - to.y) / 2f;
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
 
-        sceneEntity.transform.position = center;
+        sceneEntity.transform.position = position;
 
         List<Vector3> points = new List<Vector3>()
         {
@@ -50,27 +59,33 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _material;
-        sceneEntity.Renderer.material.color = Random.ColorHSV();
-        sceneEntity.SetSize(halfWidth * 2, halfHeight * 2);
+        sceneEntity.SetSize(width, height);
+        sceneEntity.SetColor(Random.ColorHSV());
 
         ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
+
+        return sceneEntity;
     }
 
-    public void AddCircle(Vector3 from, Vector3 to)
+    public CircleEntity AddCircle(Vector3 from, Vector3 to)
     {
         if (from == to)
         {
-            return;
+            return null;
         }
 
+        float radius = Vector3.Distance(from, to);
+
+        return AddCircle(from, radius);
+    }
+
+    public CircleEntity AddCircle(Vector3 position, float radius)
+    {
         CircleEntity sceneEntity = Instantiate(_circleEntityPrefab);
         sceneEntity.name = "Circle";
 
-        Vector3 center = from;
-        float radius = Vector3.Distance(from, to);
-
-        sceneEntity.transform.position = center;
+        sceneEntity.transform.position = position;
 
         float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
         List<Vector3> points = new List<Vector3>();
@@ -99,12 +114,14 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _circleMaterial;
-        sceneEntity.Renderer.material.color = Random.ColorHSV();
         sceneEntity.Renderer.material.SetFloat(_radiusProperty, radius);
         sceneEntity.SetRadius(radius, _totalVert);
+        sceneEntity.SetColor(Random.ColorHSV());
 
         ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
+
+        return sceneEntity;
     }
 
     [ContextMenu("Add Circle")]

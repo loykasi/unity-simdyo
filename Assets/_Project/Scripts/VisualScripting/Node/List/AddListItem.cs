@@ -16,24 +16,24 @@ class AddListItemNode : ScriptNode
     public InputTrigger Enter;
     public OutputTrigger Exit;
 
-    public ValueInput ListInput;
-    public ValueInput ItemInput;
-    public ValueOutput Output;
+    public InputValue ListInput;
+    public InputValue Item;
+    public OutputValue Output;
 
     public AddListItemNode(string title) : base(title)
     {
-        Enter = CreateInputTrigger(Set);
-        Exit = CreateOutputTrigger();
+        Enter = InputTrigger(nameof(Enter), Set);
+        Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = ValueInput(DataType.List, false);
-        ItemInput = ValueInput(true);
-        Output = ValueOutput(DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        Item = InputValue(nameof(Item), true);
+        Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
     private OutputTrigger Set(VisualScripting vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
-        object item = ItemInput.GetValue(vs);
+        object item = Item.GetValue(vs);
         list.Add(item);
         return Exit;
     }

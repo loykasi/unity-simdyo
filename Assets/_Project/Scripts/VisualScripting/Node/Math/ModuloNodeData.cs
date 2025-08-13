@@ -11,19 +11,22 @@ public class ModuloNodeData : ScriptNodeData
 
 class ModuloNode : ScriptNode
 {
-    public ValueInput ValueA;
-    public ValueInput ValueB;
+    public InputValue A;
+    public InputValue B;
 
-    public ValueOutput OutputPort;
+    public OutputValue Output;
 
     public ModuloNode(string title): base(title)
     {
-        ValueA = ValueInput();
-        ValueB = ValueInput();
+        A = InputValue(nameof(A));
+        B = InputValue(nameof(B));
 
-        OutputPort = ValueOutput((vs) =>
-        {
-            return OperatorUtility.Modulo(ValueA.GetValue(vs), ValueB.GetValue(vs));
-        });
+        Output = OutputValue(
+            nameof(Output),
+            (vs) =>
+            {
+                return OperatorUtility.Modulo(A.GetValue(vs), B.GetValue(vs));
+            }
+        );
     }
 }

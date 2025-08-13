@@ -1,4 +1,5 @@
 using System;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public abstract class MakeVariable : ScriptNodeData
@@ -13,12 +14,15 @@ public abstract class MakeVariable : ScriptNodeData
 
 public class MakeVariableNode : ScriptNode
 {
-    public ValueInput input;
-    public ValueOutput output;
+    [JsonIgnore]
+    public InputValue Input;
+
+    [JsonIgnore]
+    public OutputValue Output;
 
     public MakeVariableNode(DataType type, string title) : base(title)
     {
-        input = ValueInput(type, true);
-        output = ValueOutput(type, (vs) => input.GetValue(vs));
+        Input = InputValue(nameof(Input), type, true);
+        Output = OutputValue(nameof(Output), type, (vs) => Input.GetValue(vs));
     }
 }

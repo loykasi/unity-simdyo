@@ -11,15 +11,18 @@ public class Break : ScriptNodeData
 
 class BreakNode : ScriptNode
 {
-    public InputTrigger InputTrigger;
+    public InputTrigger Enter;
 
     public BreakNode(string title) : base(title)
     {
-        InputTrigger = CreateInputTrigger((vs) =>
-        {
-            vs.BreakLoop();
-            
-            return null;
-        });
+        Enter = InputTrigger(
+            nameof(Enter),
+            (vs) =>
+            {
+                vs.BreakLoop();
+                
+                return null;
+            }
+        );
     }
 }

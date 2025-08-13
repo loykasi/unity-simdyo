@@ -4,10 +4,11 @@ using UnityEngine;
 public class UIValueInputPort : UINodePort
 {
     [SerializeField] private TMP_InputField _inputField;
-    
+
     public override void Init()
     {
-        if (Port is ValueInput valueInput)
+        base.Init();
+        if (Port is InputValue valueInput)
         {
             if (valueInput.UseOptionalInput && _inputField != null)
             {
@@ -19,6 +20,13 @@ public class UIValueInputPort : UINodePort
                 _inputField.gameObject.SetActive(false);
             }
         }
+
+        Vector2 size = _label.GetPreferredValues();
+        _label.rectTransform.sizeDelta = new Vector2
+        (
+            size.x,
+            _label.rectTransform.sizeDelta.y
+        );
     }
 
     public override void ValidConnection(IPort port)
