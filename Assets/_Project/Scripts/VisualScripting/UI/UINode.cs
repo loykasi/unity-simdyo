@@ -21,12 +21,15 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     private ScriptNode _node;
 
     public List<UINodePort> Ports = new();
+    public List<UINodePort> InputPorts = new();
+    public List<UINodePort> OutputPorts = new();
 
     [SerializeField] private TMP_Text _nodeTitle;
     [SerializeField] private GameObject _selectedBorder;
 
     [SerializeField] private RectTransform _inputHolder;
     [SerializeField] private RectTransform _outputHolder;
+    [SerializeField] private RectTransform _body;
 
     [SerializeField] private UINodePort _inputTriggerPrefab;
     [SerializeField] private UINodePort _inputValuePrefab;
@@ -50,6 +53,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.Port = Node.InputTriggers[i];
             port.Init();
             Ports.Add(port);
+            InputPorts.Add(port);
         }
 
         for (int i = 0; i < Node.OutputTriggers.Count; i++)
@@ -59,6 +63,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.Port = Node.OutputTriggers[i];
             port.Init();
             Ports.Add(port);
+            OutputPorts.Add(port);
         }
 
         for (int i = 0; i < Node.ValueInputs.Count; i++)
@@ -68,6 +73,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.Port = Node.ValueInputs[i];
             port.Init();
             Ports.Add(port);
+            InputPorts.Add(port);
         }
 
         for (int i = 0; i < Node.ValueOutputs.Count; i++)
@@ -77,10 +83,37 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             port.Port = Node.ValueOutputs[i];
             port.Init();
             Ports.Add(port);
+            OutputPorts.Add(port);
         }
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
+
+        Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
+        Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
+        float height = InputPorts.Count > OutputPorts.Count ? inputSize.y : outputSize.y;
+
+        _body.sizeDelta = new Vector2
+        (
+            0f,
+            height
+        );
+    }
+
+    private Vector2 GetPortGroupMaxSize(List<UINodePort> ports)
+    {
+        float y = ports.Count * 30f;
+        float x = ports[0].Rect.sizeDelta.x;
+        for (int i = 1; i < ports.Count; i++)
+        {
+            float value = ports[0].Rect.sizeDelta.x;
+            if (value > x)
+            {
+                x = value;
+            }
+        }
+
+        return new Vector2(x, y);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

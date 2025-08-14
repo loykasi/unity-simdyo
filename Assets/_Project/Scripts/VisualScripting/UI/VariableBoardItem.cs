@@ -11,6 +11,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private const int _booleanTypeIndex = 2;
     private const int _vectorTypeIndex = 3;
     private const int _listTypeIndex = 4;
+    private const int _colorTypeIndex = 5;
 
     [SerializeField] private TMP_InputField _nameInputField;
     [SerializeField] private TMP_Dropdown _typeDropdown;
@@ -32,7 +33,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             item.VariableItem = this;   
         }
 
-        for (int i = 0; i < _vectorTypeIndex; i++)
+        for (int i = 0; i < _variableInputs.Length; i++)
         {
             _variableInputs[i].OnValueUpdated += UpdateVariable;
         }
@@ -134,6 +135,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             _booleanTypeIndex => DataType.Boolean,
             _vectorTypeIndex => DataType.Vector,
             _listTypeIndex => DataType.List,
+            _colorTypeIndex => DataType.Color,
             _ => DataType.Any,
         };
     }
@@ -147,6 +149,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             DataType.Boolean => _booleanTypeIndex,
             DataType.Vector => _vectorTypeIndex,
             DataType.List => _listTypeIndex,
+            DataType.Color => _colorTypeIndex,
             _ => 0,
         };
     }

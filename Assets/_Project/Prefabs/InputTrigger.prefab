@@ -121,4 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 594b688a08877544d96b4068b5373006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rect: {fileID: 2900222151818526442}
+  _edge: 0
   _portHandle: {fileID: 2997451680440632923}
+  _label: {fileID: 0}

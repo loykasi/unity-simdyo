@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class UIValueInputPort : UINodePort
 {
+    [SerializeField] private RectTransform _inputFieldRect;
     [SerializeField] private TMP_InputField _inputField;
 
     public override void Init()
@@ -21,12 +22,37 @@ public class UIValueInputPort : UINodePort
             }
         }
 
+        UpdateSize();
+    }
+
+    private void UpdateSize()
+    {
         Vector2 size = _label.GetPreferredValues();
         _label.rectTransform.sizeDelta = new Vector2
         (
             size.x,
             _label.rectTransform.sizeDelta.y
         );
+        if (Port is InputValue valueInput)
+        {
+            if (valueInput.UseOptionalInput && _inputField != null)
+            {
+                _inputFieldRect.anchoredPosition = new Vector2(30f + size.x, 0f);
+                Rect.sizeDelta = new Vector2
+                (
+                    30f + size.x + 50f,
+                    30f
+                );
+            }
+            else
+            {
+                Rect.sizeDelta = new Vector2
+                (
+                    30f + size.x,
+                    30f
+                );
+            }
+        }
     }
 
     public override void ValidConnection(IPort port)

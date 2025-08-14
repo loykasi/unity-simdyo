@@ -17,6 +17,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public NodePortEdge Edge => _edge;
     public Vector3 HandlePosition => _portHandle.transform.position;
 
+    public RectTransform Rect;
     [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;
     [SerializeField] protected TextMeshProUGUI _label;

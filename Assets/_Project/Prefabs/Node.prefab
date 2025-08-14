@@ -165,10 +165,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Ports: []
+  InputPorts: []
+  OutputPorts: []
   _nodeTitle: {fileID: 3930395652367057755}
   _selectedBorder: {fileID: 923369634641844683}
   _inputHolder: {fileID: 8949905866491219355}
   _outputHolder: {fileID: 3173162504769695371}
+  _body: {fileID: 8646177879591071623}
   _inputTriggerPrefab: {fileID: 3464529469290834477, guid: 4f79b906eb3516b489b77e309aecdb91, type: 3}
   _inputValuePrefab: {fileID: -3993354798832430575, guid: 4a740cc127caf994d8e8226b0a492db7, type: 3}
   _outputTriggerPrefab: {fileID: 165732071471610933, guid: 250cb0131cb5a9b46aa85cd72e68f811, type: 3}

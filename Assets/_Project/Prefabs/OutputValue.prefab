@@ -50,6 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 594b688a08877544d96b4068b5373006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rect: {fileID: 6375445576729490508}
   _edge: 1
   _portHandle: {fileID: 5353080561332785913}
   _label: {fileID: 7517502048286528368}

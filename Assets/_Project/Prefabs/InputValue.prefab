@@ -51,9 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc4c39b2af39fc0429d409832a3cf75c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Rect: {fileID: 8379107954466514830}
   _edge: 0
   _portHandle: {fileID: 368168807003092142}
   _label: {fileID: 8442615933896484088}
+  _inputFieldRect: {fileID: 7026791202710406041}
   _inputField: {fileID: 3413057984185238834}
 --- !u!1 &2222812540119567859
 GameObject:
