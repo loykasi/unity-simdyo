@@ -60,6 +60,17 @@ public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
         gameObject.SetActive(false);
     }
 
+    public void Open(Vector3 position)
+    {
+        gameObject.SetActive(true);
+        transform.position = position;
+
+        foreach (var item in _categories)
+        {
+            item.Value.SetOpen(false);
+        }
+    }
+
     public void AddNode(ScriptNodeData nodeData)
     {
         Close();

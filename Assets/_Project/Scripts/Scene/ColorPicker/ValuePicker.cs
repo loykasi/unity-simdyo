@@ -28,6 +28,7 @@ public class ValuePicker : ColorPropertyPicker
         }
         UpdateTexture();
         _slider.SetValueWithoutNotify(value * _range);
+        _input.text = (value * _range).ToString();
     }
 
     protected override void UpdateTexture()

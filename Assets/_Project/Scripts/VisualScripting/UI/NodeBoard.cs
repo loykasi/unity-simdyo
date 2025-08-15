@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public VisualScripting TargetVisualScripting;
+    public VisualScripting TargetVisualScripting { get; set; }
 
     [SerializeField] private RectTransform _holder;
     private Vector2 _offsetFromMouse;
@@ -19,7 +19,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     [SerializeField] private float _sizePadding;
 
     [Space]
-    [SerializeField] private GameObject _nodeMenu;
+    [SerializeField] private NodeMenu _nodeMenu;
 
     private bool _hasPort;
 
@@ -184,8 +184,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
         if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
         {
             Vector3 mousePosition = Mouse.current.position.ReadValue();
-            _nodeMenu.SetActive(true);
-            _nodeMenu.transform.position = mousePosition;
+            _nodeMenu.Open(mousePosition);
 
             _openMenuPosition = mousePosition;
         }

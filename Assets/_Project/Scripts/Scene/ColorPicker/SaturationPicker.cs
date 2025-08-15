@@ -25,6 +25,7 @@ public class SaturationPicker : ColorPropertyPicker
         }
         UpdateTexture();
         _slider.SetValueWithoutNotify(saturation * _range);
+        _input.text = (value * _range).ToString();
     }
 
     protected override void UpdateTexture()

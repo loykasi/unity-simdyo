@@ -60,7 +60,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _material;
         sceneEntity.SetSize(width, height);
-        sceneEntity.SetColor(Random.ColorHSV());
+        sceneEntity.CurrentColor = GetRandomColor();
 
         ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
@@ -116,12 +116,23 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.Renderer.material = _circleMaterial;
         sceneEntity.Renderer.material.SetFloat(_radiusProperty, radius);
         sceneEntity.SetRadius(radius, _totalVert);
-        sceneEntity.SetColor(Random.ColorHSV());
+        sceneEntity.CurrentColor = GetRandomColor();
 
         ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
 
         return sceneEntity;
+    }
+
+    private ColorHSV GetRandomColor()
+    {
+        return new ColorHSV
+        (
+            (float)Random.Range(0, 361) / 360,
+            (float)Random.Range(0, 100) / 100,
+            (float)Random.Range(0, 100) / 100,
+            1f
+        );
     }
 
     [ContextMenu("Add Circle")]

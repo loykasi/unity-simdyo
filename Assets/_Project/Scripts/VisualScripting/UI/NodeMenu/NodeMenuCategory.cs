@@ -24,10 +24,15 @@ public class NodeMenuCategory : MonoBehaviour
 
     public void ToggleContent()
     {
-        _isContentActive = !_isContentActive;
-        _content.gameObject.SetActive(_isContentActive);
+        SetOpen(!_isContentActive);
+    }
 
-        if (_isContentActive)
+    public void SetOpen(bool value)
+    {
+        _isContentActive = value;
+        _content.gameObject.SetActive(value);
+
+        if (value)
         {
             _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, 40 + _content.sizeDelta.y);
         }
@@ -47,7 +52,7 @@ public class NodeMenuCategory : MonoBehaviour
         float height = item.RectTransform.sizeDelta.y;
         item.RectTransform.position = _content.position + _content.sizeDelta.y * _itemCount * Vector3.down;
         _content.sizeDelta = new Vector2(_content.sizeDelta.x, _content.sizeDelta.y + height);
-        
+
         _itemCount++;
     }
 }

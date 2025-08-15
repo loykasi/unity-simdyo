@@ -15,7 +15,7 @@ public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerEx
         }
     }
 
-    private void Close()
+    public void Close()
     {
         ColorPickerController.Instance.Close();
     }
