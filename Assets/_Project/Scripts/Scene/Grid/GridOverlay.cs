@@ -9,6 +9,9 @@ public class GridOverlay : MonoBehaviour
     private Vector3 _previous;
     private float _previousHeight;
 
+    private readonly int _sizeProperty = Shader.PropertyToID("_Size");
+    private readonly int _subSizeProperty = Shader.PropertyToID("_SubSize");
+
     private void Start()
     {
         _camera = EngineManager.Instance.EditorCamera;
@@ -43,5 +46,11 @@ public class GridOverlay : MonoBehaviour
     public void Toggle(bool value)
     {
         gameObject.SetActive(value);
+    }
+
+    public void SetGridSize(float size, float subSize)
+    {
+        _renderer.material.SetFloat(_sizeProperty, size);
+        _renderer.material.SetFloat(_subSizeProperty, subSize);
     }
 }

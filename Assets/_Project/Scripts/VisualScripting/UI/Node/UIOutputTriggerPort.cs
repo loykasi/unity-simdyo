@@ -1,8 +1,9 @@
-using System;
 using UnityEngine;
 
-public class UIValueOutputPort: UINodePort
+public class UIOutputTriggerPort: UINodePort
 {
+    public override NodePortEdge Edge => NodePortEdge.Right;
+
     public override void Init()
     {
         base.Init();

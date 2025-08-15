@@ -6,7 +6,6 @@ public class GridController : Singleton<GridController>
     public bool SnapEnabled { get; set; }
 
     [SerializeField] private GridOverlay _gridOverlay;
-    [SerializeField] private Material _gridMaterial;
 
     [SerializeField] private int _gridBase;
     [SerializeField] private float _maxSize;
@@ -16,9 +15,6 @@ public class GridController : Singleton<GridController>
     private Vector2 _sizeRange;
 
     private Camera _camera;
-
-    private readonly int _sizeProperty = Shader.PropertyToID("_Size");
-    private readonly int _subSizeProperty = Shader.PropertyToID("_SubSize");
 
     private void Start()
     {
@@ -65,8 +61,7 @@ public class GridController : Singleton<GridController>
 
     private void UpdateGridSize()
     {
-        _gridMaterial.SetFloat(_sizeProperty, _size);
-        _gridMaterial.SetFloat(_subSizeProperty, _subSize);
+        _gridOverlay.SetGridSize(_size, _subSize);
     }
 
     public void ToggleGrid()

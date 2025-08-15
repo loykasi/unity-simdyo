@@ -63,7 +63,7 @@ public class ShapePreview : Singleton<ShapePreview>
             vertices[i] = new Vector3(x, y, 0f);
         }
         _circleMesh.vertices = vertices;
-        _circleRenderer.sharedMaterial.SetFloat(_radiusProperty, radius);
+        _circleRenderer.material.SetFloat(_radiusProperty, radius);
     }
 
     public void StopCirclePreview()

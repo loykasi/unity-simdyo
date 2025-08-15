@@ -10,15 +10,14 @@ public enum NodePortEdge
     Right
 }
 
-public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public IPort Port;
     public UINode UINode { get; set; }
-    public NodePortEdge Edge => _edge;
+    public abstract NodePortEdge Edge { get; }
     public Vector3 HandlePosition => _portHandle.transform.position;
 
     public RectTransform Rect;
-    [SerializeField] private NodePortEdge _edge;
     [SerializeField] private RectTransform _portHandle;
     [SerializeField] protected TextMeshProUGUI _label;
     private NodeBoard _nodeBoard;
@@ -47,7 +46,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _nodeBoard.StartPreviewConnect(this, _portHandle.position, _edge);
+        _nodeBoard.StartPreviewConnect(this, _portHandle.position, Edge);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -79,7 +78,7 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     {
         for (int i = 0; i < _lineConnections.Count; i++)
         {
-            _nodeBoard.UpdateLines(_lineConnections[i].LineRenderer, _edge, _portHandle.position);
+            _nodeBoard.UpdateLines(_lineConnections[i].LineRenderer, Edge, _portHandle.position);
         }
     }
 

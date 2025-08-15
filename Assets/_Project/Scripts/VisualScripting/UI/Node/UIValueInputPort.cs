@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class UIValueInputPort : UINodePort
 {
+    public override NodePortEdge Edge => NodePortEdge.Left;
+    
     [SerializeField] private RectTransform _inputFieldRect;
     [SerializeField] private TMP_InputField _inputField;
 
