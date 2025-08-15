@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6141835358313478485}
   - component: {fileID: 3849205953909135020}
   m_Layer: 5
-  m_Name: RawImage
+  m_Name: Exit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,7 +81,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8087023080988211411}
-  - component: {fileID: 165732071471610933}
+  - component: {fileID: 8963726781460981597}
   m_Layer: 5
   m_Name: OutputTrigger
   m_TagString: Untagged
@@ -105,12 +105,12 @@ RectTransform:
   - {fileID: 2471222965420431347}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 150, y: 30}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &165732071471610933
+  m_Pivot: {x: 1, y: 1}
+--- !u!114 &8963726781460981597
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -119,7 +119,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3968039518634140836}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 594b688a08877544d96b4068b5373006, type: 3}
+  m_Script: {fileID: 11500000, guid: 840c75e48cc751b449a202d466b775c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Rect: {fileID: 8087023080988211411}

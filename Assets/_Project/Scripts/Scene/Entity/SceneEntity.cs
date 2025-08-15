@@ -24,6 +24,16 @@ public class SceneEntity : MonoBehaviour
     }
     private ColorHSV _currentColor = new();
 
+    public Color UnityColor
+    {
+        get
+        {
+            Color color = Color.HSVToRGB(_currentColor.H, _currentColor.S, _currentColor.V);
+            color.a = _currentColor.A;
+            return color;
+        }
+    }
+
     public bool IsColliderEnabled => Collider.enabled;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
 

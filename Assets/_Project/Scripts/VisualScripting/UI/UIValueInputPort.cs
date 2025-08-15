@@ -6,6 +6,10 @@ public class UIValueInputPort : UINodePort
     [SerializeField] private RectTransform _inputFieldRect;
     [SerializeField] private TMP_InputField _inputField;
 
+    private readonly float _inputOffset = 10f;
+    private readonly float _inputMinWidth = 20f;
+    private readonly float _inputAdditionalWidth = 20f;
+
     public override void Init()
     {
         base.Init();
@@ -37,7 +41,7 @@ public class UIValueInputPort : UINodePort
         {
             if (valueInput.UseOptionalInput && _inputField != null)
             {
-                _inputFieldRect.anchoredPosition = new Vector2(30f + size.x, 0f);
+                _inputFieldRect.anchoredPosition = new Vector2(30f + size.x + _inputOffset, 0f);
                 Rect.sizeDelta = new Vector2
                 (
                     30f + size.x + 50f,
@@ -64,5 +68,38 @@ public class UIValueInputPort : UINodePort
                 _lineConnections[i].Delete();
             }
         }
+    }
+
+    public void OnEndEdit(string value)
+    {
+        if (Port is InputValue valueInput)
+        {
+            valueInput.SetValue(value);
+        }
+    }
+
+    public void OnValueChanged(string value)
+    {
+        Vector2 size = _inputField.textComponent.GetPreferredValues(value);
+        size.x = Mathf.Max(size.x, _inputMinWidth) + _inputAdditionalWidth;
+        _inputFieldRect.sizeDelta = new Vector2
+        (
+            size.x,
+            _inputFieldRect.sizeDelta.y
+        );
+
+        if (Port is InputValue valueInput)
+        {
+            if (valueInput.UseOptionalInput && _inputField != null)
+            {
+                Rect.sizeDelta = new Vector2
+                (
+                    30f + _label.rectTransform.sizeDelta.x + _inputOffset + size.x,
+                    30f
+                );
+            }
+        }
+
+        UINode.UpdateSize();
     }
 }

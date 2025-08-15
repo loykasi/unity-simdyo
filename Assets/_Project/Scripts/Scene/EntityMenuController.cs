@@ -45,4 +45,15 @@ public class EntityMenuController : MonoBehaviour
     {
         _entity.ToggleCollider(value);
     }
+
+    public void OpenColorEdit()
+    {
+        ColorPickerController.Instance.Open(_entity.CurrentColor, OnColorUpdated);
+    }
+
+    private void OnColorUpdated(ColorHSV color)
+    {
+        _entity.CurrentColor = color;
+        _menu.UpdateMenu(_entity);
+    }
 }

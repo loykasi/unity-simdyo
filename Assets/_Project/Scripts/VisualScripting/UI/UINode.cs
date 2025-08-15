@@ -20,17 +20,24 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     private ScriptNode _node;
 
-    public List<UINodePort> Ports = new();
-    public List<UINodePort> InputPorts = new();
-    public List<UINodePort> OutputPorts = new();
+    [HideInInspector] public List<UINodePort> Ports = new();
+    [HideInInspector] public List<UINodePort> InputPorts = new();
+    [HideInInspector] public List<UINodePort> OutputPorts = new();
 
+    [Header("References")]
     [SerializeField] private TMP_Text _nodeTitle;
-    [SerializeField] private GameObject _selectedBorder;
+    [SerializeField] private RectTransform _selectedBorder;
+    [SerializeField] private float _borderSize;
 
+    [Header("Node Holders")]
     [SerializeField] private RectTransform _inputHolder;
     [SerializeField] private RectTransform _outputHolder;
+
+    [Header("Head and body")]
+    [SerializeField] private RectTransform _head;
     [SerializeField] private RectTransform _body;
 
+    [Header("Prefabs")]
     [SerializeField] private UINodePort _inputTriggerPrefab;
     [SerializeField] private UINodePort _inputValuePrefab;
     [SerializeField] private UINodePort _outputTriggerPrefab;
@@ -38,6 +45,10 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     private Vector2 _offsetFromMouse;
     private bool _isMouseOver = false;
+
+    private readonly float _inputOutputDistance = 20f;
+    private readonly float _minWidth = 200f;
+    private readonly float _topBottomPadding = 10f;
 
     private void UpdateNodeUI()
     {
@@ -89,24 +100,48 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
         LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
         LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
 
+        UpdateSize();
+    }
+
+    public void UpdateSize()
+    {
         Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
         Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
-        float height = InputPorts.Count > OutputPorts.Count ? inputSize.y : outputSize.y;
+        float bodyHeight = (InputPorts.Count > OutputPorts.Count ? inputSize.y : outputSize.y) + _topBottomPadding;
 
-        _body.sizeDelta = new Vector2
+        float x = inputSize.x + outputSize.x + _inputOutputDistance;
+        x = Mathf.Max(x, _minWidth);
+
+        _head.sizeDelta = new Vector2(x, _head.sizeDelta.y);
+        _body.sizeDelta = new Vector2(x, bodyHeight);
+
+        UpdateBorder();
+    }
+
+    private void UpdateBorder()
+    {
+        Vector2 nodeSize = new
         (
-            0f,
-            height
+            _head.sizeDelta.x,
+            _head.sizeDelta.y + _body.sizeDelta.y
         );
+
+        Vector2 borderSize = nodeSize + _borderSize * 2 * Vector2.one;
+        _selectedBorder.sizeDelta = borderSize;
     }
 
     private Vector2 GetPortGroupMaxSize(List<UINodePort> ports)
     {
+        if (ports.Count == 0)
+        {
+            return Vector2.zero;
+        }
+
         float y = ports.Count * 30f;
         float x = ports[0].Rect.sizeDelta.x;
         for (int i = 1; i < ports.Count; i++)
         {
-            float value = ports[0].Rect.sizeDelta.x;
+            float value = ports[i].Rect.sizeDelta.x;
             if (value > x)
             {
                 x = value;
@@ -134,7 +169,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void Select()
     {
-        _selectedBorder.SetActive(true);
+        _selectedBorder.gameObject.SetActive(true);
     }
 
     public void Delete()
@@ -148,7 +183,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void Unselect()
     {
-        _selectedBorder.SetActive(false);
+        _selectedBorder.gameObject.SetActive(false);
     }
 
     public void OnPointerEnter(PointerEventData eventData)

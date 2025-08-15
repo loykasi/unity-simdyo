@@ -70,14 +70,6 @@ public class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         _nodeBoard.OnExitPort();
     }
 
-    public void OnEndEdit(string value)
-    {
-        if (Port is InputValue valueInput)
-        {
-            valueInput.SetValue(value);
-        }
-    }
-
     public void AddConnection(UILineConnection lineConnection)
     {
         _lineConnections.Add(lineConnection);
