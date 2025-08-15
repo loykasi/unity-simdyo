@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class ResizeTool : ITool
 {
+    public ToolType Type => ToolType.Resize;
+
     public void Enable()
     {
         ResizeController.Instance.Enable();

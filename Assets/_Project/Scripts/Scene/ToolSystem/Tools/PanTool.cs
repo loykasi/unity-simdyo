@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PanTool : ITool
 {
+    public ToolType Type => ToolType.Pan;
+
     private bool _onMouseDown;
     private Vector3 _origin;
     private Vector3 _pre;

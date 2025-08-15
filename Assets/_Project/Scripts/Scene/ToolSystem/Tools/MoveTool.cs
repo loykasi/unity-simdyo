@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class MoveTool : ITool
 {
+    public ToolType Type => ToolType.Move;
+
     private bool _onMovingObject = false;
     private Vector3 _offsetFromMouse;
 

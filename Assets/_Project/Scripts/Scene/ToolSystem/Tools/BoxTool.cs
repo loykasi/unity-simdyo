@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class BoxTool : ITool
 {
+    public ToolType Type => ToolType.Box;
+
     private bool _onMouseMove;
     private Vector3 _startPosition;
 

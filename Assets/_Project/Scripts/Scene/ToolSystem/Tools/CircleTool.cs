@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class CircleTool : ITool
 {
+    public ToolType Type => ToolType.Circle;
+
     private bool _onMouseMove;
     private Vector3 _startPosition;
 

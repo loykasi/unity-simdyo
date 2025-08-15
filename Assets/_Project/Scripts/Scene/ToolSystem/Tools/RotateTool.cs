@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 
 public class RotateTool : ITool
 {
+    public ToolType Type => ToolType.Rotate;
+
     private bool _onRotation = false;
     private Vector3 _fromDirection;
     private float _startAngle;
