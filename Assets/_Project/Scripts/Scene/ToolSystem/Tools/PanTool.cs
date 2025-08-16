@@ -7,22 +7,24 @@ public class PanTool : ITool
 
     private bool _onMouseDown;
     private Vector3 _origin;
-    private Vector3 _pre;
+
+    private bool _isZooming;
+    private float _targetHeight = 5f;
 
     public void Disable()
     {
-        
+
     }
 
     public void Enable()
     {
-        
+
     }
 
     public void OnUpdate(Vector3 mousePosition)
     {
+        Zoom(mousePosition);
         Pan(mousePosition);
-        Zoom();
     }
 
     public void Pan(Vector3 mousePosition)
@@ -45,17 +47,43 @@ public class PanTool : ITool
         }
     }
 
-    public void Zoom()
+    public void Zoom(Vector3 mousePosition)
     {
         if (ScreenInteractionUtils.IsOverUI())
         {
             return;
         }
 
+        Camera camera = EngineManager.Instance.EditorCamera;
         float scroll = Mouse.current.scroll.ReadValue().y;
+
+        if (!_isZooming && scroll != 0)
+        {
+            _targetHeight = camera.orthographicSize;
+            _isZooming = true;
+        }
+
+        if (_isZooming && scroll == 0)
+        {
+            _isZooming = false;
+        }
+
         Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
-        float height = EngineManager.Instance.EditorCamera.orthographicSize;
-        height = Mathf.Clamp(height - scroll, limit.x, limit.y);
-        EngineManager.Instance.EditorCamera.orthographicSize = height;
+        _targetHeight = Mathf.Clamp(_targetHeight - scroll * camera.orthographicSize / 5f, limit.x, limit.y); 
+
+        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, _targetHeight, Time.unscaledDeltaTime * 10f);
+        
+        Vector3 offset = mousePosition - MouseWorldPositon();
+        camera.transform.position += offset;
     }
+
+    private Vector3 MouseWorldPositon()
+    {
+        Camera camera = EngineManager.Instance.EditorCamera;
+        Vector3 mousePosition = Mouse.current.position.ReadValue();
+        Vector3 worldPoint = camera.ScreenToWorldPoint(mousePosition);
+        worldPoint.z = 0;
+        return worldPoint;
+    }
+
 }
