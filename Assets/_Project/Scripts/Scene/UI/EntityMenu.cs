@@ -34,4 +34,9 @@ public class EntityMenu : MonoBehaviour
     {
         _controller.OpenColorEdit();
     }
+
+    public void OpenGraph()
+    {
+        ScriptGraph.Instance.TogglePanel();
+    }
 }

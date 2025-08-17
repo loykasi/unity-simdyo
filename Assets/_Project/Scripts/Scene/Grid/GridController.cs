@@ -64,9 +64,9 @@ public class GridController : Singleton<GridController>
         _gridOverlay.SetGridSize(_size, _subSize);
     }
 
-    public void ToggleGrid()
+    public void ToggleGrid(bool value)
     {
-        GridEnabled = !GridEnabled;
+        GridEnabled = value;
         _gridOverlay.Toggle(GridEnabled);
 
         if (GridEnabled)
@@ -76,9 +76,9 @@ public class GridController : Singleton<GridController>
         }
     }
 
-    public void ToogleSnap()
+    public void ToogleSnap(bool value)
     {
-        SnapEnabled = !SnapEnabled;
+        SnapEnabled = value;
     }
 
     public Vector3 GetPosition(Vector3 position)

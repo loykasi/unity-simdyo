@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class StringInputField : VariableInput
 {
+    public override DataType Type => DataType.String;
+
     [SerializeField] private TMP_InputField _valueInputField;
     private string _value;
 

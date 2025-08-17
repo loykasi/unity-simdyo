@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ListInputField : VariableInput
 {
+    public override DataType Type => DataType.List;
+
     [SerializeField] private RectTransform _rect;
     [SerializeField] private RectTransform _addButton;
     [SerializeField] private RectTransform _container;
@@ -12,6 +13,8 @@ public class ListInputField : VariableInput
     private List<ListElementInputField> _inputElements = new();
     private List<string> _input = new();
     private int _inputCount = 0;
+
+    private readonly float _itemHeight = 30f;
 
     public void Add()
     {
@@ -49,13 +52,16 @@ public class ListInputField : VariableInput
         {
             element.SetValue(value);
         }
+
+        Height += 30f;
     }
 
     public void Remove(int index)
     {
         var element = _inputElements[index];
-
         float height = element.Rect.sizeDelta.y;
+
+        Height -= 30f;
 
         Destroy(element.gameObject);
         _inputCount--;

@@ -109,6 +109,9 @@ public class ColorPicker : ColorProperty, IDragHandler, IPointerDownHandler
 
         float saturation = pos.x / _rectTransform.sizeDelta.x;
         float value = 1 + (pos.y / _rectTransform.sizeDelta.y);
+
+        saturation = Mathf.Round(saturation * 100) / 100f;
+        value = Mathf.Round(value * 100) / 100f;
         ColorPickerController.Instance.UpdateSaturationAndValue(saturation, value);
 
         _pickerTransform.localPosition = pos;

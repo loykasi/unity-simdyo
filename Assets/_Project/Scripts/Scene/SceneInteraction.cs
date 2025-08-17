@@ -27,9 +27,4 @@ public class SceneInteraction : MonoBehaviour
             ObjectManager.Instance.Select(mousePosition);
         }
     }
-
-    public void OpenGraph()
-    {
-        ScriptGraph.Instance.TogglePanel();
-    }
 }

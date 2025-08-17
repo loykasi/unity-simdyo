@@ -3,8 +3,7 @@ using UnityEngine.Events;
 
 public class ColorPickerController : Singleton<ColorPickerController>
 {
-    [SerializeField] private GameObject _window;
-    [SerializeField] private ColorProperty[] _colorProperties;
+    [SerializeField] private ColorPickerWindow _window;
 
     public UnityAction<float, float, float, float> OnColorUpdated;
 
@@ -69,22 +68,14 @@ public class ColorPickerController : Singleton<ColorPickerController>
         _alpha = color.A;
 
         _callback = action;
-        _window.SetActive(true);
-        InitColorPicker();
+        _window.gameObject.SetActive(true);
+        _window.Init();
     }
 
     public void Close()
     {
         _callback = null;
-        _window.SetActive(false);
-    }
-
-    private void InitColorPicker()
-    {
-        foreach (var item in _colorProperties)
-        {
-            item.Init();
-        }
+        _window.gameObject.SetActive(false);
     }
 
     private void ColorUpdated()

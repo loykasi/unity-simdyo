@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,31 +7,40 @@ using UnityEngine.UI;
 
 public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    private const int _stringTypeIndex = 0;
-    private const int _numberTypeIndex = 1;
-    private const int _booleanTypeIndex = 2;
-    private const int _vectorTypeIndex = 3;
-    private const int _listTypeIndex = 4;
-    private const int _colorTypeIndex = 5;
-
+    [SerializeField] private RectTransform _rect;
     [SerializeField] private TMP_InputField _nameInputField;
     [SerializeField] private TMP_Dropdown _typeDropdown;
     [SerializeField] private Button _removeButton;
 
     [SerializeField] private VariableInput[] _variableInputs;
+    private VariableInput _currentInput;
 
-    private int _currentType;
     private VariableBoard _variableBoard;
     private VisualScripting _vs;
 
+    private readonly float _width = 300f;
+    private readonly float _verticalPadding = 10f;
+    private readonly float _titleAndTypeHeight = 60f;
+
+    private readonly List<string> _supportedTypes = new()
+    {
+        DataType.String.ToString(),
+        DataType.Number.ToString(),
+        DataType.Boolean.ToString(),
+        DataType.Vector.ToString(),
+        DataType.Color.ToString(),
+        DataType.List.ToString()
+    };
+
     private void Awake()
     {
+        InitDropDown();
         _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
         _removeButton.onClick.AddListener(OnRemove);
 
         foreach (var item in _variableInputs)
         {
-            item.VariableItem = this;   
+            item.VariableItem = this;
         }
 
         for (int i = 0; i < _variableInputs.Length; i++)
@@ -39,13 +49,18 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         }
     }
 
+    private void InitDropDown()
+    {
+        _typeDropdown.AddOptions(_supportedTypes);
+    }
+
     public void Init(string name, VariableBoard variableBoard)
     {
         _nameInputField.text = name;
-        _typeDropdown.value = _stringTypeIndex;
+        _typeDropdown.value = 0;
 
         _variableBoard = variableBoard;
-        OnTypeChanged(_stringTypeIndex);
+        OnTypeChanged(0);
 
         _vs = NodeBoard.Instance.TargetVisualScripting;
 
@@ -53,15 +68,16 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             _variableInputs[i].Disable();
         }
-        _variableInputs[_currentType].Enable();
+        _currentInput = _variableInputs[0];
+        _currentInput.Enable();
     }
 
     public void Init(string name, DataType type, object value, VariableBoard variableBoard)
     {
-        _currentType = GetDataTypeIndex(type);
+        int typeIndex = GetDataTypeIndex(type);
 
         _nameInputField.text = name;
-        _typeDropdown.SetValueWithoutNotify(_currentType);
+        _typeDropdown.SetValueWithoutNotify(typeIndex);
 
         _variableBoard = variableBoard;
 
@@ -69,35 +85,39 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         {
             _variableInputs[i].Disable();
         }
-        _variableInputs[_currentType].Enable();
-        _variableInputs[_currentType].SetValue(value);
+        _currentInput = _variableInputs[typeIndex];
+        _currentInput.Enable();
+
+        _currentInput.SetValue(value);
 
         _vs = NodeBoard.Instance.TargetVisualScripting;
     }
 
     private void OnTypeChanged(int index)
     {
-        _currentType = index;
         for (int i = 0; i < _variableInputs.Length; i++)
         {
             _variableInputs[i].Disable();
         }
-        _variableInputs[_currentType].Enable();
+        _currentInput = _variableInputs[index];
+        _currentInput.Enable();
 
         UpdateVariable();
     }
 
     private void UpdateVariable()
     {
-        if (GetDataType() != DataType.List)
+        DataType type = _currentInput.Type;
+        if (type != DataType.List)
         {
-            VariableInput input = _variableInputs[_currentType];
-            _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
+            _variableBoard.UpdateVariable(_nameInputField.text, type, _currentInput.GetValue());
         }
         else
         {
             UpdateListVariable();
         }
+
+        UpdateSize();
     }
 
     // private void UpdateListVariable()
@@ -114,6 +134,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public void InsertListItem(object value)
     {
         _vs.InsertListItem(_nameInputField.text, value);
+        UpdateSize();
     }
 
     public void UpdateListItem(int index, object value)
@@ -124,39 +145,34 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     public void RemoveListItem(int index)
     {
         _vs.RemoveListItem(_nameInputField.text, index);
-    }
-
-    private DataType GetDataType()
-    {
-        return _typeDropdown.value switch
-        {
-            _stringTypeIndex => DataType.String,
-            _numberTypeIndex => DataType.Number,
-            _booleanTypeIndex => DataType.Boolean,
-            _vectorTypeIndex => DataType.Vector,
-            _listTypeIndex => DataType.List,
-            _colorTypeIndex => DataType.Color,
-            _ => DataType.Any,
-        };
+        UpdateSize();
     }
 
     private int GetDataTypeIndex(DataType type)
     {
-        return type switch
+        string typeName = type.ToString();
+        for (int i = 0; i < _supportedTypes.Count; i++)
         {
-            DataType.String => _stringTypeIndex,
-            DataType.Number => _numberTypeIndex,
-            DataType.Boolean => _booleanTypeIndex,
-            DataType.Vector => _vectorTypeIndex,
-            DataType.List => _listTypeIndex,
-            DataType.Color => _colorTypeIndex,
-            _ => 0,
-        };
+            if (_supportedTypes[i].Equals(typeName))
+            {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private void OnRemove()
     {
         _variableBoard.RemoveVariable(_nameInputField.text, this);
+    }
+
+    private void UpdateSize()
+    {
+        _rect.sizeDelta = new Vector2
+        (
+            _width,
+            _verticalPadding + _titleAndTypeHeight + _currentInput.Height
+        );
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] private ColorProperty[] _colorProperties;
     private bool _isHover = false;
 
     private void Update()
@@ -12,6 +13,14 @@ public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerEx
         if (Mouse.current.leftButton.wasPressedThisFrame && !_isHover)
         {
             Close();
+        }
+    }
+
+    public void Init()
+    {
+        foreach (var property in _colorProperties)
+        {
+            property.Init();
         }
     }
 

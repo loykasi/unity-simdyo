@@ -26,4 +26,10 @@ public class ScriptGraph : Singleton<ScriptGraph>
             _variableBoard.Init();
         }
     }
+
+    public void Close()
+    {
+        _isOpen = false;
+        _panel.SetActive(_isOpen);
+    }
 }

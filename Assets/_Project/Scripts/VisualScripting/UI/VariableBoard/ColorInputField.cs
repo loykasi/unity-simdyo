@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class ColorInputField : VariableInput
 {
+    public override DataType Type => DataType.Color;
+
     [SerializeField] private Button _button;
     [SerializeField] private Image _buttonImage;
     private ColorHSV _colorHSV = new(0f, 0f, 1f, 1f);

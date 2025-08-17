@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class BooleanInputField : VariableInput
 {
+    public override DataType Type => DataType.Boolean;
+
     [SerializeField] private Toggle _valueToggleField;
     private bool _value;
 
