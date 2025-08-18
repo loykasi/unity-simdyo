@@ -50,6 +50,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         SceneEntities.Add(entity);
     }
 
+    public SceneEntity GetEntity(int instanceID)
+    {
+        return SceneEntities.Find(entity => entity.InstanceID == instanceID);
+    }
+
     public void SaveData(GameData data)
     {
         data.entityCollection.Entities.Clear();

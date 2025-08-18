@@ -49,11 +49,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4228906756ad3f149ab21bf9aec17dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  InstanceID: 0
   MeshFilter: {fileID: 3394529686914236234}
   Renderer: {fileID: 7629192785450040781}
   Collider: {fileID: 4245882747138995468}
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
+  Layer: 1
   Width: 0
   Height: 0
 --- !u!33 &3394529686914236234

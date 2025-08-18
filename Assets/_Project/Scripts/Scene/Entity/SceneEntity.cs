@@ -1,14 +1,19 @@
+using System;
+using Unity.Collections;
 using UnityEngine;
 
 public class SceneEntity : MonoBehaviour
 {
     public virtual EntityType EntityType => EntityType.Polygon;
 
+    public int InstanceID;
+
     public MeshFilter MeshFilter;
     public MeshRenderer Renderer;
     public Collider2D Collider;
     public Rigidbody2D Rigidbody;
     public VisualScripting Script;
+    public CollisionLayer Layer;
 
     public ColorHSV CurrentColor
     {
@@ -39,9 +44,41 @@ public class SceneEntity : MonoBehaviour
 
     private SceneEntityState _defaultState = new();
 
+    private void Awake()
+    {
+        InstanceID = Collider.GetInstanceID();
+    
+        CollisionLayerController.Instance.UpdateObjectLayer(this);
+    }
+
     public void AssignCollider(Collider2D collider)
     {
         Collider = collider;
+    }
+
+    public void SetLayer(CollisionLayer layer)
+    {
+        Layer = layer;
+        CollisionLayerController.Instance.UpdateObjectLayer(this);
+    }
+
+    [ContextMenu("Update Layer")]
+    public void UpdateLayer()
+    {
+        CollisionLayerController.Instance.UpdateObjectLayer(this);
+    }
+
+    public void SetLayer(CollisionLayer layer, bool isActive)
+    {
+        if (isActive)
+        {
+            Layer |= layer;
+        }
+        else
+        {
+            Layer ^= layer;
+        }
+        UpdateLayer();
     }
 
     public void OnSceneStart()

@@ -56,4 +56,9 @@ public class EntityMenuController : MonoBehaviour
         _entity.CurrentColor = color;
         _menu.UpdateMenu(_entity);
     }
+
+    public void ToggleLayer(CollisionLayer layer, bool isActive)
+    {
+        _entity.SetLayer(layer, isActive);
+    }
 }
