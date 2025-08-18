@@ -3,52 +3,87 @@ using UnityEngine.InputSystem;
 
 public class PanTool : ITool
 {
-    public ToolType Type => ToolType.Pan;
+    public virtual ToolType Type => ToolType.Pan;
 
-    private bool _onMouseDown;
+    protected bool _onMouseLeftDown;
+    protected bool _onMouseRightDown;
     private Vector3 _origin;
 
     private bool _isZooming;
     private float _targetHeight = 5f;
 
-    public void Disable()
+    public virtual void Disable()
     {
 
     }
 
-    public void Enable()
+    public virtual void Enable()
     {
 
     }
 
-    public void OnUpdate(Vector3 mousePosition)
+    public virtual void OnUpdate()
     {
-        Zoom(mousePosition);
-        Pan(mousePosition);
+        Zoom();
+        HandlePanLeftMouse();
+        HandlePanRightMouse();
     }
 
-    public void Pan(Vector3 mousePosition)
+    protected virtual void HandlePanLeftMouse()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        if (_onMouseRightDown)
+        {
+            return;
+        }
+
+        Vector3 mousePosition = GetMouseWorldPositon();
+        if (!_onMouseLeftDown && Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
             _origin = mousePosition;
-            _onMouseDown = true;
+            _onMouseLeftDown = true;
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        if (_onMouseLeftDown && Mouse.current.leftButton.wasReleasedThisFrame)
         {
-            _onMouseDown = false;
+            _onMouseLeftDown = false;
         }
 
-        if (_onMouseDown)
+        if (_onMouseLeftDown)
+        {
+            Vector3 delta = _origin - mousePosition;
+            EngineManager.Instance.EditorCamera.transform.position += delta;
+        }
+    }
+    
+    protected virtual void HandlePanRightMouse()
+    {
+        if (_onMouseLeftDown)
+        {
+            return;
+        }
+
+        Vector3 mousePosition = GetMouseWorldPositon();
+        if (!_onMouseRightDown && Mouse.current.rightButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        {
+            _origin = mousePosition;
+            _onMouseRightDown = true;
+        }
+
+        if (_onMouseRightDown && Mouse.current.rightButton.wasReleasedThisFrame)
+        {
+            _onMouseRightDown = false;
+        }
+
+        if (_onMouseRightDown)
         {
             Vector3 delta = _origin - mousePosition;
             EngineManager.Instance.EditorCamera.transform.position += delta;
         }
     }
 
-    public void Zoom(Vector3 mousePosition)
+    protected virtual void Zoom()
     {
+        Vector3 mousePosition = GetMouseWorldPositon();
         if (ScreenInteractionUtils.IsOverUI())
         {
             return;
@@ -71,13 +106,13 @@ public class PanTool : ITool
         Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
         _targetHeight = Mathf.Clamp(_targetHeight - scroll * camera.orthographicSize / 5f, limit.x, limit.y); 
 
-        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, _targetHeight, Time.unscaledDeltaTime * 10f);
+        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, _targetHeight, Time.unscaledDeltaTime * 15f);
         
-        Vector3 offset = mousePosition - MouseWorldPositon();
+        Vector3 offset = mousePosition - GetMouseWorldPositon();
         camera.transform.position += offset;
     }
 
-    private Vector3 MouseWorldPositon()
+    protected Vector3 GetMouseWorldPositon()
     {
         Camera camera = EngineManager.Instance.EditorCamera;
         Vector3 mousePosition = Mouse.current.position.ReadValue();
@@ -85,5 +120,4 @@ public class PanTool : ITool
         worldPoint.z = 0;
         return worldPoint;
     }
-
 }

@@ -23,8 +23,6 @@ public class CollisionLayerController : Singleton<CollisionLayerController>
             bool shouldCollide = (a.Layer & b.Layer) != 0;
 
             Physics2D.IgnoreCollision(a.Collider, b.Collider, !shouldCollide);
-
-            Debug.Log($"{a} and {b} ignore: {!shouldCollide}");
         }
     }
 

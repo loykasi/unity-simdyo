@@ -1,30 +1,23 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class BoxTool : ITool
+public class BoxTool : PanTool
 {
-    public ToolType Type => ToolType.Box;
+    public override ToolType Type => ToolType.Box;
 
     private bool _onMouseMove;
     private Vector3 _startPosition;
 
-    public void Disable()
+    public override void OnUpdate()
     {
-        
+        Zoom();
+        HandlePanRightMouse();
+        Create();
     }
 
-    public void Enable()
+    private void Create()
     {
-        
-    }
-
-    public void OnUpdate(Vector3 mousePosition)
-    {
-        Create(mousePosition);
-    }
-
-    private void Create(Vector3 mousePosition)
-    {
+        Vector3 mousePosition = GetMouseWorldPositon();
         if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
             _startPosition = Vector3Utils.GetGridPosition(mousePosition);

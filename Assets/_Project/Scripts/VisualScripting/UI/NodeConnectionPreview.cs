@@ -14,7 +14,7 @@ public class NodeConnectionPreview : MonoBehaviour
     [SerializeField] private float _maxDistance;
 
     private Vector3 _startPosition;
-    private bool _hasPort = false;
+    // private bool _hasPort = false;
     private NodePortEdge _edge;
 
     public void StartPreviewConnect(Vector3 startPosition, NodePortEdge edge)
@@ -68,7 +68,7 @@ public class NodeConnectionPreview : MonoBehaviour
     public void EnterPort(Vector3 position)
     {
         Vector3 localPosition = position - _connectedPreviewLine.transform.position;
-        _hasPort = true;
+        // _hasPort = true;
         _connectedPreviewLine.gameObject.SetActive(true);
 
         switch (_edge)
@@ -91,7 +91,7 @@ public class NodeConnectionPreview : MonoBehaviour
 
     public void ExitPort()
     {
-        _hasPort = false;
+        // _hasPort = false;
         _connectedPreviewLine.gameObject.SetActive(false);
     }
 }

@@ -61,4 +61,11 @@ public class EntityMenuController : MonoBehaviour
     {
         _entity.SetLayer(layer, isActive);
     }
+
+    public void Delete()
+    {
+        ObjectManager.Instance.DeleteEntity(_entity);
+        _entity = null;
+        _menu.gameObject.SetActive(false);
+    }
 }

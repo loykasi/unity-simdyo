@@ -11,7 +11,7 @@ public class ListInputField : VariableInput
     [SerializeField] private RectTransform _container;
     [SerializeField] private ListElementInputField _inputElementPrefab;
     private List<ListElementInputField> _inputElements = new();
-    private List<string> _input = new();
+    // private List<string> _input = new();
     private int _inputCount = 0;
 
     private readonly float _itemHeight = 30f;
@@ -53,7 +53,7 @@ public class ListInputField : VariableInput
             element.SetValue(value);
         }
 
-        Height += 30f;
+        Height += _itemHeight;
     }
 
     public void Remove(int index)
@@ -61,7 +61,7 @@ public class ListInputField : VariableInput
         var element = _inputElements[index];
         float height = element.Rect.sizeDelta.y;
 
-        Height -= 30f;
+        Height -= _itemHeight;
 
         Destroy(element.gameObject);
         _inputCount--;

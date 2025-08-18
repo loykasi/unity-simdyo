@@ -51,15 +51,7 @@ public class ToolManagement : Singleton<ToolManagement>
 
     private void Update()
     {
-        _tool.OnUpdate(MouseWorldPositon());
-    }
-
-    private Vector3 MouseWorldPositon()
-    {
-        Vector3 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 worldPoint = _camera.ScreenToWorldPoint(mousePosition);
-        worldPoint.z = 0;
-        return worldPoint;
+        _tool.OnUpdate();
     }
 
     public void SwitchTool(ToolType type)

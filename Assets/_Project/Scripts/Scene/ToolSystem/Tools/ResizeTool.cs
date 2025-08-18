@@ -1,22 +1,14 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-
-public class ResizeTool : ITool
+public class ResizeTool : PanTool
 {
-    public ToolType Type => ToolType.Resize;
+    public override ToolType Type => ToolType.Resize;
 
-    public void Enable()
+    public override void Enable()
     {
         ResizeController.Instance.Enable();
     }
 
-    public void Disable()
+    public override void Disable()
     {
         ResizeController.Instance.Disable();
-    }
-
-    public void OnUpdate(Vector3 mousePosition)
-    {
-
     }
 }

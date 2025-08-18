@@ -1,30 +1,24 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class MoveTool : ITool
+public class MoveTool : PanTool
 {
-    public ToolType Type => ToolType.Move;
+    public override ToolType Type => ToolType.Move;
 
     private bool _onMovingObject = false;
     private Vector3 _offsetFromMouse;
 
-    public void Disable()
+    public override void OnUpdate()
     {
-        
+        base.Zoom();
+        base.HandlePanRightMouse();
+        Move();
     }
 
-    public void Enable()
+    public void Move()
     {
-        
-    }
+        Vector3 mousePosition = GetMouseWorldPositon();
 
-    public void OnUpdate(Vector3 mousePosition)
-    {
-        HandleMoving(mousePosition);
-    }
-    
-    private void HandleMoving(Vector3 mousePosition)
-    {
         if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
             var selected = ObjectManager.Instance.SelectedObject;
@@ -46,6 +40,7 @@ public class MoveTool : ITool
         {
             var selected = ObjectManager.Instance.SelectedObject;
             selected.transform.position = Vector3Utils.GetGridPosition(mousePosition) + _offsetFromMouse;
+            Debug.Log(Vector3Utils.GetGridPosition(mousePosition));
         }
     }
 }

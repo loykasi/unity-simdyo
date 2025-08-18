@@ -1,60 +1,68 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class RotateTool : ITool
+public class RotateTool : PanTool
 {
-    public ToolType Type => ToolType.Rotate;
+    public override ToolType Type => ToolType.Rotate;
 
     private bool _onRotation = false;
     private Vector3 _fromDirection;
     private float _startAngle;
+    private SceneEntity _entity;
 
-    public void Disable()
+    public override void OnUpdate()
     {
-        
+        Zoom();
+        HandlePanRightMouse();
+        HandleRotate();
     }
 
-    public void Enable()
+    private void HandleRotate()
     {
-        
-    }
-
-    public void OnUpdate(Vector3 mousePosition)
-    {   
+        Vector3 mousePosition = GetMouseWorldPositon();
         if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
-            var selected = ObjectManager.Instance.SelectedObject;
-            if (selected == null)
+            _entity = ObjectManager.Instance.SelectedObject;
+            if (_entity == null)
             {
                 return;
             }
-            _fromDirection = mousePosition - selected.transform.position;
-            _startAngle = selected.transform.eulerAngles.z;
+            _fromDirection = mousePosition - _entity.transform.position;
+            _startAngle = _entity.transform.eulerAngles.z;
 
             _onRotation = true;
+
+            RotateController.Instance.EnableVisualization();
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             _onRotation = false;
+            RotateController.Instance.DisableVisualization();
         }
 
         if (_onRotation)
         {
-            var selected = ObjectManager.Instance.SelectedObject;
-            Vector3 toDirection = mousePosition - selected.transform.position;
+            Vector3 toDirection = mousePosition - _entity.transform.position;
 
             float angle = Vector3.SignedAngle(_fromDirection, toDirection, Vector3.forward);
-            selected.transform.rotation = Quaternion.Euler
-                                            (
-                                                0f,
-                                                0f,
-                                                _startAngle + angle
-                                            );
+            angle = _startAngle + angle;
+
+            float centerToMouseSqrDist = (mousePosition - _entity.transform.position).sqrMagnitude;
+            float snapRadius = RotateController.Instance.GetSnapRadiusWorld();
+
+            if (centerToMouseSqrDist < snapRadius * snapRadius)
+            {
+                angle = Mathf.Round(angle / 15f) * 15f;
+            }
+            Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+            _entity.transform.rotation = rotation;
+
+            RotateController.Instance.UpdateUI(_entity.transform.position, rotation);
 
             Debug.Log(angle);
-            Debug.DrawRay(selected.transform.position, _fromDirection, Color.red);
-            Debug.DrawRay(selected.transform.position, toDirection, Color.blue);
+            Debug.DrawRay(_entity.transform.position, _fromDirection, Color.red);
+            Debug.DrawRay(_entity.transform.position, toDirection, Color.blue);
         }
     }
 }

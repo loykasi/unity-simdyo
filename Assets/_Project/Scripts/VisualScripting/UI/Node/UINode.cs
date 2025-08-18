@@ -44,7 +44,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     [SerializeField] private UINodePort _outputValuePrefab;
 
     private Vector2 _offsetFromMouse;
-    private bool _isMouseOver = false;
+    // private bool _isMouseOver = false;
 
     private readonly float _inputOutputDistance = 20f;
     private readonly float _minWidth = 200f;
@@ -188,11 +188,11 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _isMouseOver = true;
+        // _isMouseOver = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _isMouseOver = false;
+        // _isMouseOver = false;
     }
 }

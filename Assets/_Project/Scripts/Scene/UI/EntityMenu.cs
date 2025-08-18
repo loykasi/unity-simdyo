@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -94,5 +93,10 @@ public class EntityMenu : MonoBehaviour
     public void ToggleLayer(CollisionLayer layer, bool isActive)
     {
         _controller.ToggleLayer(layer, isActive);
+    }
+
+    public void Delete()
+    {
+        _controller.Delete();
     }
 }
