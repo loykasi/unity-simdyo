@@ -10,7 +10,11 @@ public class PanTool : ITool
     private Vector3 _origin;
 
     private bool _isZooming;
-    private float _targetHeight = 5f;
+    private float TargetHeight
+    {
+        get => EngineManager.Instance.EditorCameraHeight;
+        set => EngineManager.Instance.EditorCameraHeight = value;
+    }
 
     public virtual void Disable()
     {
@@ -94,7 +98,7 @@ public class PanTool : ITool
 
         if (!_isZooming && scroll != 0)
         {
-            _targetHeight = camera.orthographicSize;
+            TargetHeight = camera.orthographicSize;
             _isZooming = true;
         }
 
@@ -104,9 +108,9 @@ public class PanTool : ITool
         }
 
         Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
-        _targetHeight = Mathf.Clamp(_targetHeight - scroll * camera.orthographicSize / 5f, limit.x, limit.y); 
+        TargetHeight = Mathf.Clamp(TargetHeight - scroll * camera.orthographicSize / 5f, limit.x, limit.y); 
 
-        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, _targetHeight, Time.unscaledDeltaTime * 15f);
+        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, TargetHeight, Time.unscaledDeltaTime * 15f);
         
         Vector3 offset = mousePosition - GetMouseWorldPositon();
         camera.transform.position += offset;

@@ -1,12 +1,42 @@
-using System;
-using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SceneEntity : MonoBehaviour
 {
-    public virtual EntityType EntityType => EntityType.Polygon;
+    public UnityAction OnPropertyUpdated;
 
+    public virtual EntityType EntityType => EntityType.Polygon;
     public int InstanceID;
+
+    public Vector3 Position
+    {
+        get => transform.position;
+        set
+        {
+            transform.position = value;
+            OnUpdateProperty();
+        }
+    }
+
+    public float Angle
+    {
+        get => transform.eulerAngles.z;
+        set
+        {
+            transform.rotation = Quaternion.Euler(0f, 0f, value);
+            OnUpdateProperty();
+        }
+    }
+
+    public Quaternion Rotation
+    {
+        get => transform.rotation;
+        set
+        {
+            transform.rotation = value;
+            OnUpdateProperty();
+        }
+    }
 
     public MeshFilter MeshFilter;
     public MeshRenderer Renderer;
@@ -14,6 +44,8 @@ public class SceneEntity : MonoBehaviour
     public Rigidbody2D Rigidbody;
     public VisualScripting Script;
     public CollisionLayer Layer;
+
+    public virtual Bounds Bounds => Renderer.bounds;
 
     public ColorHSV CurrentColor
     {
@@ -47,7 +79,7 @@ public class SceneEntity : MonoBehaviour
     private void Awake()
     {
         InstanceID = Collider.GetInstanceID();
-    
+
         CollisionLayerController.Instance.UpdateObjectLayer(this);
     }
 
@@ -139,5 +171,10 @@ public class SceneEntity : MonoBehaviour
         Color color = Color.HSVToRGB(CurrentColor.H, CurrentColor.S, CurrentColor.V);
         color.a = CurrentColor.A;
         Renderer.material.color = color;
+    }
+
+    public void OnUpdateProperty()
+    {
+        OnPropertyUpdated?.Invoke();
     }
 }

@@ -23,6 +23,12 @@ public class EntityMenuController : MonoBehaviour
 
     private void OnObjectDeselected()
     {
+        if (_entity != null)
+        {
+            _entity.OnPropertyUpdated -= OnPropertyUpdated;
+            _entity = null;
+        }
+        
         _menu.gameObject.SetActive(false);
     }
 
@@ -32,8 +38,15 @@ public class EntityMenuController : MonoBehaviour
         {
             _menu.gameObject.SetActive(true);
             _entity = entity;
+            _entity.OnPropertyUpdated += OnPropertyUpdated;
+
             _menu.Init(_entity);
         }
+    }
+
+    private void OnPropertyUpdated()
+    {
+        _menu.Init(_entity);
     }
 
     public void ToggleGravity(bool value)

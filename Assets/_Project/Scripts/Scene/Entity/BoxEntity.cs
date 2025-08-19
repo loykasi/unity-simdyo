@@ -116,7 +116,8 @@ public class BoxEntity : SceneEntity
             new Vector3(- halfWidth, - halfHeight),
             new Vector3(halfWidth, - halfHeight),
         };
-        MeshFilter.mesh.vertices = vertices;
+        MeshFilter.mesh.SetVertices(vertices);
+        MeshFilter.mesh.RecalculateBounds();
 
         ((BoxCollider2D)Collider).size = new Vector2(Width, Height);
     }

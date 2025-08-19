@@ -1,10 +1,17 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EntityMenu : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField] private EntityMenuController _controller;
+
+    [Header("Menu")]
+    [SerializeField] private TMP_InputField _positionXInput;
+    [SerializeField] private TMP_InputField _positionYInput;
+    [SerializeField] private TMP_InputField _angleInput;
     [SerializeField] private Toggle _gravityToggle;
     [SerializeField] private Toggle _colliderToggle;
     [SerializeField] private Image _buttonColor;
@@ -53,6 +60,11 @@ public class EntityMenu : MonoBehaviour
 
     public void Init(SceneEntity entity)
     {
+        _positionXInput.SetTextWithoutNotify(entity.transform.position.x.ToString());
+        _positionYInput.SetTextWithoutNotify(entity.transform.position.y.ToString());
+
+        _angleInput.SetTextWithoutNotify(entity.transform.eulerAngles.z.ToString());
+
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
         _buttonColor.color = entity.UnityColor;

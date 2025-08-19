@@ -56,7 +56,7 @@ public class RotateTool : PanTool
                 angle = Mathf.Round(angle / 15f) * 15f;
             }
             Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
-            _entity.transform.rotation = rotation;
+            _entity.Rotation = rotation;
 
             RotateController.Instance.UpdateUI(_entity.transform.position, rotation);
 

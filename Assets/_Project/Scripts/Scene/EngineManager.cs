@@ -3,6 +3,7 @@ using UnityEngine;
 public class EngineManager : Singleton<EngineManager>
 {
     public Camera EditorCamera;
+    public float EditorCameraHeight { get; set; } = 5f;
     public Camera SceneCamera;
     [SerializeField] private GameObject _playModeCanvas;
 
