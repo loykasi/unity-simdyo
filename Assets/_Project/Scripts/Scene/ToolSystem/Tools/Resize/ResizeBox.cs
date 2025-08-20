@@ -42,6 +42,8 @@ public class ResizeBox: IResize
         Vector3 position = camera.ScreenToWorldPoint(mousePosition);
         position.z = 0;
 
+        position = Vector3Utils.GetGridPosition(position);
+
         Vector3 directionVector = GetDirection(direction);
         Vector3 to;
 

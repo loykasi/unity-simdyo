@@ -46,6 +46,8 @@ public class CircleResizeHandler : IResize
         Vector3 position = camera.ScreenToWorldPoint(mousePosition);
         position.z = 0;
 
+        position = Vector3Utils.GetGridPosition(position);
+
         Vector3 to;
 
         Vector3 dragVector = position - _from;

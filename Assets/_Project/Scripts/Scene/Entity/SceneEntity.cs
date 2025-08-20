@@ -177,4 +177,14 @@ public class SceneEntity : MonoBehaviour
     {
         OnPropertyUpdated?.Invoke();
     }
+
+    public virtual void Select()
+    {
+
+    }
+
+    public virtual void Deselect()
+    {
+
+    }
 }

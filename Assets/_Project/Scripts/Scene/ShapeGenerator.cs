@@ -39,15 +39,15 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         List<Vector3> points = new List<Vector3>()
         {
-            new Vector3(- halfWidth, halfHeight),
             new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, halfHeight),
             new Vector3(- halfWidth, - halfHeight),
             new Vector3(halfWidth, - halfHeight),
         };
 
         int[] triangles = new int[]{
-            2, 0, 1,
-            2, 1, 3
+            0, 2, 1,
+            0, 3, 2
         };
 
         Mesh mesh = new()
@@ -201,15 +201,15 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         List<Vector3> points = new List<Vector3>()
         {
-            new Vector3(- halfWidth, halfHeight),
             new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, halfHeight),
             new Vector3(- halfWidth, - halfHeight),
             new Vector3(halfWidth, - halfHeight),
         };
 
         int[] triangles = new int[]{
-            2, 0, 1,
-            2, 1, 3
+            0, 2, 1,
+            0, 3, 2
         };
 
         Mesh mesh = new()
@@ -221,5 +221,125 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         meshFilter.sharedMesh = mesh;
         meshRenderer.sharedMaterial = _material;
+    }
+
+    public Mesh GenerateRing(float radius, float width)
+    {
+        float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
+        float innerRadius = radius - width;
+
+        List<Vector3> points = new List<Vector3>();
+        for (int i = 0; i < _totalVert; i++)
+        {
+            float sin = Mathf.Sin(i * 2 * Mathf.PI / _totalVert);
+            float cos = Mathf.Cos(i * 2 * Mathf.PI / _totalVert);
+
+            points.Add(new Vector3(vertRadius * sin, vertRadius * cos, 0f));
+            points.Add(new Vector3(innerRadius * sin, innerRadius * cos, 0f));
+        }
+
+        List<int> trianglesList = new List<int>();
+        int pointCount = _totalVert * 2;
+        for (int i = 0; i < _totalVert; i++)
+        {
+            int startIndex = i * 2;
+            trianglesList.Add(startIndex + 0);
+            trianglesList.Add((startIndex + 2) % pointCount);
+            trianglesList.Add(startIndex + 1);
+
+            trianglesList.Add(startIndex + 1);
+            trianglesList.Add((startIndex + 2) % pointCount);
+            trianglesList.Add((startIndex + 3) % pointCount);
+        }
+        int[] triangles = trianglesList.ToArray();
+
+        Mesh mesh = new()
+        {
+            name = "Ring"
+        };
+        mesh.SetVertices(points);
+        mesh.triangles = triangles;
+
+        return mesh;
+    }
+
+    public void GenerateRingVertices(List<Vector3> vertices, float radius, float width)
+    {
+        vertices.Clear();
+        float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
+        float innerRadius = radius - width;
+
+        for (int i = 0; i < _totalVert; i++)
+        {
+            float sin = Mathf.Sin(i * 2 * Mathf.PI / _totalVert);
+            float cos = Mathf.Cos(i * 2 * Mathf.PI / _totalVert);
+
+            vertices.Add(new Vector3(vertRadius * sin, vertRadius * cos, 0f));
+            vertices.Add(new Vector3(innerRadius * sin, innerRadius * cos, 0f));
+        }
+    }
+
+    public Mesh GenerateBoxBorder(float borderWidth)
+    {
+        Vector2 halfSize = new(0.5f, 0.5f);
+        Vector2 innerHalfSize = halfSize - borderWidth * Vector2.one;
+
+        List<Vector3> points = new()
+        {
+            new Vector3(halfSize.x, halfSize.y),
+            new Vector3(innerHalfSize.x, innerHalfSize.y),
+
+            new Vector3(- halfSize.x, halfSize.y),
+            new Vector3(- innerHalfSize.x, innerHalfSize.y),
+
+            new Vector3(- halfSize.x, - halfSize.y),
+            new Vector3(- innerHalfSize.x, - innerHalfSize.y),
+
+            new Vector3(halfSize.x, - halfSize.y),
+            new Vector3(innerHalfSize.x, - innerHalfSize.y),
+        };
+
+        List<int> triangles = new();
+        int totalPoint = 8;
+        for (int i = 0; i < 4; i++)
+        {
+            int startIndex = i * 2;
+            triangles.Add(startIndex);
+            triangles.Add(startIndex + 1);
+            triangles.Add((startIndex + 3) % totalPoint);
+
+            triangles.Add(startIndex);
+            triangles.Add((startIndex + 3) % totalPoint);
+            triangles.Add((startIndex + 2) % totalPoint);
+        }
+
+        Mesh mesh = new()
+        {
+            name = "Box"
+        };
+        mesh.SetVertices(points);
+        mesh.triangles = triangles.ToArray();
+
+        return mesh;
+    }
+
+    public void GenerateBoxBorder(List<Vector3> vertices, float width, float height, float borderWidth)
+    {
+        vertices.Clear();
+
+        Vector2 halfSize = new(width / 2f, height / 2f);
+        Vector2 innerHalfSize = halfSize - borderWidth * Vector2.one;
+
+        vertices.Add(new Vector3(halfSize.x, halfSize.y));
+        vertices.Add(new Vector3(innerHalfSize.x, innerHalfSize.y));
+
+        vertices.Add(new Vector3(- halfSize.x, halfSize.y));
+        vertices.Add(new Vector3(- innerHalfSize.x, innerHalfSize.y));
+
+        vertices.Add(new Vector3(- halfSize.x, - halfSize.y));
+        vertices.Add(new Vector3(- innerHalfSize.x, - innerHalfSize.y));
+
+        vertices.Add(new Vector3(halfSize.x, - halfSize.y));
+        vertices.Add(new Vector3(innerHalfSize.x, - innerHalfSize.y));
     }
 }

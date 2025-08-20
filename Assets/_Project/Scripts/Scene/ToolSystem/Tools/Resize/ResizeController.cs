@@ -29,11 +29,18 @@ public class ResizeController : Singleton<ResizeController>
     {
         ObjectManager.Instance.OnObjectSelected += OnObjectSelected;
         ObjectManager.Instance.OnObjectDeselected += OnObjectDeselected;
+        // ObjectManager.Instance.OnObjectDeleted += OnObjectDeleted;
+    }
+
+    private void OnObjectDeleted()
+    {
+        
     }
 
     private void OnObjectDeselected()
     {
         _bound.gameObject.SetActive(false);
+        _handler = null;
     }
 
     private void OnObjectSelected(SceneEntity entity)
@@ -64,7 +71,7 @@ public class ResizeController : Singleton<ResizeController>
 
     private void Update()
     {
-        if (!_enabled)
+        if (!_enabled || _handler == null)
         {
             return;
         }

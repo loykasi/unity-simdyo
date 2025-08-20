@@ -6,6 +6,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
     public event UnityAction<SceneEntity> OnObjectSelected;
     public event UnityAction OnObjectDeselected;
+    public event UnityAction OnObjectDeleted;
 
     public List<SceneEntity> SceneEntities = new();
     public SceneEntity SelectedObject { get; set; }
@@ -26,7 +27,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             if (SelectedObject != null)
             {
-                SelectedObject.gameObject.layer = _defaultLayer;
+                // SelectedObject.gameObject.layer = _defaultLayer;
+                SelectedObject.Deselect();
                 SelectedObject = null;
             }
 
@@ -40,7 +42,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         SelectedObject = hit.collider.GetComponent<SceneEntity>();
-        SelectedObject.gameObject.layer = _selectLayer;
+        // SelectedObject.gameObject.layer = _selectLayer;
+        SelectedObject.Select();
 
         OnObjectSelected?.Invoke(SelectedObject);
     }
@@ -57,6 +60,12 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void DeleteEntity(SceneEntity entity)
     {
+        if (SelectedObject == entity)
+        {
+            SelectedObject = null;
+            OnObjectDeselected?.Invoke();
+        }
+
         SceneEntities.Remove(entity);
         Destroy(entity.gameObject);
     }

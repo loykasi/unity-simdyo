@@ -6,10 +6,12 @@ public class CircleEntity : SceneEntity
     public override Bounds Bounds => _bounds;
     private Bounds _bounds = new();
 
-    private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
+    public CircleBorder Border;
 
     public int TotalVert;
     public float Radius;
+
+    private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
     public void SetRadius(float radius, int totalVert)
     {
@@ -55,5 +57,18 @@ public class CircleEntity : SceneEntity
 
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
+
+        Border.SetRadius(Radius);
+    }
+
+    public override void Select()
+    {
+        Border.Enable();
+        Border.SetRadius(Radius);
+    }
+
+    public override void Deselect()
+    {
+        Border.Disable();
     }
 }

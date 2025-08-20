@@ -96,12 +96,12 @@ public class MoveTool : PanTool
 
             selected.Position = _entityStartPosition + moveOffset;
 
-            DebugPoint(center + mouseOffset, Color.black);
-            DebugPoint(top + mouseOffset, Color.black);
-            DebugPoint(bottom + mouseOffset, Color.black);
-            DebugPoint(Vector3Utils.GetGridPosition(center + mouseOffset) + Vector3.left * 0.2f, Color.red);
-            DebugPoint(Vector3Utils.GetGridPosition(top + mouseOffset), Color.red);
-            DebugPoint(Vector3Utils.GetGridPosition(bottom + mouseOffset) + Vector3.right * 0.2f, Color.red);
+            // DebugPoint(center + mouseOffset, Color.black);
+            // DebugPoint(top + mouseOffset, Color.black);
+            // DebugPoint(bottom + mouseOffset, Color.black);
+            // DebugPoint(Vector3Utils.GetGridPosition(center + mouseOffset) + Vector3.left * 0.2f, Color.red);
+            // DebugPoint(Vector3Utils.GetGridPosition(top + mouseOffset), Color.red);
+            // DebugPoint(Vector3Utils.GetGridPosition(bottom + mouseOffset) + Vector3.right * 0.2f, Color.red);
         }
     }
 

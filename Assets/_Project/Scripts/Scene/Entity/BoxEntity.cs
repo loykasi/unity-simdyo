@@ -4,6 +4,7 @@ public class BoxEntity : SceneEntity
 {
     public override EntityType EntityType => EntityType.Box;
 
+    public BoxBorder Border;
     public float Width;
     public float Height;
 
@@ -11,7 +12,7 @@ public class BoxEntity : SceneEntity
     {
         get
         {
-            Vector3 point = transform.position + new Vector3(- Width / 2f, Height / 2f, 0f);
+            Vector3 point = transform.position + new Vector3(-Width / 2f, Height / 2f, 0f);
             return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
         }
     }
@@ -29,7 +30,7 @@ public class BoxEntity : SceneEntity
     {
         get
         {
-            Vector3 point = transform.position + new Vector3(Width / 2f, - Height / 2f, 0f);
+            Vector3 point = transform.position + new Vector3(Width / 2f, -Height / 2f, 0f);
             return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
         }
     }
@@ -38,7 +39,7 @@ public class BoxEntity : SceneEntity
     {
         get
         {
-            Vector3 point = transform.position + new Vector3(- Width / 2f, - Height / 2f, 0f);
+            Vector3 point = transform.position + new Vector3(-Width / 2f, -Height / 2f, 0f);
             return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
         }
     }
@@ -47,7 +48,7 @@ public class BoxEntity : SceneEntity
     {
         get
         {
-            Vector3 point = transform.position + new Vector3(- Width / 2f, 0f, 0f);
+            Vector3 point = transform.position + new Vector3(-Width / 2f, 0f, 0f);
             return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
         }
     }
@@ -74,7 +75,7 @@ public class BoxEntity : SceneEntity
     {
         get
         {
-            Vector3 point = transform.position + new Vector3(0f, - Height / 2f, 0f);
+            Vector3 point = transform.position + new Vector3(0f, -Height / 2f, 0f);
             return Vector3Utils.RotatePointAroundPoint(point, transform.position, transform.rotation);
         }
     }
@@ -91,8 +92,8 @@ public class BoxEntity : SceneEntity
 
         Vector3[] vertices = new Vector3[4]
         {
-            new Vector3(- halfWidth, halfHeight),
             new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, halfHeight),
             new Vector3(- halfWidth, - halfHeight),
             new Vector3(halfWidth, - halfHeight),
         };
@@ -111,8 +112,8 @@ public class BoxEntity : SceneEntity
 
         Vector3[] vertices = new Vector3[4]
         {
-            new Vector3(- halfWidth, halfHeight),
             new Vector3(halfWidth, halfHeight),
+            new Vector3(- halfWidth, halfHeight),
             new Vector3(- halfWidth, - halfHeight),
             new Vector3(halfWidth, - halfHeight),
         };
@@ -120,6 +121,8 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.RecalculateBounds();
 
         ((BoxCollider2D)Collider).size = new Vector2(Width, Height);
+
+        Border.SetBorder(Width, Height);
     }
 
     private void UpdateSize(Vector3 from, Vector3 to)
@@ -133,5 +136,16 @@ public class BoxEntity : SceneEntity
         Vector3 yTop = Vector3Utils.ProjectOnVector(from, transform.position, up);
         Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
         Height = Vector3.Distance(yTop, yBottom);
+    }
+    
+    public override void Select()
+    {
+        Border.Enable();
+        Border.SetBorder(Width, Height);
+    }
+
+    public override void Deselect()
+    {
+        Border.Disable();
     }
 }
