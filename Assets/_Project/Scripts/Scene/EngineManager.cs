@@ -13,9 +13,14 @@ public class EngineManager : Singleton<EngineManager>
     public bool IsRunning => _isRunning;
     private bool _isRunning = false;
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+
     private void Update()
     {
-        UpdateGame();   
+        UpdateGame();
     }
 
     public void Play()

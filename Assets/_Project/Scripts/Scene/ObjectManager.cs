@@ -38,7 +38,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         if (SelectedObject != null)
         {
-            SelectedObject.gameObject.layer = _defaultLayer;
+            SelectedObject.Deselect();
+            // SelectedObject.gameObject.layer = _defaultLayer;
         }
 
         SelectedObject = hit.collider.GetComponent<SceneEntity>();
