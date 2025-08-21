@@ -5,13 +5,16 @@ using UnityEngine;
 public class ListInputField : VariableInput
 {
     public override DataType Type => DataType.List;
+    public string SubType => _subType.ToString();
 
+    [SerializeField] private ListType _subType;
     [SerializeField] private RectTransform _rect;
     [SerializeField] private RectTransform _addButton;
     [SerializeField] private RectTransform _container;
-    [SerializeField] private ListElementInputField _inputElementPrefab;
-    private List<ListElementInputField> _inputElements = new();
-    // private List<string> _input = new();
+
+    [SerializeField] private ListElementInput _inputElementPrefab;
+
+    private List<ListElementInput> _inputElements = new();
     private int _inputCount = 0;
 
     private readonly float _itemHeight = 30f;
@@ -19,12 +22,13 @@ public class ListInputField : VariableInput
     public void Add()
     {
         AddInputField();
-        VariableItem.InsertListItem("");
+        VariableItem.InsertListItem(_inputElements[_inputCount - 1].DefaultValue);
     }
 
     public void AddInputField(object value = null)
     {
-        var element = Instantiate(_inputElementPrefab, _container);
+        ListElementInput element = Instantiate(_inputElementPrefab, _container);;
+        
         float height = element.Rect.sizeDelta.y;
 
         element.Rect.localPosition = new Vector3(0f, -height * _inputCount, 0f);
@@ -88,19 +92,19 @@ public class ListInputField : VariableInput
         VariableItem.RemoveListItem(index);
     }
 
-    private void OnEndEdit(ListElementInputField element, string value)
+    private void OnEndEdit(ListElementInput element, object value)
     {
         Debug.Log($"update index {IndexOfElement(element)} = {value}");
         VariableItem.UpdateListItem(IndexOfElement(element), value);
     }
 
-    private void OnRemove(ListElementInputField element)
+    private void OnRemove(ListElementInput element)
     {
         Debug.Log($"Remove {IndexOfElement(element)}");
         Remove(IndexOfElement(element));
     }
 
-    private int IndexOfElement(ListElementInputField element)
+    private int IndexOfElement(ListElementInput element)
     {
         return _inputElements.IndexOf(element);
     }

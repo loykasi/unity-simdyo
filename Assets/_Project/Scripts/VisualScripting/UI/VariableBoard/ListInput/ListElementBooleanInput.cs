@@ -1,19 +1,17 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class ListElementInputField : ListElementInput
+public class ListElementBooleanInput: ListElementInput
 {
-    public override object DefaultValue => string.Empty;
-
-    public TMP_InputField InputField;
+    public Toggle Toggle;
     public Button RemoveButton;
+
+    public override object DefaultValue => false;
 
     private void Awake()
     {
-        InputField.onEndEdit.AddListener(EndEdit);
+        Toggle.onValueChanged.AddListener(EndEdit);
         RemoveButton.onClick.AddListener(Remove);
     }
 
@@ -22,13 +20,13 @@ public class ListElementInputField : ListElementInput
         OnRemove?.Invoke(this);
     }
 
-    private void EndEdit(string value)
+    private void EndEdit(bool value)
     {
         OnEndEdit?.Invoke(this, value);
     }
 
     public override void SetValue(object value)
     {
-        InputField.SetTextWithoutNotify(value.ToString());
+        Toggle.SetIsOnWithoutNotify((bool)value);
     }
 }

@@ -4,12 +4,14 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class ListElementInputField : ListElementInput
+public class ListElementNumberInputField : ListElementInput
 {
-    public override object DefaultValue => string.Empty;
+    public override object DefaultValue => 0f;
 
     public TMP_InputField InputField;
     public Button RemoveButton;
+
+    private float _value = 0f;
 
     private void Awake()
     {
@@ -24,7 +26,16 @@ public class ListElementInputField : ListElementInput
 
     private void EndEdit(string value)
     {
-        OnEndEdit?.Invoke(this, value);
+        if (float.TryParse(value, out float result))
+        {
+            InputField.text = result.ToString();
+            _value = result;
+        }
+        else
+        {
+            InputField.text = _value.ToString();
+        }
+        OnEndEdit?.Invoke(this, _value);
     }
 
     public override void SetValue(object value)

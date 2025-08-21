@@ -3,10 +3,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IDragHandler
 {
     [SerializeField] private ColorProperty[] _colorProperties;
     private bool _isHover = false;
+    private Vector3 _offsetFromMouse;
 
     private void Update()
     {
@@ -37,5 +38,15 @@ public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerEx
     public void OnPointerExit(PointerEventData eventData)
     {
         _isHover = false;
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        _offsetFromMouse = transform.position - (Vector3)eventData.position;
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        transform.position = (Vector3)eventData.position + _offsetFromMouse;
     }
 }

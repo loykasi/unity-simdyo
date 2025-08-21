@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Loykas.Scripting;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -22,19 +23,10 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private readonly float _verticalPadding = 10f;
     private readonly float _titleAndTypeHeight = 60f;
 
-    private readonly List<string> _supportedTypes = new()
-    {
-        DataType.String.ToString(),
-        DataType.Number.ToString(),
-        DataType.Boolean.ToString(),
-        DataType.Vector.ToString(),
-        DataType.Color.ToString(),
-        DataType.List.ToString()
-    };
-
-    private void Awake()
+    private void Start()
     {
         InitDropDown();
+
         _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
         _removeButton.onClick.AddListener(OnRemove);
 
@@ -51,7 +43,8 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     private void InitDropDown()
     {
-        _typeDropdown.AddOptions(_supportedTypes);
+        
+        _typeDropdown.AddOptions(DataTypeController.Instance.DataTypesDropdownValues);
     }
 
     public void Init(string name, VariableBoard variableBoard)
@@ -72,9 +65,9 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _currentInput.Enable();
     }
 
-    public void Init(string name, DataType type, object value, VariableBoard variableBoard)
+    public void Init(string name, ScriptDataType type, object value, VariableBoard variableBoard)
     {
-        int typeIndex = GetDataTypeIndex(type);
+        int typeIndex = GetDataTypeIndex(type.MainType);
 
         _nameInputField.text = name;
         _typeDropdown.SetValueWithoutNotify(typeIndex);
@@ -128,7 +121,8 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void UpdateListVariable()
     {
-        _vs.UpdateListVariable(_nameInputField.text);
+        var input = (ListInputField)_currentInput;
+        _vs.UpdateListVariable(_nameInputField.text, input.SubType);
     }
 
     public void InsertListItem(object value)
@@ -148,12 +142,13 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         UpdateSize();
     }
 
-    private int GetDataTypeIndex(DataType type)
+    private int GetDataTypeIndex(string type)
     {
-        string typeName = type.ToString();
-        for (int i = 0; i < _supportedTypes.Count; i++)
+        var supportedTypes = DataTypeController.Instance.DataTypes;
+
+        for (int i = 0; i < supportedTypes.Count; i++)
         {
-            if (_supportedTypes[i].Equals(typeName))
+            if (supportedTypes[i].MainType.Equals(type))
             {
                 return i;
             }

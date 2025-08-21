@@ -1,7 +1,8 @@
 
 public class Variable
 {
-    public DataType Type;
+    // public DataType Type;
+    public ScriptDataType Type;
     public object Value;
     private object _default;
 
@@ -11,7 +12,7 @@ public class Variable
 
     public Variable(DataType type, object value)
     {
-        Type = type;
+        Type = new ScriptDataType(type.ToString());
         Value = value;
     }
 

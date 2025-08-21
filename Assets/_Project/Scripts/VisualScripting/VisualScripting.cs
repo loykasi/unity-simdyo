@@ -41,18 +41,18 @@ public class VisualScripting : MonoBehaviour
             connection.Load(this);
         }
 
-        foreach (var item in _variables)
-        {
-            switch (item.Value.Type)
-            {
-                case DataType.Number:
-                    item.Value.Value = float.Parse(item.Value.Value.ToString());
-                    break;
-                case DataType.Boolean:
-                    item.Value.Value = bool.Parse(item.Value.Value.ToString());
-                    break;
-            }
-        }
+        // foreach (var item in _variables)
+        // {
+        //     switch (item.Value.Type.Type)
+        //     {
+        //         case DataType.:
+        //             item.Value.Value = float.Parse(item.Value.Value.ToString());
+        //             break;
+        //         case DataType.Boolean:
+        //             item.Value.Value = bool.Parse(item.Value.Value.ToString());
+        //             break;
+        //     }
+        // }
     }
 
     public void AddNode(ScriptNodeData nodeData)
@@ -141,19 +141,11 @@ public class VisualScripting : MonoBehaviour
 
     public void StartVS()
     {
-        // foreach (var item in _startNodes)
-        // {
-        //     Invoke(item.Exit);
-        // }
         TriggerEvent(EventHook.Start);
     }
 
     public void UpdateVS()
     {
-        // for (int i = 0; i < _updateNodes.Count; i++)
-        // {
-        //     Invoke(_updateNodes[i].Exit);
-        // }
         TriggerEvent(EventHook.Update);
     }
 
@@ -222,7 +214,7 @@ public class VisualScripting : MonoBehaviour
         if (_variables.TryGetValue(name, out Variable variable))
         {
             Debug.Log($"Update variable {name} =  {value}");
-            variable.Type = type;
+            variable.Type.MainType = type.ToString();
             variable.Value = value;
         }
     }
@@ -236,13 +228,24 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
-    public void UpdateListVariable(string name)
+    public void UpdateListVariable(string name, string subType)
     {
         if (_variables.TryGetValue(name, out Variable variable))
         {
-            Debug.Log("UpdateListVariable");
-            variable.Value = new List<string>();
-            variable.Type = DataType.List;
+            switch (subType)
+            {
+                case "String":
+                    variable.Value = new List<string>();
+                    break;
+                case "Number":
+                    variable.Value = new List<float>();
+                    break;
+                case "Boolean":
+                    variable.Value = new List<bool>();
+                    break;
+            }
+            
+            variable.Type.MainType = DataType.List.ToString();
         }
     }
 
@@ -260,7 +263,7 @@ public class VisualScripting : MonoBehaviour
         if (_variables.TryGetValue(name, out Variable variable))
         {
             IList list = (IList)variable.Value;
-            list[index] = (string)value;
+            list[index] = value;
         }
     }
 

@@ -580,9 +580,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7005033901171849764}
-  - component: {fileID: -2271822328959335708}
+  - component: {fileID: 4028082125369693286}
   m_Layer: 5
-  m_Name: ListItemInput
+  m_Name: ListItemInput_number
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -609,7 +609,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 175, y: 30}
   m_Pivot: {x: 0, y: 1}
---- !u!114 &-2271822328959335708
+--- !u!114 &4028082125369693286
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -618,7 +618,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3953525446476777397}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e77256752e6384f40940571257ce82fe, type: 3}
+  m_Script: {fileID: 11500000, guid: 03e48d53d985d4a43b0b71d65a582c5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Rect: {fileID: 7005033901171849764}
