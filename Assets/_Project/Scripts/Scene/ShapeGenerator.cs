@@ -23,6 +23,11 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         float width = Mathf.Abs(from.x - to.x);
         float height = Mathf.Abs(from.y - to.y);
 
+        if (width == 0 || height == 0)
+        {
+            return null;
+        }
+
         return AddBox(position, width, height);
     }
 

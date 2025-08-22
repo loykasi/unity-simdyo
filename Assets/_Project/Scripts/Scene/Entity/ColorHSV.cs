@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public struct ColorHSV
 {
     public float H;
@@ -11,5 +13,19 @@ public struct ColorHSV
         S = s;
         V = v;
         A = a;
+    }
+
+    public ColorHSV(Color color)
+    {
+        Color.RGBToHSV(color, out H, out S, out V);
+        A = color.a;
+    }
+
+
+    public readonly Color ToUnityColor()
+    {
+        Color color = Color.HSVToRGB(H, S, V);
+        color.a = A;
+        return color;
     }
 }
