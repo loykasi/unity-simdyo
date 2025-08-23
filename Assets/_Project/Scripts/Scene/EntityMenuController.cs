@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using SFB;
 using UnityEngine;
 
 public class EntityMenuController : MonoBehaviour
@@ -28,7 +30,7 @@ public class EntityMenuController : MonoBehaviour
             _entity.OnPropertyUpdated -= OnPropertyUpdated;
             _entity = null;
         }
-        
+
         _menu.gameObject.SetActive(false);
     }
 
@@ -80,5 +82,23 @@ public class EntityMenuController : MonoBehaviour
         ObjectManager.Instance.DeleteEntity(_entity);
         _entity = null;
         _menu.gameObject.SetActive(false);
+    }
+
+    public void UpdatePosition(float x, float y)
+    {
+        _entity.Position = new Vector3(x, y);
+    }
+
+    public void UpdateAngle(float angle)
+    {
+        _entity.Angle = angle;
+    }
+
+    public void ChooseTexture()
+    {
+        if (AssetController.Instance.TryChooseTextureFile(out Texture2D texture))
+        {
+            _entity.SetTexture(texture);
+        }
     }
 }

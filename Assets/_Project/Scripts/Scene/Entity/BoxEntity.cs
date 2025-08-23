@@ -137,7 +137,7 @@ public class BoxEntity : SceneEntity
         Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
         Height = Vector3.Distance(yTop, yBottom);
     }
-    
+
     public override void Select()
     {
         Border.Enable();

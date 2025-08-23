@@ -36,6 +36,7 @@ public class SceneMenu : MonoBehaviour
         else
         {
             _positionXInput.SetTextWithoutNotify(_settings.Position.x.ToString());
+            result = _settings.Position.x;
         }
         _controller.UpdatePosition(result, _settings.Position.y);
     }
@@ -49,6 +50,7 @@ public class SceneMenu : MonoBehaviour
         else
         {
             _positionYInput.SetTextWithoutNotify(_settings.Position.y.ToString());
+            result = _settings.Position.y;
         }
         _controller.UpdatePosition(_settings.Position.x, result);
     }
@@ -62,6 +64,7 @@ public class SceneMenu : MonoBehaviour
         else
         {
             _positionYInput.SetTextWithoutNotify(_settings.Size.ToString());
+            result = _settings.Size;
         }
         _controller.UpdateSize(result);
     }

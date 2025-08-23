@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GameCore.Extensions;
 using UnityEngine;
 
 public class ShapeGenerator : Singleton<ShapeGenerator>
@@ -11,6 +12,14 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
     [SerializeField] private int _totalVert;
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
+
+    private List<Vector3> _boxPoints = new List<Vector3>();
+    private int[] _boxTriangles = new int[6];
+    private Vector2[] _boxUV = new Vector2[4];
+
+    private List<Vector3> _circlePoints = new List<Vector3>();
+    private List<int> _circleTriangles = new List<int>();
+    private List<Vector2> _circleUV = new List<Vector2>();
 
     public BoxEntity AddBox(Vector3 from, Vector3 to)
     {
@@ -33,34 +42,24 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
     public BoxEntity AddBox(Vector3 position, float width, float height)
     {
-
         BoxEntity sceneEntity = Instantiate(_boxEntityPrefab);
+        
         sceneEntity.name = "Box";
-
-        float halfWidth = width / 2f;
-        float halfHeight = height / 2f;
-
         sceneEntity.transform.position = position;
 
-        List<Vector3> points = new List<Vector3>()
-        {
-            new Vector3(halfWidth, halfHeight),
-            new Vector3(- halfWidth, halfHeight),
-            new Vector3(- halfWidth, - halfHeight),
-            new Vector3(halfWidth, - halfHeight),
-        };
+        Vector2 halfSize = new(width / 2f, height / 2f);
 
-        int[] triangles = new int[]{
-            0, 2, 1,
-            0, 3, 2
-        };
+        GenerateBoxVertices(halfSize);
+        GenerateBoxTriangles();
+        GenerateBoxUV();
 
         Mesh mesh = new()
         {
             name = "Quad"
         };
-        mesh.SetVertices(points);
-        mesh.triangles = triangles;
+        mesh.SetVertices(_boxPoints);
+        mesh.triangles = _boxTriangles;
+        mesh.uv = _boxUV;
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _material;
@@ -73,6 +72,37 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         return sceneEntity;
     }
 
+    private void GenerateBoxVertices(Vector2 halfSize)
+    {
+        _boxPoints.Clear();
+        _boxPoints.Add(new Vector3(halfSize.x, halfSize.y));
+        _boxPoints.Add(new Vector3(- halfSize.x, halfSize.y));
+        _boxPoints.Add(new Vector3(- halfSize.x, - halfSize.y));
+        _boxPoints.Add(new Vector3(halfSize.x, - halfSize.y));
+    }
+
+    private void GenerateBoxTriangles()
+    {
+        System.Array.Clear(_boxTriangles, 0, _boxTriangles.Length);
+        _boxTriangles[0] = 0;
+        _boxTriangles[1] = 2;
+        _boxTriangles[2] = 1;
+        _boxTriangles[3] = 0;
+        _boxTriangles[4] = 3;
+        _boxTriangles[5] = 2;
+    }
+
+    private void GenerateBoxUV()
+    {
+        System.Array.Clear(_boxUV, 0, _boxUV.Length);
+        _boxUV[0] = new Vector2(1f, 1f);
+        _boxUV[1] = new Vector2(0f, 1f);
+        _boxUV[2] = new Vector2(0f, 0f);
+        _boxUV[3] = new Vector2(1f, 0f);
+    }
+
+
+    // ==== CIRCLE ====
     public CircleEntity AddCircle(Vector3 from, Vector3 to)
     {
         if (from == to)
@@ -93,29 +123,17 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.transform.position = position;
 
         float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
-        List<Vector3> points = new List<Vector3>();
-        for (int i = 0; i < _totalVert; i++)
-        {
-            float x = vertRadius * Mathf.Sin(i * 2 * Mathf.PI / _totalVert);
-            float y = vertRadius * Mathf.Cos(i * 2 * Mathf.PI / _totalVert);
-            points.Add(new Vector3(x, y, 0f));
-        }
-
-        List<int> trianglesList = new List<int>();
-        for (int i = 0; i < _totalVert - 2; i++)
-        {
-            trianglesList.Add(0);
-            trianglesList.Add(i + 1);
-            trianglesList.Add(i + 2);
-        }
-        int[] triangles = trianglesList.ToArray();
+        GenerateCircleVertices(vertRadius);
+        GenerateCircleTriangles();
+        GenerateCircleUV();
 
         Mesh mesh = new()
         {
             name = "Circle"
         };
-        mesh.SetVertices(points);
-        mesh.triangles = triangles;
+        mesh.SetVertices(_circlePoints);
+        mesh.triangles = _circleTriangles.ToArray();
+        mesh.uv = _circleUV.ToArray();
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _circleMaterial;
@@ -127,6 +145,43 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         Physics2D.SyncTransforms();
 
         return sceneEntity;
+    }
+
+    private void GenerateCircleVertices(float radius)
+    {
+        _circlePoints.Clear();
+        for (int i = 0; i < _totalVert; i++)
+        {
+            float angle = i * 2 * Mathf.PI / _totalVert;
+            float x = radius * Mathf.Sin(angle);
+            float y = radius * Mathf.Cos(angle);
+            _circlePoints.Add(new Vector3(x, y, 0f));
+        }
+    }
+
+    private void GenerateCircleTriangles()
+    {
+        _circleTriangles.Clear();
+        for (int i = 0; i < _totalVert - 2; i++)
+        {
+            _circleTriangles.Add(0);
+            _circleTriangles.Add(i + 1);
+            _circleTriangles.Add(i + 2);
+        }
+    }
+
+    private void GenerateCircleUV()
+    {
+        _circleUV.Clear();
+        for (int i = 0; i < _totalVert; i++)
+        {
+            float angle = i * 2 * Mathf.PI / _totalVert;
+            float x = 1f * Mathf.Sin(angle);
+            float y = 1f * Mathf.Cos(angle);
+            x = x.MapRange(-1f, 1, 0f, 1f);
+            y = y.MapRange(-1f, 1, 0f, 1f);
+            _circleUV.Add(new Vector3(x, y, 0f));
+        }
     }
 
     private ColorHSV GetRandomColor()

@@ -23,9 +23,15 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private float _spaceBetweenLayer;
     private CollisionLayerToggle[] _collisionLayerToggles;
 
+    private SceneEntity _entity;
+
     private void Awake()
     {
         CreateCollisionLayerMenu();
+
+        _positionXInput.onEndEdit.AddListener(OnEditX);
+        _positionYInput.onEndEdit.AddListener(OnEditY);
+        _angleInput.onEndEdit.AddListener(OnEditAngle);
     }
 
     private void CreateCollisionLayerMenu()
@@ -60,6 +66,7 @@ public class EntityMenu : MonoBehaviour
 
     public void Init(SceneEntity entity)
     {
+        _entity = entity;
         _positionXInput.SetTextWithoutNotify(entity.transform.position.x.ToString());
         _positionYInput.SetTextWithoutNotify(entity.transform.position.y.ToString());
 
@@ -110,5 +117,52 @@ public class EntityMenu : MonoBehaviour
     public void Delete()
     {
         _controller.Delete();
+    }
+
+    public void OnEditX(string value)
+    {
+        if (float.TryParse(value, out float result))
+        {
+            _positionXInput.SetTextWithoutNotify(result.ToString());
+        }
+        else
+        {
+            _positionXInput.SetTextWithoutNotify(_entity.Position.x.ToString());
+            result = _entity.Position.x;
+        }
+        _controller.UpdatePosition(result, _entity.Position.y);
+    }
+
+    public void OnEditY(string value)
+    {
+        if (float.TryParse(value, out float result))
+        {
+            _positionYInput.SetTextWithoutNotify(result.ToString());
+        }
+        else
+        {
+            _positionYInput.SetTextWithoutNotify(_entity.Position.y.ToString());
+            result = _entity.Position.y;
+        }
+        _controller.UpdatePosition(_entity.Position.x, result);
+    }
+
+    public void OnEditAngle(string value)
+    {
+        if (float.TryParse(value, out float result))
+        {
+            _positionYInput.SetTextWithoutNotify(result.ToString());
+        }
+        else
+        {
+            _positionYInput.SetTextWithoutNotify(_entity.Angle.ToString());
+            result = _entity.Angle;
+        }
+        _controller.UpdateAngle(result);
+    }
+
+    public void ChooseTexture()
+    {
+        _controller.ChooseTexture();
     }
 }

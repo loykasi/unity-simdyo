@@ -76,6 +76,8 @@ public class SceneEntity : MonoBehaviour
 
     private SceneEntityState _defaultState = new();
 
+    private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
+
     private void Awake()
     {
         InstanceID = Collider.GetInstanceID();
@@ -186,5 +188,10 @@ public class SceneEntity : MonoBehaviour
     public virtual void Deselect()
     {
 
+    }
+
+    public virtual void SetTexture(Texture2D texture)
+    {
+        Renderer.material.SetTexture(_textureProperty, texture);
     }
 }
