@@ -96,9 +96,31 @@ public class EntityMenuController : MonoBehaviour
 
     public void ChooseTexture()
     {
-        if (AssetController.Instance.TryChooseTextureFile(out Texture2D texture))
+        AssetController.Instance.OpenTextureMenu(_entity);
+        // if (AssetController.Instance.TryChooseTextureFile(out Texture2D texture))
+        // {
+        //     _entity.SetTexture(texture);
+        // }
+    }
+
+    public void UpdateSize(float width, float height)
+    {
+        if (_entity.EntityType != EntityType.Box)
         {
-            _entity.SetTexture(texture);
+            return;
         }
+
+        ((BoxEntity)_entity).Width = width;
+        ((BoxEntity)_entity).Height = height;
+    }
+
+    public void UpdateRadius(float radius)
+    {
+        if (_entity.EntityType != EntityType.Circle)
+        {
+            return;
+        }
+
+        ((CircleEntity)_entity).Radius = radius;
     }
 }

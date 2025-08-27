@@ -1,13 +1,18 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NumberInput : MonoBehaviour
 {
+    public event UnityAction<float> OnSubmit;
+
     public RectTransform Rect;
     public TMP_InputField InputField;
     public float MinWidth = 50f;
     public float MaxWidth = 200f;
+
+    private float _value;
 
     private readonly float _horizontalPadding = 20f;
 
@@ -15,11 +20,17 @@ public class NumberInput : MonoBehaviour
     {
         InputField.onValueChanged.AddListener(OnValueChanged);
         InputField.onValidateInput += ValidateInput;
+        InputField.onEndEdit.AddListener(OnEndEdit);
+    }
+
+    public void RegíterOnEndEdit()
+    {
+        
     }
 
     private char ValidateInput(string text, int charIndex, char addedChar)
     {
-        if (char.IsNumber(addedChar))
+        if (char.IsNumber(addedChar) || addedChar == '.')
         {
             return addedChar;
         }
@@ -38,8 +49,13 @@ public class NumberInput : MonoBehaviour
         );
     }
 
-    public string GetValue()
+    private void OnEndEdit(string value)
     {
-        return InputField.text;
+        if (float.TryParse(value, out float parsedValue))
+        {
+            _value = parsedValue;
+        }
+        
+        OnSubmit?.Invoke(_value);
     }
 }

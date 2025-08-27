@@ -16,6 +16,15 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private Toggle _colliderToggle;
     [SerializeField] private Image _buttonColor;
 
+    [Header("Box")]
+    [SerializeField] private GameObject _boxMenu;
+    [SerializeField] private TMP_InputField _widthInput;
+    [SerializeField] private TMP_InputField _heightInput;
+
+    [Header("Circle")]
+    [SerializeField] private GameObject _circleMenu;
+    [SerializeField] private TMP_InputField _radiusInput;
+
     [Header("Collision layers")]
     [SerializeField] private CollisionLayerToggle _layerTogglePrefab;
     [SerializeField] private Transform _layerHolder;
@@ -81,6 +90,23 @@ public class EntityMenu : MonoBehaviour
             var toogle = _collisionLayerToggles[i];
             bool isSelected = (entity.Layer & toogle.Layer) != 0;
             toogle.SetState(isSelected);
+        }
+
+        switch (entity.EntityType)
+        {
+            case EntityType.Box:
+                _boxMenu.SetActive(true);
+                _circleMenu.SetActive(false);
+
+                _widthInput.text = ((BoxEntity)entity).Width.ToString();
+                _heightInput.text = ((BoxEntity)entity).Height.ToString();
+                break;
+            case EntityType.Circle:
+                _boxMenu.SetActive(false);
+                _circleMenu.SetActive(true);
+
+                _radiusInput.text = ((CircleEntity)entity).Radius.ToString();
+                break;
         }
     }
 
