@@ -5,8 +5,11 @@ using SFB;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AssetController : Singleton<AssetController>
+public class AssetController : Singleton<AssetController>, ISaveable
 {
+    public int SaveLoadOrder { get; set; } = -1;
+    public List<Texture2D> Textures => _textures;
+
     [SerializeField] private UITextureSlot _textureSlotPrefab;
     [SerializeField] private Transform _slotContainer;
     [SerializeField] private GameObject _textureMenu;
@@ -45,11 +48,15 @@ public class AssetController : Singleton<AssetController>
             return;
         }
 
-        var textureSlot = Instantiate(_textureSlotPrefab, _slotContainer);
         int index = _textures.Count;
-        textureSlot.Init(index, texture);
-
+        AddTextureSlotUI(index, texture);
         _textures.Add(texture);
+    }
+
+    private void AddTextureSlotUI(int index, Texture2D texture)
+    {
+        var textureSlot = Instantiate(_textureSlotPrefab, _slotContainer);
+        textureSlot.Init(index, texture);
         _textureSlots.Add(textureSlot);
     }
 
@@ -93,7 +100,7 @@ public class AssetController : Singleton<AssetController>
         }
 
         Texture2D texture = _textures[_currentIndex];
-        _entity.SetTexture(texture);
+        _entity.SetTexture(_currentIndex, texture);
 
         CloseTextureMenu();
     }
@@ -129,5 +136,25 @@ public class AssetController : Singleton<AssetController>
         byte[] data = File.ReadAllBytes(path);
 
         return data;
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.Textures = Textures;
+    }
+
+    public void LoadData(GameData data)
+    {
+        _textures = data.Textures;
+        foreach (var slot in _textureSlots)
+        {
+            Destroy(slot.gameObject);
+        }
+        _textureSlots.Clear();
+
+        for (int i = 0; i < data.Textures.Count; i++)
+        {
+            AddTextureSlotUI(i, data.Textures[i]);
+        }
     }
 }

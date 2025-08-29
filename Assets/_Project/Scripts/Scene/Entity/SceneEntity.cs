@@ -44,6 +44,7 @@ public class SceneEntity : MonoBehaviour
     public Rigidbody2D Rigidbody;
     public VisualScripting Script;
     public CollisionLayer Layer;
+    public int TextureSlot;
 
     public virtual Bounds Bounds => Renderer.bounds;
 
@@ -190,8 +191,9 @@ public class SceneEntity : MonoBehaviour
 
     }
 
-    public virtual void SetTexture(Texture2D texture)
+    public virtual void SetTexture(int slot, Texture2D texture)
     {
+        TextureSlot = slot;
         Renderer.material.SetTexture(_textureProperty, texture);
     }
 }

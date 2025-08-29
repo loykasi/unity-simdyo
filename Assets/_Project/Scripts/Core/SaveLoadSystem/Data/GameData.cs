@@ -1,6 +1,8 @@
-[System.Serializable]
+using System.Collections.Generic;
+using UnityEngine;
+
 public class GameData
 {
-    public string Name;
-    public EntityCollectionData entityCollection;
+    public SceneData Scene = new();
+    public List<Texture2D> Textures;
 }

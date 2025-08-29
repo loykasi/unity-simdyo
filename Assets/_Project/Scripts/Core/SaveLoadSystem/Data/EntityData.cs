@@ -7,5 +7,6 @@ public class EntityData
     public Vector3 Position;
     public Quaternion Rotation;
     public ColorHSV Color;
+    public int TextureSlot;
     public ScriptElementData Script = new();
 }

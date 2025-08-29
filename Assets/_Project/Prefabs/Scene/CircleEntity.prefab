@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8919895637037581771}
   - component: {fileID: 6107491744915755768}
   - component: {fileID: 6814204029509351015}
+  - component: {fileID: 1096253040688666612}
   m_Layer: 0
   m_Name: Border
   m_TagString: Untagged
@@ -101,6 +102,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!210 &1096253040688666612
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 995440466220948019}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
+  m_SortAtRoot: 0
 --- !u!1 &5878413833723873913
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +171,7 @@ MonoBehaviour:
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
   Layer: 1
+  TextureSlot: 0
   Border: {fileID: 8919895637037581771}
   TotalVert: 0
   Radius: 0

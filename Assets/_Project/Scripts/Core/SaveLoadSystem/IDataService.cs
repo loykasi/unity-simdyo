@@ -1,5 +1,8 @@
+using System.Collections.Generic;
+using UnityEngine;
+
 public interface IDataService
 {
-    void Save(GameData data);
-    GameData Load(string name);
+    void Save(string name, GameData data);
+    void Load(string name, GameData data);
 }

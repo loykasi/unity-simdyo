@@ -10,6 +10,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public List<SceneEntity> SceneEntities = new();
     public SceneEntity SelectedObject { get; set; }
+    public int SaveLoadOrder { get; set; } = 0;
 
     [SerializeField] private float _selectRadius;
     [SerializeField] private int _defaultLayer;
@@ -73,7 +74,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void SaveData(GameData data)
     {
-        data.entityCollection.Entities.Clear();
+        data.Scene.Entities.Clear();
         foreach (var entity in SceneEntities)
         {
             EntityData entityData = entity.EntityType switch
@@ -89,15 +90,18 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 },
                 _ => new(),
             };
+
             entityData.Type = entity.EntityType;
             entityData.Position = entity.transform.position;
             entityData.Rotation = entity.transform.rotation;
             entityData.Color = entity.CurrentColor;
+            entityData.TextureSlot = entity.TextureSlot;
+
             entityData.Script.Nodes = entity.Script.Nodes;
             entityData.Script.Connections = entity.Script.Connections;
             entityData.Script.Variables = entity.Script.Variables;
 
-            data.entityCollection.Entities.Add(entityData);
+            data.Scene.Entities.Add(entityData);
         }
     }
 
@@ -109,7 +113,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         SceneEntities.Clear();
 
-        foreach (var entity in data.entityCollection.Entities)
+        Debug.Log(data.Scene.Entities.Count);
+
+        foreach (var entity in data.Scene.Entities)
         {
             switch (entity.Type)
             {
@@ -117,6 +123,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     BoxEntityData boxData = (BoxEntityData)entity;
                     BoxEntity box = ShapeGenerator.Instance.AddBox(entity.Position, boxData.Width, boxData.Height);
                     box.CurrentColor = boxData.Color;
+                    box.SetTexture(boxData.TextureSlot, AssetController.Instance.Textures[boxData.TextureSlot]);
                     box.Script.Nodes.AddRange(entity.Script.Nodes);
                     box.Script.Connections.AddRange(entity.Script.Connections);
                     box.Script.Variables = entity.Script.Variables;
@@ -125,6 +132,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     CircleEntityData circleData = (CircleEntityData)entity;
                     CircleEntity circle = ShapeGenerator.Instance.AddCircle(circleData.Position, circleData.Radius);
                     circle.CurrentColor = circleData.Color;
+                    circle.SetTexture(circleData.TextureSlot, AssetController.Instance.Textures[circleData.TextureSlot]);
+                    circle.TextureSlot = circleData.TextureSlot;
                     circle.Script.Nodes = entity.Script.Nodes;
                     circle.Script.Connections = entity.Script.Connections;
                     circle.Script.Variables = entity.Script.Variables;

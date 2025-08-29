@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class SaveLoadSystem : Singleton<SaveLoadSystem>
 {
-    public GameData GameData = new();
+    public string Name = "GameScene";
+    private GameData _gameData = new();
     private IDataService _dataService = new DataService(new JsonSerializer());
     private List<ISaveable> _saveables;
 
@@ -12,25 +13,26 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
     {
         base.Awake();
         _saveables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<ISaveable>().ToList();
+        _saveables.Sort((s1, s2) => s1.SaveLoadOrder.CompareTo(s2.SaveLoadOrder));
     }
 
     public void SaveScene()
     {
         foreach (var item in _saveables)
         {
-            item.SaveData(GameData);
+            item.SaveData(_gameData);
         }
-        _dataService.Save(GameData);
+
+        _dataService.Save(Name, _gameData);
     }
 
     public void LoadScene()
     {
-        string name = GameData.Name;
-        GameData = _dataService.Load(name);
+        _dataService.Load(Name, _gameData);
 
         foreach (var item in _saveables)
         {
-            item.LoadData(GameData);
+            item.LoadData(_gameData);
         }
     }
 }

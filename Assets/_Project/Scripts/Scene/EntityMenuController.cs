@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-using SFB;
 using UnityEngine;
 
 public class EntityMenuController : MonoBehaviour
