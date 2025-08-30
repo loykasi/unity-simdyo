@@ -9,38 +9,35 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private EntityMenuController _controller;
 
     [Header("Menu")]
-    [SerializeField] private TMP_InputField _positionXInput;
-    [SerializeField] private TMP_InputField _positionYInput;
-    [SerializeField] private TMP_InputField _angleInput;
+    [SerializeField] private MenuVectorInput _positionInput;
+    [SerializeField] private MenuNumberInput _angleInput;
     [SerializeField] private Toggle _gravityToggle;
     [SerializeField] private Toggle _colliderToggle;
     [SerializeField] private Image _buttonColor;
 
     [Header("Box")]
     [SerializeField] private GameObject _boxMenu;
-    [SerializeField] private TMP_InputField _widthInput;
-    [SerializeField] private TMP_InputField _heightInput;
+    [SerializeField] private MenuNumberInput _widthInput;
+    [SerializeField] private MenuNumberInput _heightInput;
 
     [Header("Circle")]
     [SerializeField] private GameObject _circleMenu;
-    [SerializeField] private TMP_InputField _radiusInput;
+    [SerializeField] private MenuNumberInput _radiusInput;
 
     [Header("Collision layers")]
+    [SerializeField] private RectTransform _collisionLayer;
     [SerializeField] private CollisionLayerToggle _layerTogglePrefab;
     [SerializeField] private Transform _layerHolder;
     [SerializeField] private int _totalLayerPerRow;
     [SerializeField] private float _spaceBetweenLayer;
     private CollisionLayerToggle[] _collisionLayerToggles;
 
-    private SceneEntity _entity;
-
     private void Awake()
     {
         CreateCollisionLayerMenu();
 
-        _positionXInput.onEndEdit.AddListener(OnEditX);
-        _positionYInput.onEndEdit.AddListener(OnEditY);
-        _angleInput.onEndEdit.AddListener(OnEditAngle);
+        _positionInput.OnSubmit += OnPositionSubmit;
+        _angleInput.OnSubmit += OnAngleSubmit;
     }
 
     private void CreateCollisionLayerMenu()
@@ -71,15 +68,16 @@ public class EntityMenu : MonoBehaviour
             _collisionLayerToggles[i] = layerToggle;
             i++;
         }
+
+        int totalRow = layers.Length / _totalLayerPerRow;
+        float height = totalRow * 30f + totalRow * _spaceBetweenLayer;
+        _collisionLayer.sizeDelta = new(_collisionLayer.sizeDelta.x, _collisionLayer.sizeDelta.y + height);
     }
 
     public void Init(SceneEntity entity)
     {
-        _entity = entity;
-        _positionXInput.SetTextWithoutNotify(entity.transform.position.x.ToString());
-        _positionYInput.SetTextWithoutNotify(entity.transform.position.y.ToString());
-
-        _angleInput.SetTextWithoutNotify(entity.transform.eulerAngles.z.ToString());
+        _positionInput.SetValue(entity.Position);
+        _angleInput.SetValue(entity.Angle);
 
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
@@ -97,15 +95,17 @@ public class EntityMenu : MonoBehaviour
             case EntityType.Box:
                 _boxMenu.SetActive(true);
                 _circleMenu.SetActive(false);
+                BoxEntity boxEntity = (BoxEntity)entity;
 
-                _widthInput.text = ((BoxEntity)entity).Width.ToString();
-                _heightInput.text = ((BoxEntity)entity).Height.ToString();
+                _widthInput.SetValue(boxEntity.Width);
+                _heightInput.SetValue(boxEntity.Height);
                 break;
             case EntityType.Circle:
                 _boxMenu.SetActive(false);
                 _circleMenu.SetActive(true);
 
-                _radiusInput.text = ((CircleEntity)entity).Radius.ToString();
+                CircleEntity circleEntity = (CircleEntity)entity;
+                _radiusInput.SetValue(circleEntity.Radius);
                 break;
         }
     }
@@ -113,6 +113,16 @@ public class EntityMenu : MonoBehaviour
     public void UpdateMenu(SceneEntity entity)
     {
         _buttonColor.color = entity.UnityColor;
+    }
+
+    private void OnPositionSubmit(Vector3 value)
+    {
+        _controller.UpdatePosition(value.x, value.y);
+    }
+
+    private void OnAngleSubmit(float value)
+    {
+        _controller.UpdateAngle(value);
     }
 
     public void ToggleGravity(bool value)
@@ -143,48 +153,6 @@ public class EntityMenu : MonoBehaviour
     public void Delete()
     {
         _controller.Delete();
-    }
-
-    public void OnEditX(string value)
-    {
-        if (float.TryParse(value, out float result))
-        {
-            _positionXInput.SetTextWithoutNotify(result.ToString());
-        }
-        else
-        {
-            _positionXInput.SetTextWithoutNotify(_entity.Position.x.ToString());
-            result = _entity.Position.x;
-        }
-        _controller.UpdatePosition(result, _entity.Position.y);
-    }
-
-    public void OnEditY(string value)
-    {
-        if (float.TryParse(value, out float result))
-        {
-            _positionYInput.SetTextWithoutNotify(result.ToString());
-        }
-        else
-        {
-            _positionYInput.SetTextWithoutNotify(_entity.Position.y.ToString());
-            result = _entity.Position.y;
-        }
-        _controller.UpdatePosition(_entity.Position.x, result);
-    }
-
-    public void OnEditAngle(string value)
-    {
-        if (float.TryParse(value, out float result))
-        {
-            _positionYInput.SetTextWithoutNotify(result.ToString());
-        }
-        else
-        {
-            _positionYInput.SetTextWithoutNotify(_entity.Angle.ToString());
-            result = _entity.Angle;
-        }
-        _controller.UpdateAngle(result);
     }
 
     public void ChooseTexture()

@@ -23,14 +23,15 @@ public class NumberInput : MonoBehaviour
         InputField.onEndEdit.AddListener(OnEndEdit);
     }
 
-    public void RegíterOnEndEdit()
+    public void SetValue(float value)
     {
-        
+        _value = value;
+        InputField.SetTextWithoutNotify(_value.ToString());
     }
 
     private char ValidateInput(string text, int charIndex, char addedChar)
     {
-        if (char.IsNumber(addedChar) || addedChar == '.')
+        if (char.IsNumber(addedChar) || addedChar == '.' || addedChar == '-' || addedChar == '+')
         {
             return addedChar;
         }
