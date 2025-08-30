@@ -214,7 +214,7 @@ public class VisualScripting : MonoBehaviour
         if (_variables.TryGetValue(name, out Variable variable))
         {
             Debug.Log($"Update variable {name} =  {value}");
-            variable.Type.MainType = type.ToString();
+            variable.Type = type;
             variable.Value = value;
         }
     }
@@ -228,24 +228,27 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
-    public void UpdateListVariable(string name, string subType)
+    public void UpdateListVariable(string name, ListType subType)
     {
         if (_variables.TryGetValue(name, out Variable variable))
         {
             switch (subType)
             {
-                case "String":
+                case ListType.String:
+                    variable.SubType = ListType.String;
                     variable.Value = new List<string>();
                     break;
-                case "Number":
+                case ListType.Number:
+                    variable.SubType = ListType.Number;
                     variable.Value = new List<float>();
                     break;
-                case "Boolean":
+                case ListType.Boolean:
+                    variable.SubType = ListType.Boolean;
                     variable.Value = new List<bool>();
                     break;
             }
-            
-            variable.Type.MainType = DataType.List.ToString();
+
+            variable.Type = DataType.List;
         }
     }
 

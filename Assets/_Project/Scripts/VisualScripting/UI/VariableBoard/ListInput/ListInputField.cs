@@ -5,7 +5,7 @@ using UnityEngine;
 public class ListInputField : VariableInput
 {
     public override DataType Type => DataType.List;
-    public string SubType => _subType.ToString();
+    public ListType SubType => _subType;
 
     [SerializeField] private ListType _subType;
     [SerializeField] private RectTransform _rect;

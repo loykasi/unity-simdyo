@@ -7,7 +7,7 @@ public class DataService : IDataService
 {
     private ISerializer _serializer;
 
-    private readonly string _dataPath = "C:\\Users\\Admin\\Desktop\\_\\playground";
+    private readonly string _dataPath = "C:\\Users\\Admin\\Desktop\\_\\playground\\unity";
 
     private readonly string _dataExtension = ".zip";
     private readonly string _sceneExtension = ".json";
@@ -40,7 +40,15 @@ public class DataService : IDataService
             using (Stream stream = entry.Open())
             {
                 using StreamWriter streamWriter = new(stream);
-                streamWriter.Write(_serializer.Serialize(data.Scene));
+                string serializedData = _serializer.Serialize(data.Scene);
+                streamWriter.Write(serializedData);
+
+                // Debug purpose
+                File.WriteAllText
+                (
+                    Path.Combine(_dataPath, string.Concat("scene", _sceneExtension)),
+                    serializedData
+                );
             }
 
             var textureFolder = archive.CreateEntry("textures/");

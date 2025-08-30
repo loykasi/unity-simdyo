@@ -43,7 +43,11 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     private void InitDropDown()
     {
-        
+        if (_typeDropdown.options.Count != 0)
+        {
+            return;
+        }
+
         _typeDropdown.AddOptions(DataTypeController.Instance.DataTypesDropdownValues);
     }
 
@@ -65,9 +69,11 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _currentInput.Enable();
     }
 
-    public void Init(string name, ScriptDataType type, object value, VariableBoard variableBoard)
+    public void Init(string name, DataType type, ListType? subType, object value, VariableBoard variableBoard)
     {
-        int typeIndex = GetDataTypeIndex(type.MainType);
+        InitDropDown();
+
+        int typeIndex = GetDataTypeIndex(type, subType);
 
         _nameInputField.text = name;
         _typeDropdown.SetValueWithoutNotify(typeIndex);
@@ -142,18 +148,24 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         UpdateSize();
     }
 
-    private int GetDataTypeIndex(string type)
+    private int GetDataTypeIndex(DataType type, ListType? subtype)
     {
-        var supportedTypes = DataTypeController.Instance.DataTypes;
-
-        for (int i = 0; i < supportedTypes.Count; i++)
+        return type switch
         {
-            if (supportedTypes[i].MainType.Equals(type))
+            DataType.String => 0,
+            DataType.Number => 1,
+            DataType.Boolean => 2,
+            DataType.Vector => 3,
+            DataType.Color => 4,
+            DataType.List => subtype switch
             {
-                return i;
-            }
-        }
-        return 0;
+                ListType.String => 5,
+                ListType.Number => 6,
+                ListType.Boolean => 7,
+                _ => throw new NotImplementedException(),
+            },
+            _ => throw new NotImplementedException(),
+        };
     }
 
     private void OnRemove()

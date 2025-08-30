@@ -123,7 +123,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     BoxEntityData boxData = (BoxEntityData)entity;
                     BoxEntity box = ShapeGenerator.Instance.AddBox(entity.Position, boxData.Width, boxData.Height);
                     box.CurrentColor = boxData.Color;
-                    box.SetTexture(boxData.TextureSlot, AssetController.Instance.Textures[boxData.TextureSlot]);
+                    if (boxData.TextureSlot != -1)
+                    {
+                        box.SetTexture(boxData.TextureSlot, AssetController.Instance.Textures[boxData.TextureSlot]);
+                    }
                     box.Script.Nodes.AddRange(entity.Script.Nodes);
                     box.Script.Connections.AddRange(entity.Script.Connections);
                     box.Script.Variables = entity.Script.Variables;
@@ -132,8 +135,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     CircleEntityData circleData = (CircleEntityData)entity;
                     CircleEntity circle = ShapeGenerator.Instance.AddCircle(circleData.Position, circleData.Radius);
                     circle.CurrentColor = circleData.Color;
-                    circle.SetTexture(circleData.TextureSlot, AssetController.Instance.Textures[circleData.TextureSlot]);
-                    circle.TextureSlot = circleData.TextureSlot;
+                    if (circle.TextureSlot != -1)
+                    {
+                        circle.SetTexture(circleData.TextureSlot, AssetController.Instance.Textures[circleData.TextureSlot]);
+                    }
                     circle.Script.Nodes = entity.Script.Nodes;
                     circle.Script.Connections = entity.Script.Connections;
                     circle.Script.Variables = entity.Script.Variables;

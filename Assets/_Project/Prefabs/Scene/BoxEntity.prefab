@@ -57,7 +57,7 @@ MonoBehaviour:
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
   Layer: 1
-  TextureSlot: 0
+  TextureSlot: -1
   Border: {fileID: 2692295455764732596}
   Width: 0
   Height: 0

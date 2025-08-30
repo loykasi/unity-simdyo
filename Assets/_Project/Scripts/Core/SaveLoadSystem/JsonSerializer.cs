@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 public class JsonSerializer : ISerializer
 {
@@ -10,8 +11,11 @@ public class JsonSerializer : ISerializer
         _settings.Converters.Add(new Vector3Converter());
         _settings.Converters.Add(new Vector2Converter());
         _settings.Converters.Add(new QuaternionConverter());
+        _settings.Converters.Add(new VariableConverter());
+        _settings.Converters.Add(new SceneEntityConverter());
+        _settings.Converters.Add(new StringEnumConverter());
         _settings.Formatting = Formatting.Indented;
-        _settings.TypeNameHandling = TypeNameHandling.Auto;
+        _settings.TypeNameHandling = TypeNameHandling.None;
 
         _settings.ContractResolver = new VisualScriptingContractResolver
         (

@@ -44,7 +44,7 @@ public class SceneEntity : MonoBehaviour
     public Rigidbody2D Rigidbody;
     public VisualScripting Script;
     public CollisionLayer Layer;
-    public int TextureSlot;
+    public int TextureSlot = -1;
 
     public virtual Bounds Bounds => Renderer.bounds;
 

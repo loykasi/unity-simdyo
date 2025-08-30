@@ -55,6 +55,7 @@ MonoBehaviour:
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
   Layer: 1
+  TextureSlot: -1
 --- !u!33 &3394529686914236234
 MeshFilter:
   m_ObjectHideFlags: 0
