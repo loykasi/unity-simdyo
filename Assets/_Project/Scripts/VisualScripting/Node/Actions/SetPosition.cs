@@ -21,10 +21,10 @@ class SetPositionNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
 
-        Input = InputValue(nameof(Input), DataType.Vector, true);
+        Input = InputValue(nameof(Input), DataType.Vector);
     }
 
-    public OutputTrigger Set(VisualScripting vs)
+    public OutputTrigger Set(ScriptFlow vs)
     {
         Vector3 value = (Vector3)Input.GetValue(vs);
         vs.Entity.transform.position = value;

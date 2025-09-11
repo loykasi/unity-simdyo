@@ -6,5 +6,6 @@ public enum DataType
     Boolean,
     Vector,
     Color,
+    Entity,
     List
 }

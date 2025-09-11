@@ -9,6 +9,7 @@ public abstract class OperatorHandler
     public object Operate(object a, object b)
     {
         OperatorKey key = new(a.GetType(), b.GetType());
+        Debug.Log($"{a.GetType()} + {b.GetType()}");
         return _operators[key](a, b);
     }
 

@@ -25,12 +25,12 @@ class RemoveListItemNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
-        Index = InputValue(nameof(Index), true);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
+        Index = InputValue(nameof(Index));
         Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
-    private OutputTrigger Set(VisualScripting vs)
+    private OutputTrigger Set(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         int index = (int)(float)Index.GetValue(vs);
@@ -38,7 +38,7 @@ class RemoveListItemNode : ScriptNode
         return Exit;
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         return list;

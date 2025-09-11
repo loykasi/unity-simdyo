@@ -17,11 +17,11 @@ class GetListLengthNode : ScriptNode
 
     public GetListLengthNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
         Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         return list.Count;

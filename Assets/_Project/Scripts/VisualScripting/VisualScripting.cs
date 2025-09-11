@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class VisualScripting : MonoBehaviour
+public class ScriptFlow : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
 
@@ -15,10 +16,7 @@ public class VisualScripting : MonoBehaviour
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new();
 
-    // private List<EventNode> _startNodes = new();
-    // private List<EventNode> _updateNodes = new();
-
-    private Dictionary<EventHook, List<EventNode>> _eventNodes = new(); 
+    private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
 
     public Dictionary<string, Variable> Variables
     {
@@ -40,39 +38,18 @@ public class VisualScripting : MonoBehaviour
         {
             connection.Load(this);
         }
-
-        // foreach (var item in _variables)
-        // {
-        //     switch (item.Value.Type.Type)
-        //     {
-        //         case DataType.:
-        //             item.Value.Value = float.Parse(item.Value.Value.ToString());
-        //             break;
-        //         case DataType.Boolean:
-        //             item.Value.Value = bool.Parse(item.Value.Value.ToString());
-        //             break;
-        //     }
-        // }
     }
 
     public void AddNode(ScriptNodeData nodeData)
     {
         ScriptNode node = nodeData.Create();
+        node.Flow = this;
         Nodes.Add(node);
         OnNodeAdded?.Invoke(node);
 
         if (node is EventNode eventNode)
         {
             eventNode.Register(this);
-            // switch (eventNode.GetHook())
-            // {
-            //     case EventHook.Start:
-            //         _startNodes.Add(eventNode);
-            //         break;
-            //     case EventHook.Update:
-            //         _updateNodes.Add(eventNode);
-            //         break;
-            // }
         }
     }
 
@@ -279,11 +256,11 @@ public class VisualScripting : MonoBehaviour
         }
     }
 
-    public object GetVariable(string name)
+    public Variable GetVariable(string name)
     {
         if (_variables.TryGetValue(name, out Variable value))
         {
-            return value.Value;
+            return value;
         }
         return null;
     }
@@ -296,5 +273,10 @@ public class VisualScripting : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public List<string> GetVariableOptions()
+    {
+        return _variables.Select(s => s.Key).ToList();
     }
 }

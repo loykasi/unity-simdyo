@@ -106,4 +106,9 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
             }
         }
     }
+
+    public virtual void AfterAdd()
+    {
+        
+    }
 }

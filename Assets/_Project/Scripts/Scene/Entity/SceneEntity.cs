@@ -5,8 +5,8 @@ public class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;
 
+    public string ID;
     public virtual EntityType EntityType => EntityType.Polygon;
-    public int InstanceID;
 
     public Vector3 Position
     {
@@ -42,7 +42,7 @@ public class SceneEntity : MonoBehaviour
     public MeshRenderer Renderer;
     public Collider2D Collider;
     public Rigidbody2D Rigidbody;
-    public VisualScripting Script;
+    public ScriptFlow Script;
     public CollisionLayer Layer;
     public int TextureSlot = -1;
 
@@ -81,8 +81,6 @@ public class SceneEntity : MonoBehaviour
 
     private void Awake()
     {
-        InstanceID = Collider.GetInstanceID();
-
         CollisionLayerController.Instance.UpdateObjectLayer(this);
     }
 

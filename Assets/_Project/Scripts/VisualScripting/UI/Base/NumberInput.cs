@@ -6,6 +6,7 @@ using UnityEngine.Events;
 public class NumberInput : MonoBehaviour
 {
     public event UnityAction<float> OnSubmit;
+    public event UnityAction OnValueUpdated;
 
     public RectTransform Rect;
     public TMP_InputField InputField;
@@ -48,6 +49,7 @@ public class NumberInput : MonoBehaviour
             x,
             Rect.sizeDelta.y
         );
+        OnValueUpdated?.Invoke();
     }
 
     private void OnEndEdit(string value)

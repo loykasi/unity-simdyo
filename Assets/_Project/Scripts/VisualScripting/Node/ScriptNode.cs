@@ -10,6 +10,9 @@ public abstract class ScriptNode : IScriptNode
     public Dictionary<string, object> DefaultValues { get; set; } = new();
 
     [JsonIgnore]
+    public ScriptFlow Flow { get; set; }
+
+    [JsonIgnore]
     public string Title;
 
     [JsonIgnore]
@@ -50,7 +53,7 @@ public abstract class ScriptNode : IScriptNode
         Title = title;
     }
 
-    protected InputTrigger InputTrigger(string key, Func<VisualScripting, OutputTrigger> action)
+    protected InputTrigger InputTrigger(string key, Func<ScriptFlow, OutputTrigger> action)
     {
         InputTrigger inputTrigger = new(key, action)
         {
@@ -72,38 +75,25 @@ public abstract class ScriptNode : IScriptNode
 
     protected InputValue InputValue(string key)
     {
-        InputValue valueInput = new(key, false)
+        InputValue valueInput = new(key)
         {
             Node = this
         };
-        valueInput.UpdateDefaultValue();
         ValueInputs.Add(valueInput);
         return valueInput;
     }
 
-    protected InputValue InputValue(string key, bool useOptionalInput)
+    protected InputValue InputValue(string key, DataType type)
     {
-        InputValue valueInput = new(key, useOptionalInput)
+        InputValue valueInput = new(key, type)
         {
             Node = this
         };
-        valueInput.UpdateDefaultValue();
         ValueInputs.Add(valueInput);
         return valueInput;
     }
 
-    protected InputValue InputValue(string key, DataType type, bool useOptionalInput)
-    {
-        InputValue valueInput = new(key, useOptionalInput, type)
-        {
-            Node = this
-        };
-        valueInput.UpdateDefaultValue();
-        ValueInputs.Add(valueInput);
-        return valueInput;
-    }
-
-    protected OutputValue OutputValue(string key, Func<VisualScripting, object> getValue)
+    protected OutputValue OutputValue(string key, Func<ScriptFlow, object> getValue)
     {
         OutputValue valueOutput = new(key, getValue)
         {
@@ -113,7 +103,7 @@ public abstract class ScriptNode : IScriptNode
         return valueOutput;
     }
 
-    protected OutputValue OutputValue(string key, DataType type, Func<VisualScripting, object> getValue)
+    protected OutputValue OutputValue(string key, DataType type, Func<ScriptFlow, object> getValue)
     {
         OutputValue valueOutput = new(key, getValue, type)
         {

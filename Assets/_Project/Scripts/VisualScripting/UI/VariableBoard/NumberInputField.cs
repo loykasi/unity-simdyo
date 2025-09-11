@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class NumberInputField : VariableInput
 {
-    public override DataType Type => DataType.Color;
+    public override DataType Type => DataType.Number;
 
     [SerializeField] private TMP_InputField _valueInputField;
     private float _value;

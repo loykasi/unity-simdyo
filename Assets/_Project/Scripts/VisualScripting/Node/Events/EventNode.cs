@@ -14,7 +14,7 @@ public abstract class EventNode : ScriptNode
         Exit = OutputTrigger(nameof(Exit)).HideLabel();
     }
 
-    public void Register(VisualScripting vs)
+    public void Register(ScriptFlow vs)
     {
         vs.RegisterEventNode(Hook, this);
     }

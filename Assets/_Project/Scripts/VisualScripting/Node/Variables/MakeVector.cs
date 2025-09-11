@@ -17,12 +17,12 @@ public class MakeVectorNode : ScriptNode
 
     public MakeVectorNode(string title) : base(title)
     {
-        X = InputValue(nameof(X), DataType.Number, true);
-        Y = InputValue(nameof(Y), DataType.Number, true);
+        X = InputValue(nameof(X), DataType.Number);
+        Y = InputValue(nameof(Y), DataType.Number);
         Output = OutputValue(nameof(Output), DataType.Vector, Get);
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         float x = (float)X.GetValue(vs);
         float y = (float)Y.GetValue(vs);

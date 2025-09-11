@@ -107,7 +107,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     {
         Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
         Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
-        float bodyHeight = (InputPorts.Count > OutputPorts.Count ? inputSize.y : outputSize.y) + _topBottomPadding;
+        float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
 
         float x = inputSize.x + outputSize.x + _inputOutputDistance;
         x = Mathf.Max(x, _minWidth);
@@ -137,15 +137,20 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
             return Vector2.zero;
         }
 
-        float y = ports.Count * 30f;
+        float y = 0;
         float x = ports[0].Rect.sizeDelta.x;
-        for (int i = 1; i < ports.Count; i++)
+        for (int i = 0; i < ports.Count; i++)
         {
-            float value = ports[i].Rect.sizeDelta.x;
-            if (value > x)
+            Vector2 size = ports[i].Rect.sizeDelta;
+            if (i != 0)
             {
-                x = value;
+                if (size.x > x)
+                {
+                    x = size.x;
+                }
             }
+            
+            y += size.y;
         }
 
         return new Vector2(x, y);

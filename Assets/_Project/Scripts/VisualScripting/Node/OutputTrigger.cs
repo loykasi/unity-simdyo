@@ -24,7 +24,7 @@ public class OutputTrigger : Port<InputTrigger>
         Destination = port;
     }
 
-    public void Invoke(VisualScripting vs)
+    public void Invoke(ScriptFlow vs)
     {
         Destination?.Invoke(vs);
     }

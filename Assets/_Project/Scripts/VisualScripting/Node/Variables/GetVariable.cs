@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "GetVariable", menuName = "Scriptable Objects/Visual Scripting/Node/Get Variable")]
@@ -16,13 +17,24 @@ public class GetVariableNode : ScriptNode
 
     public GetVariableNode(string title) : base(title)
     {
-        Input = InputValue(nameof(Input), true);
-        Output = OutputValue(nameof(Output), Get);
+        Input = InputValue(nameof(Input)).UseVariableInput();
+        Output = OutputValue(nameof(Output), DataType.Any, Get);
+
+        Input.OnValueChanged += OnInputValueChanged;
     }
 
-    private object Get(VisualScripting vs)
+    private void OnInputValueChanged()
+    {
+        string name = Input.GetValue(Flow).ToString();
+        Variable variable = Flow.GetVariable(name);
+
+        Output.SetType(variable.Type);
+        Debug.Log($"Output type: {Output.Type}");
+    }
+
+    private object Get(ScriptFlow vs)
     {
         string name = Input.GetValue(vs).ToString();
-        return vs.GetVariable(name);
+        return vs.GetVariable(name).Value;
     }
 }

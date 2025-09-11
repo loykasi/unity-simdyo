@@ -21,11 +21,11 @@ public class SetVariableNode : ScriptNode
     {
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
-        Variable = InputValue(nameof(Variable), true);
-        Value = InputValue(nameof(Value), true);
+        Variable = InputValue(nameof(Variable));
+        Value = InputValue(nameof(Value));
     }
 
-    private OutputTrigger Set(VisualScripting vs)
+    private OutputTrigger Set(ScriptFlow vs)
     {
         string name = Variable.GetValue(vs).ToString();
         object value = Value.GetValue(vs);

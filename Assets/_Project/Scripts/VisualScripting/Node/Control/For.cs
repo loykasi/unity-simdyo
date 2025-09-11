@@ -28,9 +28,9 @@ class ForNode : ScriptNode
         Completed = OutputTrigger(nameof(Completed));
         LoopBody = OutputTrigger(nameof(LoopBody));
 
-        FirstIndex = InputValue(nameof(FirstIndex), DataType.Number, true);
-        LastIndex = InputValue(nameof(LastIndex), DataType.Number, true);
-        Step = InputValue(nameof(Step), DataType.Number, true);
+        FirstIndex = InputValue(nameof(FirstIndex), DataType.Number);
+        LastIndex = InputValue(nameof(LastIndex), DataType.Number);
+        Step = InputValue(nameof(Step), DataType.Number);
         Index = OutputValue(
             nameof(Index),
             (vs) =>
@@ -40,7 +40,7 @@ class ForNode : ScriptNode
         );
     }
 
-    private OutputTrigger Loop(VisualScripting vs)
+    private OutputTrigger Loop(ScriptFlow vs)
     {
         int loop = vs.StartLoop();
         // Debug.Log($"Start loop {loop}");

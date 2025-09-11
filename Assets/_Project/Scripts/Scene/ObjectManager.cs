@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,9 +13,12 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public SceneEntity SelectedObject { get; set; }
     public int SaveLoadOrder { get; set; } = 0;
 
-    [SerializeField] private float _selectRadius;
-    [SerializeField] private int _defaultLayer;
-    [SerializeField] private int _selectLayer;
+    // [SerializeField] private float _selectRadius;
+    // [SerializeField] private int _defaultLayer;
+    // [SerializeField] private int _selectLayer;
+
+    // temporary
+    private int _indexForID = 0;
 
     public void Select(Vector3 screenPoint)
     {
@@ -28,7 +32,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             if (SelectedObject != null)
             {
-                // SelectedObject.gameObject.layer = _defaultLayer;
                 SelectedObject.Deselect();
                 SelectedObject = null;
             }
@@ -40,24 +43,37 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         if (SelectedObject != null)
         {
             SelectedObject.Deselect();
-            // SelectedObject.gameObject.layer = _defaultLayer;
         }
 
         SelectedObject = hit.collider.GetComponent<SceneEntity>();
-        // SelectedObject.gameObject.layer = _selectLayer;
         SelectedObject.Select();
 
         OnObjectSelected?.Invoke(SelectedObject);
     }
 
+    public List<string> GetEntityOptions()
+    {
+        return SceneEntities.Select(e => e.ID).ToList();
+    }
+
+    public SceneEntity GetEntityByIndex(int index)
+    {
+        return SceneEntities[index];
+    }
+
     public void AddEntity(SceneEntity entity)
     {
         SceneEntities.Add(entity);
+
+        // Temporary Method for Set ID
+        // use it for both ID and Name now, will sperate in futures
+        entity.ID = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
+        _indexForID++;
     }
 
-    public SceneEntity GetEntity(int instanceID)
+    public SceneEntity GetEntity(string id)
     {
-        return SceneEntities.Find(entity => entity.InstanceID == instanceID);
+        return SceneEntities.Find(entity => entity.ID == id);
     }
 
     public void DeleteEntity(SceneEntity entity)

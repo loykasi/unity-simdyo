@@ -30,7 +30,7 @@ public class NodeConnection
         DestinationKey = Destination.Key;
     }
 
-    public void Load(VisualScripting vs)
+    public void Load(ScriptFlow vs)
     {
         Source = GetPort(vs, SourceID, SourceKey);
         Destination = GetPort(vs, DestinationID, DestinationKey);
@@ -48,7 +48,7 @@ public class NodeConnection
         }
     }
 
-    private IPort GetPort(VisualScripting vs, Guid id, string portKey)
+    private IPort GetPort(ScriptFlow vs, Guid id, string portKey)
     {
         ScriptNode unit = vs.Nodes.Find(node => node.ID == id);
         foreach (var item in unit.Ports())

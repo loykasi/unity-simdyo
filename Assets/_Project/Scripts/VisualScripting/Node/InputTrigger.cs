@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 
 public class InputTrigger : Port<OutputTrigger>
 {
-    public Func<VisualScripting, OutputTrigger> Action;
+    public Func<ScriptFlow, OutputTrigger> Action;
     public List<OutputTrigger> Sources = new();
 
-    public InputTrigger(string key, Func<VisualScripting, OutputTrigger> action) : base(key)
+    public InputTrigger(string key, Func<ScriptFlow, OutputTrigger> action) : base(key)
     {
         Action = action;
     }
@@ -22,7 +22,7 @@ public class InputTrigger : Port<OutputTrigger>
         Sources.Add(port);
     }
 
-    public void Invoke(VisualScripting vs)
+    public void Invoke(ScriptFlow vs)
     {
         OutputTrigger output = Action?.Invoke(vs);
         output?.Invoke(vs);

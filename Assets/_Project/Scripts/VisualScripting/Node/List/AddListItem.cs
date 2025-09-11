@@ -25,12 +25,12 @@ class AddListItemNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
-        Item = InputValue(nameof(Item), true);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
+        Item = InputValue(nameof(Item));
         Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
-    private OutputTrigger Set(VisualScripting vs)
+    private OutputTrigger Set(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         object item = Item.GetValue(vs);
@@ -38,7 +38,7 @@ class AddListItemNode : ScriptNode
         return Exit;
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         return list;

@@ -18,12 +18,12 @@ class GetListItemNode : ScriptNode
 
     public GetListItemNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
-        Index = InputValue(nameof(Index), DataType.Number, true);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
+        Index = InputValue(nameof(Index), DataType.Number);
         Output = OutputValue(nameof(Output), DataType.List, Get);
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         int index = (int)(float)Index.GetValue(vs);

@@ -30,7 +30,7 @@ public class VariableBoard : MonoBehaviour
 
     private void Load()
     {
-        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
 
         foreach (var item in vs.Variables)
         {
@@ -41,7 +41,7 @@ public class VariableBoard : MonoBehaviour
 
     public void AddVariable()
     {
-        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
         if (vs != null)
         {
             string name = _nameInputField.text;
@@ -64,13 +64,13 @@ public class VariableBoard : MonoBehaviour
 
     public void UpdateVariable(string name, DataType type, object value)
     {
-        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
         vs.UpdateVariable(name, type, value);
     }
 
     public void RemoveVariable(string name, VariableBoardItem variableItem)
     {
-        VisualScripting vs = NodeBoard.Instance.TargetVisualScripting;
+        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
         if (vs.RemoveVariable(name))
         {
             _variableItems.Remove(variableItem);

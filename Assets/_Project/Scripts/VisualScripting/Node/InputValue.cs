@@ -1,13 +1,28 @@
-using System;
 using UnityEngine;
+using UnityEngine.Events;
+
+public enum InputValueTypes
+{
+    None,
+    String,
+    Number,
+    Boolean,
+    Entity,
+    Variable,
+}
 
 public class InputValue : Port<OutputValue>
 {
+    public UnityAction OnValueChanged;
+
     public DataType Type { get; set; }
     public OutputValue Source;
 
-    public bool UseOptionalInput;
+    public InputValueTypes InputType = InputValueTypes.None;
+
+    public bool HasConnection => Source != null;
     public bool HasValue => Node.DefaultValues.ContainsKey(Key);
+
     public object Value
     {
         get
@@ -20,42 +35,63 @@ public class InputValue : Port<OutputValue>
         }
     }
 
-    public InputValue(string key, bool useOptionalInput) : base(key)
+    public InputValue(string key) : base(key)
     {
-        UseOptionalInput = useOptionalInput;
         Type = DataType.Any;
     }
 
-    public InputValue(string key, bool useOptionalInput, DataType type) : base(key)
+    public InputValue(string key, DataType type) : base(key)
     {
-        UseOptionalInput = useOptionalInput;
         Type = type;
     }
 
     public void UpdateDefaultValue()
     {
-        Debug.Log(Node);
-        if (UseOptionalInput)
+        if (InputType != InputValueTypes.None)
         {
             if (!HasValue)
             {
                 Node.DefaultValues.Add(Key, Type switch
                 {
                     DataType.String => "",
-                    DataType.Number => 0,
+                    DataType.Number => 0f,
                     DataType.Boolean => false,
                     _ => "",
                 });
                 return;
             }
+
             Value = Type switch
             {
                 DataType.String => "",
-                DataType.Number => 0,
+                DataType.Number => 0f,
                 DataType.Boolean => false,
                 _ => "",
             };
         }
+    }
+
+    public InputValue UseInput()
+    {
+        InputType = Type switch
+        {
+            DataType.String => InputValueTypes.String,
+            DataType.Number => InputValueTypes.Number,
+            DataType.Boolean => InputValueTypes.Boolean,
+            DataType.Entity => InputValueTypes.Entity,
+            _ => InputValueTypes.None
+        };
+        UpdateDefaultValue();
+
+        return this;
+    }
+
+    public InputValue UseVariableInput()
+    {
+        InputType = InputValueTypes.Variable;
+        UpdateDefaultValue();
+
+        return this;
     }
 
     public override void Connect(OutputValue port)
@@ -63,7 +99,7 @@ public class InputValue : Port<OutputValue>
         Source = port;
     }
 
-    public T GetValue<T>(VisualScripting vs)
+    public T GetValue<T>(ScriptFlow vs)
     {
         if (Source != null)
         {
@@ -78,7 +114,7 @@ public class InputValue : Port<OutputValue>
         return default;
     }
 
-    public object GetValue(VisualScripting vs)
+    public object GetValue(ScriptFlow vs)
     {
         if (Source != null)
         {
@@ -123,6 +159,42 @@ public class InputValue : Port<OutputValue>
         }
 
         Value = value;
+        OnValueChanged?.Invoke();
+    }
+    
+    public void SetValue(float value)
+    {
+        if (Type == DataType.Number)
+        {
+            Value = value;
+            OnValueChanged?.Invoke();
+        }
+    }
+
+    public void SetValue(bool value)
+    {
+        if (Type == DataType.Boolean)
+        {
+            Value = value;
+            OnValueChanged?.Invoke();
+        }
+    }
+
+    public void SetValue(int index)
+    {
+        switch (InputType)
+        {
+            case InputValueTypes.Entity:
+                SceneEntity entity = ObjectManager.Instance.GetEntityByIndex(index);
+                Value = entity;
+                break;
+            case InputValueTypes.Variable:
+                string variableName = Node.Flow.GetVariableOptions()[index];
+                Value = variableName;
+                break;
+        }
+
+        OnValueChanged?.Invoke();
     }
 
     protected override void DisconnectPort(OutputValue port)
@@ -136,6 +208,6 @@ public class InputValue : Port<OutputValue>
 
     public override bool CanConnectTo(OutputValue port)
     {
-        return Type == DataType.Any || port.Type == Type;
+        return port.Type == DataType.Any || Type == DataType.Any || port.Type == Type;
     }
 }

@@ -23,10 +23,10 @@ class ClearListNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Clear);
         Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
     }
 
-    private OutputTrigger Clear(VisualScripting vs)
+    private OutputTrigger Clear(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         list.Clear();

@@ -28,7 +28,7 @@ class LogNode : ScriptNode
         Value = InputValue(nameof(Value));
     }
 
-    private OutputTrigger Log(VisualScripting vs)
+    private OutputTrigger Log(ScriptFlow vs)
     {
         var value = Value.GetValue(vs);
         LogCommand.Instance.Log(value);

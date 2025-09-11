@@ -19,12 +19,12 @@ class ListContainsItemNode : ScriptNode
 
     public ListContainsItemNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List, false);
-        Item = InputValue(nameof(Item), true);
+        ListInput = InputValue(nameof(ListInput), DataType.List);
+        Item = InputValue(nameof(Item));
         Output = OutputValue(nameof(Output), DataType.Boolean, Get);
     }
 
-    private object Get(VisualScripting vs)
+    private object Get(ScriptFlow vs)
     {
         IList list = (IList)ListInput.GetValue(vs);
         object item = Item.GetValue(vs);

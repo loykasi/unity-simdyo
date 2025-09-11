@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public VisualScripting TargetVisualScripting { get; set; }
+    public ScriptFlow TargetVisualScripting { get; set; }
 
     [SerializeField] private RectTransform _holder;
     private Vector2 _offsetFromMouse;
@@ -41,7 +41,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     private bool _isHover = false;
     private Vector3 _openMenuPosition;
 
-    public void SetVisualScripting(VisualScripting vs)
+    public void SetVisualScripting(ScriptFlow vs)
     {
         if (vs == null)
         {
@@ -65,7 +65,14 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     {
         for (int i = 0; i < _nodes.Count; i++)
         {
-            Destroy(_nodes[i].gameObject);
+            if (_nodes[i] != null)
+            {
+                Destroy(_nodes[i].gameObject);
+            }
+            else
+            {
+                Debug.Log(_nodes[i]);
+            }
         }
         for (int i = 0; i < _lineObjects.Count; i++)
         {
@@ -323,6 +330,9 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
                 _toUIPort.ValidConnection(toPort.Source);
             }
         }
+
+        _fromUIPort.AfterAdd();
+        _toUIPort.AfterAdd();
     }
 
     private void AddConnectionLine()
@@ -371,7 +381,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
             tailPosition = _fromUIPort.HandlePosition;
         }
 
-        Debug.Log($"{headPosition} | {tailPosition}");
+        // Debug.Log($"{headPosition} | {tailPosition}");
 
         Vector3 size = headPosition - tailPosition;
         Vector3 center = (headPosition + tailPosition) / 2.0f;

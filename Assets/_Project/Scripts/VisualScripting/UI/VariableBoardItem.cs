@@ -17,7 +17,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private VariableInput _currentInput;
 
     private VariableBoard _variableBoard;
-    private VisualScripting _vs;
+    private ScriptFlow _vs;
 
     private readonly float _width = 300f;
     private readonly float _verticalPadding = 10f;
