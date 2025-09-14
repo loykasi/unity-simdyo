@@ -13,11 +13,14 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     [SerializeField] private TMP_Dropdown _typeDropdown;
     [SerializeField] private Button _removeButton;
 
-    [SerializeField] private VariableInput[] _variableInputs;
-    private VariableInput _currentInput;
+    [Header("Input")]
+    [SerializeField] private RectTransform _inputHolder;
+    [SerializeField] private UIInputData _inputDataReference;
+    [SerializeField] private DataTypeController.CustomType _defaultInputType;
+    private BaseInput _input;
 
+    private Variable _variable;
     private VariableBoard _variableBoard;
-    private ScriptFlow _vs;
 
     private readonly float _width = 300f;
     private readonly float _verticalPadding = 10f;
@@ -29,16 +32,6 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
         _removeButton.onClick.AddListener(OnRemove);
-
-        foreach (var item in _variableInputs)
-        {
-            item.VariableItem = this;
-        }
-
-        for (int i = 0; i < _variableInputs.Length; i++)
-        {
-            _variableInputs[i].OnValueUpdated += UpdateVariable;
-        }
     }
 
     private void InitDropDown()
@@ -48,7 +41,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             return;
         }
 
-        _typeDropdown.AddOptions(DataTypeController.Instance.DataTypesDropdownValues);
+        _typeDropdown.AddOptions(DataTypeController.DataTypesDropdownValues);
     }
 
     public void Init(string name, VariableBoard variableBoard)
@@ -57,18 +50,13 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _typeDropdown.value = 0;
 
         _variableBoard = variableBoard;
+        _variable = NodeBoard.Instance.Flow.GetVariable(name);
+
         OnTypeChanged(0);
-
-        _vs = NodeBoard.Instance.TargetVisualScripting;
-
-        for (int i = 0; i < _variableInputs.Length; i++)
-        {
-            _variableInputs[i].Disable();
-        }
-        _currentInput = _variableInputs[0];
-        _currentInput.Enable();
     }
 
+    // NEED TO FIX THIS
+    // #: ListType
     public void Init(string name, DataType type, ListType? subType, object value, VariableBoard variableBoard)
     {
         InitDropDown();
@@ -80,71 +68,30 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
         _variableBoard = variableBoard;
 
-        for (int i = 0; i < _variableInputs.Length; i++)
-        {
-            _variableInputs[i].Disable();
-        }
-        _currentInput = _variableInputs[typeIndex];
-        _currentInput.Enable();
-
-        _currentInput.SetValue(value);
-
-        _vs = NodeBoard.Instance.TargetVisualScripting;
+        OnTypeChanged(typeIndex);
     }
 
     private void OnTypeChanged(int index)
     {
-        for (int i = 0; i < _variableInputs.Length; i++)
-        {
-            _variableInputs[i].Disable();
-        }
-        _currentInput = _variableInputs[index];
-        _currentInput.Enable();
+        var type = DataTypeController.DataTypeList[index];
+        
+        ValueHandler.SetDefaultValue(_variable, type.Type);
 
-        UpdateVariable();
-    }
-
-    private void UpdateVariable()
-    {
-        DataType type = _currentInput.Type;
-        if (type != DataType.List)
+        if (_input != null)
         {
-            _variableBoard.UpdateVariable(_nameInputField.text, type, _currentInput.GetValue());
-        }
-        else
-        {
-            UpdateListVariable();
+            Destroy(_input.gameObject);
         }
 
-        UpdateSize();
+        _input = _inputDataReference.Get(type.Type, type.SubType);
+        _input.Rect.SetParent(_inputHolder, false);
+        _input.Enable();
+
+        _input.OnSubmit += OnInputSubmit;
+        _input.SetValueInstance(_variable);
     }
 
-    // private void UpdateListVariable()
-    // {
-    //     VariableInput input = _variableInputs[_currentType];
-    //     _variableBoard.UpdateVariable(_nameInputField.text, GetDataType(), input.GetValue());
-    // }
-
-    public void UpdateListVariable()
+    private void OnInputSubmit(object value)
     {
-        var input = (ListInputField)_currentInput;
-        _vs.UpdateListVariable(_nameInputField.text, input.SubType);
-    }
-
-    public void InsertListItem(object value)
-    {
-        _vs.InsertListItem(_nameInputField.text, value);
-        UpdateSize();
-    }
-
-    public void UpdateListItem(int index, object value)
-    {
-        _vs.UpdateListItem(_nameInputField.text, index, value);
-    }
-
-    public void RemoveListItem(int index)
-    {
-        _vs.RemoveListItem(_nameInputField.text, index);
         UpdateSize();
     }
 
@@ -178,7 +125,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _rect.sizeDelta = new Vector2
         (
             _width,
-            _verticalPadding + _titleAndTypeHeight + _currentInput.Height
+            _verticalPadding + _titleAndTypeHeight + _input.Size.y
         );
     }
 

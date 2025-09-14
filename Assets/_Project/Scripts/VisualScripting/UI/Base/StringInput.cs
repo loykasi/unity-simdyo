@@ -1,13 +1,8 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class StringInput : MonoBehaviour
+public class StringInput : BaseInput
 {
-    public event UnityAction<string> OnSubmit;
-    public event UnityAction OnValueUpdated;
-
-    public RectTransform Rect;
     public TMP_InputField InputField;
     public float MinWidth = 50f;
     public float MaxWidth = 200f;
@@ -22,12 +17,16 @@ public class StringInput : MonoBehaviour
 
     private void OnEndEdit(string value)
     {
+        if (ValueInstance != null)
+        {
+            ValueHandler.SetValue(ValueInstance, value);
+        }
+
         OnSubmit?.Invoke(value);
     }
 
     private void OnValueChanged(string value)
     {
-
         Vector2 size = InputField.textComponent.GetPreferredValues(value);
         float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
         Rect.sizeDelta = new Vector2
@@ -38,13 +37,13 @@ public class StringInput : MonoBehaviour
         OnValueUpdated?.Invoke();
     }
 
-    public void SetValue(string value)
-    {
-        InputField.SetTextWithoutNotify(value);
-    }
-
-    public string GetValue()
+    public override object GetValue()
     {
         return InputField.text;
+    }
+
+    public override void SetValue(object value)
+    {
+        InputField.SetTextWithoutNotify((string)value);
     }
 }

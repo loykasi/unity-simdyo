@@ -1,14 +1,8 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class NumberInput : MonoBehaviour
+public class NumberInput : BaseInput
 {
-    public event UnityAction<float> OnSubmit;
-    public event UnityAction OnValueUpdated;
-
-    public RectTransform Rect;
     public TMP_InputField InputField;
     public float MinWidth = 50f;
     public float MaxWidth = 200f;
@@ -20,24 +14,9 @@ public class NumberInput : MonoBehaviour
     private void Awake()
     {
         InputField.onValueChanged.AddListener(OnValueChanged);
-        InputField.onValidateInput += ValidateInput;
         InputField.onEndEdit.AddListener(OnEndEdit);
-    }
 
-    public void SetValue(float value)
-    {
-        _value = value;
-        InputField.SetTextWithoutNotify(_value.ToString());
-    }
-
-    private char ValidateInput(string text, int charIndex, char addedChar)
-    {
-        if (char.IsNumber(addedChar) || addedChar == '.' || addedChar == '-' || addedChar == '+')
-        {
-            return addedChar;
-        }
-
-        return '\0';
+        SetValue(0f);
     }
 
     private void OnValueChanged(string value)
@@ -58,7 +37,23 @@ public class NumberInput : MonoBehaviour
         {
             _value = parsedValue;
         }
-        
+
+        if (ValueInstance != null)
+        {
+            ValueHandler.SetValue(ValueInstance, _value);
+        }
+
         OnSubmit?.Invoke(_value);
+    }
+
+    public override object GetValue()
+    {
+        return _value;
+    }
+
+    public override void SetValue(object value)
+    {
+        _value = (float)value;
+        InputField.SetTextWithoutNotify(_value.ToString());
     }
 }

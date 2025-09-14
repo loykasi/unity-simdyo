@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class VariableBoard : MonoBehaviour
 {
+    public ScriptFlowGraph FlowGraph { get; set; }
+
     [SerializeField] private VariableBoardItem _itemPrefab;
     [SerializeField] private Transform _contentHolder;
 
@@ -30,9 +32,9 @@ public class VariableBoard : MonoBehaviour
 
     private void Load()
     {
-        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
+        ScriptFlow flow = FlowGraph.Flow;
 
-        foreach (var item in vs.Variables)
+        foreach (var item in flow.Variables)
         {
             string name = item.Key;
             AddVariableItem(name, item.Value);
@@ -41,17 +43,15 @@ public class VariableBoard : MonoBehaviour
 
     public void AddVariable()
     {
-        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
-        if (vs != null)
+        ScriptFlow flow = FlowGraph.Flow;
+        string name = _nameInputField.text;
+
+        if (flow.AddVariable(name))
         {
-            string name = _nameInputField.text;
-            if (vs.AddVariable(name))
-            {
-                VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-                item.Init(name, this);
-                _variableItems.Add(item);
-                _nameInputField.text = string.Empty;
-            }
+            VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
+            item.Init(name, this);
+            _variableItems.Add(item);
+            _nameInputField.text = string.Empty;
         }
     }
 
@@ -62,16 +62,9 @@ public class VariableBoard : MonoBehaviour
         _variableItems.Add(item);
     }
 
-    public void UpdateVariable(string name, DataType type, object value)
-    {
-        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
-        vs.UpdateVariable(name, type, value);
-    }
-
     public void RemoveVariable(string name, VariableBoardItem variableItem)
     {
-        ScriptFlow vs = NodeBoard.Instance.TargetVisualScripting;
-        if (vs.RemoveVariable(name))
+        if (FlowGraph.Flow.RemoveVariable(name))
         {
             _variableItems.Remove(variableItem);
             Destroy(variableItem.gameObject);

@@ -1,13 +1,7 @@
-using TMPro;
-using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class BooleanInput : MonoBehaviour
+public class BooleanInput : BaseInput
 {
-    public event UnityAction<bool> OnSubmit;
-
-    public RectTransform Rect;
     public Toggle Input;
 
     private void Awake()
@@ -17,16 +11,21 @@ public class BooleanInput : MonoBehaviour
 
     private void OnValueChanged(bool value)
     {
+        if (ValueInstance != null)
+        {
+            ValueHandler.SetValue(ValueInstance, value);
+        }
+
         OnSubmit?.Invoke(value);
     }
 
-    public void SetValue(bool value)
-    {
-        Input.SetIsOnWithoutNotify(value);
-    }
-
-    public bool GetValue()
+    public override object GetValue()
     {
         return Input.isOn;
+    }
+
+    public override void SetValue(object value)
+    {
+        Input.SetIsOnWithoutNotify((bool)value);
     }
 }

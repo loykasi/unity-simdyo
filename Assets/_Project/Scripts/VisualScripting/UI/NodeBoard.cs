@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,7 +5,8 @@ using UnityEngine.InputSystem;
 
 public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
 {
-    public ScriptFlow TargetVisualScripting { get; set; }
+    public ScriptFlowGraph FlowGraph { get; set; }
+    public ScriptFlow Flow => FlowGraph.Flow;
 
     [SerializeField] private RectTransform _holder;
     private Vector2 _offsetFromMouse;
@@ -41,24 +41,21 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     private bool _isHover = false;
     private Vector3 _openMenuPosition;
 
-    public void SetVisualScripting(ScriptFlow vs)
+    public void Init()
     {
-        if (vs == null)
-        {
-            return;
-        }
-
         ClearBoard();
 
-        if (TargetVisualScripting != null)
-        {
-            TargetVisualScripting.OnNodeAdded -= OnNodeAdded;
-        }
-
-        TargetVisualScripting = vs;
-        TargetVisualScripting.OnNodeAdded += OnNodeAdded;
+        Flow.OnNodeAdded += OnNodeAdded;
 
         LoadBoard();
+    }
+
+    public void Close()
+    {
+        if (Flow != null)
+        {
+            Flow.OnNodeAdded -= OnNodeAdded;
+        }
     }
 
     private void ClearBoard()
@@ -85,8 +82,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
     private void LoadBoard()
     {
-        List<ScriptNode> nodes = TargetVisualScripting.Nodes;
-        List<NodeConnection> connections = TargetVisualScripting.Connections;
+        List<ScriptNode> nodes = Flow.Nodes;
+        List<NodeConnection> connections = Flow.Connections;
         for (int i = 0; i < nodes.Count; i++)
         {
             AddNodeToBoard(nodes[i]);
@@ -132,7 +129,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
     public void AddNode(ScriptNodeData nodeData)
     {
-        TargetVisualScripting.AddNode(nodeData);
+        Flow.AddNode(nodeData);
     }
 
     public List<RaycastResult> results = new();
@@ -288,7 +285,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
         if (_fromUIPort.Edge == NodePortEdge.Right)
         {
-            if (TargetVisualScripting.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
+            if (Flow.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
             {
                 AddConnectionLine();
 
@@ -297,7 +294,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
         }
         else
         {
-            if (TargetVisualScripting.TryConnect(_toNode, _toPort, _fromNode, _fromPort))
+            if (Flow.TryConnect(_toNode, _toPort, _fromNode, _fromPort))
             {
                 AddConnectionLine();
 

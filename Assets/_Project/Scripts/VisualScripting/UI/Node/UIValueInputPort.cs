@@ -26,48 +26,48 @@ public class UIValueInputPort : UINodePort
         }
         _inputValue = (InputValue)Port;
 
-        _stringInput.OnSubmit += OnStringInputSubmit;
+        // _stringInput.OnSubmit += OnStringInputSubmit;
         _stringInput.OnValueUpdated += OnStringInputValueUpdated;
         
-        _numberInput.OnSubmit += OnNumberInputSubmit;
+        // _numberInput.OnSubmit += OnNumberInputSubmit;
         _numberInput.OnValueUpdated += OnNumberInputValueUpdated;
 
-        _booleanInput.OnSubmit += OnBooleanInputSubmit;
+        // _booleanInput.OnSubmit += OnBooleanInputSubmit;
 
         _dropdown.onValueChanged.AddListener(OnDropDownValueChanged);
 
         HideInput();
 
-        switch (_inputValue.InputType)
-        {
-            case InputValueTypes.String:
-                _stringInput.gameObject.SetActive(true);
-                _stringInput.SetValue(_inputValue.Value != null ? _inputValue.Value.ToString() : "");
-                break;
-            case InputValueTypes.Number:
-                _numberInput.gameObject.SetActive(true);
-                _numberInput.SetValue(_inputValue.Value != null ? (float)_inputValue.Value : 0);
-                break;
-            case InputValueTypes.Boolean:
-                _booleanInput.gameObject.SetActive(true);
-                _booleanInput.SetValue(_inputValue.Value != null && (bool)_inputValue.Value);
-                break;
-            case InputValueTypes.Entity:
-                _dropdown.gameObject.SetActive(true);
-                _dropdown.AddOptions(ObjectManager.Instance.GetEntityOptions());
-                _height = 60f;
-                break;
-            case InputValueTypes.Variable:
-                _dropdown.gameObject.SetActive(true);
-                _dropdown.AddOptions(NodeBoard.Instance.TargetVisualScripting.GetVariableOptions());
-                _height = 60f;
-                break;
-            default:
-                _stringInput.gameObject.SetActive(false);
-                _dropdown.gameObject.SetActive(false);
-                _height = 30f;
-                break;
-        }
+        // switch (_inputValue.InputType)
+        // {
+        //     case InputValueTypes.String:
+        //         _stringInput.gameObject.SetActive(true);
+        //         _stringInput.SetValue(_inputValue.Value != null ? _inputValue.Value.ToString() : "");
+        //         break;
+        //     case InputValueTypes.Number:
+        //         _numberInput.gameObject.SetActive(true);
+        //         _numberInput.SetValue(_inputValue.Value != null ? (float)_inputValue.Value : 0);
+        //         break;
+        //     case InputValueTypes.Boolean:
+        //         _booleanInput.gameObject.SetActive(true);
+        //         _booleanInput.SetValue(_inputValue.Value != null && (bool)_inputValue.Value);
+        //         break;
+        //     case InputValueTypes.Entity:
+        //         _dropdown.gameObject.SetActive(true);
+        //         _dropdown.AddOptions(ObjectManager.Instance.GetEntityOptions());
+        //         _height = 60f;
+        //         break;
+        //     case InputValueTypes.Variable:
+        //         _dropdown.gameObject.SetActive(true);
+        //         _dropdown.AddOptions(NodeBoard.Instance.TargetVisualScripting.GetVariableOptions());
+        //         _height = 60f;
+        //         break;
+        //     default:
+        //         _stringInput.gameObject.SetActive(false);
+        //         _dropdown.gameObject.SetActive(false);
+        //         _height = 30f;
+        //         break;
+        // }
 
         UpdateSize();
     }

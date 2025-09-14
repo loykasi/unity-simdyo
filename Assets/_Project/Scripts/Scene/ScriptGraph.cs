@@ -3,8 +3,7 @@ using UnityEngine;
 public class ScriptGraph : Singleton<ScriptGraph>
 {
     [SerializeField] private GameObject _panel;
-    [SerializeField] private VariableBoard _variableBoard;
-    [SerializeField] private NodeBoard _nodeBoard;
+    [SerializeField] private ScriptFlowGraph _flowGraph;
 
     private bool _isOpen = false;
 
@@ -22,8 +21,7 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
         if (_isOpen)
         {
-            _nodeBoard.SetVisualScripting(selected.Script);
-            _variableBoard.Init();
+            _flowGraph.Open(selected.Script);
         }
     }
 
@@ -31,5 +29,6 @@ public class ScriptGraph : Singleton<ScriptGraph>
     {
         _isOpen = false;
         _panel.SetActive(_isOpen);
+        _flowGraph.Close();
     }
 }
