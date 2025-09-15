@@ -1,7 +1,8 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 
-public class EntityInput : BaseInput
+public class VariableNameInput : BaseInput
 {
     public TMP_Dropdown Dropdown;
 
@@ -12,14 +13,9 @@ public class EntityInput : BaseInput
 
     private void OnValueChanged(int index)
     {
-        var entity = ObjectManager.Instance.GetEntityByIndex(index);
+        string key = Dropdown.options[index].text;
 
-        if (ValueInstance != null)
-        {
-            ValueHandler.SetValue(ValueInstance, entity);
-        }
-
-        OnSubmit?.Invoke(entity);
+        OnSubmit?.Invoke(key);
     }
 
     public void Init(List<string> options)
@@ -28,14 +24,8 @@ public class EntityInput : BaseInput
         Dropdown.AddOptions(options);
     }
 
-    public override void SetValue(object value)
-    {
-
-    }
-
     public override object GetValue()
     {
-        var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
-        return entity;
+        return Dropdown.options[Dropdown.value].text;
     }
 }

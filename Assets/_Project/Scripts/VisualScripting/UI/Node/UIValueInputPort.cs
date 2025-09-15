@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -6,12 +7,11 @@ public class UIValueInputPort : UINodePort
     public override NodePortEdge Edge => NodePortEdge.Left;
     private InputValue _inputValue;
 
-    [SerializeField] private StringInput _stringInput;
-    [SerializeField] private NumberInput _numberInput;
-    [SerializeField] private BooleanInput _booleanInput;
-    [SerializeField] private TMP_Dropdown _dropdown;
+    [SerializeField] private RectTransform _inputHolder;
+    [SerializeField] private UIInputData _inputDataReference;
+    private BaseInput _input;
 
-    private float _height = 30f;
+    private float _height = 60f;
     private readonly float _handleSize = 30f;
     private readonly float _inputOffset = 10f;
 
@@ -26,45 +26,36 @@ public class UIValueInputPort : UINodePort
         }
         _inputValue = (InputValue)Port;
 
-        // _stringInput.OnSubmit += OnStringInputSubmit;
-        _stringInput.OnValueUpdated += OnStringInputValueUpdated;
-        
-        // _numberInput.OnSubmit += OnNumberInputSubmit;
-        _numberInput.OnValueUpdated += OnNumberInputValueUpdated;
+        if (_inputValue.InputType == InputValueTypes.None)
+        {
+            return;
+        }
 
-        // _booleanInput.OnSubmit += OnBooleanInputSubmit;
-
-        _dropdown.onValueChanged.AddListener(OnDropDownValueChanged);
-
-        HideInput();
+        _input = _inputDataReference.Get(_inputValue.InputType, UINode.Board.Entity);
+        _input.Rect.SetParent(_inputHolder, false);
+        _input.OnSubmit += OnSubmit;
 
         // switch (_inputValue.InputType)
         // {
         //     case InputValueTypes.String:
-        //         _stringInput.gameObject.SetActive(true);
-        //         _stringInput.SetValue(_inputValue.Value != null ? _inputValue.Value.ToString() : "");
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         break;
         //     case InputValueTypes.Number:
-        //         _numberInput.gameObject.SetActive(true);
-        //         _numberInput.SetValue(_inputValue.Value != null ? (float)_inputValue.Value : 0);
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         break;
         //     case InputValueTypes.Boolean:
-        //         _booleanInput.gameObject.SetActive(true);
-        //         _booleanInput.SetValue(_inputValue.Value != null && (bool)_inputValue.Value);
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         break;
         //     case InputValueTypes.Entity:
-        //         _dropdown.gameObject.SetActive(true);
-        //         _dropdown.AddOptions(ObjectManager.Instance.GetEntityOptions());
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         _height = 60f;
         //         break;
         //     case InputValueTypes.Variable:
-        //         _dropdown.gameObject.SetActive(true);
-        //         _dropdown.AddOptions(NodeBoard.Instance.TargetVisualScripting.GetVariableOptions());
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         _height = 60f;
         //         break;
         //     default:
-        //         _stringInput.gameObject.SetActive(false);
-        //         _dropdown.gameObject.SetActive(false);
+        //         _input.Rect.SetParent(_inputHolder1, false);
         //         _height = 30f;
         //         break;
         // }
@@ -83,60 +74,21 @@ public class UIValueInputPort : UINodePort
 
         float width = _handleSize + size.x + _inputOffset;
 
-        switch (_inputValue.InputType)
-        {
-            case InputValueTypes.String:
-                _stringInput.Rect.anchoredPosition = new Vector2(width + _inputOffset, 0f);
-                width += _stringInput.Rect.sizeDelta.x;
-                break;
-            case InputValueTypes.Number:
-                _numberInput.Rect.anchoredPosition = new Vector2(width + _inputOffset, 0f);
-                width += _stringInput.Rect.sizeDelta.x;
-                break;
-            case InputValueTypes.Boolean:
-                _booleanInput.Rect.anchoredPosition = new Vector2(width + _inputOffset, 0f);
-                width += _booleanInput.Rect.sizeDelta.x;
-                break;
-            case InputValueTypes.Entity:
-                width = 150f;
-                break;
-            case InputValueTypes.Variable:
-                width = 150f;
-                break;
-            default:
-                width = _handleSize + size.x;
-                break;
-        }
+        _inputHolder.anchoredPosition = new Vector2(width, 0f);
+
+        width += _input.Size.x;
 
         Rect.sizeDelta = new Vector2(width, _height);
     }
 
     private void HideInput()
     {
-        _stringInput.gameObject.SetActive(false);
-        _numberInput.gameObject.SetActive(false);
-        _booleanInput.gameObject.SetActive(false);
-        _dropdown.gameObject.SetActive(false);
+        _inputHolder.gameObject.SetActive(false);
     }
 
     private void ShowInput()
     {
-        switch (_inputValue.InputType)
-        {
-            case InputValueTypes.String:
-                _stringInput.gameObject.SetActive(true);
-                break;
-            case InputValueTypes.Number:
-                _numberInput.gameObject.SetActive(true);
-                break;
-            case InputValueTypes.Boolean:
-                _booleanInput.gameObject.SetActive(true);
-                break;
-            case InputValueTypes.Entity:
-            case InputValueTypes.Variable:
-                _dropdown.gameObject.SetActive(true);
-                break;
-        }
+        _inputHolder.gameObject.SetActive(true);
     }
 
     public override void ValidConnection(IPort port)
@@ -165,50 +117,56 @@ public class UIValueInputPort : UINodePort
 
     #region Handle Input Event
 
-    private void OnStringInputSubmit(string value)
+    private void OnSubmit(object value)
     {
+        Debug.Log($"Set value: {value}");
         _inputValue.SetValue(value);
     }
 
-    private void OnStringInputValueUpdated()
-    {
-        Rect.sizeDelta = new Vector2
-        (
-            _handleSize + _label.rectTransform.sizeDelta.x + _inputOffset + _stringInput.Rect.sizeDelta.x,
-            _height
-        );
+    // private void OnStringInputSubmit(string value)
+    // {
+    //     _inputValue.SetValue(value);
+    // }
 
-        UINode.UpdateSize();
-    }
+    // private void OnStringInputValueUpdated()
+    // {
+    //     Rect.sizeDelta = new Vector2
+    //     (
+    //         _handleSize + _label.rectTransform.sizeDelta.x + _inputOffset + _stringInput.Rect.sizeDelta.x,
+    //         _height
+    //     );
 
-    private void OnNumberInputSubmit(float value)
-    {
-        _inputValue.SetValue(value);
-    }
+    //     UINode.UpdateSize();
+    // }
 
-    private void OnNumberInputValueUpdated()
-    {
-        Rect.sizeDelta = new Vector2
-        (
-            _handleSize + _label.rectTransform.sizeDelta.x + _inputOffset + _numberInput.Rect.sizeDelta.x,
-            _height
-        );
+    // private void OnNumberInputSubmit(float value)
+    // {
+    //     _inputValue.SetValue(value);
+    // }
 
-        UINode.UpdateSize();
-    }
+    // private void OnNumberInputValueUpdated()
+    // {
+    //     Rect.sizeDelta = new Vector2
+    //     (
+    //         _handleSize + _label.rectTransform.sizeDelta.x + _inputOffset + _numberInput.Rect.sizeDelta.x,
+    //         _height
+    //     );
 
-    private void OnBooleanInputSubmit(bool value)
-    {
-        _inputValue.SetValue(value);
-    }
+    //     UINode.UpdateSize();
+    // }
 
-    private void OnDropDownValueChanged(int index)
-    {
-        if (Port is InputValue valueInput)
-        {
-            valueInput.SetValue(index);
-        }
-    }
+    // private void OnBooleanInputSubmit(bool value)
+    // {
+    //     _inputValue.SetValue(value);
+    // }
+
+    // private void OnDropDownValueChanged(int index)
+    // {
+    //     if (Port is InputValue valueInput)
+    //     {
+    //         valueInput.SetValue(index);
+    //     }
+    // }
 
     #endregion
 }

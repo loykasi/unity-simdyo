@@ -76,8 +76,8 @@ public class EntityMenu : MonoBehaviour
 
     public void Init(SceneEntity entity)
     {
-        // _positionInput.SetValue(entity.Position);
-        // _angleInput.SetValue(entity.Angle);
+        _positionInput.SetValue(entity.Position);
+        _angleInput.SetValue(entity.Angle);
 
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
@@ -97,15 +97,15 @@ public class EntityMenu : MonoBehaviour
                 _circleMenu.SetActive(false);
                 BoxEntity boxEntity = (BoxEntity)entity;
 
-                // _widthInput.SetValue(boxEntity.Width);
-                // _heightInput.SetValue(boxEntity.Height);
+                _widthInput.SetValue(boxEntity.Width);
+                _heightInput.SetValue(boxEntity.Height);
                 break;
             case EntityType.Circle:
                 _boxMenu.SetActive(false);
                 _circleMenu.SetActive(true);
 
                 CircleEntity circleEntity = (CircleEntity)entity;
-                // _radiusInput.SetValue(circleEntity.Radius);
+                _radiusInput.SetValue(circleEntity.Radius);
                 break;
         }
     }

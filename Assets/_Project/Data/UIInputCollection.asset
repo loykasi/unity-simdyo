@@ -23,3 +23,6 @@ MonoBehaviour:
     InputPrefab: {fileID: 132496327458607088, guid: 9cb2f909e50c21b4eb5779ba8d4c6018, type: 3}
   - Type: 7
     InputPrefab: {fileID: 959947589436971323, guid: aa93fe0770fcfff4f8dacfdb69fc893a, type: 3}
+  - Type: 6
+    InputPrefab: {fileID: 4807153160745906245, guid: e2d4e181c3da152489d134e6d22b92f4, type: 3}
+  VariableNameInputPrefab: {fileID: 8432855615421663560, guid: 75bed57d6ec178f49a24f56341252fd0, type: 3}

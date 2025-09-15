@@ -38,6 +38,7 @@ namespace Loykas.Scripting
             new(DataType.Number),
             new(DataType.Boolean),
             new(DataType.Color),
+            new(DataType.Entity),
             new(DataType.List, DataType.String),
             new(DataType.List, DataType.Number),
             new(DataType.List, DataType.Boolean),

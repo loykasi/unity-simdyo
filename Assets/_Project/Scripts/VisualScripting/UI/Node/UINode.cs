@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement, IPointerEnterHandler, IPointerExitHandler
 {
+    public NodeBoard Board { get; set; }
     public ScriptNode Node
     {
         get => _node;

@@ -26,12 +26,8 @@ class GetPositionNode : ScriptNode
 
     private object GetPosition(ScriptFlow vs)
     {
-        if (Input.InputType == InputValueTypes.Entity && Input.Value != null)
-        {
-            SceneEntity entity = Input.Value as SceneEntity;
-            return entity.Position;
-        }
+        SceneEntity entity = (SceneEntity)Input.GetValue(vs);
         
-        return vs.Entity.Position;
+        return entity.Position;
     }
 }

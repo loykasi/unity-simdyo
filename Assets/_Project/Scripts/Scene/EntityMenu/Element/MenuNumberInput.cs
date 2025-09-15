@@ -18,16 +18,16 @@ public class MenuNumberInput : MonoBehaviour
 
     private void Awake()
     {
-        // _input.OnSubmit += OnInputSubmit;
+        _input.OnSubmit += OnInputSubmit;
     }
 
-    private void OnInputSubmit(float value)
+    private void OnInputSubmit(object value)
     {
-        OnSubmit?.Invoke(value);
+        OnSubmit?.Invoke((float)value);
     }
 
-    // public void SetValue(float value)
-    // {
-    //     _input.SetValue(value);
-    // }
+    public void SetValue(float value)
+    {
+        _input.SetValue(value);
+    }
 }

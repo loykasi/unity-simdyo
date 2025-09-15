@@ -21,26 +21,26 @@ public class MenuVectorInput : MonoBehaviour
 
     private void Awake()
     {
-        // _xInput.OnSubmit += OnXSubmit;
-        // _yInput.OnSubmit += OnYSubmit;
+        _xInput.OnSubmit += OnXSubmit;
+        _yInput.OnSubmit += OnYSubmit;
     }
 
-    private void OnXSubmit(float value)
+    private void OnXSubmit(object value)
     {
-        _value.x = value;
+        _value.x = (float)value;
         OnSubmit?.Invoke(_value);
     }
 
-    private void OnYSubmit(float value)
+    private void OnYSubmit(object value)
     {
-        _value.y = value;
+        _value.y = (float)value;
         OnSubmit?.Invoke(_value);
     }
 
-    // public void SetValue(Vector3 value)
-    // {
-    //     _value = value;
-    //     _xInput.SetValue(value.x);
-    //     _yInput.SetValue(value.y);
-    // }
+    public void SetValue(Vector3 value)
+    {
+        _value = value;
+        _xInput.SetValue(value.x);
+        _yInput.SetValue(value.y);
+    }
 }

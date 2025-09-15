@@ -7,6 +7,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 {
     public ScriptFlowGraph FlowGraph { get; set; }
     public ScriptFlow Flow => FlowGraph.Flow;
+    public SceneEntity Entity => FlowGraph.Entity;
 
     [SerializeField] private RectTransform _holder;
     private Vector2 _offsetFromMouse;
@@ -110,7 +111,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     private void OnNodeAdded(ScriptNode scriptNode)
     {
         UINode node = Instantiate(_nodePrefab, _holder);
-     
+
+        node.Board = this;
         node.Node = scriptNode;
         node.transform.position = _openMenuPosition;
         scriptNode.Positon = _openMenuPosition;
@@ -121,7 +123,8 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
     private void AddNodeToBoard(ScriptNode scriptNode)
     {
         UINode node = Instantiate(_nodePrefab, _holder);
-     
+
+        node.Board = this;
         node.Node = scriptNode;
 
         _nodes.Add(node);

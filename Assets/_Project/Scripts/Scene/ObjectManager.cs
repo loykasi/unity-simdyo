@@ -53,11 +53,20 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public List<string> GetEntityOptions()
     {
-        return SceneEntities.Select(e => e.ID).ToList();
+        var list = SceneEntities.Select(e => e.ID).ToList();
+        list.Insert(0, "Null");
+        return list;
     }
 
     public SceneEntity GetEntityByIndex(int index)
     {
+        index--;
+
+        if (index == -1)
+        {
+            return null;
+        }
+        
         return SceneEntities[index];
     }
 

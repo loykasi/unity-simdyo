@@ -164,7 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5dac2631016ffa478764590e1c549d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InstanceID: 0
+  ID: 
   MeshFilter: {fileID: 3394529686914236234}
   Renderer: {fileID: 7629192785450040781}
   Collider: {fileID: 2196807880595799029}
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c01c51c643ac243acb034664d14695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entity: {fileID: 0}
+  Entity: {fileID: 9053618448412518626}
 --- !u!50 &-7824645102635766432
 Rigidbody2D:
   serializedVersion: 5

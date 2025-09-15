@@ -123,6 +123,10 @@ public class InputValue : Port<OutputValue>
 
         if (HasValue)
         {
+            if (Type == DataType.Entity && Value == null)
+            {
+                return Node.Flow.Entity;    
+            }
             return Value;
         }
 
@@ -171,30 +175,9 @@ public class InputValue : Port<OutputValue>
         }
     }
 
-    public void SetValue(bool value)
+    public void SetValue(object value)
     {
-        if (Type == DataType.Boolean)
-        {
-            Value = value;
-            OnValueChanged?.Invoke();
-        }
-    }
-
-    public void SetValue(int index)
-    {
-        switch (InputType)
-        {
-            case InputValueTypes.Entity:
-                SceneEntity entity = ObjectManager.Instance.GetEntityByIndex(index);
-                Value = entity;
-                break;
-            case InputValueTypes.Variable:
-                string variableName = Node.Flow.GetVariableOptions()[index];
-                Value = variableName;
-                break;
-        }
-
-        OnValueChanged?.Invoke();
+        Value = value;
     }
 
     protected override void DisconnectPort(OutputValue port)

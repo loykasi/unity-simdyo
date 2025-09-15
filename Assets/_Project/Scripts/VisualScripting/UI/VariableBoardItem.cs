@@ -56,7 +56,6 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     }
 
     // NEED TO FIX THIS
-    // #: ListType
     public void Init(string name, DataType type, ListType? subType, object value, VariableBoard variableBoard)
     {
         InitDropDown();
@@ -67,6 +66,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
         _typeDropdown.SetValueWithoutNotify(typeIndex);
 
         _variableBoard = variableBoard;
+        _variable = NodeBoard.Instance.Flow.GetVariable(name);
 
         OnTypeChanged(typeIndex);
     }
@@ -82,7 +82,7 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
             Destroy(_input.gameObject);
         }
 
-        _input = _inputDataReference.Get(type.Type, type.SubType);
+        _input = _inputDataReference.Get(type.Type, type.SubType, _variableBoard.FlowGraph.Entity);
         _input.Rect.SetParent(_inputHolder, false);
         _input.Enable();
 

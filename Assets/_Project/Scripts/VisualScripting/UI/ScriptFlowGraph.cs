@@ -3,6 +3,7 @@ using UnityEngine;
 public class ScriptFlowGraph : MonoBehaviour
 {
     public ScriptFlow Flow { get; set; }
+    public SceneEntity Entity => Flow.Entity;
 
     [SerializeField] private VariableBoard _variableBoard;
     [SerializeField] private NodeBoard _nodeBoard;

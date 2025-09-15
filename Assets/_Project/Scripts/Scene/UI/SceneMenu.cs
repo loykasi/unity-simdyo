@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,8 +18,8 @@ public class SceneMenu : MonoBehaviour
     {
         _bgButtonColor.color = settings.Color.ToUnityColor();
 
-        // _positionInput.SetValue(settings.Position);
-        // _sizeInput.SetValue(settings.Size);
+        _positionInput.SetValue(settings.Position);
+        _sizeInput.SetValue(settings.Size);
     }
 
     public void OpenColorEdit()
