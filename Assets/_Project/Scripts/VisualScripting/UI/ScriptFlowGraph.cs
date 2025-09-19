@@ -7,11 +7,14 @@ public class ScriptFlowGraph : MonoBehaviour
 
     [SerializeField] private VariableBoard _variableBoard;
     [SerializeField] private NodeBoard _nodeBoard;
+    [SerializeField] private FunctionBoard _functionBoard;
+    [SerializeField] private SizeBar _sidebar;
 
     private void Awake()
     {
         _variableBoard.FlowGraph = this;
         _nodeBoard.FlowGraph = this;
+        _functionBoard.FlowGraph = this;
     }
 
     public void Open(ScriptFlow flow)
@@ -24,5 +27,10 @@ public class ScriptFlowGraph : MonoBehaviour
     public void Close()
     {
         _nodeBoard.Close();
+    }
+
+    public void RebuildSideBarUI()
+    {
+        _sidebar.RebuildUI();
     }
 }

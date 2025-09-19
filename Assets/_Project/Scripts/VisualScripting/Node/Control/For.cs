@@ -28,9 +28,9 @@ class ForNode : ScriptNode
         Completed = OutputTrigger(nameof(Completed));
         LoopBody = OutputTrigger(nameof(LoopBody));
 
-        FirstIndex = InputValue(nameof(FirstIndex), DataType.Number);
-        LastIndex = InputValue(nameof(LastIndex), DataType.Number);
-        Step = InputValue(nameof(Step), DataType.Number);
+        FirstIndex = InputValue(nameof(FirstIndex), ScriptDataType.Single(DataType.Number));
+        LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number));
+        Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number));
         Index = OutputValue(
             nameof(Index),
             (vs) =>

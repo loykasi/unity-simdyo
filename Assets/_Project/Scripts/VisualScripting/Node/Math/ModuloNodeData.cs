@@ -18,8 +18,8 @@ class ModuloNode : ScriptNode
 
     public ModuloNode(string title): base(title)
     {
-        A = InputValue(nameof(A));
-        B = InputValue(nameof(B));
+        A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
+        B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
 
         Output = OutputValue(
             nameof(Output),

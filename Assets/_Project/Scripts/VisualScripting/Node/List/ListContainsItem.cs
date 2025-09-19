@@ -19,9 +19,9 @@ class ListContainsItemNode : ScriptNode
 
     public ListContainsItemNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List);
+        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
         Item = InputValue(nameof(Item));
-        Output = OutputValue(nameof(Output), DataType.Boolean, Get);
+        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
     }
 
     private object Get(ScriptFlow vs)

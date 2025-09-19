@@ -21,8 +21,8 @@ class AddNode : ScriptNode
 
     public AddNode(string title): base(title)
     {
-        A = InputValue(nameof(A), DataType.Number).UseInput();
-        B = InputValue(nameof(B), DataType.Number).UseInput();
+        A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
+        B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
 
         Value = OutputValue(
             nameof(Value),

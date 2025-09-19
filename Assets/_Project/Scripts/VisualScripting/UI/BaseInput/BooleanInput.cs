@@ -24,6 +24,12 @@ public class BooleanInput : BaseInput
         return Input.isOn;
     }
 
+    public override void SetValueInstance(Variable value)
+    {
+        base.SetValueInstance(value);
+        Input.SetIsOnWithoutNotify((bool)value.Value);
+    }
+
     public override void SetValue(object value)
     {
         Input.SetIsOnWithoutNotify((bool)value);

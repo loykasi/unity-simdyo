@@ -13,16 +13,25 @@ MonoBehaviour:
   m_Name: UIInputCollection
   m_EditorClassIdentifier: 
   Inputs:
-  - Type: 1
+  - Type:
+      Type: 1
+      IsList: 0
     InputPrefab: {fileID: 4794832032501768498, guid: af67e26edaecc404085705751107d9a1, type: 3}
-  - Type: 2
+  - Type:
+      Type: 2
+      IsList: 0
     InputPrefab: {fileID: 8184090208174861565, guid: 8a6320f51e96aa6409af785ffe70a42b, type: 3}
-  - Type: 3
+  - Type:
+      Type: 3
+      IsList: 0
     InputPrefab: {fileID: 8457650796186177815, guid: 3cfdd135c3db35c48812d1fad93d6e96, type: 3}
-  - Type: 5
+  - Type:
+      Type: 5
+      IsList: 0
     InputPrefab: {fileID: 132496327458607088, guid: 9cb2f909e50c21b4eb5779ba8d4c6018, type: 3}
-  - Type: 7
-    InputPrefab: {fileID: 959947589436971323, guid: aa93fe0770fcfff4f8dacfdb69fc893a, type: 3}
-  - Type: 6
+  - Type:
+      Type: 6
+      IsList: 0
     InputPrefab: {fileID: 4807153160745906245, guid: e2d4e181c3da152489d134e6d22b92f4, type: 3}
   VariableNameInputPrefab: {fileID: 8432855615421663560, guid: 75bed57d6ec178f49a24f56341252fd0, type: 3}
+  ListInputPrefab: {fileID: 959947589436971323, guid: aa93fe0770fcfff4f8dacfdb69fc893a, type: 3}

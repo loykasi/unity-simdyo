@@ -58,7 +58,7 @@ public class VariableBoard : MonoBehaviour
     private void AddVariableItem(string name, Variable variable)
     {
         VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-        item.Init(name, variable.Type, variable.SubType, variable.Value, this);
+        item.Init(name, variable.Type, variable.Value, this);
         _variableItems.Add(item);
     }
 

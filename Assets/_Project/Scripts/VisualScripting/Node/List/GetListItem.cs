@@ -18,9 +18,9 @@ class GetListItemNode : ScriptNode
 
     public GetListItemNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List);
-        Index = InputValue(nameof(Index), DataType.Number);
-        Output = OutputValue(nameof(Output), DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+        Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
+        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
     }
 
     private object Get(ScriptFlow vs)

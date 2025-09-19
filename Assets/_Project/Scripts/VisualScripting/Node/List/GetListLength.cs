@@ -17,8 +17,8 @@ class GetListLengthNode : ScriptNode
 
     public GetListLengthNode(string title) : base(title)
     {
-        ListInput = InputValue(nameof(ListInput), DataType.List);
-        Output = OutputValue(nameof(Output), DataType.List, Get);
+        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
     }
 
     private object Get(ScriptFlow vs)

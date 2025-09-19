@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,8 +10,11 @@ public class ScriptFlow : MonoBehaviour
 
     public SceneEntity Entity;
 
+    [SerializeField] private GetVariable _getVariableNodeData;
+
     public List<ScriptNode> Nodes = new();
     public List<NodeConnection> Connections = new();
+    public List<ScriptFunction> Functions = new();
 
     private int _loopIdentifier = 0;
     private Stack<int> _loops = new();
@@ -142,6 +145,76 @@ public class ScriptFlow : MonoBehaviour
         }
     }
 
+    // Add node from drag and drop
+
+    public void AddGetVariableNode(string key)
+    {
+        Debug.Log("add");
+        GetVariableNode node = (GetVariableNode)_getVariableNodeData.Create();
+
+        node.Input.SetValue(key);
+
+        node.Flow = this;
+        Nodes.Add(node);
+        OnNodeAdded?.Invoke(node);
+    }
+
+    public ScriptFunction AddFunction()
+    {
+        string baseName = "NewFunction";
+        string functionName = GetFunctionName(baseName);
+
+        Debug.Log($"Function: {functionName}");
+
+        ScriptFunction function = new()
+        {
+            Name = functionName
+        };
+
+        Functions.Add(function);
+
+        return function;
+    }
+
+    private string GetFunctionName(string baseName)
+    {
+        string pattern = @$"^{baseName}(?: \((\d+)\))?$";
+
+        Regex regex = new(pattern, RegexOptions.Compiled);
+
+        List<int> ints = new();
+
+        int i = 0;
+
+        for (i = 0; i < Functions.Count; i++)
+        {
+            Match match = regex.Match(Functions[i].Name);
+            if (match.Success)
+            {
+                string value = match.Groups[1].Value;
+                int number = value == string.Empty ? 0 : int.Parse(value);
+                ints.Add(number);
+            }
+        }
+        ints.Sort();
+
+        for (i = 0; i < ints.Count; i++)
+        {
+            if (i != ints[i])
+            {
+                break;
+            }
+        }
+
+        // Debug.Log(string.Join(" ", ints));
+
+        if (i == 0)
+        {
+            return baseName;
+        }
+        return string.Concat(baseName, " (", i, ")");
+    }
+
     // Events
 
     public void RegisterEventNode(EventHook hook, EventNode node)
@@ -178,7 +251,7 @@ public class ScriptFlow : MonoBehaviour
 
         if (!_variables.ContainsKey(name))
         {
-            _variables.Add(name, new Variable(DataType.String, ""));
+            _variables.Add(name, new Variable());
             Debug.Log("Add variable");
             return true;
         }
@@ -186,15 +259,15 @@ public class ScriptFlow : MonoBehaviour
         return false;
     }
 
-    public void UpdateVariable(string name, DataType type, object value)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
-        {
-            Debug.Log($"Update variable {name} =  {value}");
-            variable.Type = type;
-            variable.Value = value;
-        }
-    }
+    // public void UpdateVariable(string name, DataType type, object value)
+    // {
+    //     if (_variables.TryGetValue(name, out Variable variable))
+    //     {
+    //         Debug.Log($"Update variable {name} =  {value}");
+    //         variable.Type = type;
+    //         variable.Value = value;
+    //     }
+    // }
 
     public void UpdateVariable(string name, object value)
     {
@@ -202,57 +275,6 @@ public class ScriptFlow : MonoBehaviour
         {
             Debug.Log($"Update {name} = {value}");
             variable.Value = value;
-        }
-    }
-
-    public void UpdateListVariable(string name, ListType subType)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
-        {
-            switch (subType)
-            {
-                case ListType.String:
-                    variable.SubType = ListType.String;
-                    variable.Value = new List<string>();
-                    break;
-                case ListType.Number:
-                    variable.SubType = ListType.Number;
-                    variable.Value = new List<float>();
-                    break;
-                case ListType.Boolean:
-                    variable.SubType = ListType.Boolean;
-                    variable.Value = new List<bool>();
-                    break;
-            }
-
-            variable.Type = DataType.List;
-        }
-    }
-
-    public void InsertListItem(string name, object value)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
-        {
-            IList list = (IList)variable.Value;
-            list.Add(value);
-        }
-    }
-
-    public void UpdateListItem(string name, int index, object value)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
-        {
-            IList list = (IList)variable.Value;
-            list[index] = value;
-        }
-    }
-
-    public void RemoveListItem(string name, int index)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
-        {
-            IList list = (IList)variable.Value;
-            list.RemoveAt(index);
         }
     }
 

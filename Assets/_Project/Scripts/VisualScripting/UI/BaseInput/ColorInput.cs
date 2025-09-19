@@ -37,6 +37,13 @@ public class ColorInput : BaseInput
         return _value;
     }
 
+    public override void SetValueInstance(Variable value)
+    {
+        base.SetValueInstance(value);
+        _value = (ColorHSV)value.Value;
+        UpdateButton();
+    }
+
     public override void SetValue(object value)
     {
         _value = (ColorHSV)value;

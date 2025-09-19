@@ -23,7 +23,7 @@ class ClearListNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Clear);
         Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = InputValue(nameof(ListInput), DataType.List);
+        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
     }
 
     private OutputTrigger Clear(ScriptFlow vs)

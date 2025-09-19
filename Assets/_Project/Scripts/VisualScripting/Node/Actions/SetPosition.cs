@@ -21,7 +21,7 @@ class SetPositionNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
 
-        Input = InputValue(nameof(Input), DataType.Vector);
+        Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.Vector));
     }
 
     public OutputTrigger Set(ScriptFlow vs)

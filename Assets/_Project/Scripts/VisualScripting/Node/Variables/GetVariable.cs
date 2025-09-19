@@ -18,7 +18,7 @@ public class GetVariableNode : ScriptNode
     public GetVariableNode(string title) : base(title)
     {
         Input = InputValue(nameof(Input)).UseVariableInput();
-        Output = OutputValue(nameof(Output), DataType.Any, Get);
+        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get);
 
         Input.OnValueChanged += OnInputValueChanged;
     }

@@ -13,43 +13,44 @@ public class VariableConverter : JsonConverter<Variable>
         JObject obj = JObject.Load(reader);
 
         DataType type = obj["Type"].ToObject<DataType>(serializer);
-        ListType? subType = obj["SubType"].ToObject<ListType?>(serializer);
-        Variable variable = new()
-        {
-            Type = type,
-            SubType = subType
-        };
+        // ListType? subType = obj["SubType"].ToObject<ListType?>(serializer);
+        // Variable variable = new()
+        // {
+        //     Type = type,
+        //     SubType = subType
+        // };
 
-        switch (type)
-        {
-            case DataType.String:
-                variable.Value = obj["Value"].ToObject<string>(serializer);
-                break;
-            case DataType.Number:
-                variable.Value = obj["Value"].ToObject<float>(serializer);
-                break;
-            case DataType.Boolean:
-                variable.Value = obj["Value"].ToObject<bool>(serializer);
-                break;
-            case DataType.Vector:
-                Debug.Log("vector 3");
-                variable.Value = obj["Value"].ToObject<Vector3>(serializer);
-                break;
-            case DataType.Color:
-                variable.Value = obj["Value"].ToObject<ColorHSV>(serializer);
-                break;
-            case DataType.List:
-                variable.Value = subType switch
-                {
-                    ListType.String => obj["Value"].ToObject<IList<string>>(serializer),
-                    ListType.Number => obj["Value"].ToObject<IList<float>>(serializer),
-                    ListType.Boolean => obj["Value"].ToObject<IList<bool>>(serializer),
-                    _ => throw new ArgumentOutOfRangeException(),
-                };
-                break;
-        }
+        // switch (type)
+        // {
+        //     case DataType.String:
+        //         variable.Value = obj["Value"].ToObject<string>(serializer);
+        //         break;
+        //     case DataType.Number:
+        //         variable.Value = obj["Value"].ToObject<float>(serializer);
+        //         break;
+        //     case DataType.Boolean:
+        //         variable.Value = obj["Value"].ToObject<bool>(serializer);
+        //         break;
+        //     case DataType.Vector:
+        //         Debug.Log("vector 3");
+        //         variable.Value = obj["Value"].ToObject<Vector3>(serializer);
+        //         break;
+        //     case DataType.Color:
+        //         variable.Value = obj["Value"].ToObject<ColorHSV>(serializer);
+        //         break;
+        //     case DataType.List:
+        //         variable.Value = subType switch
+        //         {
+        //             ListType.String => obj["Value"].ToObject<IList<string>>(serializer),
+        //             ListType.Number => obj["Value"].ToObject<IList<float>>(serializer),
+        //             ListType.Boolean => obj["Value"].ToObject<IList<bool>>(serializer),
+        //             _ => throw new ArgumentOutOfRangeException(),
+        //         };
+        //         break;
+        // }
 
-        return variable;
+        // return variable;
+        return null;
     }
 
     public override void WriteJson(JsonWriter writer, Variable value, Newtonsoft.Json.JsonSerializer serializer)

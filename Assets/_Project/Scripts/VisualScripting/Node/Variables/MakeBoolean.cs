@@ -3,5 +3,5 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MakeBoolean", menuName = "Scriptable Objects/Visual Scripting/Node/Make Boolean")]
 public class MakeBoolen : MakeVariable
 {
-    public override DataType Type => DataType.Boolean;
+    public override ScriptDataType Type => ScriptDataType.Single(DataType.Boolean);
 }

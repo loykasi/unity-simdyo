@@ -42,6 +42,12 @@ public class StringInput : BaseInput
         return InputField.text;
     }
 
+    public override void SetValueInstance(Variable value)
+    {
+        base.SetValueInstance(value);
+        InputField.SetTextWithoutNotify((string)value.Value);
+    }
+
     public override void SetValue(object value)
     {
         InputField.SetTextWithoutNotify((string)value);

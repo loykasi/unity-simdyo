@@ -1,17 +1,18 @@
 
 public class Variable
 {
-    public DataType Type;
-    public ListType? SubType;
+    public ScriptDataType Type;
 
     public object Value;
     private object _default;
 
     public Variable()
     {
+        Type = ScriptDataType.Default();
+        Value = string.Empty;
     }
 
-    public Variable(DataType type, object value)
+    public Variable(ScriptDataType type, object value)
     {
         Type = type;
         Value = value;

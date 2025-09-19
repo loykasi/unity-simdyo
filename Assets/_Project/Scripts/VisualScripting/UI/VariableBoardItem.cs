@@ -6,17 +6,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
 {
+    public string VariableName => _nameInputField.text;
+
     [SerializeField] private RectTransform _rect;
     [SerializeField] private TMP_InputField _nameInputField;
-    [SerializeField] private TMP_Dropdown _typeDropdown;
+    // [SerializeField] private TMP_Dropdown _typeDropdown;
+    [SerializeField] private TypeInput _typeInput;
     [SerializeField] private Button _removeButton;
 
     [Header("Input")]
     [SerializeField] private RectTransform _inputHolder;
     [SerializeField] private UIInputData _inputDataReference;
-    [SerializeField] private DataTypeController.CustomType _defaultInputType;
     private BaseInput _input;
 
     private Variable _variable;
@@ -30,59 +32,55 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     {
         InitDropDown();
 
-        _typeDropdown.onValueChanged.AddListener(OnTypeChanged);
         _removeButton.onClick.AddListener(OnRemove);
     }
 
     private void InitDropDown()
     {
-        if (_typeDropdown.options.Count != 0)
-        {
-            return;
-        }
-
-        _typeDropdown.AddOptions(DataTypeController.DataTypesDropdownValues);
+        _typeInput.OnSubmit += OnTypeChanged;
     }
 
     public void Init(string name, VariableBoard variableBoard)
     {
         _nameInputField.text = name;
-        _typeDropdown.value = 0;
 
         _variableBoard = variableBoard;
-        _variable = NodeBoard.Instance.Flow.GetVariable(name);
+        _variable = _variableBoard.FlowGraph.Flow.GetVariable(name);
 
-        OnTypeChanged(0);
+        OnTypeChanged(_typeInput.GetValue());
     }
 
     // NEED TO FIX THIS
-    public void Init(string name, DataType type, ListType? subType, object value, VariableBoard variableBoard)
+    public void Init(string name, ScriptDataType type, object value, VariableBoard variableBoard)
     {
         InitDropDown();
 
-        int typeIndex = GetDataTypeIndex(type, subType);
-
         _nameInputField.text = name;
-        _typeDropdown.SetValueWithoutNotify(typeIndex);
+        _typeInput.SetValue(type);
 
         _variableBoard = variableBoard;
-        _variable = NodeBoard.Instance.Flow.GetVariable(name);
+        _variable = _variableBoard.FlowGraph.Flow.GetVariable(name);
 
-        OnTypeChanged(typeIndex);
+        ChangeInput(type);
     }
 
-    private void OnTypeChanged(int index)
+    private void OnTypeChanged(object value)
     {
-        var type = DataTypeController.DataTypeList[index];
-        
-        ValueHandler.SetDefaultValue(_variable, type.Type);
+        ScriptDataType type = (ScriptDataType)value;
 
+        ValueHandler.SetDefaultValue(_variable, type);
+
+        ChangeInput(type);
+    }
+
+    private void ChangeInput(ScriptDataType type)
+    {
         if (_input != null)
         {
             Destroy(_input.gameObject);
         }
 
-        _input = _inputDataReference.Get(type.Type, type.SubType, _variableBoard.FlowGraph.Entity);
+        _input = _inputDataReference.Get(type);
         _input.Rect.SetParent(_inputHolder, false);
         _input.Enable();
 
@@ -93,26 +91,6 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private void OnInputSubmit(object value)
     {
         UpdateSize();
-    }
-
-    private int GetDataTypeIndex(DataType type, ListType? subtype)
-    {
-        return type switch
-        {
-            DataType.String => 0,
-            DataType.Number => 1,
-            DataType.Boolean => 2,
-            DataType.Vector => 3,
-            DataType.Color => 4,
-            DataType.List => subtype switch
-            {
-                ListType.String => 5,
-                ListType.Number => 6,
-                ListType.Boolean => 7,
-                _ => throw new NotImplementedException(),
-            },
-            _ => throw new NotImplementedException(),
-        };
     }
 
     private void OnRemove()
@@ -136,10 +114,15 @@ public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log(eventData.pointerEnter);
+        
     }
 
     public void OnDrag(PointerEventData eventData)
+    {
+        
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
     {
         
     }

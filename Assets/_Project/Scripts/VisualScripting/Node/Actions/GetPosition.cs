@@ -17,7 +17,7 @@ class GetPositionNode : ScriptNode
 
     public GetPositionNode(string title) : base(title)
     {
-        Input = InputValue(nameof(Input), DataType.Entity).UseInput();
+        Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.Entity)).UseInput();
         Value = OutputValue(
             nameof(Value),
             GetPosition

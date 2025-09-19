@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
+public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IDropHandler
 {
     public ScriptFlowGraph FlowGraph { get; set; }
     public ScriptFlow Flow => FlowGraph.Flow;
@@ -98,7 +98,6 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
             UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
             UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
 
-            // Debug.Log($"{sourcePort} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
             if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
             {
                 Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
@@ -126,6 +125,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
         node.Board = this;
         node.Node = scriptNode;
+        node.transform.position = scriptNode.Positon;
 
         _nodes.Add(node);
     }
@@ -191,7 +191,7 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
         if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
         {
             Vector3 mousePosition = Mouse.current.position.ReadValue();
-            _nodeMenu.Open(mousePosition);
+            _nodeMenu.Open(this, mousePosition);
 
             _openMenuPosition = mousePosition;
         }
@@ -432,5 +432,17 @@ public class NodeBoard : Singleton<NodeBoard>, IBeginDragHandler, IDragHandler, 
 
         lineRenderer.Rect.sizeDelta = size;
         lineRenderer.Rect.position = newCenter;
+    }
+
+    public void OnDrop(PointerEventData eventData)
+    {
+        Debug.Log($"Drop {eventData.pointerDrag}");
+        if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
+        {
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            _openMenuPosition = mousePosition;
+            
+            Flow.AddGetVariableNode(variableItem.VariableName);
+        }
     }
 }

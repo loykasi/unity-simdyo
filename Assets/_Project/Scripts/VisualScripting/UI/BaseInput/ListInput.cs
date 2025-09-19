@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class ListInput : BaseInput
 {
-    public BaseInput InputPrefab { get; set; }
+    public DataType ListType { get; set; }
 
+    [SerializeField] private UIInputData _inputData;
     [SerializeField] private RectTransform _addButtonRect;
     [SerializeField] private Button _addButton;
 
@@ -38,7 +39,8 @@ public class ListInput : BaseInput
     private void AddElement(object value = null)
     {
         ListInputItem listInputItem = Instantiate(_listInputItemPrefab, _container);
-        BaseInput input = Instantiate(InputPrefab);
+
+        BaseInput input = _inputData.GetInputInstance(ListType);
 
         listInputItem.Init(this, input);
         listInputItem.Rect.localPosition = new Vector3(0f, -listInputItem.Rect.sizeDelta.y * _inputItems.Count, 0f);

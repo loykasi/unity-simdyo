@@ -63,7 +63,7 @@ public abstract class ScriptNode : IScriptNode
         return inputTrigger;
     }
 
-    protected OutputTrigger OutputTrigger(string key)
+    public OutputTrigger OutputTrigger(string key)
     {
         OutputTrigger outputTrigger = new(key)
         {
@@ -83,7 +83,7 @@ public abstract class ScriptNode : IScriptNode
         return valueInput;
     }
 
-    protected InputValue InputValue(string key, DataType type)
+    protected InputValue InputValue(string key, ScriptDataType type)
     {
         InputValue valueInput = new(key, type)
         {
@@ -93,7 +93,7 @@ public abstract class ScriptNode : IScriptNode
         return valueInput;
     }
 
-    protected OutputValue OutputValue(string key, Func<ScriptFlow, object> getValue)
+    public OutputValue OutputValue(string key, Func<ScriptFlow, object> getValue)
     {
         OutputValue valueOutput = new(key, getValue)
         {
@@ -103,7 +103,7 @@ public abstract class ScriptNode : IScriptNode
         return valueOutput;
     }
 
-    protected OutputValue OutputValue(string key, DataType type, Func<ScriptFlow, object> getValue)
+    public OutputValue OutputValue(string key, ScriptDataType type, Func<ScriptFlow, object> getValue)
     {
         OutputValue valueOutput = new(key, getValue, type)
         {

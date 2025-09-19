@@ -17,17 +17,13 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     public abstract NodePortEdge Edge { get; }
     public Vector3 HandlePosition => _portHandle.transform.position;
 
+    private NodeBoard NodeBoard => UINode.Board;
+
     public RectTransform Rect;
     [SerializeField] private RectTransform _portHandle;
     [SerializeField] protected TextMeshProUGUI _label;
-    private NodeBoard _nodeBoard;
 
     protected List<UILineConnection> _lineConnections = new();
-
-    private void Awake()
-    {
-        _nodeBoard = NodeBoard.Instance;
-    }
 
     public virtual void Init()
     {
@@ -42,31 +38,32 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
                 _label.gameObject.SetActive(false);
             }
         }
+        Debug.Log($"{_label.text}: {_label.rectTransform.sizeDelta}");
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        _nodeBoard.StartPreviewConnect(this, _portHandle.position, Edge);
+        NodeBoard.StartPreviewConnect(this, _portHandle.position, Edge);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        _nodeBoard.DragPreviewConnect(Mouse.current.position.ReadValue());
+        NodeBoard.DragPreviewConnect(Mouse.current.position.ReadValue());
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        _nodeBoard.EndPreviewConnect();
+        NodeBoard.EndPreviewConnect();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _nodeBoard.OnEnterPort(this, _portHandle.position);
+        NodeBoard.OnEnterPort(this, _portHandle.position);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _nodeBoard.OnExitPort();
+        NodeBoard.OnExitPort();
     }
 
     public void AddConnection(UILineConnection lineConnection)
@@ -78,7 +75,7 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     {
         for (int i = 0; i < _lineConnections.Count; i++)
         {
-            _nodeBoard.UpdateLines(_lineConnections[i].LineRenderer, Edge, _portHandle.position);
+            NodeBoard.UpdateLines(_lineConnections[i].LineRenderer, Edge, _portHandle.position);
         }
     }
 

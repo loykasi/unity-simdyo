@@ -4,17 +4,17 @@ using UnityEngine;
 
 public class OutputValue : Port<InputValue>
 {
-    public DataType Type { get; private set; }
+    public ScriptDataType Type { get; private set; }
     public Func<ScriptFlow, object> action;
     public List<InputValue> Destinations = new();
 
     public OutputValue(string key, Func<ScriptFlow, object> getValue): base(key)
     {
         action = getValue;
-        Type = DataType.Any;
+        Type = ScriptDataType.Any();
     }
 
-    public OutputValue(string key, Func<ScriptFlow, object> getValue, DataType type): base(key)
+    public OutputValue(string key, Func<ScriptFlow, object> getValue, ScriptDataType type): base(key)
     {
         action = getValue;
         Type = type;
@@ -25,7 +25,7 @@ public class OutputValue : Port<InputValue>
         return action(vs);
     }
 
-    public void SetType(DataType type)
+    public void SetType(ScriptDataType type)
     {
         Type = type;
     }
@@ -45,6 +45,6 @@ public class OutputValue : Port<InputValue>
 
     public override bool CanConnectTo(InputValue port)
     {
-        return Type == DataType.Any || port.Type == DataType.Any || port.Type == Type;
+        return Type.IsAny || port.Type.IsAny || port.Type == Type;
     }
 }

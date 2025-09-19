@@ -15,7 +15,7 @@ public class InputValue : Port<OutputValue>
 {
     public UnityAction OnValueChanged;
 
-    public DataType Type { get; set; }
+    public ScriptDataType Type { get; set; }
     public OutputValue Source;
 
     public InputValueTypes InputType = InputValueTypes.None;
@@ -37,10 +37,10 @@ public class InputValue : Port<OutputValue>
 
     public InputValue(string key) : base(key)
     {
-        Type = DataType.Any;
+        Type = ScriptDataType.Any();
     }
 
-    public InputValue(string key, DataType type) : base(key)
+    public InputValue(string key, ScriptDataType type) : base(key)
     {
         Type = type;
     }
@@ -51,29 +51,17 @@ public class InputValue : Port<OutputValue>
         {
             if (!HasValue)
             {
-                Node.DefaultValues.Add(Key, Type switch
-                {
-                    DataType.String => "",
-                    DataType.Number => 0f,
-                    DataType.Boolean => false,
-                    _ => "",
-                });
+                Node.DefaultValues.Add(Key, ValueHandler.GetDefaultValue(Type));
                 return;
             }
 
-            Value = Type switch
-            {
-                DataType.String => "",
-                DataType.Number => 0f,
-                DataType.Boolean => false,
-                _ => "",
-            };
+            Value = ValueHandler.GetDefaultValue(Type);
         }
     }
 
     public InputValue UseInput()
     {
-        InputType = Type switch
+        InputType = Type.Type switch
         {
             DataType.String => InputValueTypes.String,
             DataType.Number => InputValueTypes.Number,
@@ -123,7 +111,7 @@ public class InputValue : Port<OutputValue>
 
         if (HasValue)
         {
-            if (Type == DataType.Entity && Value == null)
+            if (Type.Type == DataType.Entity && Value == null)
             {
                 return Node.Flow.Entity;    
             }
@@ -131,48 +119,6 @@ public class InputValue : Port<OutputValue>
         }
 
         return null;
-    }
-
-    public void SetValue(string value)
-    {
-        if (Type == DataType.String)
-        {
-            Debug.Log("Save as string");
-            Value = value;
-            return;
-        }
-
-        if (Type == DataType.Number)
-        {
-            if (float.TryParse(value, out float result2))
-            {
-                Debug.Log("Save as float");
-                Value = result2;
-            }
-            return;
-        }
-
-        if (Type == DataType.Boolean)
-        {
-            if (bool.TryParse(value, out bool result3))
-            {
-                Debug.Log("Save as bool");
-                Value = result3;
-            }
-            return;
-        }
-
-        Value = value;
-        OnValueChanged?.Invoke();
-    }
-    
-    public void SetValue(float value)
-    {
-        if (Type == DataType.Number)
-        {
-            Value = value;
-            OnValueChanged?.Invoke();
-        }
     }
 
     public void SetValue(object value)
@@ -191,6 +137,6 @@ public class InputValue : Port<OutputValue>
 
     public override bool CanConnectTo(OutputValue port)
     {
-        return port.Type == DataType.Any || Type == DataType.Any || port.Type == Type;
+        return port.Type.IsAny || Type.IsAny || port.Type == Type;
     }
 }

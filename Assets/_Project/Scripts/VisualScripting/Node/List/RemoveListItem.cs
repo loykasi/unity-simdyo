@@ -25,9 +25,9 @@ class RemoveListItemNode : ScriptNode
         Enter = InputTrigger(nameof(Enter), Set);
         Exit = OutputTrigger(nameof(Exit));
 
-        ListInput = InputValue(nameof(ListInput), DataType.List);
+        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
         Index = InputValue(nameof(Index));
-        Output = OutputValue(nameof(Output), DataType.List, Get);
+        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
     }
 
     private OutputTrigger Set(ScriptFlow vs)

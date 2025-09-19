@@ -4,26 +4,31 @@ using UnityEngine;
 
 public static class ValueHandler
 {
-    public static void SetDefaultValue(Variable variable, DataType type)
+    public static object GetDefaultValue(ScriptDataType type)
     {
-        if (type == DataType.Any)
+        if (type.IsList)
         {
-            return;
+            return new List<object>();
         }
 
-        variable.Value = type switch
+        return type.Type switch
         {
             DataType.String => default(string),
             DataType.Number => default(float),
             DataType.Boolean => default(bool),
             DataType.Vector => default(Vector3),
             DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
-            DataType.Entity => null,
-            DataType.List => new List<object>(),
+            DataType.Entity => default,
+            DataType.Any => default,
+            _ => default,
         };
+    }
 
+    public static void SetDefaultValue(Variable variable, ScriptDataType type)
+    {
+        variable.Value = GetDefaultValue(type);
         variable.Type = type;
-        
+
         Debug.Log($"Set Default Value: {variable.Value}");
     }
 
@@ -35,7 +40,7 @@ public static class ValueHandler
 
     public static void ListAdd(Variable variable, object value)
     {
-        if (variable.Type != DataType.List)
+        if (!variable.Type.IsList)
         {
             return;
         }
@@ -48,7 +53,7 @@ public static class ValueHandler
 
     public static void ListEdit(Variable variable, int index, object value)
     {
-        if (variable.Type != DataType.List)
+        if (!variable.Type.IsList)
         {
             return;
         }
@@ -61,7 +66,7 @@ public static class ValueHandler
 
     public static void ListRemoveAt(Variable variable, int index)
     {
-        if (variable.Type != DataType.List)
+        if (!variable.Type.IsList)
         {
             return;
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MakeVariable : ScriptNodeData
 {
-    public abstract DataType Type { get; }
+    public abstract ScriptDataType Type { get; }
 
     public override ScriptNode Create()
     {
@@ -20,7 +20,7 @@ public class MakeVariableNode : ScriptNode
     [JsonIgnore]
     public OutputValue Output;
 
-    public MakeVariableNode(DataType type, string title) : base(title)
+    public MakeVariableNode(ScriptDataType type, string title) : base(title)
     {
         Input = InputValue(nameof(Input), type);
         Output = OutputValue(nameof(Output), type, (vs) => Input.GetValue(vs));

@@ -241,6 +241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 9053618448412518626}
+  _getVariableNodeData: {fileID: 11400000, guid: 12e807d7761dea048b456dbd77fedf58, type: 2}
 --- !u!50 &-7824645102635766432
 Rigidbody2D:
   serializedVersion: 5

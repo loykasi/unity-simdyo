@@ -6,19 +6,20 @@ public class UIInputData : ScriptableObject
     [System.Serializable]
     public class UIInput
     {
-        public DataType Type;
+        public ScriptDataType Type;
         public BaseInput InputPrefab;
     }
 
     public UIInput[] Inputs;
 
     public BaseInput VariableNameInputPrefab;
+    public BaseInput ListInputPrefab;
 
     private UIInput GetUIInput(DataType type)
     {
         for (int i = 0; i < Inputs.Length; i++)
         {
-            if (Inputs[i].Type == type)
+            if (Inputs[i].Type.Type == type)
             {
                 return Inputs[i];
             }
@@ -27,20 +28,20 @@ public class UIInputData : ScriptableObject
         return null;
     }
 
-    public BaseInput GetPrefab(DataType type)
+    public BaseInput GetInputInstance(DataType type)
     {
-        return GetUIInput(type).InputPrefab;
+        return default;
     }
 
-    public BaseInput Get(DataType type, SceneEntity entity)
+    public BaseInput GetPrefab(DataType type)
     {
-        BaseInput input = GetPrefab(type);
-        if (input == null)
+        BaseInput inputPrefab = GetUIInput(type).InputPrefab;
+        if (inputPrefab == null)
         {
             return null;
         }
 
-        BaseInput inputObject = Instantiate(input);
+        BaseInput inputObject = Instantiate(inputPrefab);
 
         if (type == DataType.Entity)
         {
@@ -52,29 +53,39 @@ public class UIInputData : ScriptableObject
         return inputObject;
     }
 
-    public BaseInput Get(DataType type, DataType? subType, SceneEntity entity)
+    public BaseInput GetPrefab(ScriptDataType type)
     {
-        if (type != DataType.List)
+        if (type.IsList)
         {
-            return Get(type, entity);
+            return ListInputPrefab;
         }
+        return GetUIInput(type.Type).InputPrefab;
+    }
 
-        if (subType == null)
-        {
-            return null;
-        }
-
+    public BaseInput Get(ScriptDataType type)
+    {
         BaseInput inputPrefab = GetPrefab(type);
-
         if (inputPrefab == null)
         {
             return null;
         }
 
-        ListInput input = (ListInput)Instantiate(inputPrefab);
-        input.InputPrefab = GetPrefab(subType.Value);
+        BaseInput inputObject = Instantiate(inputPrefab);
 
-        return input;
+        if (!type.IsList && type.Type == DataType.Entity)
+        {
+            var options = ObjectManager.Instance.GetEntityOptions();
+            var entityInput = (EntityInput)inputObject;
+            entityInput.Init(options);
+        }
+
+        if (type.IsList)
+        {
+            ListInput input = (ListInput)inputObject;
+            input.ListType = type.Type;
+        }
+
+        return inputObject;
     }
 
     public BaseInput Get(InputValueTypes inputType, SceneEntity entity)
@@ -99,6 +110,6 @@ public class UIInputData : ScriptableObject
             _ => throw new System.NotImplementedException(),
         };
 
-        return Get(type, null, null);
+        return Get(new ScriptDataType(type, false));
     }
 }

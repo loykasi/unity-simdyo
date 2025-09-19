@@ -5,9 +5,24 @@ public class UIValueOutputPort: UINodePort
 {
     public override NodePortEdge Edge => NodePortEdge.Right;
 
+    [SerializeField] private PortVisual _portVisual;
+    private OutputValue _outputValue;
+
+    private readonly float _handleSize = 70f;
+    private readonly float _height = 30f;
+
     public override void Init()
     {
         base.Init();
+
+        if (Port is not OutputValue)
+        {
+            Debug.LogError("Wrong port assignment.", this);
+            return;
+        }
+        _outputValue = (OutputValue)Port;
+
+        _portVisual.SetType(_outputValue.Type);
 
         UpdateSize();
     }
@@ -23,8 +38,8 @@ public class UIValueOutputPort: UINodePort
 
         Rect.sizeDelta = new Vector2
         (
-            30f + size.x,
-            30f
+            _handleSize + size.x,
+            _height
         );
     }
 }

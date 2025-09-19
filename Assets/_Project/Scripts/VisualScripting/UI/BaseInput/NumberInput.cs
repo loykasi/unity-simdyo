@@ -51,6 +51,12 @@ public class NumberInput : BaseInput
         return _value;
     }
 
+    public override void SetValueInstance(Variable value)
+    {
+        base.SetValueInstance(value);
+        InputField.SetTextWithoutNotify(value.Value.ToString());
+    }
+
     public override void SetValue(object value)
     {
         _value = (float)value;

@@ -15,6 +15,8 @@ public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
     private Vector2 _offsetFromMouse;
     private bool _isHover = false;
 
+    private NodeBoard _nodeBoard;
+
     private void Start()
     {
         InitMenu();
@@ -57,11 +59,14 @@ public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
     private void Close()
     {
+        _nodeBoard = null;
         gameObject.SetActive(false);
     }
 
-    public void Open(Vector3 position)
+    public void Open(NodeBoard nodeBoard, Vector3 position)
     {
+        _nodeBoard = nodeBoard;
+
         gameObject.SetActive(true);
         transform.position = position;
 
@@ -73,8 +78,9 @@ public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointer
 
     public void AddNode(ScriptNodeData nodeData)
     {
+        _nodeBoard.AddNode(nodeData);
+        
         Close();
-        NodeBoard.Instance.AddNode(nodeData);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

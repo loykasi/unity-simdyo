@@ -1483,8 +1483,9 @@ GameObject:
   - component: {fileID: 7877164411348384956}
   - component: {fileID: 5137043942797565748}
   - component: {fileID: 5280838452294740510}
+  - component: {fileID: 1434233518887028580}
   m_Layer: 5
-  m_Name: Dropdown
+  m_Name: TypeInput
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1605,6 +1606,20 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
+--- !u!114 &1434233518887028580
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5243333536676299139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d031a6a8e3a9149b79676ce92e1cca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Rect: {fileID: 3895571011570862945}
+  Dropdown: {fileID: 5280838452294740510}
 --- !u!1 &5249940609193765999
 GameObject:
   m_ObjectHideFlags: 0
@@ -2085,7 +2100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2115,12 +2130,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rect: {fileID: 7644402949570269969}
   _nameInputField: {fileID: 1477406883856555207}
-  _typeDropdown: {fileID: 5280838452294740510}
+  _typeInput: {fileID: 1434233518887028580}
   _removeButton: {fileID: 9199583807639029204}
   _inputHolder: {fileID: 2850877116424231039}
   _inputDataReference: {fileID: 11400000, guid: c9b321bf8663e424f8d4b1478872c8c1, type: 2}
-  _defaultInputType:
-    Type: 1
 --- !u!1 &7793245644713817948
 GameObject:
   m_ObjectHideFlags: 0
