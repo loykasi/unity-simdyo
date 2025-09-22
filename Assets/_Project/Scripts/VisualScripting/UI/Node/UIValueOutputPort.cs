@@ -8,7 +8,7 @@ public class UIValueOutputPort: UINodePort
     [SerializeField] private PortVisual _portVisual;
     private OutputValue _outputValue;
 
-    private readonly float _handleSize = 70f;
+    private readonly float _handleSize = 60f;
     private readonly float _height = 30f;
 
     public override void Init()
@@ -17,13 +17,20 @@ public class UIValueOutputPort: UINodePort
 
         if (Port is not OutputValue)
         {
-            Debug.LogError("Wrong port assignment.", this);
+            Debug.LogError($"Wrong port assignment. {Port.GetType()}", this);
             return;
         }
         _outputValue = (OutputValue)Port;
 
         _portVisual.SetType(_outputValue.Type);
 
+        UpdateSize();
+    }
+
+    public override void UpdateUI()
+    {
+        base.UpdateUI();
+        _portVisual.SetType(_outputValue.Type);
         UpdateSize();
     }
 

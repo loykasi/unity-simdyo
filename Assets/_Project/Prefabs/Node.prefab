@@ -175,7 +175,7 @@ MonoBehaviour:
   _body: {fileID: 8646177879591071623}
   _inputTriggerPrefab: {fileID: 6495299535904794035, guid: 4f79b906eb3516b489b77e309aecdb91, type: 3}
   _inputValuePrefab: {fileID: -3993354798832430575, guid: 4a740cc127caf994d8e8226b0a492db7, type: 3}
-  _outputTriggerPrefab: {fileID: 8963726781460981597, guid: 250cb0131cb5a9b46aa85cd72e68f811, type: 3}
+  _outputTriggerPrefab: {fileID: 3790174960767552333, guid: 250cb0131cb5a9b46aa85cd72e68f811, type: 3}
   _outputValuePrefab: {fileID: 8785251507935186212, guid: ff2f4acef64f5a24d8388babb71bff82, type: 3}
 --- !u!1 &2810014387730518013
 GameObject:

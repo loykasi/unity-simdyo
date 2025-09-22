@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IGraphElement
 {
+    public NodeBoard Board { get; set; }
     public UILineRenderer LineRenderer;
     public UINodePort Source;
     public UINodePort Destination;
@@ -27,12 +28,15 @@ public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void Delete()
     {
-        Source.DeleteConnection(this, Destination.Port);
-        Destination.DeleteConnection(this, Source.Port);
-        Destroy(gameObject);
+        Board.DeleteConnection(this);
+    }
 
-        Source.AfterAdd();
-        Destination.AfterAdd();
+    public void DeleteVisual()
+    {
+        Source.DeleteConnection(this);
+        Destination.DeleteConnection(this);
+        Destroy(gameObject);
+        Debug.Log("Delete line");
     }
 
     public void Unselect()

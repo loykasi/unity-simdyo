@@ -124,6 +124,7 @@ public class InputValue : Port<OutputValue>
     public void SetValue(object value)
     {
         Value = value;
+        OnValueChanged?.Invoke();
     }
 
     protected override void DisconnectPort(OutputValue port)
@@ -137,6 +138,6 @@ public class InputValue : Port<OutputValue>
 
     public override bool CanConnectTo(OutputValue port)
     {
-        return port.Type.IsAny || Type.IsAny || port.Type == Type;
+        return port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
     }
 }

@@ -30,7 +30,22 @@ public class UIInputData : ScriptableObject
 
     public BaseInput GetInputInstance(DataType type)
     {
-        return default;
+        BaseInput inputPrefab = GetPrefab(type);
+        if (inputPrefab == null)
+        {
+            return null;
+        }
+
+        BaseInput inputObject = Instantiate(inputPrefab);
+
+        if (type == DataType.Entity)
+        {
+            var options = ObjectManager.Instance.GetEntityOptions();
+            var entityInput = (EntityInput)inputObject;
+            entityInput.Init(options);
+        }
+
+        return inputObject;
     }
 
     public BaseInput GetPrefab(DataType type)

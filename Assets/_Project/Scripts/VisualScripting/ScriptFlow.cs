@@ -8,6 +8,7 @@ public class ScriptFlow : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
 
+    public Vector2 Pan { get; set; }
     public SceneEntity Entity;
 
     [SerializeField] private GetVariable _getVariableNodeData;
@@ -56,17 +57,33 @@ public class ScriptFlow : MonoBehaviour
         }
     }
 
-    public bool TryConnect(ScriptNode fromNode, IPort fromPort, ScriptNode toNode, IPort toPort)
+    public void DeleteNode(ScriptNode node)
+    {
+        Nodes.Remove(node);
+    }
+
+    public bool TryConnect(IPort fromPort, IPort toPort)
     {
         if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
         {
+            Debug.Log("connect");
             Connections.Add(new NodeConnection(fromPort, toPort));
-            Debug.Log($"Connect successful");
             return true;
         }
 
-        Debug.Log($"Connect failed");
         return false;
+    }
+
+    public void Disconnect(IPort source, IPort destination)
+    {
+        for (int i = 0; i < Connections.Count; i++)
+        {
+            NodeConnection connection = Connections[i];
+            if (connection.Source == source && connection.Destination == destination)
+            {
+                Connections.RemoveAt(i);
+            }
+        }
     }
 
     public void Invoke(OutputTrigger outputTrigger)
@@ -258,16 +275,6 @@ public class ScriptFlow : MonoBehaviour
 
         return false;
     }
-
-    // public void UpdateVariable(string name, DataType type, object value)
-    // {
-    //     if (_variables.TryGetValue(name, out Variable variable))
-    //     {
-    //         Debug.Log($"Update variable {name} =  {value}");
-    //         variable.Type = type;
-    //         variable.Value = value;
-    //     }
-    // }
 
     public void UpdateVariable(string name, object value)
     {

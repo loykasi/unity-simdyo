@@ -27,9 +27,14 @@ public class GetVariableNode : ScriptNode
     {
         string name = Input.GetValue(Flow).ToString();
         Variable variable = Flow.GetVariable(name);
-
         Output.SetType(variable.Type);
-        Debug.Log($"Output type: {Output.Type}");
+
+        OnNodeUpdated?.Invoke();
+
+        for (int i = 0; i < Output.Destinations.Count; i++)
+        {
+            // Output.Destinations[i].
+        }
     }
 
     private object Get(ScriptFlow vs)

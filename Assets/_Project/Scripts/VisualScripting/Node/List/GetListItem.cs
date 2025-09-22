@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -20,7 +21,9 @@ class GetListItemNode : ScriptNode
     {
         ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
         Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
-        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get);
+
+        ListInput.OnConnected += OnListInputConnected;
     }
 
     private object Get(ScriptFlow vs)
@@ -28,5 +31,18 @@ class GetListItemNode : ScriptNode
         IList list = (IList)ListInput.GetValue(vs);
         int index = (int)(float)Index.GetValue(vs);
         return list[index];
+    }
+
+    private void OnListInputConnected()
+    {
+        UpdateNode();
+    }
+
+    public override void UpdateNode()
+    {
+        DataType type = ListInput.Source.Type.Type;
+        Output.SetType(ScriptDataType.Single(type));
+
+        OnNodeUpdated?.Invoke();
     }
 }

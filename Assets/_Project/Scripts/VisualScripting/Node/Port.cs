@@ -1,5 +1,10 @@
+using UnityEngine.Events;
+
 public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
 {
+    public UnityAction OnConnected;
+    public UnityAction OnDisconnected;
+    
     public IScriptNode Node { get; set; }
     public string Key { get; set; }
 
@@ -25,6 +30,7 @@ public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
         }
 
         Connect((TOtherPort)port);
+        OnConnected?.Invoke();
         return true;
     }
 
@@ -35,6 +41,7 @@ public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
         if (port is TOtherPort other)
         {
             DisconnectPort(other);
+            OnDisconnected?.Invoke();
         }
     }
 

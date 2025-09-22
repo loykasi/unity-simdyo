@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 
 public abstract class ScriptNode : IScriptNode
 {
+    public UnityAction OnNodeUpdated;
+
     public Guid ID { get; set; }
-    public Vector2 Positon { get; set; }
+    public Vector2 Position { get; set; }
     public Dictionary<string, object> DefaultValues { get; set; } = new();
 
     [JsonIgnore]
@@ -111,5 +114,10 @@ public abstract class ScriptNode : IScriptNode
         };
         ValueOutputs.Add(valueOutput);
         return valueOutput;
+    }
+
+    public virtual void UpdateNode()
+    {
+
     }
 }

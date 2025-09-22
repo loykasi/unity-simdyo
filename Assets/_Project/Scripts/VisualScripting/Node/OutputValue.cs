@@ -45,6 +45,6 @@ public class OutputValue : Port<InputValue>
 
     public override bool CanConnectTo(InputValue port)
     {
-        return Type.IsAny || port.Type.IsAny || port.Type == Type;
+        return port.Type.IsList == Type.IsList && (Type.IsAny || port.Type.IsAny || port.Type == Type);
     }
 }

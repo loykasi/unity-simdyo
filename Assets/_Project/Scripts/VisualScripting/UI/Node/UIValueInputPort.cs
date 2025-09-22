@@ -14,7 +14,7 @@ public class UIValueInputPort : UINodePort
     private BaseInput _input;
 
     private float _height = 30f;
-    private readonly float _handleSize = 70f;
+    private readonly float _handleSize = 60f;
     private readonly float _inputOffset = 10f;
 
     public override void Init()
@@ -50,7 +50,6 @@ public class UIValueInputPort : UINodePort
     private void UpdateSize()
     {
         Vector2 labelSize = _label.GetPreferredValues();
-        Debug.Log($"{_label.text}: {labelSize}");
         _label.rectTransform.sizeDelta = new Vector2
         (
             labelSize.x,
@@ -81,11 +80,11 @@ public class UIValueInputPort : UINodePort
 
     public override void ValidConnection(IPort port)
     {
-        for (int i = 0; i < _lineConnections.Count; i++)
+        for (int i = 0; i < LineConnections.Count; i++)
         {
-            if (_lineConnections[i].Source.Port != port)
+            if (LineConnections[i].Source.Port != port)
             {
-                _lineConnections[i].Delete();
+                LineConnections[i].Delete();
             }
         }
     }
@@ -102,15 +101,10 @@ public class UIValueInputPort : UINodePort
         }
     }
 
-
-    #region Handle Input Event
-
     private void OnSubmit(object value)
     {
         Debug.Log("submit " + value);
         Debug.Log($"Set value: {value}");
         _inputValue.SetValue(value);
     }
-
-    #endregion
 }

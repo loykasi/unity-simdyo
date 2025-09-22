@@ -23,7 +23,7 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     [SerializeField] private RectTransform _portHandle;
     [SerializeField] protected TextMeshProUGUI _label;
 
-    protected List<UILineConnection> _lineConnections = new();
+    public List<UILineConnection> LineConnections = new();
 
     public virtual void Init()
     {
@@ -38,7 +38,21 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
                 _label.gameObject.SetActive(false);
             }
         }
-        Debug.Log($"{_label.text}: {_label.rectTransform.sizeDelta}");
+    }
+
+    public virtual void UpdateUI()
+    {
+        if (_label != null)
+        {
+            if (Port.ShouldShowLabel)
+            {
+                _label.text = Port.Key;
+            }
+            else
+            {
+                _label.gameObject.SetActive(false);
+            }
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -68,38 +82,37 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
 
     public void AddConnection(UILineConnection lineConnection)
     {
-        _lineConnections.Add(lineConnection);
+        LineConnections.Add(lineConnection);
     }
 
     public void UpdateLines()
     {
-        for (int i = 0; i < _lineConnections.Count; i++)
+        for (int i = 0; i < LineConnections.Count; i++)
         {
-            NodeBoard.UpdateLines(_lineConnections[i].LineRenderer, Edge, _portHandle.position);
+            NodeBoard.UpdateLines(LineConnections[i].LineRenderer, Edge, _portHandle.position);
         }
     }
 
-    public void DeleteConnection(UILineConnection lineConnection, IPort other)
+    public void DeleteConnection(UILineConnection lineConnection)
     {
-        _lineConnections.Remove(lineConnection);
-        Port.Disconnect(other);
+        LineConnections.Remove(lineConnection);
     }
 
     public void DeleteAllLines()
     {
-        for (int i = 0; i < _lineConnections.Count; i++)
+        while (LineConnections.Count > 0)
         {
-            _lineConnections[i].Delete();
+            LineConnections[0].Delete();
         }
     }
 
     public virtual void ValidConnection(IPort port)
     {
-        for (int i = 0; i < _lineConnections.Count; i++)
+        for (int i = 0; i < LineConnections.Count; i++)
         {
-            if (_lineConnections[i].Destination.Port != port)
+            if (LineConnections[i].Destination.Port != port)
             {
-                _lineConnections[i].Delete();
+                LineConnections[i].Delete();
             }
         }
     }

@@ -14,8 +14,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
         get => _node;
         set
         {
-            _node = value;
-            UpdateNodeUI();
+            SetNode(value);
         }
     }
 
@@ -51,11 +50,33 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     private readonly float _minWidth = 200f;
     private readonly float _topBottomPadding = 10f;
 
-    private void UpdateNodeUI()
+    private void SetNode(ScriptNode node)
+    {
+        if (_node != null)
+        {
+            _node.OnNodeUpdated -= UpdateUI;
+        }
+
+        _node = node;
+        _node.OnNodeUpdated += UpdateUI;
+        transform.localPosition = _node.Position;
+
+        Init();
+    }
+
+    void OnDisable()
+    {
+        if (_node != null)
+        {
+            _node.OnNodeUpdated -= UpdateUI;
+        }
+    }
+
+    private void Init()
     {
         if (Node == null) return;
 
-        transform.localPosition = Node.Positon;
+        transform.localPosition = Node.Position;
         _nodeTitle.SetText(Node.Title);
 
         for (int i = 0; i < Node.InputTriggers.Count; i++)
@@ -102,6 +123,15 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
         LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
 
         UpdateSize();
+    }
+
+    private void UpdateUI()
+    {
+        Debug.Log("Update UI");
+        for (int i = 0; i < Ports.Count; i++)
+        {
+            Ports[i].UpdateUI();
+        }
     }
 
     public void UpdateSize()
@@ -165,7 +195,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
-        Node.Positon = transform.localPosition;
+        Node.Position = transform.localPosition;
 
         for (int i = 0; i < Ports.Count; i++)
         {
@@ -180,10 +210,7 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
 
     public void Delete()
     {
-        for (int i = 0; i < Ports.Count; i++)
-        {
-            Ports[i].DeleteAllLines();
-        }
+        Board.DeleteNode(this);
         Destroy(gameObject);
     }
 

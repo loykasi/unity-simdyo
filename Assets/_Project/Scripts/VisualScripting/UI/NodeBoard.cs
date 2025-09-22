@@ -25,11 +25,9 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     private bool _hasPort;
 
     private UINodePort _fromUIPort;
-    private ScriptNode _fromNode;
     private IPort _fromPort;
 
     private UINodePort _toUIPort;
-    private ScriptNode _toNode;
     private IPort _toPort;
 
     private IGraphElement _selectedElement;
@@ -37,7 +35,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     private Vector2 _previousMousePosition;
 
     private List<UINode> _nodes = new();
-    private List<GameObject> _lineObjects = new();
+    private List<UILineConnection> _lines = new();
 
     private bool _isHover = false;
     private Vector3 _openMenuPosition;
@@ -57,32 +55,27 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         {
             Flow.OnNodeAdded -= OnNodeAdded;
         }
+        _selectedElement = null;
     }
 
     private void ClearBoard()
     {
         for (int i = 0; i < _nodes.Count; i++)
         {
-            if (_nodes[i] != null)
-            {
-                Destroy(_nodes[i].gameObject);
-            }
-            else
-            {
-                Debug.Log(_nodes[i]);
-            }
+            Destroy(_nodes[i].gameObject);
         }
-        for (int i = 0; i < _lineObjects.Count; i++)
+        for (int i = 0; i < _lines.Count; i++)
         {
-            Destroy(_lineObjects[i]);
+            Destroy(_lines[i].gameObject);
         }
 
         _nodes.Clear();
-        _lineObjects.Clear();
+        _lines.Clear();
     }
 
     private void LoadBoard()
     {
+        _holder.localPosition = Flow.Pan;
         List<ScriptNode> nodes = Flow.Nodes;
         List<NodeConnection> connections = Flow.Connections;
         for (int i = 0; i < nodes.Count; i++)
@@ -92,7 +85,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         for (int i = 0; i < connections.Count; i++)
         {
             NodeConnection connection = connections[i];
-            
+
             UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
             UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
             UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
@@ -105,6 +98,14 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
             }
             Connect(sourcePort, connection.Source, source.Node, destinationPort, connection.Destination, destination.Node);
         }
+
+        Debug.Log("======From System");
+        Debug.Log($"Node count: {nodes.Count}");
+        Debug.Log($"Connection count: {connections.Count}");
+
+        Debug.Log("======From UI");
+        Debug.Log($"Node count: {_nodes.Count}");
+        Debug.Log($"Connection count: {_lines.Count}");
     }
 
     private void OnNodeAdded(ScriptNode scriptNode)
@@ -114,7 +115,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         node.Board = this;
         node.Node = scriptNode;
         node.transform.position = _openMenuPosition;
-        scriptNode.Positon = _openMenuPosition;
+        scriptNode.Position = node.transform.localPosition;
 
         _nodes.Add(node);
     }
@@ -125,7 +126,6 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
 
         node.Board = this;
         node.Node = scriptNode;
-        node.transform.position = scriptNode.Positon;
 
         _nodes.Add(node);
     }
@@ -182,11 +182,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
             _selectedElement = null;
         }
 
-        if (Keyboard.current.deleteKey.wasPressedThisFrame)
-        {
-            _selectedElement?.Delete();
-            _selectedElement = null;
-        }
+        HandleDelete();
 
         if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
         {
@@ -197,6 +193,35 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         }
     }
 
+    private void HandleDelete()
+    {
+        if (Keyboard.current.deleteKey.wasPressedThisFrame)
+        {
+            _selectedElement?.Delete();
+            _selectedElement = null;
+        }
+    }
+
+    public void DeleteConnection(UILineConnection lineConnection)
+    {
+        Flow.Disconnect(lineConnection.Source.Port, lineConnection.Destination.Port);
+        lineConnection.DeleteVisual();
+
+        _lines.Remove(lineConnection);
+    }
+
+    public void DeleteNode(UINode node)
+    {
+        for (int i = 0; i < node.Ports.Count; i++)
+        {
+            node.Ports[i].DeleteAllLines();
+        }
+
+        Flow.DeleteNode(node.Node);
+
+        _nodes.Remove(node);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         _offsetFromMouse = Mouse.current.position.ReadValue() - new Vector2(_holder.position.x, _holder.position.y);
@@ -205,6 +230,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     public void OnDrag(PointerEventData eventData)
     {
         _holder.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
+        Flow.Pan = _holder.localPosition;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -220,7 +246,6 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     public void StartPreviewConnect(UINodePort fromPort, Vector3 startPosition, NodePortEdge edge)
     {
         _fromUIPort = fromPort;
-        _fromNode = fromPort.UINode.Node;
         _fromPort = fromPort.Port;
 
         _nodeConnectionPreview.StartPreviewConnect(startPosition, edge);
@@ -238,10 +263,8 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         TryConnect();
         _fromUIPort = null;
         _fromPort = null;
-        _fromNode = null;
         _toUIPort = null;
         _toPort = null;
-        _toNode = null;
     }
 
     public void OnEnterPort(UINodePort toPort, Vector3 position)
@@ -251,7 +274,6 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         if (!_fromPort.CanConnect(port) || !port.CanConnect(_fromPort)) return;
 
         _toUIPort = toPort;
-        _toNode = toPort.UINode.Node;
         _toPort = port;
         _hasPort = true;
 
@@ -268,18 +290,14 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     {
         _fromUIPort = fromUIPort;
         _fromPort = fromPort;
-        _fromNode = fromNode;
         _toUIPort = toUIPort;
         _toPort = toPort;
-        _toNode = toNode;
 
         AddConnectionLine();
         _fromUIPort = null;
         _fromPort = null;
-        _fromNode = null;
         _toUIPort = null;
         _toPort = null;
-        _toNode = null;
     }
 
     private void TryConnect()
@@ -288,7 +306,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
 
         if (_fromUIPort.Edge == NodePortEdge.Right)
         {
-            if (Flow.TryConnect(_fromNode, _fromPort, _toNode, _toPort))
+            if (Flow.TryConnect(_fromPort, _toPort))
             {
                 AddConnectionLine();
 
@@ -297,7 +315,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         }
         else
         {
-            if (Flow.TryConnect(_toNode, _toPort, _fromNode, _fromPort))
+            if (Flow.TryConnect(_toPort, _fromPort))
             {
                 AddConnectionLine();
 
@@ -338,11 +356,12 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     private void AddConnectionLine()
     {
         GameObject lineObject = new("line");
-        _lineObjects.Add(lineObject);
 
         lineObject.AddComponent<CanvasRenderer>();
         UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
         RectTransform rect = lineObject.AddComponent<RectTransform>();
+
+        lineConnection.Board = this;
 
         lineObject.transform.SetParent(_holder);
         rect.anchoredPosition = Vector2.zero;
@@ -395,6 +414,8 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
 
         _fromUIPort.AddConnection(lineConnection);
         _toUIPort.AddConnection(lineConnection);
+
+        _lines.Add(lineConnection);
     }
 
     public void UpdateLines(UILineRenderer line, NodePortEdge edge, Vector3 portPosition)
@@ -436,7 +457,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log($"Drop {eventData.pointerDrag}");
+        // Debug.Log($"Drop {eventData.pointerDrag}");
         if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
         {
             Vector3 mousePosition = Mouse.current.position.ReadValue();
