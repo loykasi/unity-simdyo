@@ -13,42 +13,56 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public SceneEntity SelectedObject { get; set; }
     public int SaveLoadOrder { get; set; } = 0;
 
-    // [SerializeField] private float _selectRadius;
-    // [SerializeField] private int _defaultLayer;
-    // [SerializeField] private int _selectLayer;
-
     // temporary
     private int _indexForID = 0;
 
     public void Select(Vector3 screenPoint)
     {
+        Debug.Log($"Select at: {screenPoint}");
+        if (SelectedObject != null)
+        {
+            SelectedObject.Deselect();
+            SelectedObject = null;
+
+            OnObjectDeselected?.Invoke();
+        }
+
+        if (!TryGetSceneEntity(screenPoint, out SceneEntity entity))
+        {
+            return;
+        }
+
+        SelectedObject = entity;
+        SelectedObject.Select();
+
+        OnObjectSelected?.Invoke(SelectedObject);
+    }
+
+    public void Click(Vector3 screenPoint)
+    {
+        Debug.Log($"Click at {screenPoint}");
+        if (!TryGetSceneEntity(screenPoint, out SceneEntity entity))
+        {
+            return;
+        }
+
+        entity.Script.TriggerEvent(EventHook.Clicked);
+    }
+
+    private bool TryGetSceneEntity(Vector3 screenPoint, out SceneEntity entity)
+    {
         Camera camera = EngineManager.Instance.EditorCamera;
         Ray ray = camera.ScreenPointToRay(screenPoint);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
 
-        Vector3 worldPoint = camera.ScreenToWorldPoint(screenPoint);
-
         if (hit.collider == null)
         {
-            if (SelectedObject != null)
-            {
-                SelectedObject.Deselect();
-                SelectedObject = null;
-            }
-
-            OnObjectDeselected?.Invoke();
-            return;
+            entity = null;
+            return false;
         }
 
-        if (SelectedObject != null)
-        {
-            SelectedObject.Deselect();
-        }
-
-        SelectedObject = hit.collider.GetComponent<SceneEntity>();
-        SelectedObject.Select();
-
-        OnObjectSelected?.Invoke(SelectedObject);
+        entity = hit.collider.GetComponent<SceneEntity>();
+        return true;
     }
 
     public List<string> GetEntityOptions()

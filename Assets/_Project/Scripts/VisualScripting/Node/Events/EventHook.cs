@@ -1,5 +1,6 @@
 public enum EventHook
 {
     Start,
-    Update
+    Update,
+    Clicked
 }
