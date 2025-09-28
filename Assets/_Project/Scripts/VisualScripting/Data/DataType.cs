@@ -4,7 +4,6 @@ public enum DataType
     String,
     Number,
     Boolean,
-    Vector,
     Color,
     Entity
 }

@@ -7,6 +7,7 @@ using UnityEngine.Events;
 public class ScriptFlow : MonoBehaviour
 {
     public event UnityAction<ScriptNode> OnNodeAdded;
+    public event UnityAction OnVariableAdded;
 
     public Vector2 Pan { get; set; }
     public SceneEntity Entity;
@@ -28,6 +29,17 @@ public class ScriptFlow : MonoBehaviour
         set => _variables = value;
     }
     private Dictionary<string, Variable> _variables = new();
+
+    public bool ShouldUpdateConnections = false;
+
+    private void LateUpdate()
+    {
+        if (ShouldUpdateConnections)
+        {
+            Connections.RemoveAll(c => c.ShouldRemove);
+            ShouldUpdateConnections = false;
+        }
+    }
 
     public void Load()
     {
@@ -67,7 +79,7 @@ public class ScriptFlow : MonoBehaviour
         if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
         {
             Debug.Log("connect");
-            Connections.Add(new NodeConnection(fromPort, toPort));
+            Connections.Add(new NodeConnection(this, fromPort, toPort));
             return true;
         }
 
@@ -81,9 +93,24 @@ public class ScriptFlow : MonoBehaviour
             NodeConnection connection = Connections[i];
             if (connection.Source == source && connection.Destination == destination)
             {
-                Connections.RemoveAt(i);
+                source.Disconnect(destination);
+                destination.Disconnect(source);
+
+
+                ShouldUpdateConnections = true;
+                connection.ShouldRemove = true;
             }
         }
+    }
+
+    public IEnumerable<NodeConnection> GetConnections(IPort port)
+    {
+        return Connections.Where(c => c.Source == port || c.Destination == port);
+    }
+
+    public NodeConnection GetConnection(IPort source, IPort destination)
+    {
+        return Connections.Find(c => c.Source == source && c.Destination == destination);
     }
 
     public void Invoke(OutputTrigger outputTrigger)
@@ -269,7 +296,6 @@ public class ScriptFlow : MonoBehaviour
         if (!_variables.ContainsKey(name))
         {
             _variables.Add(name, new Variable());
-            Debug.Log("Add variable");
             return true;
         }
 

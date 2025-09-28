@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VectorInputField : VariableInput
 {
-    public override DataType Type => DataType.Vector;
+    public override DataType Type => DataType.Any;
 
     [SerializeField] private TMP_InputField _xInputField;
     [SerializeField] private TMP_InputField _yInputField;

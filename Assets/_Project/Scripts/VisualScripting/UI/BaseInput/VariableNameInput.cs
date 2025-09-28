@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 public class VariableNameInput : BaseInput
 {
@@ -26,6 +27,27 @@ public class VariableNameInput : BaseInput
 
     public override object GetValue()
     {
+        if (Dropdown.options.Count == 0)
+        {
+            return string.Empty;
+        }
         return Dropdown.options[Dropdown.value].text;
+    }
+
+    public override void SetValue(object value)
+    {
+        string variableName = (string)value;
+        if (Dropdown.options.Count > 0)
+        {
+            int index = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
+            if (index != -1)
+            {
+                Dropdown.SetValueWithoutNotify(index);
+            }
+            else
+            {
+                Dropdown.value = 0;
+            }
+        }
     }
 }

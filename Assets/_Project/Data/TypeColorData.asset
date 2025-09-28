@@ -15,19 +15,11 @@ MonoBehaviour:
   TypeColor:
   - Type: 0
     Color: {r: 1, g: 1, b: 1, a: 1}
-    DisplayName: A
   - Type: 1
-    Color: {r: 0.8490566, g: 0, b: 0.8224195, a: 1}
-    DisplayName: S
+    Color: {r: 0.7735849, g: 0, b: 0.7486306, a: 1}
   - Type: 2
-    Color: {r: 0.063690186, g: 1, b: 0, a: 1}
-    DisplayName: N
+    Color: {r: 0.05209027, g: 0.8301887, b: 0, a: 1}
   - Type: 3
-    Color: {r: 0.8113208, g: 0, b: 0, a: 1}
-    DisplayName: B
+    Color: {r: 1, g: 0.3785735, b: 0, a: 1}
   - Type: 5
     Color: {r: 0, g: 1, b: 0.9873848, a: 1}
-    DisplayName: C
-  - Type: 6
-    Color: {r: 0, g: 0.38441873, b: 1, a: 1}
-    DisplayName: E

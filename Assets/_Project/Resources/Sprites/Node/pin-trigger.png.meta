@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d75c05442908a5b48be69bbbd163463b
+guid: 919821f1211d433478dcfb7091100841
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5935668499346720838
-    second: BossFight 1_0
+      213: 6892412995266152832
+    second: pin-trigger_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BossFight 1_0
+      name: pin-trigger_0
       rect:
         serializedVersion: 2
-        x: 3
+        x: 0
         y: 0
-        width: 583
-        height: 581
+        width: 64
+        height: 64
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 64889083d0bbf5250800000000000000
-      internalID: 5935668499346720838
+      spriteID: 08900240a15c6af50800000000000000
+      internalID: 6892412995266152832
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BossFight 1_0: 5935668499346720838
+      pin-trigger_0: 6892412995266152832
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

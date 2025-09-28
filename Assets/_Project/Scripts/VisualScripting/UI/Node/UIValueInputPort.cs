@@ -8,13 +8,13 @@ public class UIValueInputPort : UINodePort
     private InputValue _inputValue;
 
     [SerializeField] private PortVisual _portVisual;
-    
+
     [SerializeField] private RectTransform _inputHolder;
     [SerializeField] private UIInputData _inputDataReference;
     private BaseInput _input;
 
     private float _height = 30f;
-    private readonly float _handleSize = 60f;
+    private readonly float _handleSize = 20f;
     private readonly float _inputOffset = 10f;
 
     public override void Init()
@@ -27,6 +27,11 @@ public class UIValueInputPort : UINodePort
             return;
         }
         _inputValue = (InputValue)Port;
+
+        if (_inputValue.IsDisableConnection)
+        {
+            _portHandle.gameObject.SetActive(false);
+        }
 
         _portVisual.SetType(_inputValue.Type);
 
@@ -42,6 +47,7 @@ public class UIValueInputPort : UINodePort
 
         _inputValue.SetValue(_input.GetValue());
 
+        _input.OnValueUpdated += OnInputValueChanged;
         _input.OnSubmit += OnSubmit;
 
         UpdateSize();
@@ -49,14 +55,14 @@ public class UIValueInputPort : UINodePort
 
     private void UpdateSize()
     {
-        Vector2 labelSize = _label.GetPreferredValues();
-        _label.rectTransform.sizeDelta = new Vector2
-        (
-            labelSize.x,
-            _label.rectTransform.sizeDelta.y
-        );
+        UpdateLabel();
 
-        float width = _handleSize + labelSize.x + _inputOffset;
+        float width = _inputValue.IsDisableConnection? 10f: _handleSize;
+
+        if (_inputValue.ShouldShowLabel)
+        {
+            width += _label.rectTransform.sizeDelta.x + _inputOffset;
+        }
 
         _inputHolder.anchoredPosition = new Vector2(width, 0f);
 
@@ -66,6 +72,8 @@ public class UIValueInputPort : UINodePort
         }
 
         Rect.sizeDelta = new Vector2(width, _height);
+
+        UINode.UpdateSize();
     }
 
     private void HideInput()
@@ -87,10 +95,7 @@ public class UIValueInputPort : UINodePort
                 LineConnections[i].Delete();
             }
         }
-    }
 
-    public override void AfterAdd()
-    {
         if (_inputValue.HasConnection)
         {
             HideInput();
@@ -106,5 +111,11 @@ public class UIValueInputPort : UINodePort
         Debug.Log("submit " + value);
         Debug.Log($"Set value: {value}");
         _inputValue.SetValue(value);
+    }
+    
+    private void OnInputValueChanged()
+    {
+        Debug.Log("Value Updated");
+        UpdateSize();
     }
 }

@@ -25,10 +25,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     private bool _hasPort;
 
     private UINodePort _fromUIPort;
-    private IPort _fromPort;
-
     private UINodePort _toUIPort;
-    private IPort _toPort;
 
     private IGraphElement _selectedElement;
 
@@ -93,19 +90,19 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
 
             if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
             {
-                Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
+                // Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
                 return;
             }
-            Connect(sourcePort, connection.Source, source.Node, destinationPort, connection.Destination, destination.Node);
+            Connect(sourcePort, destinationPort);
         }
 
-        Debug.Log("======From System");
-        Debug.Log($"Node count: {nodes.Count}");
-        Debug.Log($"Connection count: {connections.Count}");
+        // Debug.Log("======From System");
+        // Debug.Log($"Node count: {nodes.Count}");
+        // Debug.Log($"Connection count: {connections.Count}");
 
-        Debug.Log("======From UI");
-        Debug.Log($"Node count: {_nodes.Count}");
-        Debug.Log($"Connection count: {_lines.Count}");
+        // Debug.Log("======From UI");
+        // Debug.Log($"Node count: {_nodes.Count}");
+        // Debug.Log($"Connection count: {_lines.Count}");
     }
 
     private void OnNodeAdded(ScriptNode scriptNode)
@@ -205,8 +202,12 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     public void DeleteConnection(UILineConnection lineConnection)
     {
         Flow.Disconnect(lineConnection.Source.Port, lineConnection.Destination.Port);
-        lineConnection.DeleteVisual();
+        DeleteConnectionVisual(lineConnection);
+    }
 
+    public void DeleteConnectionVisual(UILineConnection lineConnection)
+    {
+        lineConnection.DeleteVisual();
         _lines.Remove(lineConnection);
     }
 
@@ -246,7 +247,6 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
     public void StartPreviewConnect(UINodePort fromPort, Vector3 startPosition, NodePortEdge edge)
     {
         _fromUIPort = fromPort;
-        _fromPort = fromPort.Port;
 
         _nodeConnectionPreview.StartPreviewConnect(startPosition, edge);
     }
@@ -261,20 +261,15 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         _nodeConnectionPreview.EndPreviewConnect();
 
         TryConnect();
-        _fromUIPort = null;
-        _fromPort = null;
-        _toUIPort = null;
-        _toPort = null;
     }
 
     public void OnEnterPort(UINodePort toPort, Vector3 position)
     {
         IPort port = toPort.Port;
-        if (_fromPort == null) return;
-        if (!_fromPort.CanConnect(port) || !port.CanConnect(_fromPort)) return;
+        if (_fromUIPort == null) return;
+        if (!_fromUIPort.Port.CanConnect(port) || !port.CanConnect(_fromUIPort.Port)) return;
 
         _toUIPort = toPort;
-        _toPort = port;
         _hasPort = true;
 
         _nodeConnectionPreview.EnterPort(position);
@@ -286,71 +281,55 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         _nodeConnectionPreview.ExitPort();
     }
 
-    private void Connect(UINodePort fromUIPort, IPort fromPort, ScriptNode fromNode, UINodePort toUIPort, IPort toPort, ScriptNode toNode)
+    private void Connect(UINodePort fromUIPort, UINodePort toUIPort)
     {
         _fromUIPort = fromUIPort;
-        _fromPort = fromPort;
         _toUIPort = toUIPort;
-        _toPort = toPort;
 
         AddConnectionLine();
         _fromUIPort = null;
-        _fromPort = null;
         _toUIPort = null;
-        _toPort = null;
     }
 
     private void TryConnect()
     {
         if (!_hasPort) return;
 
-        if (_fromUIPort.Edge == NodePortEdge.Right)
-        {
-            if (Flow.TryConnect(_fromPort, _toPort))
-            {
-                AddConnectionLine();
+        SwapPort();
 
-                AfterAdd();
-            }
+        if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
+        {
+            AddConnectionLine();
+
+            AfterAdd();
         }
-        else
-        {
-            if (Flow.TryConnect(_toPort, _fromPort))
-            {
-                AddConnectionLine();
 
-                AfterAdd();
-            }
+        _fromUIPort = null;
+        _toUIPort = null;
+    }
+
+    private void SwapPort()
+    {
+        if (_fromUIPort.Edge == NodePortEdge.Left)
+        {
+            (_fromUIPort, _toUIPort) = (_toUIPort, _fromUIPort);
         }
     }
 
     private void AfterAdd()
     {
         {
-            if (_fromPort is OutputTrigger fromPort)
+            if (_fromUIPort.Port is OutputTrigger fromPort)
             {
                 _fromUIPort.ValidConnection(fromPort.Destination);
             }
-
-            if (_toPort is OutputTrigger toPort)
-            {
-                _toUIPort.ValidConnection(toPort.Destination);
-            }
         }
         {
-            if (_fromPort is InputValue fromPort)
-            {
-                _fromUIPort.ValidConnection(fromPort.Source);
-            }
-
-            if (_toPort is InputValue toPort)
+            if (_toUIPort.Port is InputValue toPort)
             {
                 _toUIPort.ValidConnection(toPort.Source);
             }
         }
-
-        _fromUIPort.AfterAdd();
-        _toUIPort.AfterAdd();
     }
 
     private void AddConnectionLine()
@@ -361,7 +340,7 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
         RectTransform rect = lineObject.AddComponent<RectTransform>();
 
-        lineConnection.Board = this;
+        lineConnection.Init(this, Flow.GetConnection(_fromUIPort.Port, _toUIPort.Port));
 
         lineObject.transform.SetParent(_holder);
         rect.anchoredPosition = Vector2.zero;
@@ -369,38 +348,19 @@ public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointe
         UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
         lineRenderer.Rect = rect;
         lineConnection.LineRenderer = lineRenderer;
-        if (_fromUIPort.Edge == NodePortEdge.Right)
-        {
-            lineConnection.Source = _fromUIPort;
-            lineConnection.Destination = _toUIPort;
-        }
-        else
-        {
-            lineConnection.Source = _toUIPort;
-            lineConnection.Destination = _fromUIPort;
-        }
+        lineConnection.Source = _fromUIPort;
+        lineConnection.Destination = _toUIPort;
 
         lineRenderer.Init(4);
-        lineRenderer.Thickness = 3;
+        lineRenderer.Thickness = 6;
         lineRenderer.CornerRadius = 30;
         lineRenderer.CornerSegment = 5;
 
         // calculate bound;
         Vector3 headPosition;
         Vector3 tailPosition;
-
-        if (_fromUIPort.Edge == NodePortEdge.Right)
-        {
-            headPosition = _fromUIPort.HandlePosition;
-            tailPosition = _toUIPort.HandlePosition;
-        }
-        else
-        {
-            headPosition = _toUIPort.HandlePosition;
-            tailPosition = _fromUIPort.HandlePosition;
-        }
-
-        // Debug.Log($"{headPosition} | {tailPosition}");
+        headPosition = _fromUIPort.HandlePosition;
+        tailPosition = _toUIPort.HandlePosition;
 
         Vector3 size = headPosition - tailPosition;
         Vector3 center = (headPosition + tailPosition) / 2.0f;

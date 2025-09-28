@@ -1,12 +1,38 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IGraphElement
 {
     public NodeBoard Board { get; set; }
+    public NodeConnection Connection { get; set; }
     public UILineRenderer LineRenderer;
     public UINodePort Source;
     public UINodePort Destination;
+
+    public void Init(NodeBoard board, NodeConnection connection)
+    {
+        Board = board;
+        Connection = connection;
+        
+        Connection.OnUpdated += OnUpdated;
+    }
+
+    private void OnDisable()
+    {
+        if (Connection != null)
+        {
+            Connection.OnUpdated -= OnUpdated;
+        }
+    }
+
+    private void OnUpdated()
+    {
+        if (Connection.ShouldRemove)
+        {
+            Board.DeleteConnectionVisual(this);
+        }
+    }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
@@ -16,7 +42,7 @@ public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        LineRenderer.Thickness = 3;
+        LineRenderer.Thickness = 6;
         LineRenderer.UpdateVertex();
     }
 
@@ -36,7 +62,6 @@ public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExi
         Source.DeleteConnection(this);
         Destination.DeleteConnection(this);
         Destroy(gameObject);
-        Debug.Log("Delete line");
     }
 
     public void Unselect()

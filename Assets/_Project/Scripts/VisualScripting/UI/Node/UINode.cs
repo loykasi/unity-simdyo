@@ -46,9 +46,9 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     private Vector2 _offsetFromMouse;
     // private bool _isMouseOver = false;
 
-    private readonly float _inputOutputDistance = 20f;
-    private readonly float _minWidth = 200f;
-    private readonly float _topBottomPadding = 10f;
+    private readonly float _inputOutputDistance = 10f;
+    private float _minWidth = 50f;
+    private readonly float _topBottomPadding = 20f;
 
     private void SetNode(ScriptNode node)
     {
@@ -77,7 +77,10 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
         if (Node == null) return;
 
         transform.localPosition = Node.Position;
+
         _nodeTitle.SetText(Node.Title);
+        Vector2 labelSize = _nodeTitle.GetPreferredValues();
+        _minWidth = labelSize.x;
 
         for (int i = 0; i < Node.InputTriggers.Count; i++)
         {
@@ -138,7 +141,10 @@ public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElem
     {
         Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
         Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
-        float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
+        float inputHeight = _inputHolder.sizeDelta.y;
+        float outputHeight = _outputHolder.sizeDelta.y;
+        // float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
+        float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
 
         float x = inputSize.x + outputSize.x + _inputOutputDistance;
         x = Mathf.Max(x, _minWidth);

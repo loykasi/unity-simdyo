@@ -22,7 +22,7 @@ public class MakeVariableNode : ScriptNode
 
     public MakeVariableNode(ScriptDataType type, string title) : base(title)
     {
-        Input = InputValue(nameof(Input), type);
+        Input = InputValue(nameof(Input), type).UseInput().DisableConnection().HideLabel();
         Output = OutputValue(nameof(Output), type, (vs) => Input.GetValue(vs));
     }
 }

@@ -14,6 +14,13 @@ public abstract class ScriptNode : IScriptNode
 
     [JsonIgnore]
     public ScriptFlow Flow { get; set; }
+    // [JsonIgnore]
+    // public ScriptFlow Flow
+    // {
+    //     get => _flow;
+    //     set => SetFlow(value);
+    // }
+    // private ScriptFlow _flow;
 
     [JsonIgnore]
     public string Title;
@@ -29,6 +36,11 @@ public abstract class ScriptNode : IScriptNode
 
     [JsonIgnore]
     public List<OutputValue> ValueOutputs = new();
+
+    // protected virtual void SetFlow(ScriptFlow flow)
+    // {
+    //     _flow = flow;
+    // }
 
     public IEnumerable<IPort> Ports()
     {

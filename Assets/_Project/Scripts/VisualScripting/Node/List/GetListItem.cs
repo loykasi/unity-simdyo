@@ -40,8 +40,15 @@ class GetListItemNode : ScriptNode
 
     public override void UpdateNode()
     {
-        DataType type = ListInput.Source.Type.Type;
-        Output.SetType(ScriptDataType.Single(type));
+        if (ListInput.Source != null)
+        {
+            DataType type = ListInput.Source.Type.Type;
+            Output.SetType(ScriptDataType.Single(type));
+        }
+        else
+        {
+            Output.SetType(ScriptDataType.Single(DataType.Any));
+        }
 
         OnNodeUpdated?.Invoke();
     }

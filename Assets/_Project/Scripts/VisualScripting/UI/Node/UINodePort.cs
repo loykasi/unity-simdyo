@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public enum NodePortEdge
 {
@@ -20,7 +21,14 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     private NodeBoard NodeBoard => UINode.Board;
 
     public RectTransform Rect;
-    [SerializeField] private RectTransform _portHandle;
+
+    [Header("Handle")]
+    [SerializeField] protected RectTransform _portHandle;
+    [SerializeField] private Image _handleImage;
+    [SerializeField] private Sprite _handleSprite;
+    [SerializeField] private Sprite _handleConnectedSprite;
+
+
     [SerializeField] protected TextMeshProUGUI _label;
 
     public List<UILineConnection> LineConnections = new();
@@ -55,6 +63,16 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
         }
     }
 
+    protected void UpdateLabel()
+    {
+        Vector2 labelSize = _label.GetPreferredValues();
+        _label.rectTransform.sizeDelta = new Vector2
+        (
+            labelSize.x,
+            _label.rectTransform.sizeDelta.y
+        );
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         NodeBoard.StartPreviewConnect(this, _portHandle.position, Edge);
@@ -83,6 +101,8 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     public void AddConnection(UILineConnection lineConnection)
     {
         LineConnections.Add(lineConnection);
+
+        UpdateHandleVisual();
     }
 
     public void UpdateLines()
@@ -96,6 +116,8 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
     public void DeleteConnection(UILineConnection lineConnection)
     {
         LineConnections.Remove(lineConnection);
+
+        UpdateHandleVisual();
     }
 
     public void DeleteAllLines()
@@ -104,6 +126,8 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
         {
             LineConnections[0].Delete();
         }
+
+        UpdateHandleVisual();
     }
 
     public virtual void ValidConnection(IPort port)
@@ -117,8 +141,16 @@ public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandle
         }
     }
 
-    public virtual void AfterAdd()
+    private void UpdateHandleVisual()
     {
-        
+        Debug.Log($"Has connection: {LineConnections.Count > 0}");
+        if (LineConnections.Count > 0)
+        {
+            _handleImage.sprite = _handleConnectedSprite;
+        }
+        else
+        {
+            _handleImage.sprite = _handleSprite;
+        }
     }
 }

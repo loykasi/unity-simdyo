@@ -1,9 +1,15 @@
 using System;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class NodeConnection
 {
+    public UnityAction OnUpdated;
+
+    public ScriptFlow Flow;
+    public bool ShouldRemove;
+
     public Guid SourceID;
     public string SourceKey;
 
@@ -19,8 +25,9 @@ public class NodeConnection
     {
     }
 
-    public NodeConnection(IPort source, IPort destination)
+    public NodeConnection(ScriptFlow flow, IPort source, IPort destination)
     {
+        Flow = flow;
         Source = source;
         Destination = destination;
 
@@ -59,5 +66,17 @@ public class NodeConnection
             }
         }
         return null;
+    }
+
+    public void Validate()
+    {
+        if (!Source.CanConnect(Destination))
+        {
+            Debug.Log("[Connection] Mark as remove");
+            Flow.Disconnect(Source, Destination);
+            OnUpdated?.Invoke();
+        }
+
+        Destination.Node.UpdateNode();
     }
 }

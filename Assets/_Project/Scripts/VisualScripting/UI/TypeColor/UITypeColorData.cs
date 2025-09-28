@@ -8,7 +8,6 @@ public class UITypeColorData : ScriptableObject
     {
         public DataType Type;
         public Color Color;
-        public string DisplayName;
     }
 
     public UITypeColor[] TypeColor;

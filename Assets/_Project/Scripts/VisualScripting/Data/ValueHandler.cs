@@ -16,7 +16,6 @@ public static class ValueHandler
             DataType.String => default(string),
             DataType.Number => default(float),
             DataType.Boolean => default(bool),
-            DataType.Vector => default(Vector3),
             DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
             DataType.Entity => default,
             DataType.Any => default,

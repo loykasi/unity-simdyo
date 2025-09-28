@@ -19,7 +19,7 @@ public class MakeVectorNode : ScriptNode
     {
         X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number));
         Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number));
-        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Vector), Get);
+        Output = OutputValue(nameof(Output), Get);
     }
 
     private object Get(ScriptFlow vs)

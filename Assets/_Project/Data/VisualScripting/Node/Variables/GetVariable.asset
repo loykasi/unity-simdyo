@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ba9ea5c6c458434b90b463b8ac476cb, type: 3}
   m_Name: GetVariable
   m_EditorClassIdentifier: 
-  Title: GetVariable
+  Title: Get Variable
   Category: {fileID: 11400000, guid: 2dbd8d7dfa1b1c44d877978ed46ac29b, type: 2}

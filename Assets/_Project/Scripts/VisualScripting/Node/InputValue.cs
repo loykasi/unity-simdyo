@@ -19,6 +19,7 @@ public class InputValue : Port<OutputValue>
     public OutputValue Source;
 
     public InputValueTypes InputType = InputValueTypes.None;
+    public bool IsDisableConnection;
 
     public bool HasConnection => Source != null;
     public bool HasValue => Node.DefaultValues.ContainsKey(Key);
@@ -82,6 +83,18 @@ public class InputValue : Port<OutputValue>
         return this;
     }
 
+    public InputValue DisableConnection()
+    {
+        IsDisableConnection = true;
+        return this;
+    }
+
+    public InputValue HideLabel()
+    {
+        ShouldShowLabel = false;
+        return this;
+    }
+
     public override void Connect(OutputValue port)
     {
         Source = port;
@@ -138,6 +151,6 @@ public class InputValue : Port<OutputValue>
 
     public override bool CanConnectTo(OutputValue port)
     {
-        return port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
+        return !IsDisableConnection && port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
     }
 }

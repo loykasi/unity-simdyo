@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9cbdf605553549489c754b49d3d33ae, type: 3}
   m_Name: MakeBoolean
   m_EditorClassIdentifier: 
-  Title: MakeBoolen
+  Title: Boolean
   Category: {fileID: 11400000, guid: 03f39a6bf2c40834287c234d1d2aac5a, type: 2}
