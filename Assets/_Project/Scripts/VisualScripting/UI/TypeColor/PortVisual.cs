@@ -1,17 +1,19 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PortVisual : MonoBehaviour
+namespace Loykas.Scripting
 {
-    [Header("References")]
-    [SerializeField] private UITypeColorData _typeColorData;
-    [SerializeField] private Image _portHandle;
-
-    public void SetType(ScriptDataType type)
+    public class PortVisual : MonoBehaviour
     {
-        var display = _typeColorData.Get(type.Type);
+        [Header("References")]
+        [SerializeField] private UITypeColorData _typeColorData;
+        [SerializeField] private Image _portHandle;
 
-        _portHandle.color = display.Color;
+        public void SetType(ScriptDataType type)
+        {
+            var display = _typeColorData.Get(type.Type);
+
+            _portHandle.color = display.Color;
+        }
     }
 }

@@ -1,35 +1,38 @@
 using Loykas.Scripting;
 using TMPro;
 
-public class TypeInput : BaseInput
+namespace Loykas.Scripting
 {
-    public TMP_Dropdown Dropdown;
-
-    private ScriptDataType _type = DataTypeController.DataTypeList[0];
-
-    private void Awake()
+    public class TypeInput : BaseInput
     {
-        Dropdown.onValueChanged.AddListener(OnValueChanged);
-        Dropdown.ClearOptions();
-        Dropdown.AddOptions(DataTypeController.DataTypesDropdownValues);
-    }
+        public TMP_Dropdown Dropdown;
 
-    private void OnValueChanged(int index)
-    {
-        _type = DataTypeController.DataTypeList[index];
-        OnSubmit?.Invoke(_type);
-    }
+        private ScriptDataType _type = DataTypeController.DataTypeList[0];
 
-    public override void SetValue(object value)
-    {
-        _type = (ScriptDataType)value;
+        private void Awake()
+        {
+            Dropdown.onValueChanged.AddListener(OnValueChanged);
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(DataTypeController.DataTypesDropdownValues);
+        }
 
-        int index = DataTypeController.TypeToDropdownIndex(_type);
-        Dropdown.SetValueWithoutNotify(index);
-    }
+        private void OnValueChanged(int index)
+        {
+            _type = DataTypeController.DataTypeList[index];
+            OnSubmit?.Invoke(_type);
+        }
 
-    public override object GetValue()
-    {
-        return _type;
+        public override void SetValue(object value)
+        {
+            _type = (ScriptDataType)value;
+
+            int index = DataTypeController.TypeToDropdownIndex(_type);
+            Dropdown.SetValueWithoutNotify(index);
+        }
+
+        public override object GetValue()
+        {
+            return _type;
+        }
     }
 }

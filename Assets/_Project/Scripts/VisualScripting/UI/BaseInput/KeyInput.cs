@@ -1,34 +1,36 @@
 using TMPro;
-using Loykas.Scripting;
 
-public class KeyInput : BaseInput
+namespace Loykas.Scripting
 {
-    public TMP_Dropdown Dropdown;
-
-    private Key _key;
-
-    private void Awake()
+    public class KeyInput : BaseInput
     {
-        Dropdown.onValueChanged.AddListener(OnValueChanged);
-        Dropdown.ClearOptions();
-        Dropdown.AddOptions(KeyHandler.KeyOptions);
-    }
+        public TMP_Dropdown Dropdown;
 
-    private void OnValueChanged(int index)
-    {
-        _key = KeyHandler.ToKey(index);
-        OnSubmit?.Invoke(_key);
-    }
+        private Key _key;
 
-    public override void SetValue(object value)
-    {
-        _key = (Key)value;
-        int index = KeyHandler.ToIndex(_key);
-        Dropdown.SetValueWithoutNotify(index);
-    }
+        private void Awake()
+        {
+            Dropdown.onValueChanged.AddListener(OnValueChanged);
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(KeyHandler.KeyOptions);
+        }
 
-    public override object GetValue()
-    {
-        return _key;
+        private void OnValueChanged(int index)
+        {
+            _key = KeyHandler.ToKey(index);
+            OnSubmit?.Invoke(_key);
+        }
+
+        public override void SetValue(object value)
+        {
+            _key = (Key)value;
+            int index = KeyHandler.ToIndex(_key);
+            Dropdown.SetValueWithoutNotify(index);
+        }
+
+        public override object GetValue()
+        {
+            return _key;
+        }
     }
 }

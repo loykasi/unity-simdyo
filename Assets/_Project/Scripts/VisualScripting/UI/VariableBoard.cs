@@ -2,72 +2,75 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class VariableBoard : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public ScriptFlowGraph FlowGraph { get; set; }
-
-    [SerializeField] private VariableBoardItem _itemPrefab;
-    [SerializeField] private Transform _contentHolder;
-
-    [Space]
-    [SerializeField] private TMP_InputField _nameInputField;
-
-    private List<VariableBoardItem> _variableItems = new();
-
-    public void Init()
+    public class VariableBoard : MonoBehaviour
     {
-        Clear();
-        Load();
-    }
+        public ScriptFlowGraph FlowGraph { get; set; }
 
-    private void Clear()
-    {
-        for (int i = 0; i < _variableItems.Count; i++)
+        [SerializeField] private VariableBoardItem _itemPrefab;
+        [SerializeField] private Transform _contentHolder;
+
+        [Space]
+        [SerializeField] private TMP_InputField _nameInputField;
+
+        private List<VariableBoardItem> _variableItems = new();
+
+        public void Init()
         {
-            Destroy(_variableItems[i].gameObject);
+            Clear();
+            Load();
         }
 
-        _variableItems.Clear();
-    }
-
-    private void Load()
-    {
-        ScriptFlow flow = FlowGraph.Flow;
-
-        foreach (var item in flow.Variables)
+        private void Clear()
         {
-            string name = item.Key;
-            AddVariableItem(name, item.Value);
+            for (int i = 0; i < _variableItems.Count; i++)
+            {
+                Destroy(_variableItems[i].gameObject);
+            }
+
+            _variableItems.Clear();
         }
-    }
 
-    public void AddVariable()
-    {
-        ScriptFlow flow = FlowGraph.Flow;
-        string name = _nameInputField.text;
+        private void Load()
+        {
+            ScriptFlow flow = FlowGraph.Flow;
 
-        if (flow.AddVariable(name))
+            foreach (var item in flow.Variables)
+            {
+                string name = item.Key;
+                AddVariableItem(name, item.Value);
+            }
+        }
+
+        public void AddVariable()
+        {
+            ScriptFlow flow = FlowGraph.Flow;
+            string name = _nameInputField.text;
+
+            if (flow.AddVariable(name))
+            {
+                VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
+                item.Init(name, this);
+                _variableItems.Add(item);
+                _nameInputField.text = string.Empty;
+            }
+        }
+
+        private void AddVariableItem(string name, Variable variable)
         {
             VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-            item.Init(name, this);
+            item.Init(name, variable.Type, variable.Value, this);
             _variableItems.Add(item);
-            _nameInputField.text = string.Empty;
         }
-    }
 
-    private void AddVariableItem(string name, Variable variable)
-    {
-        VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-        item.Init(name, variable.Type, variable.Value, this);
-        _variableItems.Add(item);
-    }
-
-    public void RemoveVariable(string name, VariableBoardItem variableItem)
-    {
-        if (FlowGraph.Flow.RemoveVariable(name))
+        public void RemoveVariable(string name, VariableBoardItem variableItem)
         {
-            _variableItems.Remove(variableItem);
-            Destroy(variableItem.gameObject);
+            if (FlowGraph.Flow.RemoveVariable(name))
+            {
+                _variableItems.Remove(variableItem);
+                Destroy(variableItem.gameObject);
+            }
         }
     }
 }

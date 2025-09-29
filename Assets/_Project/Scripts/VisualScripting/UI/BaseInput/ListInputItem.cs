@@ -1,40 +1,42 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ListInputItem : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public ListInput ListInput { get; set; }
-    public BaseInput Input { get; set; }
-
-    public RectTransform Rect;
-    public Button RemoveButton;
-
-    private void Awake()
+    public class ListInputItem : MonoBehaviour
     {
-        RemoveButton.onClick.AddListener(Remove);
-    }
+        public ListInput ListInput { get; set; }
+        public BaseInput Input { get; set; }
 
-    public void Init(ListInput listInput, BaseInput input)
-    {
-        ListInput = listInput;
-        Input = input;
-        Input.OnSubmit += Edit;
-        input.Rect.SetParent(Rect, false);
-    }
+        public RectTransform Rect;
+        public Button RemoveButton;
 
-    private void Edit(object value)
-    {
-        ListInput.Edit(this, value);
-    }
+        private void Awake()
+        {
+            RemoveButton.onClick.AddListener(Remove);
+        }
 
-    private void Remove()
-    {
-        ListInput.Remove(this);
-    }
+        public void Init(ListInput listInput, BaseInput input)
+        {
+            ListInput = listInput;
+            Input = input;
+            Input.OnSubmit += Edit;
+            input.Rect.SetParent(Rect, false);
+        }
 
-    public object Get()
-    {
-        return Input.GetValue();
+        private void Edit(object value)
+        {
+            ListInput.Edit(this, value);
+        }
+
+        private void Remove()
+        {
+            ListInput.Remove(this);
+        }
+
+        public object Get()
+        {
+            return Input.GetValue();
+        }
     }
 }

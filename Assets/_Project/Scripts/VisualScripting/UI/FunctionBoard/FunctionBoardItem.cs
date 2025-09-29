@@ -1,12 +1,15 @@
 using TMPro;
 using UnityEngine;
 
-public class FunctionBoardItem : MonoBehaviour
+namespace Loykas.Scripting
 {
-    [SerializeField] private TextMeshProUGUI _label;
-
-    public void Init(string label)
+    public class FunctionBoardItem : MonoBehaviour
     {
-        _label.text = label;
+        [SerializeField] private TextMeshProUGUI _label;
+
+        public void Init(string label)
+        {
+            _label.text = label;
+        }
     }
 }

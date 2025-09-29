@@ -3,115 +3,118 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ListInput : BaseInput
+namespace Loykas.Scripting
 {
-    public DataType ListType { get; set; }
-
-    [SerializeField] private UIInputData _inputData;
-    [SerializeField] private RectTransform _addButtonRect;
-    [SerializeField] private Button _addButton;
-
-    [SerializeField] private RectTransform _container;
-    [SerializeField] private ListInputItem _listInputItemPrefab;
-    private List<ListInputItem> _inputItems = new();
-
-    private void Awake()
+    public class ListInput : BaseInput
     {
-        _addButton.onClick.AddListener(OnAddElement);
-    }
+        public DataType ListType { get; set; }
 
-    public override void SetValueInstance(Variable value)
-    {
-        base.SetValueInstance(value);
+        [SerializeField] private UIInputData _inputData;
+        [SerializeField] private RectTransform _addButtonRect;
+        [SerializeField] private Button _addButton;
 
-        IList list = (IList)value.Value;
-        for (int i = 0; i < list.Count; i++)
+        [SerializeField] private RectTransform _container;
+        [SerializeField] private ListInputItem _listInputItemPrefab;
+        private List<ListInputItem> _inputItems = new();
+
+        private void Awake()
         {
-            AddElement(list[i]);
+            _addButton.onClick.AddListener(OnAddElement);
         }
-    }
 
-    private void OnAddElement()
-    {
-        AddElement();
-    }
-
-    private void AddElement(object value = null)
-    {
-        ListInputItem listInputItem = Instantiate(_listInputItemPrefab, _container);
-
-        BaseInput input = _inputData.GetInputInstance(ListType);
-
-        listInputItem.Init(this, input);
-        listInputItem.Rect.localPosition = new Vector3(0f, -listInputItem.Rect.sizeDelta.y * _inputItems.Count, 0f);
-
-        _inputItems.Add(listInputItem);
-
-        Size = new Vector2
-        (
-            Size.x,
-            Size.y + 30f
-        );
-
-        if (ValueInstance != null)
+        public override void SetValueInstance(Variable value)
         {
-            ValueHandler.ListAdd(ValueInstance, listInputItem.Get());
+            base.SetValueInstance(value);
+
+            IList list = (IList)value.Value;
+            for (int i = 0; i < list.Count; i++)
+            {
+                AddElement(list[i]);
+            }
         }
-    }
 
-    public void Remove(ListInputItem item)
-    {
-        Remove(IndexOfElement(item));
-    }
-
-    private void Remove(int index)
-    {
-        Destroy(_inputItems[index].gameObject);
-
-        Size = new Vector2
-        (
-            Size.x,
-            Size.y - 30f
-        );
-
-        _inputItems.RemoveAt(index);
-
-        for (int i = index; i < _inputItems.Count; i++)
+        private void OnAddElement()
         {
-            ListInputItem item = _inputItems[i];
-            item.Rect.anchoredPosition = new Vector2
+            AddElement();
+        }
+
+        private void AddElement(object value = null)
+        {
+            ListInputItem listInputItem = Instantiate(_listInputItemPrefab, _container);
+
+            BaseInput input = _inputData.GetInputInstance(ListType);
+
+            listInputItem.Init(this, input);
+            listInputItem.Rect.localPosition = new Vector3(0f, -listInputItem.Rect.sizeDelta.y * _inputItems.Count, 0f);
+
+            _inputItems.Add(listInputItem);
+
+            Size = new Vector2
             (
-                0f,
-                item.Rect.anchoredPosition.y + 30f
+                Size.x,
+                Size.y + 30f
             );
+
+            if (ValueInstance != null)
+            {
+                ValueHandler.ListAdd(ValueInstance, listInputItem.Get());
+            }
         }
 
-        if (ValueInstance != null)
+        public void Remove(ListInputItem item)
         {
-            ValueHandler.ListRemoveAt(ValueInstance, index);
+            Remove(IndexOfElement(item));
         }
-    }
 
-    public void Edit(ListInputItem item, object value)
-    {
-        if (ValueInstance != null)
+        private void Remove(int index)
         {
-            ValueHandler.ListEdit(ValueInstance, IndexOfElement(item), value);
+            Destroy(_inputItems[index].gameObject);
+
+            Size = new Vector2
+            (
+                Size.x,
+                Size.y - 30f
+            );
+
+            _inputItems.RemoveAt(index);
+
+            for (int i = index; i < _inputItems.Count; i++)
+            {
+                ListInputItem item = _inputItems[i];
+                item.Rect.anchoredPosition = new Vector2
+                (
+                    0f,
+                    item.Rect.anchoredPosition.y + 30f
+                );
+            }
+
+            if (ValueInstance != null)
+            {
+                ValueHandler.ListRemoveAt(ValueInstance, index);
+            }
         }
-    }
 
-    private int IndexOfElement(ListInputItem item)
-    {
-        return _inputItems.IndexOf(item);
-    }
-
-    public override object GetValue()
-    {
-        if (ValueInstance != null)
+        public void Edit(ListInputItem item, object value)
         {
-            return ValueInstance.Value;
+            if (ValueInstance != null)
+            {
+                ValueHandler.ListEdit(ValueInstance, IndexOfElement(item), value);
+            }
         }
 
-        return null;
+        private int IndexOfElement(ListInputItem item)
+        {
+            return _inputItems.IndexOf(item);
+        }
+
+        public override object GetValue()
+        {
+            if (ValueInstance != null)
+            {
+                return ValueInstance.Value;
+            }
+
+            return null;
+        }
     }
 }

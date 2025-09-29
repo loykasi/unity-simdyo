@@ -1,7 +1,7 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using Loykas.Scripting;
 
 public class MenuNumberInput : MonoBehaviour
 {

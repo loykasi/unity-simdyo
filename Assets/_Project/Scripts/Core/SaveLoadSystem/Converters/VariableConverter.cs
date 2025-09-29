@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using UnityEngine;
+using Loykas.Scripting;
 
 public class VariableConverter : JsonConverter<Variable>
 {

@@ -1,37 +1,40 @@
 using UnityEngine.UI;
 
-public class BooleanInput : BaseInput
+namespace Loykas.Scripting
 {
-    public Toggle Input;
-
-    private void Awake()
+    public class BooleanInput : BaseInput
     {
-        Input.onValueChanged.AddListener(OnValueChanged);
-    }
+        public Toggle Input;
 
-    private void OnValueChanged(bool value)
-    {
-        if (ValueInstance != null)
+        private void Awake()
         {
-            ValueHandler.SetValue(ValueInstance, value);
+            Input.onValueChanged.AddListener(OnValueChanged);
         }
 
-        OnSubmit?.Invoke(value);
-    }
+        private void OnValueChanged(bool value)
+        {
+            if (ValueInstance != null)
+            {
+                ValueHandler.SetValue(ValueInstance, value);
+            }
 
-    public override object GetValue()
-    {
-        return Input.isOn;
-    }
+            OnSubmit?.Invoke(value);
+        }
 
-    public override void SetValueInstance(Variable value)
-    {
-        base.SetValueInstance(value);
-        Input.SetIsOnWithoutNotify((bool)value.Value);
-    }
+        public override object GetValue()
+        {
+            return Input.isOn;
+        }
 
-    public override void SetValue(object value)
-    {
-        Input.SetIsOnWithoutNotify((bool)value);
+        public override void SetValueInstance(Variable value)
+        {
+            base.SetValueInstance(value);
+            Input.SetIsOnWithoutNotify((bool)value.Value);
+        }
+
+        public override void SetValue(object value)
+        {
+            Input.SetIsOnWithoutNotify((bool)value);
+        }
     }
 }

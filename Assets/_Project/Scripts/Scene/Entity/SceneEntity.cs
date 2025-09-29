@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
-
+using Loykas.Scripting;
 public class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;

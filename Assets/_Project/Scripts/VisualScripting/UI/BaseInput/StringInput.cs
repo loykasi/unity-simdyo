@@ -1,55 +1,58 @@
 using TMPro;
 using UnityEngine;
 
-public class StringInput : BaseInput
+namespace Loykas.Scripting
 {
-    public TMP_InputField InputField;
-    public float MinWidth = 50f;
-    public float MaxWidth = 200f;
-
-    private readonly float _horizontalPadding = 20f;
-
-    private void Awake()
+    public class StringInput : BaseInput
     {
-        InputField.onValueChanged.AddListener(OnValueChanged);
-        InputField.onEndEdit.AddListener(OnEndEdit);
-    }
+        public TMP_InputField InputField;
+        public float MinWidth = 50f;
+        public float MaxWidth = 200f;
 
-    private void OnEndEdit(string value)
-    {
-        if (ValueInstance != null)
+        private readonly float _horizontalPadding = 20f;
+
+        private void Awake()
         {
-            ValueHandler.SetValue(ValueInstance, value);
+            InputField.onValueChanged.AddListener(OnValueChanged);
+            InputField.onEndEdit.AddListener(OnEndEdit);
         }
 
-        OnSubmit?.Invoke(value);
-    }
+        private void OnEndEdit(string value)
+        {
+            if (ValueInstance != null)
+            {
+                ValueHandler.SetValue(ValueInstance, value);
+            }
 
-    private void OnValueChanged(string value)
-    {
-        Vector2 size = InputField.textComponent.GetPreferredValues(value);
-        float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-        Rect.sizeDelta = new Vector2
-        (
-            x,
-            Rect.sizeDelta.y
-        );
-        OnValueUpdated?.Invoke();
-    }
+            OnSubmit?.Invoke(value);
+        }
 
-    public override object GetValue()
-    {
-        return InputField.text;
-    }
+        private void OnValueChanged(string value)
+        {
+            Vector2 size = InputField.textComponent.GetPreferredValues(value);
+            float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
+            Rect.sizeDelta = new Vector2
+            (
+                x,
+                Rect.sizeDelta.y
+            );
+            OnValueUpdated?.Invoke();
+        }
 
-    public override void SetValueInstance(Variable value)
-    {
-        base.SetValueInstance(value);
-        InputField.SetTextWithoutNotify((string)value.Value);
-    }
+        public override object GetValue()
+        {
+            return InputField.text;
+        }
 
-    public override void SetValue(object value)
-    {
-        InputField.SetTextWithoutNotify((string)value);
+        public override void SetValueInstance(Variable value)
+        {
+            base.SetValueInstance(value);
+            InputField.SetTextWithoutNotify((string)value.Value);
+        }
+
+        public override void SetValue(object value)
+        {
+            InputField.SetTextWithoutNotify((string)value);
+        }
     }
 }

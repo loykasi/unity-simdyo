@@ -1,41 +1,44 @@
 using System.Collections.Generic;
 using TMPro;
 
-public class EntityInput : BaseInput
+namespace Loykas.Scripting
 {
-    public TMP_Dropdown Dropdown;
-
-    private void Awake()
+    public class EntityInput : BaseInput
     {
-        Dropdown.onValueChanged.AddListener(OnValueChanged);
-    }
+        public TMP_Dropdown Dropdown;
 
-    private void OnValueChanged(int index)
-    {
-        var entity = ObjectManager.Instance.GetEntityByIndex(index);
-
-        if (ValueInstance != null)
+        private void Awake()
         {
-            ValueHandler.SetValue(ValueInstance, entity);
+            Dropdown.onValueChanged.AddListener(OnValueChanged);
         }
 
-        OnSubmit?.Invoke(entity);
-    }
+        private void OnValueChanged(int index)
+        {
+            var entity = ObjectManager.Instance.GetEntityByIndex(index);
 
-    public void Init(List<string> options)
-    {
-        Dropdown.ClearOptions();
-        Dropdown.AddOptions(options);
-    }
+            if (ValueInstance != null)
+            {
+                ValueHandler.SetValue(ValueInstance, entity);
+            }
 
-    public override void SetValue(object value)
-    {
+            OnSubmit?.Invoke(entity);
+        }
 
-    }
+        public void Init(List<string> options)
+        {
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(options);
+        }
 
-    public override object GetValue()
-    {
-        var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
-        return entity;
+        public override void SetValue(object value)
+        {
+
+        }
+
+        public override object GetValue()
+        {
+            var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
+            return entity;
+        }
     }
 }

@@ -3,103 +3,106 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
+namespace Loykas.Scripting
 {
-    [SerializeField] private NodeCollectionData _nodeCollection;
-    [SerializeField] private NodeCategoryCollection _categoryCollection;
-    [SerializeField] private RectTransform _content;
-    [SerializeField] private NodeMenuCategory _categoryPrefab;
-
-    private Dictionary<NodeCategoryData, NodeMenuCategory> _categories = new();
-
-    private Vector2 _offsetFromMouse;
-    private bool _isHover = false;
-
-    private NodeBoard _nodeBoard;
-
-    private void Start()
+    public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        InitMenu();
-    }
+        [SerializeField] private NodeCollectionData _nodeCollection;
+        [SerializeField] private NodeCategoryCollection _categoryCollection;
+        [SerializeField] private RectTransform _content;
+        [SerializeField] private NodeMenuCategory _categoryPrefab;
 
-    private void InitMenu()
-    {
-        foreach (var category in _categoryCollection.Categories)
+        private Dictionary<NodeCategoryData, NodeMenuCategory> _categories = new();
+
+        private Vector2 _offsetFromMouse;
+        private bool _isHover = false;
+
+        private NodeBoard _nodeBoard;
+
+        private void Start()
         {
-            NodeMenuCategory item = Instantiate(_categoryPrefab, _content);
-            item.Init(category.Title, _content, this);
+            InitMenu();
+        }
 
-            if (!_categories.ContainsKey(category))
+        private void InitMenu()
+        {
+            foreach (var category in _categoryCollection.Categories)
             {
-                _categories[category] = item;
+                NodeMenuCategory item = Instantiate(_categoryPrefab, _content);
+                item.Init(category.Title, _content, this);
+
+                if (!_categories.ContainsKey(category))
+                {
+                    _categories[category] = item;
+                }
+            }
+
+            foreach (var node in _nodeCollection.Nodes)
+            {
+                NodeCategoryData category = node.Category;
+                if (category == null)
+                {
+                    continue;
+                }
+                if (_categories.TryGetValue(category, out NodeMenuCategory item))
+                {
+                    item.AddItem(node);
+                }
             }
         }
 
-        foreach (var node in _nodeCollection.Nodes)
+        private void Update()
         {
-            NodeCategoryData category = node.Category;
-            if (category == null)
+            if (Mouse.current.leftButton.wasPressedThisFrame && !_isHover)
             {
-                continue;
-            }
-            if (_categories.TryGetValue(category, out NodeMenuCategory item))
-            {
-                item.AddItem(node);
+                Close();
             }
         }
-    }
 
-    private void Update()
-    {
-        if (Mouse.current.leftButton.wasPressedThisFrame && !_isHover)
+        private void Close()
         {
+            _nodeBoard = null;
+            gameObject.SetActive(false);
+        }
+
+        public void Open(NodeBoard nodeBoard, Vector3 position)
+        {
+            _nodeBoard = nodeBoard;
+
+            gameObject.SetActive(true);
+            transform.position = position;
+
+            foreach (var item in _categories)
+            {
+                item.Value.SetOpen(false);
+            }
+        }
+
+        public void AddNode(ScriptNodeData nodeData)
+        {
+            _nodeBoard.AddNode(nodeData);
+
             Close();
         }
-    }
 
-    private void Close()
-    {
-        _nodeBoard = null;
-        gameObject.SetActive(false);
-    }
-
-    public void Open(NodeBoard nodeBoard, Vector3 position)
-    {
-        _nodeBoard = nodeBoard;
-
-        gameObject.SetActive(true);
-        transform.position = position;
-
-        foreach (var item in _categories)
+        public void OnBeginDrag(PointerEventData eventData)
         {
-            item.Value.SetOpen(false);
+            _offsetFromMouse = eventData.position - new Vector2(transform.position.x, transform.position.y);
         }
-    }
 
-    public void AddNode(ScriptNodeData nodeData)
-    {
-        _nodeBoard.AddNode(nodeData);
-        
-        Close();
-    }
+        public void OnDrag(PointerEventData eventData)
+        {
+            transform.position = eventData.position - _offsetFromMouse;
+        }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        _offsetFromMouse = eventData.position - new Vector2(transform.position.x, transform.position.y);
-    }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _isHover = true;
+        }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = eventData.position - _offsetFromMouse;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        _isHover = true;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        _isHover = false;
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _isHover = false;
+        }
     }
 }

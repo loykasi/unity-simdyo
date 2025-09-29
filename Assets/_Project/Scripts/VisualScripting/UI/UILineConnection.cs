@@ -2,71 +2,74 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IGraphElement
+namespace Loykas.Scripting
 {
-    public NodeBoard Board { get; set; }
-    public NodeConnection Connection { get; set; }
-    public UILineRenderer LineRenderer;
-    public UINodePort Source;
-    public UINodePort Destination;
-
-    public void Init(NodeBoard board, NodeConnection connection)
+    public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IGraphElement
     {
-        Board = board;
-        Connection = connection;
-        
-        Connection.OnUpdated += OnUpdated;
-    }
+        public NodeBoard Board { get; set; }
+        public NodeConnection Connection { get; set; }
+        public UILineRenderer LineRenderer;
+        public UINodePort Source;
+        public UINodePort Destination;
 
-    private void OnDisable()
-    {
-        if (Connection != null)
+        public void Init(NodeBoard board, NodeConnection connection)
         {
-            Connection.OnUpdated -= OnUpdated;
-        }
-    }
+            Board = board;
+            Connection = connection;
 
-    private void OnUpdated()
-    {
-        if (Connection.ShouldRemove)
+            Connection.OnUpdated += OnUpdated;
+        }
+
+        private void OnDisable()
         {
-            Board.DeleteConnectionVisual(this);
+            if (Connection != null)
+            {
+                Connection.OnUpdated -= OnUpdated;
+            }
         }
-    }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        LineRenderer.Thickness = 10;
-        LineRenderer.UpdateVertex();
-    }
+        private void OnUpdated()
+        {
+            if (Connection.ShouldRemove)
+            {
+                Board.DeleteConnectionVisual(this);
+            }
+        }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        LineRenderer.Thickness = 6;
-        LineRenderer.UpdateVertex();
-    }
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            LineRenderer.Thickness = 10;
+            LineRenderer.UpdateVertex();
+        }
 
-    public void Select()
-    {
-        LineRenderer.color = Color.blue;
-        LineRenderer.UpdateVertex();
-    }
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            LineRenderer.Thickness = 6;
+            LineRenderer.UpdateVertex();
+        }
 
-    public void Delete()
-    {
-        Board.DeleteConnection(this);
-    }
+        public void Select()
+        {
+            LineRenderer.color = Color.blue;
+            LineRenderer.UpdateVertex();
+        }
 
-    public void DeleteVisual()
-    {
-        Source.DeleteConnection(this);
-        Destination.DeleteConnection(this);
-        Destroy(gameObject);
-    }
+        public void Delete()
+        {
+            Board.DeleteConnection(this);
+        }
 
-    public void Unselect()
-    {
-        LineRenderer.color = Color.white;
-        LineRenderer.UpdateVertex();
+        public void DeleteVisual()
+        {
+            Source.DeleteConnection(this);
+            Destination.DeleteConnection(this);
+            Destroy(gameObject);
+        }
+
+        public void Unselect()
+        {
+            LineRenderer.color = Color.white;
+            LineRenderer.UpdateVertex();
+        }
     }
 }

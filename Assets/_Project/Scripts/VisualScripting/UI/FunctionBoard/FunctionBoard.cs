@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class FunctionBoard : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public ScriptFlowGraph FlowGraph { get; set; }
-
-    [SerializeField] private RectTransform _rect;
-    [SerializeField] private RectTransform _holder;
-    [SerializeField] private FunctionBoardItem _functionItemPrefab;
-
-    public void AddFunction()
+    public class FunctionBoard : MonoBehaviour
     {
-        ScriptFunction function = FlowGraph.Flow.AddFunction();
+        public ScriptFlowGraph FlowGraph { get; set; }
 
-        FunctionBoardItem functionItem = Instantiate(_functionItemPrefab, _holder);
-        functionItem.Init(function.Name);
-        _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _rect.sizeDelta.y + 45f);
+        [SerializeField] private RectTransform _rect;
+        [SerializeField] private RectTransform _holder;
+        [SerializeField] private FunctionBoardItem _functionItemPrefab;
 
-        FlowGraph.RebuildSideBarUI();
+        public void AddFunction()
+        {
+            ScriptFunction function = FlowGraph.Flow.AddFunction();
+
+            FunctionBoardItem functionItem = Instantiate(_functionItemPrefab, _holder);
+            functionItem.Init(function.Name);
+            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _rect.sizeDelta.y + 45f);
+
+            FlowGraph.RebuildSideBarUI();
+        }
     }
 }

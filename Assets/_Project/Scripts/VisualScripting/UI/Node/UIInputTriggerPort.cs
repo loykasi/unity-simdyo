@@ -1,6 +1,7 @@
-using UnityEngine;
-
-public class UIInputTriggerPort : UINodePort
+namespace Loykas.Scripting
 {
-    public override NodePortEdge Edge => NodePortEdge.Left;
+    public class UIInputTriggerPort : UINodePort
+    {
+        public override NodePortEdge Edge => NodePortEdge.Left;
+    }
 }

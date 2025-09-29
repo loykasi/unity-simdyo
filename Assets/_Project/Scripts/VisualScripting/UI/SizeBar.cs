@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SizeBar : MonoBehaviour
+namespace Loykas.Scripting
 {
-    [SerializeField] private RectTransform _content;
-
-    public void RebuildUI()
+    public class SizeBar : MonoBehaviour
     {
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_content);
+        [SerializeField] private RectTransform _content;
+
+        public void RebuildUI()
+        {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_content);
+        }
     }
 }

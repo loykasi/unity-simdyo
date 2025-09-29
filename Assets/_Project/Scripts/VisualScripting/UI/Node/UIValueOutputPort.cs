@@ -1,47 +1,50 @@
 using System;
 using UnityEngine;
 
-public class UIValueOutputPort: UINodePort
+namespace Loykas.Scripting
 {
-    public override NodePortEdge Edge => NodePortEdge.Right;
-
-    [SerializeField] private PortVisual _portVisual;
-    private OutputValue _outputValue;
-
-    private readonly float _handleSize = 20f;
-    private readonly float _height = 30f;
-
-    public override void Init()
+    public class UIValueOutputPort : UINodePort
     {
-        base.Init();
+        public override NodePortEdge Edge => NodePortEdge.Right;
 
-        if (Port is not OutputValue)
+        [SerializeField] private PortVisual _portVisual;
+        private OutputValue _outputValue;
+
+        private readonly float _handleSize = 20f;
+        private readonly float _height = 30f;
+
+        public override void Init()
         {
-            Debug.LogError($"Wrong port assignment. {Port.GetType()}", this);
-            return;
+            base.Init();
+
+            if (Port is not OutputValue)
+            {
+                Debug.LogError($"Wrong port assignment. {Port.GetType()}", this);
+                return;
+            }
+            _outputValue = (OutputValue)Port;
+
+            _portVisual.SetType(_outputValue.Type);
+
+            UpdateSize();
         }
-        _outputValue = (OutputValue)Port;
 
-        _portVisual.SetType(_outputValue.Type);
+        public override void UpdateUI()
+        {
+            base.UpdateUI();
+            _portVisual.SetType(_outputValue.Type);
+            UpdateSize();
+        }
 
-        UpdateSize();
-    }
+        private void UpdateSize()
+        {
+            UpdateLabel();
 
-    public override void UpdateUI()
-    {
-        base.UpdateUI();
-        _portVisual.SetType(_outputValue.Type);
-        UpdateSize();
-    }
-
-    private void UpdateSize()
-    {
-        UpdateLabel();
-
-        Rect.sizeDelta = new Vector2
-        (
-            _handleSize + _label.rectTransform.sizeDelta.x,
-            _height
-        );
+            Rect.sizeDelta = new Vector2
+            (
+                _handleSize + _label.rectTransform.sizeDelta.x,
+                _height
+            );
+        }
     }
 }

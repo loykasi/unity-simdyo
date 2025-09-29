@@ -1,6 +1,9 @@
-public interface IGraphElement
+namespace Loykas.Scripting
 {
-    void Select();
-    void Unselect();
-    void Delete();
+    public interface IGraphElement
+    {
+        void Select();
+        void Unselect();
+        void Delete();
+    }
 }

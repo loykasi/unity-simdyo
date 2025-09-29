@@ -1,34 +1,37 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public abstract class BaseInput : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public DataType Type { get; }
-    public Variable ValueInstance { get; set; }
-
-    public UnityAction<object> OnSubmit;
-    public UnityAction OnValueUpdated;
-
-    public RectTransform Rect;
-    public Vector2 Size
+    public abstract class BaseInput : MonoBehaviour
     {
-        get => Rect.sizeDelta;
-        set => Rect.sizeDelta = value;
-    }
+        public DataType Type { get; }
+        public Variable ValueInstance { get; set; }
 
-    public virtual void Enable()
-    {
-        gameObject.SetActive(true);
-    }
-    public virtual void Disable()
-    {
-        gameObject.SetActive(false);
-    }
+        public UnityAction<object> OnSubmit;
+        public UnityAction OnValueUpdated;
 
-    public abstract object GetValue();
-    public virtual void SetValue(object value) {}
-    public virtual void SetValueInstance(Variable value)
-    {
-        ValueInstance = value;
+        public RectTransform Rect;
+        public Vector2 Size
+        {
+            get => Rect.sizeDelta;
+            set => Rect.sizeDelta = value;
+        }
+
+        public virtual void Enable()
+        {
+            gameObject.SetActive(true);
+        }
+        public virtual void Disable()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public abstract object GetValue();
+        public virtual void SetValue(object value) { }
+        public virtual void SetValueInstance(Variable value)
+        {
+            ValueInstance = value;
+        }
     }
 }

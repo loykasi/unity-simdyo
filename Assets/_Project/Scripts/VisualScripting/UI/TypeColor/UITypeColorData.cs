@@ -1,27 +1,30 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "TypeColorData", menuName = "Scriptable Objects/Type Color")]
-public class UITypeColorData : ScriptableObject
+namespace Loykas.Scripting
 {
-    [System.Serializable]
-    public struct UITypeColor
+    [CreateAssetMenu(fileName = "TypeColorData", menuName = "Scriptable Objects/Type Color")]
+    public class UITypeColorData : ScriptableObject
     {
-        public DataType Type;
-        public Color Color;
-    }
-
-    public UITypeColor[] TypeColor;
-
-    public UITypeColor Get(DataType type)
-    {
-        foreach (var item in TypeColor)
+        [System.Serializable]
+        public struct UITypeColor
         {
-            if (item.Type == type)
-            {
-                return item;
-            }
+            public DataType Type;
+            public Color Color;
         }
 
-        return default;
+        public UITypeColor[] TypeColor;
+
+        public UITypeColor Get(DataType type)
+        {
+            foreach (var item in TypeColor)
+            {
+                if (item.Type == type)
+                {
+                    return item;
+                }
+            }
+
+            return default;
+        }
     }
 }

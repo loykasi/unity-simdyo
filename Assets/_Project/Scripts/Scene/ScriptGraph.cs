@@ -1,4 +1,5 @@
 using UnityEngine;
+using Loykas.Scripting;
 
 public class ScriptGraph : Singleton<ScriptGraph>
 {

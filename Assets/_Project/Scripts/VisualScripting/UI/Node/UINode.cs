@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,232 +5,235 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement, IPointerEnterHandler, IPointerExitHandler
+namespace Loykas.Scripting
 {
-    public NodeBoard Board { get; set; }
-    public ScriptNode Node
+    public class UINode : MonoBehaviour, IDragHandler, IBeginDragHandler, IGraphElement, IPointerEnterHandler, IPointerExitHandler
     {
-        get => _node;
-        set
+        public NodeBoard Board { get; set; }
+        public ScriptNode Node
         {
-            SetNode(value);
-        }
-    }
-
-    private ScriptNode _node;
-
-    [HideInInspector] public List<UINodePort> Ports = new();
-    [HideInInspector] public List<UINodePort> InputPorts = new();
-    [HideInInspector] public List<UINodePort> OutputPorts = new();
-
-    [Header("References")]
-    [SerializeField] private TMP_Text _nodeTitle;
-    [SerializeField] private RectTransform _selectedBorder;
-    [SerializeField] private float _borderSize;
-
-    [Header("Node Holders")]
-    [SerializeField] private RectTransform _inputHolder;
-    [SerializeField] private RectTransform _outputHolder;
-
-    [Header("Head and body")]
-    [SerializeField] private RectTransform _head;
-    [SerializeField] private RectTransform _body;
-
-    [Header("Prefabs")]
-    [SerializeField] private UINodePort _inputTriggerPrefab;
-    [SerializeField] private UINodePort _inputValuePrefab;
-    [SerializeField] private UINodePort _outputTriggerPrefab;
-    [SerializeField] private UINodePort _outputValuePrefab;
-
-    private Vector2 _offsetFromMouse;
-    // private bool _isMouseOver = false;
-
-    private readonly float _inputOutputDistance = 10f;
-    private float _minWidth = 50f;
-    private readonly float _topBottomPadding = 20f;
-
-    private void SetNode(ScriptNode node)
-    {
-        if (_node != null)
-        {
-            _node.OnNodeUpdated -= UpdateUI;
-        }
-
-        _node = node;
-        _node.OnNodeUpdated += UpdateUI;
-        transform.localPosition = _node.Position;
-
-        Init();
-    }
-
-    void OnDisable()
-    {
-        if (_node != null)
-        {
-            _node.OnNodeUpdated -= UpdateUI;
-        }
-    }
-
-    private void Init()
-    {
-        if (Node == null) return;
-
-        transform.localPosition = Node.Position;
-
-        _nodeTitle.SetText(Node.Title);
-        Vector2 labelSize = _nodeTitle.GetPreferredValues();
-        _minWidth = labelSize.x;
-
-        for (int i = 0; i < Node.InputTriggers.Count; i++)
-        {
-            UINodePort port = Instantiate(_inputTriggerPrefab, _inputHolder);
-            port.UINode = this;
-            port.Port = Node.InputTriggers[i];
-            port.Init();
-            Ports.Add(port);
-            InputPorts.Add(port);
-        }
-
-        for (int i = 0; i < Node.OutputTriggers.Count; i++)
-        {
-            UINodePort port = Instantiate(_outputTriggerPrefab, _outputHolder);
-            port.UINode = this;
-            port.Port = Node.OutputTriggers[i];
-            port.Init();
-            Ports.Add(port);
-            OutputPorts.Add(port);
-        }
-
-        for (int i = 0; i < Node.ValueInputs.Count; i++)
-        {
-            UINodePort port = Instantiate(_inputValuePrefab, _inputHolder);
-            port.UINode = this;
-            port.Port = Node.ValueInputs[i];
-            port.Init();
-            Ports.Add(port);
-            InputPorts.Add(port);
-        }
-
-        for (int i = 0; i < Node.ValueOutputs.Count; i++)
-        {
-            UINodePort port = Instantiate(_outputValuePrefab, _outputHolder);
-            port.UINode = this;
-            port.Port = Node.ValueOutputs[i];
-            port.Init();
-            Ports.Add(port);
-            OutputPorts.Add(port);
-        }
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
-        LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
-
-        UpdateSize();
-    }
-
-    private void UpdateUI()
-    {
-        Debug.Log("Update UI");
-        for (int i = 0; i < Ports.Count; i++)
-        {
-            Ports[i].UpdateUI();
-        }
-    }
-
-    public void UpdateSize()
-    {
-        Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
-        Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
-        float inputHeight = _inputHolder.sizeDelta.y;
-        float outputHeight = _outputHolder.sizeDelta.y;
-        // float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
-        float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
-
-        float x = inputSize.x + outputSize.x + _inputOutputDistance;
-        x = Mathf.Max(x, _minWidth);
-
-        _head.sizeDelta = new Vector2(x, _head.sizeDelta.y);
-        _body.sizeDelta = new Vector2(x, bodyHeight);
-
-        UpdateBorder();
-    }
-
-    private void UpdateBorder()
-    {
-        Vector2 nodeSize = new
-        (
-            _head.sizeDelta.x,
-            _head.sizeDelta.y + _body.sizeDelta.y
-        );
-
-        Vector2 borderSize = nodeSize + _borderSize * 2 * Vector2.one;
-        _selectedBorder.sizeDelta = borderSize;
-    }
-
-    private Vector2 GetPortGroupMaxSize(List<UINodePort> ports)
-    {
-        if (ports.Count == 0)
-        {
-            return Vector2.zero;
-        }
-
-        float y = 0;
-        float x = ports[0].Rect.sizeDelta.x;
-        for (int i = 0; i < ports.Count; i++)
-        {
-            Vector2 size = ports[i].Rect.sizeDelta;
-            if (i != 0)
+            get => _node;
+            set
             {
-                if (size.x > x)
-                {
-                    x = size.x;
-                }
+                SetNode(value);
             }
-            
-            y += size.y;
         }
 
-        return new Vector2(x, y);
-    }
+        private ScriptNode _node;
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        _offsetFromMouse = Mouse.current.position.ReadValue() - new Vector2(transform.position.x, transform.position.y);
-    }
+        [HideInInspector] public List<UINodePort> Ports = new();
+        [HideInInspector] public List<UINodePort> InputPorts = new();
+        [HideInInspector] public List<UINodePort> OutputPorts = new();
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
-        Node.Position = transform.localPosition;
+        [Header("References")]
+        [SerializeField] private TMP_Text _nodeTitle;
+        [SerializeField] private RectTransform _selectedBorder;
+        [SerializeField] private float _borderSize;
 
-        for (int i = 0; i < Ports.Count; i++)
+        [Header("Node Holders")]
+        [SerializeField] private RectTransform _inputHolder;
+        [SerializeField] private RectTransform _outputHolder;
+
+        [Header("Head and body")]
+        [SerializeField] private RectTransform _head;
+        [SerializeField] private RectTransform _body;
+
+        [Header("Prefabs")]
+        [SerializeField] private UINodePort _inputTriggerPrefab;
+        [SerializeField] private UINodePort _inputValuePrefab;
+        [SerializeField] private UINodePort _outputTriggerPrefab;
+        [SerializeField] private UINodePort _outputValuePrefab;
+
+        private Vector2 _offsetFromMouse;
+        // private bool _isMouseOver = false;
+
+        private readonly float _inputOutputDistance = 10f;
+        private float _minWidth = 50f;
+        private readonly float _topBottomPadding = 20f;
+
+        private void SetNode(ScriptNode node)
         {
-            Ports[i].UpdateLines();
+            if (_node != null)
+            {
+                _node.OnNodeUpdated -= UpdateUI;
+            }
+
+            _node = node;
+            _node.OnNodeUpdated += UpdateUI;
+            transform.localPosition = _node.Position;
+
+            Init();
         }
-    }
 
-    public void Select()
-    {
-        _selectedBorder.gameObject.SetActive(true);
-    }
+        void OnDisable()
+        {
+            if (_node != null)
+            {
+                _node.OnNodeUpdated -= UpdateUI;
+            }
+        }
 
-    public void Delete()
-    {
-        Board.DeleteNode(this);
-        Destroy(gameObject);
-    }
+        private void Init()
+        {
+            if (Node == null) return;
 
-    public void Unselect()
-    {
-        _selectedBorder.gameObject.SetActive(false);
-    }
+            transform.localPosition = Node.Position;
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        // _isMouseOver = true;
-    }
+            _nodeTitle.SetText(Node.Title);
+            Vector2 labelSize = _nodeTitle.GetPreferredValues();
+            _minWidth = labelSize.x;
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        // _isMouseOver = false;
+            for (int i = 0; i < Node.InputTriggers.Count; i++)
+            {
+                UINodePort port = Instantiate(_inputTriggerPrefab, _inputHolder);
+                port.UINode = this;
+                port.Port = Node.InputTriggers[i];
+                port.Init();
+                Ports.Add(port);
+                InputPorts.Add(port);
+            }
+
+            for (int i = 0; i < Node.OutputTriggers.Count; i++)
+            {
+                UINodePort port = Instantiate(_outputTriggerPrefab, _outputHolder);
+                port.UINode = this;
+                port.Port = Node.OutputTriggers[i];
+                port.Init();
+                Ports.Add(port);
+                OutputPorts.Add(port);
+            }
+
+            for (int i = 0; i < Node.ValueInputs.Count; i++)
+            {
+                UINodePort port = Instantiate(_inputValuePrefab, _inputHolder);
+                port.UINode = this;
+                port.Port = Node.ValueInputs[i];
+                port.Init();
+                Ports.Add(port);
+                InputPorts.Add(port);
+            }
+
+            for (int i = 0; i < Node.ValueOutputs.Count; i++)
+            {
+                UINodePort port = Instantiate(_outputValuePrefab, _outputHolder);
+                port.UINode = this;
+                port.Port = Node.ValueOutputs[i];
+                port.Init();
+                Ports.Add(port);
+                OutputPorts.Add(port);
+            }
+
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(_outputHolder);
+
+            UpdateSize();
+        }
+
+        private void UpdateUI()
+        {
+            Debug.Log("Update UI");
+            for (int i = 0; i < Ports.Count; i++)
+            {
+                Ports[i].UpdateUI();
+            }
+        }
+
+        public void UpdateSize()
+        {
+            Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
+            Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
+            float inputHeight = _inputHolder.sizeDelta.y;
+            float outputHeight = _outputHolder.sizeDelta.y;
+            // float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
+            float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
+
+            float x = inputSize.x + outputSize.x + _inputOutputDistance;
+            x = Mathf.Max(x, _minWidth);
+
+            _head.sizeDelta = new Vector2(x, _head.sizeDelta.y);
+            _body.sizeDelta = new Vector2(x, bodyHeight);
+
+            UpdateBorder();
+        }
+
+        private void UpdateBorder()
+        {
+            Vector2 nodeSize = new
+            (
+                _head.sizeDelta.x,
+                _head.sizeDelta.y + _body.sizeDelta.y
+            );
+
+            Vector2 borderSize = nodeSize + _borderSize * 2 * Vector2.one;
+            _selectedBorder.sizeDelta = borderSize;
+        }
+
+        private Vector2 GetPortGroupMaxSize(List<UINodePort> ports)
+        {
+            if (ports.Count == 0)
+            {
+                return Vector2.zero;
+            }
+
+            float y = 0;
+            float x = ports[0].Rect.sizeDelta.x;
+            for (int i = 0; i < ports.Count; i++)
+            {
+                Vector2 size = ports[i].Rect.sizeDelta;
+                if (i != 0)
+                {
+                    if (size.x > x)
+                    {
+                        x = size.x;
+                    }
+                }
+
+                y += size.y;
+            }
+
+            return new Vector2(x, y);
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            _offsetFromMouse = Mouse.current.position.ReadValue() - new Vector2(transform.position.x, transform.position.y);
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
+            Node.Position = transform.localPosition;
+
+            for (int i = 0; i < Ports.Count; i++)
+            {
+                Ports[i].UpdateLines();
+            }
+        }
+
+        public void Select()
+        {
+            _selectedBorder.gameObject.SetActive(true);
+        }
+
+        public void Delete()
+        {
+            Board.DeleteNode(this);
+            Destroy(gameObject);
+        }
+
+        public void Unselect()
+        {
+            _selectedBorder.gameObject.SetActive(false);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            // _isMouseOver = true;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            // _isMouseOver = false;
+        }
     }
 }

@@ -1,31 +1,34 @@
 using TMPro;
 using UnityEngine;
 
-public class NodeMenuItem : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public RectTransform RectTransform;
-
-    public NodeMenu NodeMenu { get; set; }
-    public ScriptNodeData NodeData
+    public class NodeMenuItem : MonoBehaviour
     {
-        get => _nodeData;
-        set
+        public RectTransform RectTransform;
+
+        public NodeMenu NodeMenu { get; set; }
+        public ScriptNodeData NodeData
         {
-            _nodeData = value;
-            UpdateItem();
+            get => _nodeData;
+            set
+            {
+                _nodeData = value;
+                UpdateItem();
+            }
         }
-    }
-    private ScriptNodeData _nodeData;
+        private ScriptNodeData _nodeData;
 
-    [SerializeField] private TMP_Text _textField;
+        [SerializeField] private TMP_Text _textField;
 
-    private void UpdateItem()
-    {
-        _textField.SetText(_nodeData.Title);
-    }
+        private void UpdateItem()
+        {
+            _textField.SetText(_nodeData.Title);
+        }
 
-    public void Add()
-    {
-        NodeMenu.AddNode(_nodeData);
+        public void Add()
+        {
+            NodeMenu.AddNode(_nodeData);
+        }
     }
 }

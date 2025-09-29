@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Loykas.Scripting;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {

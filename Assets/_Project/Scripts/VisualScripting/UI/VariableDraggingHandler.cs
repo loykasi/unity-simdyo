@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class VariableDraggingHandler : MonoBehaviour, IDropHandler
+namespace Loykas.Scripting
 {
-    public void OnDrop(PointerEventData eventData)
+    public class VariableDraggingHandler : MonoBehaviour, IDropHandler
     {
-        GameObject target = eventData.pointerDrag;
-        if (target.TryGetComponent(out VariableBoardItem item))
+        public void OnDrop(PointerEventData eventData)
         {
-            Debug.Log("Add get variable");
+            GameObject target = eventData.pointerDrag;
+            if (target.TryGetComponent(out VariableBoardItem item))
+            {
+                Debug.Log("Add get variable");
+            }
         }
     }
 }

@@ -1,65 +1,68 @@
 using TMPro;
 using UnityEngine;
 
-public class NumberInput : BaseInput
+namespace Loykas.Scripting
 {
-    public TMP_InputField InputField;
-    public float MinWidth = 50f;
-    public float MaxWidth = 200f;
-
-    private float _value;
-
-    private readonly float _horizontalPadding = 20f;
-
-    private void Awake()
+    public class NumberInput : BaseInput
     {
-        InputField.onValueChanged.AddListener(OnValueChanged);
-        InputField.onEndEdit.AddListener(OnEndEdit);
+        public TMP_InputField InputField;
+        public float MinWidth = 50f;
+        public float MaxWidth = 200f;
 
-        SetValue(0f);
-    }
+        private float _value;
 
-    private void OnValueChanged(string value)
-    {
-        Vector2 size = InputField.textComponent.GetPreferredValues(value);
-        float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-        Rect.sizeDelta = new Vector2
-        (
-            x,
-            Rect.sizeDelta.y
-        );
-        OnValueUpdated?.Invoke();
-    }
+        private readonly float _horizontalPadding = 20f;
 
-    private void OnEndEdit(string value)
-    {
-        if (float.TryParse(value, out float parsedValue))
+        private void Awake()
         {
-            _value = parsedValue;
+            InputField.onValueChanged.AddListener(OnValueChanged);
+            InputField.onEndEdit.AddListener(OnEndEdit);
+
+            SetValue(0f);
         }
 
-        if (ValueInstance != null)
+        private void OnValueChanged(string value)
         {
-            ValueHandler.SetValue(ValueInstance, _value);
+            Vector2 size = InputField.textComponent.GetPreferredValues(value);
+            float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
+            Rect.sizeDelta = new Vector2
+            (
+                x,
+                Rect.sizeDelta.y
+            );
+            OnValueUpdated?.Invoke();
         }
 
-        OnSubmit?.Invoke(_value);
-    }
+        private void OnEndEdit(string value)
+        {
+            if (float.TryParse(value, out float parsedValue))
+            {
+                _value = parsedValue;
+            }
 
-    public override object GetValue()
-    {
-        return _value;
-    }
+            if (ValueInstance != null)
+            {
+                ValueHandler.SetValue(ValueInstance, _value);
+            }
 
-    public override void SetValueInstance(Variable value)
-    {
-        base.SetValueInstance(value);
-        InputField.SetTextWithoutNotify(value.Value.ToString());
-    }
+            OnSubmit?.Invoke(_value);
+        }
 
-    public override void SetValue(object value)
-    {
-        _value = (float)value;
-        InputField.SetTextWithoutNotify(_value.ToString());
+        public override object GetValue()
+        {
+            return _value;
+        }
+
+        public override void SetValueInstance(Variable value)
+        {
+            base.SetValueInstance(value);
+            InputField.SetTextWithoutNotify(value.Value.ToString());
+        }
+
+        public override void SetValue(object value)
+        {
+            _value = (float)value;
+            InputField.SetTextWithoutNotify(_value.ToString());
+        }
     }
 }
