@@ -1,10 +1,13 @@
-public class AdditionHandler : OperatorHandler
+namespace Loykas.Scripting
 {
-    public AdditionHandler()
+    public class AdditionHandler : OperatorHandler
     {
-        Operator<string, string>((a, b) => a + b);
-        Operator<float, float>((a, b) => a + b);
-        Operator<string, float>((a, b) => a + b);
-        Operator<float, string>((a, b) => a + b);
+        public AdditionHandler()
+        {
+            Operator<string, string>((a, b) => a + b);
+            Operator<float, float>((a, b) => a + b);
+            Operator<string, float>((a, b) => a + b);
+            Operator<float, string>((a, b) => a + b);
+        }
     }
 }

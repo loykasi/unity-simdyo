@@ -2,45 +2,48 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AddItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Add Item")]
-public class AddListItem : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "AddItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Add Item")]
+    public class AddListItem : ScriptNodeData
     {
-        return new AddListItemNode(Title);
-    }
-}
-
-class AddListItemNode : ScriptNode
-{
-    public InputTrigger Enter;
-    public OutputTrigger Exit;
-
-    public InputValue ListInput;
-    public InputValue Item;
-    public OutputValue Output;
-
-    public AddListItemNode(string title) : base(title)
-    {
-        Enter = InputTrigger(nameof(Enter), Set);
-        Exit = OutputTrigger(nameof(Exit));
-
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-        Item = InputValue(nameof(Item));
-        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        public override ScriptNode Create()
+        {
+            return new AddListItemNode(Title);
+        }
     }
 
-    private OutputTrigger Set(ScriptFlow vs)
+    class AddListItemNode : ScriptNode
     {
-        IList list = (IList)ListInput.GetValue(vs);
-        object item = Item.GetValue(vs);
-        list.Add(item);
-        return Exit;
-    }
+        public InputTrigger Enter;
+        public OutputTrigger Exit;
 
-    private object Get(ScriptFlow vs)
-    {
-        IList list = (IList)ListInput.GetValue(vs);
-        return list;
+        public InputValue ListInput;
+        public InputValue Item;
+        public OutputValue Output;
+
+        public AddListItemNode(string title) : base(title)
+        {
+            Enter = InputTrigger(nameof(Enter), Set);
+            Exit = OutputTrigger(nameof(Exit));
+
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            Item = InputValue(nameof(Item));
+            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        }
+
+        private OutputTrigger Set(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            object item = Item.GetValue(vs);
+            list.Add(item);
+            return Exit;
+        }
+
+        private object Get(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            return list;
+        }
     }
 }

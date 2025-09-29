@@ -2,45 +2,48 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "RemoveItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Remove Item")]
-public class RemoveListItem : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "RemoveItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Remove Item")]
+    public class RemoveListItem : ScriptNodeData
     {
-        return new RemoveListItemNode(Title);
-    }
-}
-
-class RemoveListItemNode : ScriptNode
-{
-    public InputTrigger Enter;
-    public OutputTrigger Exit;
-
-    public InputValue ListInput;
-    public InputValue Index;
-    public OutputValue Output;
-
-    public RemoveListItemNode(string title) : base(title)
-    {
-        Enter = InputTrigger(nameof(Enter), Set);
-        Exit = OutputTrigger(nameof(Exit));
-
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-        Index = InputValue(nameof(Index));
-        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        public override ScriptNode Create()
+        {
+            return new RemoveListItemNode(Title);
+        }
     }
 
-    private OutputTrigger Set(ScriptFlow vs)
+    class RemoveListItemNode : ScriptNode
     {
-        IList list = (IList)ListInput.GetValue(vs);
-        int index = (int)(float)Index.GetValue(vs);
-        list.RemoveAt(index);
-        return Exit;
-    }
+        public InputTrigger Enter;
+        public OutputTrigger Exit;
 
-    private object Get(ScriptFlow vs)
-    {
-        IList list = (IList)ListInput.GetValue(vs);
-        return list;
+        public InputValue ListInput;
+        public InputValue Index;
+        public OutputValue Output;
+
+        public RemoveListItemNode(string title) : base(title)
+        {
+            Enter = InputTrigger(nameof(Enter), Set);
+            Exit = OutputTrigger(nameof(Exit));
+
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            Index = InputValue(nameof(Index));
+            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        }
+
+        private OutputTrigger Set(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            int index = (int)(float)Index.GetValue(vs);
+            list.RemoveAt(index);
+            return Exit;
+        }
+
+        private object Get(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            return list;
+        }
     }
 }

@@ -1,6 +1,9 @@
-public class FunctionInput
+namespace Loykas.Scripting
 {
-    public string Name;
-    public DataType Type;
-    public object value;
+    public class FunctionInput
+    {
+        public string Name;
+        public DataType Type;
+        public object value;
+    }
 }

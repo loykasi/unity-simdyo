@@ -1,7 +1,10 @@
-public class DivisionHandler : OperatorHandler
+namespace Loykas.Scripting
 {
-    public DivisionHandler()
+    public class DivisionHandler : OperatorHandler
     {
-        Operator<double, double>((a, b) => a / b);
+        public DivisionHandler()
+        {
+            Operator<double, double>((a, b) => a / b);
+        }
     }
 }

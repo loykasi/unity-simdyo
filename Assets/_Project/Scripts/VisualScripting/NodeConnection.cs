@@ -3,80 +3,83 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class NodeConnection
+namespace Loykas.Scripting
 {
-    public UnityAction OnUpdated;
-
-    public ScriptFlow Flow;
-    public bool ShouldRemove;
-
-    public Guid SourceID;
-    public string SourceKey;
-
-    public Guid DestinationID;
-    public string DestinationKey;
-
-    [JsonIgnore]
-    public IPort Source;
-    [JsonIgnore]
-    public IPort Destination;
-
-    public NodeConnection()
+    public class NodeConnection
     {
-    }
+        public UnityAction OnUpdated;
 
-    public NodeConnection(ScriptFlow flow, IPort source, IPort destination)
-    {
-        Flow = flow;
-        Source = source;
-        Destination = destination;
+        public ScriptFlow Flow;
+        public bool ShouldRemove;
 
-        SourceID = Source.Node.ID;
-        SourceKey = Source.Key;
-        DestinationID = Destination.Node.ID;
-        DestinationKey = Destination.Key;
-    }
+        public Guid SourceID;
+        public string SourceKey;
 
-    public void Load(ScriptFlow vs)
-    {
-        Source = GetPort(vs, SourceID, SourceKey);
-        Destination = GetPort(vs, DestinationID, DestinationKey);
+        public Guid DestinationID;
+        public string DestinationKey;
 
-        if (Source is OutputTrigger outputTrigger && Destination is InputTrigger inputTrigger)
+        [JsonIgnore]
+        public IPort Source;
+        [JsonIgnore]
+        public IPort Destination;
+
+        public NodeConnection()
         {
-            outputTrigger.Destination = inputTrigger;
-            inputTrigger.Sources.Add(outputTrigger);
         }
 
-        if (Source is OutputValue outputValue && Destination is InputValue inputValue)
+        public NodeConnection(ScriptFlow flow, IPort source, IPort destination)
         {
-            inputValue.Source = outputValue;
-            outputValue.Destinations.Add(inputValue);
-        }
-    }
+            Flow = flow;
+            Source = source;
+            Destination = destination;
 
-    private IPort GetPort(ScriptFlow vs, Guid id, string portKey)
-    {
-        ScriptNode unit = vs.Nodes.Find(node => node.ID == id);
-        foreach (var item in unit.Ports())
+            SourceID = Source.Node.ID;
+            SourceKey = Source.Key;
+            DestinationID = Destination.Node.ID;
+            DestinationKey = Destination.Key;
+        }
+
+        public void Load(ScriptFlow vs)
         {
-            if (item.Key.Equals(portKey))
+            Source = GetPort(vs, SourceID, SourceKey);
+            Destination = GetPort(vs, DestinationID, DestinationKey);
+
+            if (Source is OutputTrigger outputTrigger && Destination is InputTrigger inputTrigger)
             {
-                return item;
+                outputTrigger.Destination = inputTrigger;
+                inputTrigger.Sources.Add(outputTrigger);
+            }
+
+            if (Source is OutputValue outputValue && Destination is InputValue inputValue)
+            {
+                inputValue.Source = outputValue;
+                outputValue.Destinations.Add(inputValue);
             }
         }
-        return null;
-    }
 
-    public void Validate()
-    {
-        if (!Source.CanConnect(Destination))
+        private IPort GetPort(ScriptFlow vs, Guid id, string portKey)
         {
-            Debug.Log("[Connection] Mark as remove");
-            Flow.Disconnect(Source, Destination);
-            OnUpdated?.Invoke();
+            ScriptNode unit = vs.Nodes.Find(node => node.ID == id);
+            foreach (var item in unit.Ports())
+            {
+                if (item.Key.Equals(portKey))
+                {
+                    return item;
+                }
+            }
+            return null;
         }
 
-        Destination.Node.UpdateNode();
+        public void Validate()
+        {
+            if (!Source.CanConnect(Destination))
+            {
+                Debug.Log("[Connection] Mark as remove");
+                Flow.Disconnect(Source, Destination);
+                OnUpdated?.Invoke();
+            }
+
+            Destination.Node.UpdateNode();
+        }
     }
 }

@@ -1,19 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "OnClickedNode", menuName = "Scriptable Objects/Visual Scripting/Node/Clicked")]
-public class OnClicked : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "OnClickedNode", menuName = "Scriptable Objects/Visual Scripting/Node/Clicked")]
+    public class OnClicked : ScriptNodeData
     {
-        return new OnClickedNode(Title);
-    }
-}
-
-public class OnClickedNode : EventNode
-{
-    public OnClickedNode(string title) : base(title)
-    {
+        public override ScriptNode Create()
+        {
+            return new OnClickedNode(Title);
+        }
     }
 
-    public override EventHook Hook => EventHook.Clicked;
+    public class OnClickedNode : EventNode
+    {
+        public OnClickedNode(string title) : base(title)
+        {
+        }
+
+        public override EventHook Hook => EventHook.Clicked;
+    }
 }

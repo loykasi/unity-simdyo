@@ -1,52 +1,54 @@
 using System.Collections;
 using Newtonsoft.Json;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "LogNode", menuName = "Scriptable Objects/Visual Scripting/Node/Log")]
-public class Log : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "LogNode", menuName = "Scriptable Objects/Visual Scripting/Node/Log")]
+    public class Log : ScriptNodeData
     {
-        return new LogNode(Title);
-    }
-}
-
-class LogNode : ScriptNode
-{
-    [JsonIgnore]
-    public InputTrigger Enter;
-    [JsonIgnore]
-    public OutputTrigger Exit;
-    [JsonIgnore]
-    public InputValue Value;
-
-    public LogNode(string title) : base(title)
-    {
-        Enter = InputTrigger(nameof(Enter), Log);
-        Exit = OutputTrigger(nameof(Exit));
-        Value = InputValue(nameof(Value));
-    }
-
-    private OutputTrigger Log(ScriptFlow vs)
-    {
-        var value = Value.GetValue(vs);
-        LogCommand.Instance.Log(value);
-
-        if (value is IList list)
+        public override ScriptNode Create()
         {
-            string listValue = "";
-            foreach (var item in list)
+            return new LogNode(Title);
+        }
+    }
+
+    class LogNode : ScriptNode
+    {
+        [JsonIgnore]
+        public InputTrigger Enter;
+        [JsonIgnore]
+        public OutputTrigger Exit;
+        [JsonIgnore]
+        public InputValue Value;
+
+        public LogNode(string title) : base(title)
+        {
+            Enter = InputTrigger(nameof(Enter), Log);
+            Exit = OutputTrigger(nameof(Exit));
+            Value = InputValue(nameof(Value));
+        }
+
+        private OutputTrigger Log(ScriptFlow vs)
+        {
+            var value = Value.GetValue(vs);
+            LogCommand.Instance.Log(value);
+
+            if (value is IList list)
             {
-                listValue += item.ToString() + " | ";
+                string listValue = "";
+                foreach (var item in list)
+                {
+                    listValue += item.ToString() + " | ";
+                }
+                Debug.Log($"list: {listValue}");
             }
-            Debug.Log($"list: {listValue}");
-        }
-        else
-        {
-            Debug.Log(value);
-        }
+            else
+            {
+                Debug.Log(value);
+            }
 
-        return Exit;
+            return Exit;
+        }
     }
 }

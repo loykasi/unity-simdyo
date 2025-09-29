@@ -1,14 +1,17 @@
 using UnityEngine;
 
-public abstract class ScriptNodeData : ScriptableObject
+namespace Loykas.Scripting
 {
-    public string Title;
-    public NodeCategoryData Category;
-
-    public abstract ScriptNode Create();
-
-    private void Awake()
+    public abstract class ScriptNodeData : ScriptableObject
     {
-        Title = GetType().Name;
+        public string Title;
+        public NodeCategoryData Category;
+
+        public abstract ScriptNode Create();
+
+        private void Awake()
+        {
+            Title = GetType().Name;
+        }
     }
 }

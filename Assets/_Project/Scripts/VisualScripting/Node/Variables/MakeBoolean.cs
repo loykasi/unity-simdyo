@@ -1,7 +1,10 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MakeBoolean", menuName = "Scriptable Objects/Visual Scripting/Node/Make Boolean")]
-public class MakeBoolen : MakeVariable
+namespace Loykas.Scripting
 {
-    public override ScriptDataType Type => ScriptDataType.Single(DataType.Boolean);
+    [CreateAssetMenu(fileName = "MakeBoolean", menuName = "Scriptable Objects/Visual Scripting/Node/Make Boolean")]
+    public class MakeBoolen : MakeVariable
+    {
+        public override ScriptDataType Type => ScriptDataType.Single(DataType.Boolean);
+    }
 }

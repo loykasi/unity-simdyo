@@ -1,55 +1,57 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GetListItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Item")]
-public class GetListItem : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "GetListItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Item")]
+    public class GetListItem : ScriptNodeData
     {
-        return new GetListItemNode(Title);
-    }
-}
-
-class GetListItemNode : ScriptNode
-{
-    public InputValue ListInput;
-    public InputValue Index;
-    public OutputValue Output;
-
-    public GetListItemNode(string title) : base(title)
-    {
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-        Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
-        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get);
-
-        ListInput.OnConnected += OnListInputConnected;
-    }
-
-    private object Get(ScriptFlow vs)
-    {
-        IList list = (IList)ListInput.GetValue(vs);
-        int index = (int)(float)Index.GetValue(vs);
-        return list[index];
-    }
-
-    private void OnListInputConnected()
-    {
-        UpdateNode();
-    }
-
-    public override void UpdateNode()
-    {
-        if (ListInput.Source != null)
+        public override ScriptNode Create()
         {
-            DataType type = ListInput.Source.Type.Type;
-            Output.SetType(ScriptDataType.Single(type));
+            return new GetListItemNode(Title);
         }
-        else
+    }
+
+    class GetListItemNode : ScriptNode
+    {
+        public InputValue ListInput;
+        public InputValue Index;
+        public OutputValue Output;
+
+        public GetListItemNode(string title) : base(title)
         {
-            Output.SetType(ScriptDataType.Single(DataType.Any));
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get);
+
+            ListInput.OnConnected += OnListInputConnected;
         }
 
-        OnNodeUpdated?.Invoke();
+        private object Get(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            int index = (int)(float)Index.GetValue(vs);
+            return list[index];
+        }
+
+        private void OnListInputConnected()
+        {
+            UpdateNode();
+        }
+
+        public override void UpdateNode()
+        {
+            if (ListInput.Source != null)
+            {
+                DataType type = ListInput.Source.Type.Type;
+                Output.SetType(ScriptDataType.Single(type));
+            }
+            else
+            {
+                Output.SetType(ScriptDataType.Single(DataType.Any));
+            }
+
+            OnNodeUpdated?.Invoke();
+        }
     }
 }

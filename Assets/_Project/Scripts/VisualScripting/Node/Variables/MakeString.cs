@@ -1,7 +1,10 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MakeString", menuName = "Scriptable Objects/Visual Scripting/Node/Make String")]
-public class MakeString : MakeVariable
+namespace Loykas.Scripting
 {
-    public override ScriptDataType Type => ScriptDataType.Single(DataType.String);
+    [CreateAssetMenu(fileName = "MakeString", menuName = "Scriptable Objects/Visual Scripting/Node/Make String")]
+    public class MakeString : MakeVariable
+    {
+        public override ScriptDataType Type => ScriptDataType.Single(DataType.String);
+    }
 }

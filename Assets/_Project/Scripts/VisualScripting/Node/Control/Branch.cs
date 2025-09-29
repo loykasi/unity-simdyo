@@ -1,37 +1,40 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Branch", menuName = "Scriptable Objects/Visual Scripting/Node/Branch")]
-public class Branch : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "Branch", menuName = "Scriptable Objects/Visual Scripting/Node/Branch")]
+    public class Branch : ScriptNodeData
     {
-        return new BranchNode(Title);
+        public override ScriptNode Create()
+        {
+            return new BranchNode(Title);
+        }
     }
-}
 
-class BranchNode : ScriptNode
-{
-    public InputTrigger Enter;
-    public OutputTrigger IfTrue;
-    public OutputTrigger IfFalse;
-
-    public InputValue Condition;
-
-    public BranchNode(string title): base(title)
+    class BranchNode : ScriptNode
     {
-        Enter = InputTrigger(
-            nameof(Enter),
-            (vs) =>
-            {
-                if ((bool)Condition.GetValue(vs))
+        public InputTrigger Enter;
+        public OutputTrigger IfTrue;
+        public OutputTrigger IfFalse;
+
+        public InputValue Condition;
+
+        public BranchNode(string title) : base(title)
+        {
+            Enter = InputTrigger(
+                nameof(Enter),
+                (vs) =>
                 {
-                    return IfTrue;
+                    if ((bool)Condition.GetValue(vs))
+                    {
+                        return IfTrue;
+                    }
+                    return IfFalse;
                 }
-                return IfFalse;
-            }
-        );
-        IfTrue = OutputTrigger(nameof(IfTrue));
-        IfFalse = OutputTrigger(nameof(IfFalse));
-        Condition = InputValue(nameof(Condition));
+            );
+            IfTrue = OutputTrigger(nameof(IfTrue));
+            IfFalse = OutputTrigger(nameof(IfFalse));
+            Condition = InputValue(nameof(Condition));
+        }
     }
 }

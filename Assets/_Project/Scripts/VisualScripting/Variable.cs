@@ -1,30 +1,32 @@
-
-public class Variable
+namespace Loykas.Scripting
 {
-    public ScriptDataType Type;
-
-    public object Value;
-    private object _default;
-
-    public Variable()
+    public class Variable
     {
-        Type = ScriptDataType.Default();
-        Value = string.Empty;
-    }
+        public ScriptDataType Type;
 
-    public Variable(ScriptDataType type, object value)
-    {
-        Type = type;
-        Value = value;
-    }
+        public object Value;
+        private object _default;
 
-    public void OnSceneStart()
-    {
-        _default = Value;
-    }
+        public Variable()
+        {
+            Type = ScriptDataType.Default();
+            Value = string.Empty;
+        }
 
-    public void OnSceneStop()
-    {
-        Value = _default;
+        public Variable(ScriptDataType type, object value)
+        {
+            Type = type;
+            Value = value;
+        }
+
+        public void OnSceneStart()
+        {
+            _default = Value;
+        }
+
+        public void OnSceneStop()
+        {
+            Value = _default;
+        }
     }
 }

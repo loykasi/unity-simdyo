@@ -4,338 +4,341 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ScriptFlow : MonoBehaviour
+namespace Loykas.Scripting
 {
-    public event UnityAction<ScriptNode> OnNodeAdded;
-    public event UnityAction OnVariableAdded;
-
-    public Vector2 Pan { get; set; }
-    public SceneEntity Entity;
-
-    [SerializeField] private GetVariable _getVariableNodeData;
-
-    public List<ScriptNode> Nodes = new();
-    public List<NodeConnection> Connections = new();
-    public List<ScriptFunction> Functions = new();
-
-    private int _loopIdentifier = 0;
-    private Stack<int> _loops = new();
-
-    private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
-
-    public Dictionary<string, Variable> Variables
+    public class ScriptFlow : MonoBehaviour
     {
-        get => _variables;
-        set => _variables = value;
-    }
-    private Dictionary<string, Variable> _variables = new();
+        public event UnityAction<ScriptNode> OnNodeAdded;
+        public event UnityAction OnVariableAdded;
 
-    public bool ShouldUpdateConnections = false;
+        public Vector2 Pan { get; set; }
+        public SceneEntity Entity;
 
-    private void LateUpdate()
-    {
-        if (ShouldUpdateConnections)
+        [SerializeField] private GetVariable _getVariableNodeData;
+
+        public List<ScriptNode> Nodes = new();
+        public List<NodeConnection> Connections = new();
+        public List<ScriptFunction> Functions = new();
+
+        private int _loopIdentifier = 0;
+        private Stack<int> _loops = new();
+
+        private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
+
+        public Dictionary<string, Variable> Variables
         {
-            Connections.RemoveAll(c => c.ShouldRemove);
-            ShouldUpdateConnections = false;
+            get => _variables;
+            set => _variables = value;
         }
-    }
+        private Dictionary<string, Variable> _variables = new();
 
-    public void Load()
-    {
-        foreach (var node in Nodes)
+        public bool ShouldUpdateConnections = false;
+
+        private void LateUpdate()
         {
+            if (ShouldUpdateConnections)
+            {
+                Connections.RemoveAll(c => c.ShouldRemove);
+                ShouldUpdateConnections = false;
+            }
+        }
+
+        public void Load()
+        {
+            foreach (var node in Nodes)
+            {
+                if (node is EventNode eventNode)
+                {
+                    eventNode.Register(this);
+                }
+            }
+            foreach (var connection in Connections)
+            {
+                connection.Load(this);
+            }
+        }
+
+        public void AddNode(ScriptNodeData nodeData)
+        {
+            ScriptNode node = nodeData.Create();
+            node.Flow = this;
+            Nodes.Add(node);
+            OnNodeAdded?.Invoke(node);
+
             if (node is EventNode eventNode)
             {
                 eventNode.Register(this);
             }
         }
-        foreach (var connection in Connections)
+
+        public void DeleteNode(ScriptNode node)
         {
-            connection.Load(this);
-        }
-    }
-
-    public void AddNode(ScriptNodeData nodeData)
-    {
-        ScriptNode node = nodeData.Create();
-        node.Flow = this;
-        Nodes.Add(node);
-        OnNodeAdded?.Invoke(node);
-
-        if (node is EventNode eventNode)
-        {
-            eventNode.Register(this);
-        }
-    }
-
-    public void DeleteNode(ScriptNode node)
-    {
-        Nodes.Remove(node);
-    }
-
-    public bool TryConnect(IPort fromPort, IPort toPort)
-    {
-        if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
-        {
-            Debug.Log("connect");
-            Connections.Add(new NodeConnection(this, fromPort, toPort));
-            return true;
+            Nodes.Remove(node);
         }
 
-        return false;
-    }
-
-    public void Disconnect(IPort source, IPort destination)
-    {
-        for (int i = 0; i < Connections.Count; i++)
+        public bool TryConnect(IPort fromPort, IPort toPort)
         {
-            NodeConnection connection = Connections[i];
-            if (connection.Source == source && connection.Destination == destination)
+            if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
             {
-                source.Disconnect(destination);
-                destination.Disconnect(source);
-
-
-                ShouldUpdateConnections = true;
-                connection.ShouldRemove = true;
+                Debug.Log("connect");
+                Connections.Add(new NodeConnection(this, fromPort, toPort));
+                return true;
             }
-        }
-    }
 
-    public IEnumerable<NodeConnection> GetConnections(IPort port)
-    {
-        return Connections.Where(c => c.Source == port || c.Destination == port);
-    }
-
-    public NodeConnection GetConnection(IPort source, IPort destination)
-    {
-        return Connections.Find(c => c.Source == source && c.Destination == destination);
-    }
-
-    public void Invoke(OutputTrigger outputTrigger)
-    {
-        outputTrigger.Invoke(this);
-    }
-
-    public int GetCurrentLoop()
-    {
-        if (_loops.Count > 0)
-        {
-            return _loops.Peek();
-        }
-
-        return -1;
-    }
-
-    public bool IsLoopNotBroken(int loop)
-    {
-        return GetCurrentLoop() == loop;
-    }
-
-    public int StartLoop()
-    {
-        int loop = _loopIdentifier++;
-        _loops.Push(loop);
-
-        return loop;
-    }
-
-    public void BreakLoop()
-    {
-        if (GetCurrentLoop() < 0)
-        {
-            return;
-        }
-
-        _loopIdentifier--;
-        _loops.Pop();
-    }
-
-    public void ExitLoop(int loop)
-    {
-        if (loop != GetCurrentLoop())
-        {
-            return;
-        }
-
-        _loopIdentifier--;
-        _loops.Pop();
-    }
-
-    public void StartVS()
-    {
-        TriggerEvent(EventHook.Start);
-    }
-
-    public void UpdateVS()
-    {
-        TriggerEvent(EventHook.Update);
-    }
-
-    public void OnSceneStart()
-    {
-        foreach (var item in _variables)
-        {
-            item.Value.OnSceneStart();
-        }
-    }
-
-    public void OnSceneStop()
-    {
-        foreach (var item in _variables)
-        {
-            item.Value.OnSceneStop();
-        }
-    }
-
-    // Add node from drag and drop
-
-    public void AddGetVariableNode(string key)
-    {
-        Debug.Log("add");
-        GetVariableNode node = (GetVariableNode)_getVariableNodeData.Create();
-
-        node.Input.SetValue(key);
-
-        node.Flow = this;
-        Nodes.Add(node);
-        OnNodeAdded?.Invoke(node);
-    }
-
-    public ScriptFunction AddFunction()
-    {
-        string baseName = "NewFunction";
-        string functionName = GetFunctionName(baseName);
-
-        Debug.Log($"Function: {functionName}");
-
-        ScriptFunction function = new()
-        {
-            Name = functionName
-        };
-
-        Functions.Add(function);
-
-        return function;
-    }
-
-    private string GetFunctionName(string baseName)
-    {
-        string pattern = @$"^{baseName}(?: \((\d+)\))?$";
-
-        Regex regex = new(pattern, RegexOptions.Compiled);
-
-        List<int> ints = new();
-
-        int i = 0;
-
-        for (i = 0; i < Functions.Count; i++)
-        {
-            Match match = regex.Match(Functions[i].Name);
-            if (match.Success)
-            {
-                string value = match.Groups[1].Value;
-                int number = value == string.Empty ? 0 : int.Parse(value);
-                ints.Add(number);
-            }
-        }
-        ints.Sort();
-
-        for (i = 0; i < ints.Count; i++)
-        {
-            if (i != ints[i])
-            {
-                break;
-            }
-        }
-
-        // Debug.Log(string.Join(" ", ints));
-
-        if (i == 0)
-        {
-            return baseName;
-        }
-        return string.Concat(baseName, " (", i, ")");
-    }
-
-    // Events
-
-    public void RegisterEventNode(EventHook hook, EventNode node)
-    {
-        if (!_eventNodes.TryGetValue(hook, out var nodes))
-        {
-            nodes = new List<EventNode>();
-            _eventNodes.Add(hook, nodes);
-        }
-
-        nodes.Add(node);
-    }
-
-    public void TriggerEvent(EventHook hook)
-    {
-        if (_eventNodes.TryGetValue(hook, out var nodes))
-        {
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                var node = nodes[i];
-                if (node.ShouldTrigger())
-                {
-                    Invoke(node.Exit);
-                }
-            }
-        }
-    }
-
-    // Variables
-
-    public bool AddVariable(string name)
-    {
-        if (name.Equals(string.Empty))
-        {
-            Debug.Log("Variable cannot be empty");
             return false;
         }
 
-        if (!_variables.ContainsKey(name))
+        public void Disconnect(IPort source, IPort destination)
         {
-            _variables.Add(name, new Variable());
-            return true;
+            for (int i = 0; i < Connections.Count; i++)
+            {
+                NodeConnection connection = Connections[i];
+                if (connection.Source == source && connection.Destination == destination)
+                {
+                    source.Disconnect(destination);
+                    destination.Disconnect(source);
+
+
+                    ShouldUpdateConnections = true;
+                    connection.ShouldRemove = true;
+                }
+            }
         }
 
-        return false;
-    }
-
-    public void UpdateVariable(string name, object value)
-    {
-        if (_variables.TryGetValue(name, out Variable variable))
+        public IEnumerable<NodeConnection> GetConnections(IPort port)
         {
-            Debug.Log($"Update {name} = {value}");
-            variable.Value = value;
+            return Connections.Where(c => c.Source == port || c.Destination == port);
         }
-    }
 
-    public Variable GetVariable(string name)
-    {
-        if (_variables.TryGetValue(name, out Variable value))
+        public NodeConnection GetConnection(IPort source, IPort destination)
         {
-            return value;
+            return Connections.Find(c => c.Source == source && c.Destination == destination);
         }
-        return null;
-    }
 
-    public bool RemoveVariable(string name)
-    {
-        if (_variables.ContainsKey(name))
+        public void Invoke(OutputTrigger outputTrigger)
         {
-            _variables.Remove(name);
-            return true;
+            outputTrigger.Invoke(this);
         }
-        return false;
-    }
 
-    public List<string> GetVariableOptions()
-    {
-        return _variables.Select(s => s.Key).ToList();
+        public int GetCurrentLoop()
+        {
+            if (_loops.Count > 0)
+            {
+                return _loops.Peek();
+            }
+
+            return -1;
+        }
+
+        public bool IsLoopNotBroken(int loop)
+        {
+            return GetCurrentLoop() == loop;
+        }
+
+        public int StartLoop()
+        {
+            int loop = _loopIdentifier++;
+            _loops.Push(loop);
+
+            return loop;
+        }
+
+        public void BreakLoop()
+        {
+            if (GetCurrentLoop() < 0)
+            {
+                return;
+            }
+
+            _loopIdentifier--;
+            _loops.Pop();
+        }
+
+        public void ExitLoop(int loop)
+        {
+            if (loop != GetCurrentLoop())
+            {
+                return;
+            }
+
+            _loopIdentifier--;
+            _loops.Pop();
+        }
+
+        public void StartVS()
+        {
+            TriggerEvent(EventHook.Start);
+        }
+
+        public void UpdateVS()
+        {
+            TriggerEvent(EventHook.Update);
+        }
+
+        public void OnSceneStart()
+        {
+            foreach (var item in _variables)
+            {
+                item.Value.OnSceneStart();
+            }
+        }
+
+        public void OnSceneStop()
+        {
+            foreach (var item in _variables)
+            {
+                item.Value.OnSceneStop();
+            }
+        }
+
+        // Add node from drag and drop
+
+        public void AddGetVariableNode(string key)
+        {
+            Debug.Log("add");
+            GetVariableNode node = (GetVariableNode)_getVariableNodeData.Create();
+
+            node.Input.SetValue(key);
+
+            node.Flow = this;
+            Nodes.Add(node);
+            OnNodeAdded?.Invoke(node);
+        }
+
+        public ScriptFunction AddFunction()
+        {
+            string baseName = "NewFunction";
+            string functionName = GetFunctionName(baseName);
+
+            Debug.Log($"Function: {functionName}");
+
+            ScriptFunction function = new()
+            {
+                Name = functionName
+            };
+
+            Functions.Add(function);
+
+            return function;
+        }
+
+        private string GetFunctionName(string baseName)
+        {
+            string pattern = @$"^{baseName}(?: \((\d+)\))?$";
+
+            Regex regex = new(pattern, RegexOptions.Compiled);
+
+            List<int> ints = new();
+
+            int i = 0;
+
+            for (i = 0; i < Functions.Count; i++)
+            {
+                Match match = regex.Match(Functions[i].Name);
+                if (match.Success)
+                {
+                    string value = match.Groups[1].Value;
+                    int number = value == string.Empty ? 0 : int.Parse(value);
+                    ints.Add(number);
+                }
+            }
+            ints.Sort();
+
+            for (i = 0; i < ints.Count; i++)
+            {
+                if (i != ints[i])
+                {
+                    break;
+                }
+            }
+
+            // Debug.Log(string.Join(" ", ints));
+
+            if (i == 0)
+            {
+                return baseName;
+            }
+            return string.Concat(baseName, " (", i, ")");
+        }
+
+        // Events
+
+        public void RegisterEventNode(EventHook hook, EventNode node)
+        {
+            if (!_eventNodes.TryGetValue(hook, out var nodes))
+            {
+                nodes = new List<EventNode>();
+                _eventNodes.Add(hook, nodes);
+            }
+
+            nodes.Add(node);
+        }
+
+        public void TriggerEvent(EventHook hook)
+        {
+            if (_eventNodes.TryGetValue(hook, out var nodes))
+            {
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    var node = nodes[i];
+                    if (node.ShouldTrigger())
+                    {
+                        Invoke(node.Exit);
+                    }
+                }
+            }
+        }
+
+        // Variables
+
+        public bool AddVariable(string name)
+        {
+            if (name.Equals(string.Empty))
+            {
+                Debug.Log("Variable cannot be empty");
+                return false;
+            }
+
+            if (!_variables.ContainsKey(name))
+            {
+                _variables.Add(name, new Variable());
+                return true;
+            }
+
+            return false;
+        }
+
+        public void UpdateVariable(string name, object value)
+        {
+            if (_variables.TryGetValue(name, out Variable variable))
+            {
+                Debug.Log($"Update {name} = {value}");
+                variable.Value = value;
+            }
+        }
+
+        public Variable GetVariable(string name)
+        {
+            if (_variables.TryGetValue(name, out Variable value))
+            {
+                return value;
+            }
+            return null;
+        }
+
+        public bool RemoveVariable(string name)
+        {
+            if (_variables.ContainsKey(name))
+            {
+                _variables.Remove(name);
+                return true;
+            }
+            return false;
+        }
+
+        public List<string> GetVariableOptions()
+        {
+            return _variables.Select(s => s.Key).ToList();
+        }
     }
 }

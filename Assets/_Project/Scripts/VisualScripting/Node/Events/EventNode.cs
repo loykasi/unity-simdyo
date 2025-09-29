@@ -1,25 +1,28 @@
 using Newtonsoft.Json;
 
-public abstract class EventNode : ScriptNode
+namespace Loykas.Scripting
 {
-    [JsonIgnore]
-    public OutputTrigger Exit;
-
-    [JsonIgnore]
-    public abstract EventHook Hook { get; }
-
-    public EventNode(string title) : base(title)
+    public abstract class EventNode : ScriptNode
     {
-        Exit = OutputTrigger(nameof(Exit)).HideLabel();
-    }
+        [JsonIgnore]
+        public OutputTrigger Exit;
 
-    public void Register(ScriptFlow vs)
-    {
-        vs.RegisterEventNode(Hook, this);
-    }
+        [JsonIgnore]
+        public abstract EventHook Hook { get; }
 
-    public virtual bool ShouldTrigger()
-    {
-        return true;
+        public EventNode(string title) : base(title)
+        {
+            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+        }
+
+        public void Register(ScriptFlow vs)
+        {
+            vs.RegisterEventNode(Hook, this);
+        }
+
+        public virtual bool ShouldTrigger()
+        {
+            return true;
+        }
     }
 }

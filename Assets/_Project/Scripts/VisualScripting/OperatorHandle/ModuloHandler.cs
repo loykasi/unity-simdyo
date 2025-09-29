@@ -1,7 +1,10 @@
-public class ModuloHandler : OperatorHandler
+namespace Loykas.Scripting
 {
-    public ModuloHandler()
+    public class ModuloHandler : OperatorHandler
     {
-        Operator<double, double>((a, b) => a % b);
+        public ModuloHandler()
+        {
+            Operator<double, double>((a, b) => a % b);
+        }
     }
 }

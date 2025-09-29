@@ -1,12 +1,15 @@
 using System;
 
-public interface IPort
+namespace Loykas.Scripting
 {
-    IScriptNode Node { get; set; }
-    string Key { get; set; }
-    bool ShouldShowLabel { get; set; }
+    public interface IPort
+    {
+        IScriptNode Node { get; set; }
+        string Key { get; set; }
+        bool ShouldShowLabel { get; set; }
 
-    bool CanConnect(IPort port);
-    bool ConnectToPort(IPort port);
-    void Disconnect(IPort other);
+        bool CanConnect(IPort port);
+        bool ConnectToPort(IPort port);
+        void Disconnect(IPort other);
+    }
 }

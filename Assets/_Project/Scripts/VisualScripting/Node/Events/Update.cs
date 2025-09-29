@@ -1,19 +1,22 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Update", menuName = "Scriptable Objects/Visual Scripting/Node/Update")]
-public class Update : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "Update", menuName = "Scriptable Objects/Visual Scripting/Node/Update")]
+    public class Update : ScriptNodeData
     {
-        return new UpdateNode(Title);
-    }
-}
-
-public class UpdateNode : EventNode
-{
-    public UpdateNode(string title) : base(title)
-    {
+        public override ScriptNode Create()
+        {
+            return new UpdateNode(Title);
+        }
     }
 
-    public override EventHook Hook => EventHook.Update;
+    public class UpdateNode : EventNode
+    {
+        public UpdateNode(string title) : base(title)
+        {
+        }
+
+        public override EventHook Hook => EventHook.Update;
+    }
 }

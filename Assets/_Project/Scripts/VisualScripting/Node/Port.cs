@@ -1,49 +1,52 @@
 using UnityEngine.Events;
 
-public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
+namespace Loykas.Scripting
 {
-    public UnityAction OnConnected;
-    public UnityAction OnDisconnected;
-    
-    public IScriptNode Node { get; set; }
-    public string Key { get; set; }
-
-    public bool ShouldShowLabel { get; set; } = true;
-
-    public Port(string key)
+    public abstract class Port<TOtherPort> : IPort where TOtherPort : IPort
     {
-        Key = key;
-    }
+        public UnityAction OnConnected;
+        public UnityAction OnDisconnected;
 
-    public virtual bool CanConnect(IPort port)
-    {
-        return Node != port.Node && port is TOtherPort other && CanConnectTo(other);
-    }
+        public IScriptNode Node { get; set; }
+        public string Key { get; set; }
 
-    public abstract bool CanConnectTo(TOtherPort port);
+        public bool ShouldShowLabel { get; set; } = true;
 
-    public bool ConnectToPort(IPort port)
-    {
-        if (port is not TOtherPort)
+        public Port(string key)
         {
-            return false;
+            Key = key;
         }
 
-        Connect((TOtherPort)port);
-        OnConnected?.Invoke();
-        return true;
-    }
-
-    public abstract void Connect(TOtherPort port);
-
-    public void Disconnect(IPort port)
-    {
-        if (port is TOtherPort other)
+        public virtual bool CanConnect(IPort port)
         {
-            DisconnectPort(other);
-            OnDisconnected?.Invoke();
+            return Node != port.Node && port is TOtherPort other && CanConnectTo(other);
         }
-    }
 
-    protected abstract void DisconnectPort(TOtherPort port);
+        public abstract bool CanConnectTo(TOtherPort port);
+
+        public bool ConnectToPort(IPort port)
+        {
+            if (port is not TOtherPort)
+            {
+                return false;
+            }
+
+            Connect((TOtherPort)port);
+            OnConnected?.Invoke();
+            return true;
+        }
+
+        public abstract void Connect(TOtherPort port);
+
+        public void Disconnect(IPort port)
+        {
+            if (port is TOtherPort other)
+            {
+                DisconnectPort(other);
+                OnDisconnected?.Invoke();
+            }
+        }
+
+        protected abstract void DisconnectPort(TOtherPort port);
+    }
 }

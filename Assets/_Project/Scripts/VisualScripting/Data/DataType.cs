@@ -1,9 +1,12 @@
-public enum DataType
+namespace Loykas.Scripting
 {
-    Any,
-    String,
-    Number,
-    Boolean,
-    Color,
-    Entity
+    public enum DataType
+    {
+        Any,
+        String,
+        Number,
+        Boolean,
+        Color,
+        Entity
+    }   
 }

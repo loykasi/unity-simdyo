@@ -1,7 +1,10 @@
-public class MultiplicationHandler : OperatorHandler
+namespace Loykas.Scripting
 {
-    public MultiplicationHandler()
+    public class MultiplicationHandler : OperatorHandler
     {
-        Operator<double, double>((a, b) => a * b);
+        public MultiplicationHandler()
+        {
+            Operator<double, double>((a, b) => a * b);
+        }
     }
 }

@@ -1,7 +1,10 @@
-public class SubtractionHandler : OperatorHandler
+namespace Loykas.Scripting
 {
-    public SubtractionHandler()
+    public class SubtractionHandler : OperatorHandler
     {
-        Operator<double, double>((a, b) => a - b);
+        public SubtractionHandler()
+        {
+            Operator<double, double>((a, b) => a - b);
+        }
     }
 }

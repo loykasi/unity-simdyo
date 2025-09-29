@@ -1,5 +1,7 @@
 using UnityEngine;
 
+namespace Loykas.Scripting
+{
 [CreateAssetMenu(fileName = "AddNode", menuName = "Scriptable Objects/Visual Scripting/Node/Add")]
 public class AddNodeData : ScriptNodeData
 {
@@ -12,24 +14,25 @@ public class AddNodeData : ScriptNodeData
     }
 }
 
-class AddNode : ScriptNode
-{
-    public InputValue A;
-    public InputValue B;
-
-    public OutputValue Value;
-
-    public AddNode(string title): base(title)
+    class AddNode : ScriptNode
     {
-        A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
-        B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
+        public InputValue A;
+        public InputValue B;
 
-        Value = OutputValue(
-            nameof(Value),
-            (vs) =>
-            {
-                return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs));;
-            }
-        );
+        public OutputValue Value;
+
+        public AddNode(string title) : base(title)
+        {
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
+
+            Value = OutputValue(
+                nameof(Value),
+                (vs) =>
+                {
+                    return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs)); ;
+                }
+            );
+        }
     }
 }

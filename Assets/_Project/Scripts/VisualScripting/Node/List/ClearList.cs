@@ -2,34 +2,37 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ClearList", menuName = "Scriptable Objects/Visual Scripting/Node/List/Clear")]
-public class ClearList : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "ClearList", menuName = "Scriptable Objects/Visual Scripting/Node/List/Clear")]
+    public class ClearList : ScriptNodeData
     {
-        return new ClearListNode(Title);
-    }
-}
-
-class ClearListNode : ScriptNode
-{
-    public InputTrigger Enter;
-    public OutputTrigger Exit;
-
-    public InputValue ListInput;
-
-    public ClearListNode(string title) : base(title)
-    {
-        Enter = InputTrigger(nameof(Enter), Clear);
-        Exit = OutputTrigger(nameof(Exit));
-
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+        public override ScriptNode Create()
+        {
+            return new ClearListNode(Title);
+        }
     }
 
-    private OutputTrigger Clear(ScriptFlow vs)
+    class ClearListNode : ScriptNode
     {
-        IList list = (IList)ListInput.GetValue(vs);
-        list.Clear();
-        return Exit;
+        public InputTrigger Enter;
+        public OutputTrigger Exit;
+
+        public InputValue ListInput;
+
+        public ClearListNode(string title) : base(title)
+        {
+            Enter = InputTrigger(nameof(Enter), Clear);
+            Exit = OutputTrigger(nameof(Exit));
+
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+        }
+
+        private OutputTrigger Clear(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            list.Clear();
+            return Exit;
+        }
     }
 }

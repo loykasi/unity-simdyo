@@ -1,29 +1,32 @@
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "GetListLength", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Length")]
-public class GetListLength : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "GetListLength", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Length")]
+    public class GetListLength : ScriptNodeData
     {
-        return new GetListLengthNode(Title);
-    }
-}
-
-class GetListLengthNode : ScriptNode
-{
-    public InputValue ListInput;
-    public OutputValue Output;
-
-    public GetListLengthNode(string title) : base(title)
-    {
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-        Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        public override ScriptNode Create()
+        {
+            return new GetListLengthNode(Title);
+        }
     }
 
-    private object Get(ScriptFlow vs)
+    class GetListLengthNode : ScriptNode
     {
-        IList list = (IList)ListInput.GetValue(vs);
-        return list.Count;
+        public InputValue ListInput;
+        public OutputValue Output;
+
+        public GetListLengthNode(string title) : base(title)
+        {
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+        }
+
+        private object Get(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            return list.Count;
+        }
     }
 }

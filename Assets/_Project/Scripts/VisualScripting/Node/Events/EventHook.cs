@@ -1,6 +1,9 @@
-public enum EventHook
+namespace Loykas.Scripting
 {
-    Start,
-    Update,
-    Clicked
+    public enum EventHook
+    {
+        Start,
+        Update,
+        Clicked
+    }
 }

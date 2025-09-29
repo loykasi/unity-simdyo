@@ -2,32 +2,35 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ListContainItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Contain")]
-public class ListContainsItem : ScriptNodeData
+namespace Loykas.Scripting
 {
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "ListContainItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Contain")]
+    public class ListContainsItem : ScriptNodeData
     {
-        return new ListContainsItemNode(Title);
-    }
-}
-
-class ListContainsItemNode : ScriptNode
-{
-    public InputValue ListInput;
-    public InputValue Item;
-    public OutputValue Output;
-
-    public ListContainsItemNode(string title) : base(title)
-    {
-        ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-        Item = InputValue(nameof(Item));
-        Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
+        public override ScriptNode Create()
+        {
+            return new ListContainsItemNode(Title);
+        }
     }
 
-    private object Get(ScriptFlow vs)
+    class ListContainsItemNode : ScriptNode
     {
-        IList list = (IList)ListInput.GetValue(vs);
-        object item = Item.GetValue(vs);
-        return list.Contains(item);
+        public InputValue ListInput;
+        public InputValue Item;
+        public OutputValue Output;
+
+        public ListContainsItemNode(string title) : base(title)
+        {
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            Item = InputValue(nameof(Item));
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
+        }
+
+        private object Get(ScriptFlow vs)
+        {
+            IList list = (IList)ListInput.GetValue(vs);
+            object item = Item.GetValue(vs);
+            return list.Contains(item);
+        }
     }
 }

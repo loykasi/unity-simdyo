@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-public interface IScriptNode
+namespace Loykas.Scripting
 {
-    Guid ID { get; set; }
-    Dictionary<string, object> DefaultValues { get; set; }
-    ScriptFlow Flow { get; set; }
+    public interface IScriptNode
+    {
+        Guid ID { get; set; }
+        Dictionary<string, object> DefaultValues { get; set; }
+        ScriptFlow Flow { get; set; }
 
-    void UpdateNode();
+        void UpdateNode();
+    }
 }

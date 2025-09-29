@@ -1,12 +1,15 @@
 using TMPro;
 using UnityEngine;
 
-public class LogCommand : Singleton<LogCommand>
+namespace Loykas.Scripting
 {
-    [SerializeField] private TMP_Text _textBox;
-
-    public void Log(object message)
+    public class LogCommand : Singleton<LogCommand>
     {
-        _textBox.SetText(_textBox.text + "\n" + message.ToString());
+        [SerializeField] private TMP_Text _textBox;
+
+        public void Log(object message)
+        {
+            _textBox.SetText(_textBox.text + "\n" + message.ToString());
+        }
     }
 }
