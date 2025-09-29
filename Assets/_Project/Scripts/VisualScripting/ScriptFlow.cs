@@ -278,7 +278,11 @@ public class ScriptFlow : MonoBehaviour
         {
             for (int i = 0; i < nodes.Count; i++)
             {
-                Invoke(nodes[i].Exit);
+                var node = nodes[i];
+                if (node.ShouldTrigger())
+                {
+                    Invoke(node.Exit);
+                }
             }
         }
     }

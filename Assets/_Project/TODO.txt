@@ -5,3 +5,6 @@
 [] key input
 [] on clicked
 [] touch / collide
+
+- Code structure
+[] organize with namespace

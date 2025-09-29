@@ -1,4 +1,3 @@
-using System;
 using Loykas.Scripting;
 using TMPro;
 

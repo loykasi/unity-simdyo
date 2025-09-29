@@ -14,6 +14,7 @@ public class UIInputData : ScriptableObject
 
     public BaseInput VariableNameInputPrefab;
     public BaseInput ListInputPrefab;
+    public BaseInput KeyInputPrefab;
 
     private UIInput GetUIInput(DataType type)
     {
@@ -113,6 +114,12 @@ public class UIInputData : ScriptableObject
             var list = entity.Script.GetVariableOptions();
             variableInput.Init(list);
 
+            return input;
+        }
+
+        if (inputType == InputValueTypes.Key)
+        {
+            BaseInput input = Instantiate(KeyInputPrefab);
             return input;
         }
 

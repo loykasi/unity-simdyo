@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Newtonsoft.Json;
 
 public abstract class EventNode : ScriptNode
@@ -17,5 +16,10 @@ public abstract class EventNode : ScriptNode
     public void Register(ScriptFlow vs)
     {
         vs.RegisterEventNode(Hook, this);
+    }
+
+    public virtual bool ShouldTrigger()
+    {
+        return true;
     }
 }

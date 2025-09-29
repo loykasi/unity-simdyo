@@ -9,6 +9,7 @@ public enum InputValueTypes
     Boolean,
     Entity,
     Variable,
+    Key
 }
 
 public class InputValue : Port<OutputValue>
@@ -60,6 +61,25 @@ public class InputValue : Port<OutputValue>
         }
     }
 
+    public void SetDefaultValue(object value)
+    {
+        if (value == null)
+        {
+            return;
+        }
+
+        if (InputType != InputValueTypes.None)
+        {
+            if (!HasValue)
+            {
+                Node.DefaultValues.Add(Key, value);
+                return;
+            }
+
+            Value = value;
+        }
+    }
+
     public InputValue UseInput()
     {
         InputType = Type.Type switch
@@ -79,6 +99,14 @@ public class InputValue : Port<OutputValue>
     {
         InputType = InputValueTypes.Variable;
         UpdateDefaultValue();
+
+        return this;
+    }
+
+    public InputValue UseKeyCodeInput()
+    {
+        InputType = InputValueTypes.Key;
+        SetDefaultValue(new Loykas.Scripting.Key(Loykas.Scripting.KeyCode.Any));
 
         return this;
     }
