@@ -2,23 +2,23 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "ModuloNode", menuName = "Scriptable Objects/Visual Scripting/Node/Modulo")]
-public class ModuloNodeData : ScriptNodeData
+[CreateAssetMenu(fileName = "Equal", menuName = "Scriptable Objects/Visual Scripting/Node/Equal")]
+public class Equal : ScriptNodeData
 {
     public override ScriptNode Create()
     {
-        return new ModuloNode(Title);
+        return new EqualNode(Title);
     }
 }
 
-    class ModuloNode : ScriptNode
+    class EqualNode : ScriptNode
     {
         public InputValue A;
         public InputValue B;
 
         public OutputValue Output;
 
-        public ModuloNode(string title) : base(title)
+        public EqualNode(string title) : base(title)
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
@@ -27,7 +27,7 @@ public class ModuloNodeData : ScriptNodeData
                 nameof(Output),
                 (vs) =>
                 {
-                    return OperatorUtility.Modulo(A.GetValue(vs), B.GetValue(vs));
+                    return A.GetValue<float>(vs) == B.GetValue<float>(vs);
                 }
             );
         }

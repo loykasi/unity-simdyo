@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b645fbfb9b2ed40409bef5a45c194ac8, type: 3}
   m_Name: KeyInput
   m_EditorClassIdentifier: 
-  Title: OnKeyPressed
-  Category: {fileID: 0}
+  Title: Key Pressed
+  Category: {fileID: 11400000, guid: ce38eb0a178f3f648a5c8f668c23dc5c, type: 2}

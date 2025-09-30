@@ -2,23 +2,23 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "SubtractNode", menuName = "Scriptable Objects/Visual Scripting/Node/Subtract")]
-public class SubtractNodeData : ScriptNodeData
+[CreateAssetMenu(fileName = "Greater", menuName = "Scriptable Objects/Visual Scripting/Node/Greater")]
+public class Greater : ScriptNodeData
 {
     public override ScriptNode Create()
     {
-        return new SubtractNode(Title);
+        return new GreaterNode(Title);
     }
 }
 
-    class SubtractNode : ScriptNode
+    class GreaterNode : ScriptNode
     {
         public InputValue A;
         public InputValue B;
 
         public OutputValue Output;
 
-        public SubtractNode(string title) : base(title)
+        public GreaterNode(string title) : base(title)
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
@@ -27,7 +27,7 @@ public class SubtractNodeData : ScriptNodeData
                 nameof(Output),
                 (vs) =>
                 {
-                    return OperatorUtility.Subtract(A.GetValue(vs), B.GetValue(vs));
+                    return A.GetValue<float>(vs) > B.GetValue<float>(vs);
                 }
             );
         }

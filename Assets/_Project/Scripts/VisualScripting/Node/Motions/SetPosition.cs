@@ -16,20 +16,24 @@ namespace Loykas.Scripting
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
-        public InputValue Input;
+        public InputValue X;
+        public InputValue Y;
 
         public SetPositionNode(string title) : base(title)
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Input = InputValue(nameof(Input));
+            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();
+            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput();
         }
 
         public OutputTrigger Set(ScriptFlow vs)
         {
-            Vector3 value = (Vector3)Input.GetValue(vs);
-            vs.Entity.transform.position = value;
+            float x = (float)X.GetValue(vs);
+            float y = (float)Y.GetValue(vs);
+
+            vs.Entity.Position = new Vector3(x, y, 0f);
             return Exit;
         }
     }

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "GetVariable", menuName = "Scriptable Objects/Visual Scripting/Node/Get Variable")]
-public class GetVariable : ScriptNodeData
-{
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "GetVariable", menuName = "Scriptable Objects/Visual Scripting/Node/Get Variable")]
+    public class GetVariable : ScriptNodeData
     {
-        return new GetVariableNode(Title);
+        public override ScriptNode Create()
+        {
+            return new GetVariableNode(Title);
+        }
     }
-}
 
     public class GetVariableNode : ScriptNode
     {

@@ -15,22 +15,31 @@ namespace Loykas.Scripting
     class GetPositionNode : ScriptNode
     {
         public InputValue Input;
-        public OutputValue Value;
+        public OutputValue X;
+        public OutputValue Y;
 
         public GetPositionNode(string title) : base(title)
         {
-            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.Entity)).UseInput();
-            Value = OutputValue(
-                nameof(Value),
-                GetPosition
-            );
+            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.Entity))
+                        .UseInput()
+                        .DisableConnection();
+
+            X = OutputValue(nameof(X), GetX);
+            Y = OutputValue(nameof(Y), GetY);
         }
 
-        private object GetPosition(ScriptFlow vs)
+        private object GetX(ScriptFlow vs)
         {
             SceneEntity entity = (SceneEntity)Input.GetValue(vs);
 
-            return entity.Position;
+            return entity.Position.x;
+        }
+
+        private object GetY(ScriptFlow vs)
+        {
+            SceneEntity entity = (SceneEntity)Input.GetValue(vs);
+
+            return entity.Position.y;
         }
     }
 }

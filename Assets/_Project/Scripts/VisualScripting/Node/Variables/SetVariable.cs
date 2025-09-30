@@ -23,7 +23,12 @@ public class SetVariable : ScriptNodeData
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
-            Variable = InputValue(nameof(Variable));
+
+            Variable = InputValue(nameof(Variable))
+                            .UseVariableInput()
+                            .DisableConnection()
+                            .HideLabel();
+                            
             Value = InputValue(nameof(Value));
         }
 

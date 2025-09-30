@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ba422b0264249c45821be6fb52fad20, type: 3}
-  m_Name: MakeVector
+  m_Script: {fileID: 11500000, guid: 46ae9f7cc90331541b6936d5b2bd9321, type: 3}
+  m_Name: Wait
   m_EditorClassIdentifier: 
-  Title: Make Vector
-  Category: {fileID: 11400000, guid: 03f39a6bf2c40834287c234d1d2aac5a, type: 2}
+  Title: Wait
+  Category: {fileID: 11400000, guid: c703cc2134b71ea47a2b4062d72a5a71, type: 2}

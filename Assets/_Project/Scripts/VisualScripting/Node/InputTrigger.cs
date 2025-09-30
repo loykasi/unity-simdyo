@@ -8,6 +8,9 @@ namespace Loykas.Scripting
         public Func<ScriptFlow, OutputTrigger> Action;
         public List<OutputTrigger> Sources = new();
 
+        public OutputTrigger TargetOutputTrigger;
+        public bool IsDone = true;
+
         public InputTrigger(string key, Func<ScriptFlow, OutputTrigger> action) : base(key)
         {
             Action = action;
@@ -23,10 +26,11 @@ namespace Loykas.Scripting
             Sources.Add(port);
         }
 
-        public void Invoke(ScriptFlow vs)
+        public bool Invoke(ScriptFlow vs)
         {
-            OutputTrigger output = Action?.Invoke(vs);
-            output?.Invoke(vs);
+            OutputTrigger trigger = Action?.Invoke(vs);
+            TargetOutputTrigger = trigger;
+            return trigger != null;
         }
 
         protected override void DisconnectPort(OutputTrigger port)

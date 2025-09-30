@@ -25,6 +25,8 @@ namespace Loykas.Scripting
 
         private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
 
+        private List<NodeTask> _tasks = new();
+
         public Dictionary<string, Variable> Variables
         {
             get => _variables;
@@ -115,10 +117,39 @@ namespace Loykas.Scripting
             return Connections.Find(c => c.Source == source && c.Destination == destination);
         }
 
+
+        // handle node task
+
         public void Invoke(OutputTrigger outputTrigger)
         {
-            outputTrigger.Invoke(this);
+            bool exist = _tasks.Find(t => t.From == outputTrigger) != null;
+            if (exist)
+            {
+                return;
+            }
+
+            NodeTask task = new()
+            {
+                From = outputTrigger,
+                Trigger = outputTrigger.Invoke(this)
+            };
+            _tasks.Add(task);
         }
+
+        public void UpdateTask()
+        {
+            for (int i = 0; i < _tasks.Count; i++)
+            {
+                _tasks[i].Invoke(this);
+            }
+        }
+
+        public void RemoveTask(NodeTask task)
+        {
+            _tasks.Remove(task);
+        }
+
+        //
 
         public int GetCurrentLoop()
         {
@@ -173,6 +204,8 @@ namespace Loykas.Scripting
         public void UpdateVS()
         {
             TriggerEvent(EventHook.Update);
+
+            UpdateTask();
         }
 
         public void OnSceneStart()

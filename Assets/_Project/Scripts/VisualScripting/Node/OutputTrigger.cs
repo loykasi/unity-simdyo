@@ -26,9 +26,9 @@ namespace Loykas.Scripting
             Destination = port;
         }
 
-        public void Invoke(ScriptFlow vs)
+        public InputTrigger Invoke(ScriptFlow vs)
         {
-            Destination?.Invoke(vs);
+            return Destination;
         }
 
         protected override void DisconnectPort(InputTrigger port)

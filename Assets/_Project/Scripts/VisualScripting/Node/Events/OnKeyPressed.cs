@@ -25,7 +25,7 @@ namespace Loykas.Scripting
 
         public override bool ShouldTrigger()
         {
-            var keyCode = (Loykas.Scripting.Key)KeyCode.GetValue(Flow);
+            var keyCode = (Key)KeyCode.GetValue(Flow);
 
             if (keyCode.IsAny)
             {

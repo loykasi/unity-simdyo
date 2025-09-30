@@ -8,10 +8,5 @@ namespace Loykas.Scripting
         public NodeCategoryData Category;
 
         public abstract ScriptNode Create();
-
-        private void Awake()
-        {
-            Title = GetType().Name;
-        }
     }
 }

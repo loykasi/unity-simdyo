@@ -2,8 +2,8 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "MultiplyNode", menuName = "Scriptable Objects/Visual Scripting/Node/Multiply")]
-public class MultiplyNodeData : ScriptNodeData
+[CreateAssetMenu(fileName = "Multiply", menuName = "Scriptable Objects/Visual Scripting/Node/Multiply")]
+public class Multiply : ScriptNodeData
 {
     public override ScriptNode Create()
     {

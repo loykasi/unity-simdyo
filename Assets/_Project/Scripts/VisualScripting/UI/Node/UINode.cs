@@ -81,7 +81,7 @@ namespace Loykas.Scripting
 
             _nodeTitle.SetText(Node.Title);
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
-            _minWidth = labelSize.x;
+            _minWidth = labelSize.x + 20f;
 
             for (int i = 0; i < Node.InputTriggers.Count; i++)
             {

@@ -2,17 +2,17 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "AddNode", menuName = "Scriptable Objects/Visual Scripting/Node/Add")]
-public class AddNodeData : ScriptNodeData
-{
-    public string InputA;
-    public string InputB;
-
-    public override ScriptNode Create()
+    [CreateAssetMenu(fileName = "Add", menuName = "Scriptable Objects/Visual Scripting/Node/Add")]
+    public class Add : ScriptNodeData
     {
-        return new AddNode(Title);
+        public string InputA;
+        public string InputB;
+
+        public override ScriptNode Create()
+        {
+            return new AddNode(Title);
+        }
     }
-}
 
     class AddNode : ScriptNode
     {
@@ -30,7 +30,7 @@ public class AddNodeData : ScriptNodeData
                 nameof(Value),
                 (vs) =>
                 {
-                    return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs)); ;
+                    return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs));
                 }
             );
         }

@@ -19,11 +19,14 @@ namespace Loykas.Scripting
         {
             UpdateLabel();
 
-            Rect.sizeDelta = new Vector2
-            (
-                _handleSize + _label.rectTransform.sizeDelta.x,
-                _height
-            );
+            float width = _handleSize;
+
+            if (Port.ShouldShowLabel)
+            {
+                width += _label.rectTransform.sizeDelta.x;
+            }
+
+            Rect.sizeDelta = new Vector2(width, _height);
         }
     }
 }
