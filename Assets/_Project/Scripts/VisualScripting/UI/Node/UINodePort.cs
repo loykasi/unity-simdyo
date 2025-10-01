@@ -145,7 +145,6 @@ namespace Loykas.Scripting
 
         private void UpdateHandleVisual()
         {
-            Debug.Log($"Has connection: {LineConnections.Count > 0}");
             if (LineConnections.Count > 0)
             {
                 _handleImage.sprite = _handleConnectedSprite;

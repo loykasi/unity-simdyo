@@ -19,7 +19,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void Select(Vector3 screenPoint)
     {
-        Debug.Log($"Select at: {screenPoint}");
         if (SelectedObject != null)
         {
             SelectedObject.Deselect();
@@ -41,7 +40,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void Click(Vector3 screenPoint)
     {
-        Debug.Log($"Click at {screenPoint}");
         if (!TryGetSceneEntity(screenPoint, out SceneEntity entity))
         {
             return;

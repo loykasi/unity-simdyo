@@ -8,3 +8,47 @@
 
 - Code structure
 [] organize with namespace
+
+
+// Pseudocode for task class
+var node // current node
+var loopStack // save nodes that start the loop [node, index]
+
+funtion invoke() // will be call every frame
+    done = node.invoke();
+    if (done)
+        node = getNext();
+        if (node)
+            invoke();
+        else
+            if (hasLoop)
+                exit current loop
+                invoke();
+            else
+                remove this task // done
+    else
+        if (hasLoop)
+            getNodeFromStack();
+            invoke();
+        else
+            stop at this frame
+
+
+-----------
+
+function invoke():
+    while node != null:
+        status = node.invoke()
+
+        if status == WAITING:
+            return // paused this frame
+
+        if status == DONE:
+            node = getNext()
+            if node == null:
+                if loopStack not empty:
+                    exitLoop()
+                    continue
+                else:
+                    finishTask()
+                    return

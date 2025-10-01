@@ -23,6 +23,7 @@ namespace Loykas.Scripting
         public OutputValue Index;
 
         private int _index;
+        private bool _firstRun;
 
         public ForNode(string title) : base(title)
         {
@@ -30,9 +31,10 @@ namespace Loykas.Scripting
             Completed = OutputTrigger(nameof(Completed));
             LoopBody = OutputTrigger(nameof(LoopBody));
 
-            FirstIndex = InputValue(nameof(FirstIndex), ScriptDataType.Single(DataType.Number));
-            LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number));
-            Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number));
+            FirstIndex = InputValue(nameof(FirstIndex), ScriptDataType.Single(DataType.Number)).UseInput();
+            LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number)).UseInput();
+            Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number)).UseInput();
+
             Index = OutputValue(
                 nameof(Index),
                 (vs) =>
@@ -44,29 +46,59 @@ namespace Loykas.Scripting
 
         private OutputTrigger Loop(ScriptFlow vs)
         {
-            int loop = vs.StartLoop();
-            // Debug.Log($"Start loop {loop}");
+            int firstIndex = (int)(float)FirstIndex.GetValue(vs);
+            int lastIndex = (int)(float)LastIndex.GetValue(vs);
+            int step = (int)(float)Step.GetValue(vs);
 
-            int firstIndex = (int)(double)FirstIndex.GetValue(vs);
-            int lastIndex = (int)(double)LastIndex.GetValue(vs);
-            int step = (int)(double)Step.GetValue(vs);
-            bool isAscending = firstIndex <= lastIndex;
+            NodeTask task = vs.GetNodeTask(Enter);
 
-            int index = firstIndex;
-
-            while (vs.IsLoopNotBroken(loop) && CanMoveNext(index, lastIndex, isAscending))
+            if (_firstRun)
             {
-                // Debug.Log($"{loop} | loop {index}");
+                task.EnterLoop(Enter);
+                _index = firstIndex;
 
-                _index = index;
-                LoopBody.Invoke(vs);
-                index += step;
+                _firstRun = false;
+                return LoopBody;
             }
 
-            vs.ExitLoop(loop);
+            _index += step;
 
-            return Completed;
+            if (_index > lastIndex)
+            {
+                _firstRun = true;
+                return Completed;
+            }
+            
+            task.EnterLoop(Enter);
+            return LoopBody;
         }
+
+        // private OutputTrigger Loop(ScriptFlow vs)
+        // {
+        //     int firstIndex = (int)(float)FirstIndex.GetValue(vs);
+        //     int lastIndex = (int)(float)LastIndex.GetValue(vs);
+        //     int step = (int)(float)Step.GetValue(vs);
+
+        //     int loop = vs.StartLoop();
+
+        //     bool isAscending = firstIndex <= lastIndex;
+
+
+        //     // vs.Invoke(LoopBody, OnBodyFinish);
+
+        //     int index = firstIndex;
+
+        //     while (vs.IsLoopNotBroken(loop) && CanMoveNext(index, lastIndex, isAscending))
+        //     {
+        //         _index = index;
+        //         LoopBody.Invoke(vs);
+        //         index += step;
+        //     }
+
+        //     vs.ExitLoop(loop);
+
+        //     return Completed;
+        // }
 
         private bool CanMoveNext(int index, int lastIndex, bool isAscending)
         {

@@ -108,14 +108,12 @@ namespace Loykas.Scripting
 
         private void OnSubmit(object value)
         {
-            Debug.Log("submit " + value);
             Debug.Log($"Set value: {value}");
             _inputValue.SetValue(value);
         }
 
         private void OnInputValueChanged()
         {
-            Debug.Log("Value Updated");
             UpdateSize();
         }
     }

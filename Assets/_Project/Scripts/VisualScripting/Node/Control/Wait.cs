@@ -33,7 +33,6 @@ namespace Loykas.Scripting
         {
             if (!_isStart)
             {
-                Debug.Log("start wait timer");
                 _time = (float)WaitTime.GetValue(flow);
                 _isStart = true;
             }

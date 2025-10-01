@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 namespace Loykas.Scripting
 {
     public class NodeTask
@@ -5,20 +8,49 @@ namespace Loykas.Scripting
         public OutputTrigger From;
         public InputTrigger Trigger;
 
+        public Stack<InputTrigger> _loops = new();
+
         public void Invoke(ScriptFlow flow)
         {
-            if (Trigger.Invoke(flow))
+            while (Trigger != null)
             {
-                Trigger = Trigger.TargetOutputTrigger.Invoke(flow);
-                if (Trigger != null)
+                bool isDone = Trigger.Invoke(flow);
+
+                if (!isDone)
                 {
-                    Invoke(flow);
+                    return;
                 }
-                else
+
+                Trigger = Trigger.TargetOutputTrigger.Invoke(flow);
+                if (Trigger == null)
                 {
-                    flow.RemoveTask(this);
+                    if (IsInLoop())
+                    {
+                        ExitLoop();
+                        continue;
+                    }
+                    else
+                    {
+                        flow.RemoveTask(this);
+                        return;
+                    }
                 }
             }
+        }
+
+        public void EnterLoop(InputTrigger trigger)
+        {
+            _loops.Push(trigger);
+        }
+
+        public void ExitLoop()
+        {
+            Trigger = _loops.Pop();
+        }
+
+        private bool IsInLoop()
+        {
+            return _loops.Count > 0;
         }
     }
 }

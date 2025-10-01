@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -82,7 +83,6 @@ namespace Loykas.Scripting
         {
             if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
             {
-                Debug.Log("connect");
                 Connections.Add(new NodeConnection(this, fromPort, toPort));
                 return true;
             }
@@ -119,6 +119,11 @@ namespace Loykas.Scripting
 
 
         // handle node task
+
+        public NodeTask GetNodeTask(InputTrigger trigger)
+        {
+            return _tasks.Find(t => t.Trigger == trigger);
+        }
 
         public void Invoke(OutputTrigger outputTrigger)
         {
@@ -228,7 +233,6 @@ namespace Loykas.Scripting
 
         public void AddGetVariableNode(string key)
         {
-            Debug.Log("add");
             GetVariableNode node = (GetVariableNode)_getVariableNodeData.Create();
 
             node.Input.SetValue(key);
