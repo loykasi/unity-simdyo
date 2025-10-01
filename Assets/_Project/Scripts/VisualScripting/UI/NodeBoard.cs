@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,12 +6,14 @@ using UnityEngine.InputSystem;
 
 namespace Loykas.Scripting
 {
-    public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IDropHandler
+    public class NodeBoard : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler, IScrollHandler, IDropHandler
     {
         public ScriptFlowGraph FlowGraph { get; set; }
         public ScriptFlow Flow => FlowGraph.Flow;
         public SceneEntity Entity => FlowGraph.Entity;
 
+        [SerializeField] private RectTransform _rect;        
+        [SerializeField] private Vector2 _zoomRange;
         [SerializeField] private RectTransform _holder;
         private Vector2 _offsetFromMouse;
 
@@ -182,7 +185,25 @@ namespace Loykas.Scripting
             }
 
             HandleDelete();
+            HandleMenu();
+        }
 
+        private void HandleZoom(PointerEventData eventData)
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_rect, eventData.position, eventData.enterEventCamera, out Vector2 mouseLocalPoint);
+
+            float scale = _holder.localScale.x;
+            scale += eventData.scrollDelta.y * scale / 1f * Time.unscaledDeltaTime;
+            scale = Mathf.Clamp(scale, _zoomRange.x, _zoomRange.y);
+
+            float delta = scale / _holder.localScale.x;
+            _holder.localScale = scale * Vector3.one;
+
+            _holder.anchoredPosition = mouseLocalPoint + (_holder.anchoredPosition - mouseLocalPoint) * delta;
+        }
+
+        private void HandleMenu()
+        {
             if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
             {
                 Vector3 mousePosition = Mouse.current.position.ReadValue();
@@ -223,6 +244,11 @@ namespace Loykas.Scripting
             Flow.DeleteNode(node.Node);
 
             _nodes.Remove(node);
+        }
+
+        public void OnScroll(PointerEventData eventData)
+        {
+            HandleZoom(eventData);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
