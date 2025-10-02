@@ -76,4 +76,9 @@ public class SceneMenuController : MonoBehaviour
         _editorCamera.backgroundColor = _settings.Color.ToUnityColor();
         _sceneCamera.backgroundColor = _settings.Color.ToUnityColor();
     }
+
+    public void OpenGlobalScript()
+    {
+        ScriptGraph.Instance.ToggleGlobalScriptPanel();
+    }
 }

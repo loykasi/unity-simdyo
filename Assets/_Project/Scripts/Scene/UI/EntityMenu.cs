@@ -142,7 +142,8 @@ public class EntityMenu : MonoBehaviour
 
     public void OpenGraph()
     {
-        ScriptGraph.Instance.TogglePanel();
+        SceneEntity selected = ObjectManager.Instance.SelectedObject;
+        ScriptGraph.Instance.TogglePanel(selected.Script);
     }
 
     public void ToggleLayer(CollisionLayer layer, bool isActive)

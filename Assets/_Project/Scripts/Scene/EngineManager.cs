@@ -1,3 +1,4 @@
+using Loykas.Scripting;
 using UnityEngine;
 
 public class EngineManager : Singleton<EngineManager>
@@ -13,6 +14,9 @@ public class EngineManager : Singleton<EngineManager>
 
     public bool IsRunning => _isRunning;
     private bool _isRunning = false;
+
+    [Header("Global")]
+    public ScriptFlow GlobalScript;
 
     protected override void Awake()
     {
@@ -36,6 +40,8 @@ public class EngineManager : Singleton<EngineManager>
         SceneCamera.gameObject.SetActive(false);
         _playModeCanvas.SetActive(false);
 
+        GlobalScript.OnSceneStop();
+
         var entities = ObjectManager.Instance.SceneEntities;
         for (int i = 0; i < entities.Count; i++)
         {
@@ -51,11 +57,17 @@ public class EngineManager : Singleton<EngineManager>
         EditorCamera.gameObject.SetActive(false);
         SceneCamera.gameObject.SetActive(true);
         _playModeCanvas.SetActive(true);
-
+        
         var entities = ObjectManager.Instance.SceneEntities;
+        // first loop to init all scene object
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].OnSceneStart();
+        }
+
+        GlobalScript.StartVS();
+        for (int i = 0; i < entities.Count; i++)
+        {
             entities[i].Script.StartVS();
         }
 
@@ -70,6 +82,7 @@ public class EngineManager : Singleton<EngineManager>
         }
 
         var entities = ObjectManager.Instance.SceneEntities;
+        GlobalScript.UpdateVS();
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].Script.UpdateVS();

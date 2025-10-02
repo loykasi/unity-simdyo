@@ -27,6 +27,11 @@ public class SceneMenu : MonoBehaviour
         _controller.OpenColorEdit();
     }
 
+    public void OpenGlobalScript()
+    {
+        _controller.OpenGlobalScript();
+    }
+
     private void OnSizeSubmit(float value)
     {
         _controller.UpdateSize(value);

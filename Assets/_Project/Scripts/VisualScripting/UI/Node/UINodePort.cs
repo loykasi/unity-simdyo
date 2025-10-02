@@ -18,7 +18,7 @@ namespace Loykas.Scripting
         public IPort Port;
         public UINode UINode { get; set; }
         public abstract NodePortEdge Edge { get; }
-        public Vector3 HandlePosition => _portHandle.transform.position;
+        public Vector3 HandlePosition => _portHandle.position;
 
         private NodeBoard NodeBoard => UINode.Board;
 
@@ -111,7 +111,7 @@ namespace Loykas.Scripting
         {
             for (int i = 0; i < LineConnections.Count; i++)
             {
-                NodeBoard.UpdateLines(LineConnections[i].LineRenderer, Edge, _portHandle.position);
+                NodeBoard.UpdateLines(LineConnections[i]);
             }
         }
 

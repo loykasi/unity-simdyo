@@ -8,11 +8,15 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
     private bool _isOpen = false;
 
-    public void TogglePanel()
+    public void ToggleGlobalScriptPanel()
     {
-        SceneEntity selected = ObjectManager.Instance.SelectedObject;
+        ScriptFlow flow = EngineManager.Instance.GlobalScript;
+        TogglePanel(flow);
+    }
 
-        if (selected == null)
+    public void TogglePanel(ScriptFlow scriptFlow = null)
+    {
+        if (scriptFlow == null)
         {
             return;
         }
@@ -22,7 +26,7 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
         if (_isOpen)
         {
-            _flowGraph.Open(selected.Script);
+            _flowGraph.Open(scriptFlow);
         }
     }
 

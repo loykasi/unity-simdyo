@@ -35,7 +35,7 @@ namespace Loykas.Scripting
         }
         private Dictionary<string, Variable> _variables = new();
 
-        public bool ShouldUpdateConnections = false;
+        public bool ShouldUpdateConnections { get; set; } = false;
 
         private void LateUpdate()
         {
