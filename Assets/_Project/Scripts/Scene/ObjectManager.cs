@@ -27,7 +27,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             OnObjectDeselected?.Invoke();
         }
 
-        if (!TryGetSceneEntity(screenPoint, out SceneEntity entity))
+        if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
         {
             return;
         }
@@ -40,7 +40,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void Click(Vector3 screenPoint)
     {
-        if (!TryGetSceneEntity(screenPoint, out SceneEntity entity))
+        if (!TryGetSceneEntity(EngineManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
         {
             return;
         }
@@ -48,11 +48,12 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.Script.TriggerEvent(EventHook.Clicked);
     }
 
-    private bool TryGetSceneEntity(Vector3 screenPoint, out SceneEntity entity)
+    private bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
         Ray ray = camera.ScreenPointToRay(screenPoint);
         RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+
+        Debug.DrawRay(ray.origin, Vector3.up * 3f, Color.red, 10f);
 
         if (hit.collider == null)
         {
@@ -71,6 +72,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return list;
     }
 
+    public int GetIndexByEntity(SceneEntity entity)
+    {
+        return SceneEntities.FindIndex(e => e == entity) + 1;
+    }
+
     public SceneEntity GetEntityByIndex(int index)
     {
         index--;
@@ -79,7 +85,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             return null;
         }
-        
+
         return SceneEntities[index];
     }
 

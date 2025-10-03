@@ -4,6 +4,7 @@ namespace Loykas.Scripting
     {
         Start,
         Update,
-        Clicked
+        Clicked,
+        Signal
     }
 }

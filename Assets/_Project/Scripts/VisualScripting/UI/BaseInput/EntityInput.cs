@@ -32,7 +32,8 @@ namespace Loykas.Scripting
 
         public override void SetValue(object value)
         {
-
+            int index = ObjectManager.Instance.GetIndexByEntity((SceneEntity)value);
+            Dropdown.SetValueWithoutNotify(index);
         }
 
         public override object GetValue()

@@ -40,11 +40,14 @@ namespace Loykas.Scripting
         {
             UpdateLabel();
 
-            Rect.sizeDelta = new Vector2
-            (
-                _handleSize + _label.rectTransform.sizeDelta.x,
-                _height
-            );
+            float width = _handleSize;
+
+            if (_outputValue.ShouldShowLabel)
+            {
+                width += _label.rectTransform.sizeDelta.x;
+            }
+
+            Rect.sizeDelta = new Vector2(width, _height);
         }
     }
 }

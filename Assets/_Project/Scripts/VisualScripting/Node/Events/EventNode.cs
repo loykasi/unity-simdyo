@@ -1,13 +1,8 @@
-using Newtonsoft.Json;
-
 namespace Loykas.Scripting
 {
     public abstract class EventNode : ScriptNode
     {
-        [JsonIgnore]
         public OutputTrigger Exit;
-
-        [JsonIgnore]
         public abstract EventHook Hook { get; }
 
         public EventNode(string title) : base(title)

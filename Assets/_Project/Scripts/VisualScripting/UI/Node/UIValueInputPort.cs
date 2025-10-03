@@ -63,7 +63,11 @@ namespace Loykas.Scripting
             {
                 width += _label.rectTransform.sizeDelta.x + _inputOffset;
             }
-
+            else
+            {
+                width += _inputOffset;
+            }
+      
             _inputHolder.anchoredPosition = new Vector2(width, 0f);
 
             if (_input != null)

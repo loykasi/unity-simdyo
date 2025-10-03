@@ -326,6 +326,21 @@ namespace Loykas.Scripting
             }
         }
 
+        public void SendSignal(string signalName)
+        {
+            if (_eventNodes.TryGetValue(EventHook.Signal, out var nodes))
+            {
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    var node = (OnReceiveSignalNode)nodes[i];
+                    if (node.DefaultValues["Name"].Equals(signalName))
+                    {
+                        Invoke(node.Exit);
+                    }
+                }
+            }
+        }
+
         // Variables
 
         public bool AddVariable(string name)

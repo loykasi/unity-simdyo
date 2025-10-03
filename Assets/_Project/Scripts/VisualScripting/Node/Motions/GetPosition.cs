@@ -14,13 +14,13 @@ namespace Loykas.Scripting
 
     class GetPositionNode : ScriptNode
     {
-        public InputValue Input;
+        public InputValue Entity;
         public OutputValue X;
         public OutputValue Y;
 
         public GetPositionNode(string title) : base(title)
         {
-            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.Entity))
+            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .UseInput()
                         .DisableConnection();
 
@@ -30,14 +30,24 @@ namespace Loykas.Scripting
 
         private object GetX(ScriptFlow vs)
         {
-            SceneEntity entity = (SceneEntity)Input.GetValue(vs);
+            SceneEntity entity = (SceneEntity)Entity.GetValue(vs);
+
+            if (entity == null)
+            {
+                return default(float);
+            }
 
             return entity.Position.x;
         }
 
         private object GetY(ScriptFlow vs)
         {
-            SceneEntity entity = (SceneEntity)Input.GetValue(vs);
+            SceneEntity entity = (SceneEntity)Entity.GetValue(vs);
+
+            if (entity == null)
+            {
+                return default(float);
+            }
 
             return entity.Position.y;
         }

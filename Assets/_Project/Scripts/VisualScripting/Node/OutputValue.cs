@@ -22,6 +22,12 @@ namespace Loykas.Scripting
             Type = type;
         }
 
+        public OutputValue HideLabel()
+        {
+            ShouldShowLabel = false;
+            return this;
+        }
+
         public object GetValue(ScriptFlow vs)
         {
             return action(vs);

@@ -30,7 +30,6 @@ namespace Loykas.Scripting
         [SerializeField] private Sprite _handleSprite;
         [SerializeField] private Sprite _handleConnectedSprite;
 
-
         [SerializeField] protected TextMeshProUGUI _label;
 
         public List<UILineConnection> LineConnections = new();
