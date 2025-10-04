@@ -209,7 +209,6 @@ namespace Loykas.Scripting
         public void UpdateVS()
         {
             TriggerEvent(EventHook.Update);
-
             UpdateTask();
         }
 
@@ -320,6 +319,22 @@ namespace Loykas.Scripting
                     var node = nodes[i];
                     if (node.ShouldTrigger())
                     {
+                        Invoke(node.Exit);
+                    }
+                }
+            }
+        }
+
+        public void TriggerEvent(EventHook hook, object args)
+        {
+            if (_eventNodes.TryGetValue(hook, out var nodes))
+            {
+                for (int i = 0; i < nodes.Count; i++)
+                {
+                    var node = nodes[i];
+                    if (node.ShouldTrigger())
+                    {
+                        node.AssignArgument(args);
                         Invoke(node.Exit);
                     }
                 }

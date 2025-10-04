@@ -194,4 +194,20 @@ public class SceneEntity : MonoBehaviour
         TextureSlot = slot;
         Renderer.material.SetTexture(_textureProperty, texture);
     }
+
+    // trigger hook
+    public void OnStart()
+    {
+        Script.StartVS();
+    }
+
+    public void OnUpdate()
+    {
+        Script.UpdateVS();
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Script.TriggerEvent(EventHook.OnTouched, collision);   
+    }
 }

@@ -15,5 +15,5 @@ MonoBehaviour:
   _data:
     _json: '{"graph":{"variables":{"Kind":"Flow","collection":{"$content":[{"name":"c","value":{"$content":false,"$type":"System.Boolean"},"typeHandle":{"Identification":"System.Boolean,
       mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"},{"name":"a","value":null,"typeHandle":{"Identification":"System.String,
-      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[],"title":null,"summary":null,"pan":{"x":-645.6039,"y":-802.4866},"zoom":1.0,"elements":[],"$version":"A"}}'
+      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089","$version":"A"},"$version":"A"}],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[],"title":null,"summary":null,"pan":{"x":-645.6039,"y":-802.4866},"zoom":1.0,"elements":[{"coroutine":false,"defaultValues":{"target":null},"position":{"x":-1219.0,"y":-980.0},"guid":"65ba6645-0cc3-4a89-87dd-3b44a803a30d","$version":"A","$type":"Unity.VisualScripting.OnCollisionEnter"}],"$version":"A"}}'
     _objectReferences: []

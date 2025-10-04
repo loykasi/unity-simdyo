@@ -19,5 +19,10 @@ namespace Loykas.Scripting
         {
             return true;
         }
+
+        public virtual void AssignArgument(object args)
+        {
+
+        }
     }
 }

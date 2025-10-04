@@ -68,7 +68,7 @@ public class EngineManager : Singleton<EngineManager>
         GlobalScript.StartVS();
         for (int i = 0; i < entities.Count; i++)
         {
-            entities[i].Script.StartVS();
+            entities[i].OnStart();
         }
 
         _isRunning = true;
@@ -85,7 +85,7 @@ public class EngineManager : Singleton<EngineManager>
         GlobalScript.UpdateVS();
         for (int i = 0; i < entities.Count; i++)
         {
-            entities[i].Script.UpdateVS();
+            entities[i].OnUpdate();
         }
     }
 }
