@@ -4,25 +4,20 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "LogNode", menuName = "Scriptable Objects/Visual Scripting/Node/Log")]
-    public class Log : ScriptNodeData
+    [ScriptNode(ScriptNodeCategory.Debug)]
+    public class LogNodeContent : ScriptNodeContent
     {
-        public override ScriptNode Create()
-        {
-            return new LogNode(Title);
-        }
+        public override System.Type Type => typeof(LogNode);
+        public override ScriptNode Create() => new LogNode();
     }
 
     class LogNode : ScriptNode
     {
-        [JsonIgnore]
         public InputTrigger Enter;
-        [JsonIgnore]
         public OutputTrigger Exit;
-        [JsonIgnore]
         public InputValue Value;
 
-        public LogNode(string title) : base(title)
+        public LogNode() : base()
         {
             Enter = InputTrigger(nameof(Enter), Log);
             Exit = OutputTrigger(nameof(Exit));

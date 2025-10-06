@@ -79,7 +79,7 @@ namespace Loykas.Scripting
 
             transform.localPosition = Node.Position;
 
-            _nodeTitle.SetText(Node.Title);
+            _nodeTitle.SetText(Node.GetType().Name);
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
             _minWidth = labelSize.x + 20f;
 
@@ -144,7 +144,6 @@ namespace Loykas.Scripting
             Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
             float inputHeight = _inputHolder.sizeDelta.y;
             float outputHeight = _outputHolder.sizeDelta.y;
-            // float bodyHeight = (inputSize.y > outputSize.y ? inputSize.y : outputSize.y) + _topBottomPadding;
             float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
 
             float x = inputSize.x + outputSize.x + _inputOutputDistance;
@@ -154,6 +153,7 @@ namespace Loykas.Scripting
             _body.sizeDelta = new Vector2(x, bodyHeight);
 
             UpdateBorder();
+            UpdateLineVisual();
         }
 
         private void UpdateBorder()
@@ -204,6 +204,11 @@ namespace Loykas.Scripting
             transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
             Node.Position = transform.localPosition;
 
+            UpdateLineVisual();
+        }
+
+        public void UpdateLineVisual()
+        {
             for (int i = 0; i < Ports.Count; i++)
             {
                 Ports[i].UpdateLines();

@@ -71,7 +71,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249bea8a90ea0f44e963099367deb7dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _typeColorData: {fileID: 11400000, guid: dcaa3e0c6ec8e1241955e7da020820e5, type: 2}
+  _typeColorData: {fileID: 11400000, guid: 38c9fcca66073ab40aa782f89a401216, type: 2}
   _portHandle: {fileID: 776601649460712247}
 --- !u!1 &3244568678442939220
 GameObject:

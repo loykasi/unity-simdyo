@@ -1,10 +1,17 @@
+using System;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "MakeString", menuName = "Scriptable Objects/Visual Scripting/Node/Make String")]
-    public class MakeString : MakeVariable
+    [ScriptNode(ScriptNodeCategory.Data)]
+    public class MakeStringContent : ScriptNodeContent
     {
-        public override ScriptDataType Type => ScriptDataType.Single(DataType.String);
+        public override Type Type => typeof(MakeStringNode);
+        public override ScriptNode Create() => new MakeStringNode();
+    }
+
+    public class MakeStringNode : MakeVariableNode
+    {
+        public MakeStringNode() : base(DataType.String) { }
     }
 }

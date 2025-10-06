@@ -5,6 +5,11 @@ namespace Loykas.Scripting
         public OutputTrigger Exit;
         public abstract EventHook Hook { get; }
 
+        public EventNode()
+        {
+            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+        }
+
         public EventNode(string title) : base(title)
         {
             Exit = OutputTrigger(nameof(Exit)).HideLabel();

@@ -11,6 +11,7 @@ public enum InputValueTypes
     Boolean,
     Entity,
     Variable,
+    GlobalVariable,
     Key
 }
 
@@ -104,6 +105,15 @@ public enum InputValueTypes
 
             return this;
         }
+
+        public InputValue UseGlobalVariableInput()
+        {
+            InputType = InputValueTypes.GlobalVariable;
+            UpdateDefaultValue();
+
+            return this;
+        }
+
 
         public InputValue UseKeyCodeInput()
         {

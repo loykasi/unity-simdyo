@@ -2,15 +2,13 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "SetVariable", menuName = "Scriptable Objects/Visual Scripting/Node/Set Variable")]
-public class SetVariable : ScriptNodeData
-{
-    public override ScriptNode Create()
+    [ScriptNode(ScriptNodeCategory.Data)]
+    public class SetVariableNodeContent : ScriptNodeContent
     {
-        return new SetVariableNode(Title);
+        public override System.Type Type => typeof(SetVariableNode);
+        public override ScriptNode Create() => new SetVariableNode();
     }
-}
-
+    
     public class SetVariableNode : ScriptNode
     {
         public InputTrigger Enter;
@@ -19,7 +17,7 @@ public class SetVariable : ScriptNodeData
         public InputValue Variable;
         public InputValue Value;
 
-        public SetVariableNode(string title) : base(title)
+        public SetVariableNode() : base()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
@@ -28,7 +26,7 @@ public class SetVariable : ScriptNodeData
                             .UseVariableInput()
                             .DisableConnection()
                             .HideLabel();
-                            
+
             Value = InputValue(nameof(Value));
         }
 

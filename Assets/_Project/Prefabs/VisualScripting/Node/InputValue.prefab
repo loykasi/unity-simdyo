@@ -61,7 +61,7 @@ MonoBehaviour:
   LineConnections: []
   _portVisual: {fileID: 7330686054217995350}
   _inputHolder: {fileID: 7074039438841304340}
-  _inputDataReference: {fileID: 11400000, guid: c9b321bf8663e424f8d4b1478872c8c1, type: 2}
+  _inputDataReference: {fileID: 11400000, guid: 17d581ef26c6b0a4b907e19ff4f37228, type: 2}
 --- !u!114 &7330686054217995350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -74,7 +74,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 249bea8a90ea0f44e963099367deb7dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _typeColorData: {fileID: 11400000, guid: dcaa3e0c6ec8e1241955e7da020820e5, type: 2}
+  _typeColorData: {fileID: 11400000, guid: 38c9fcca66073ab40aa782f89a401216, type: 2}
   _portHandle: {fileID: 5016566296679797575}
 --- !u!1 &3366240531917633793
 GameObject:

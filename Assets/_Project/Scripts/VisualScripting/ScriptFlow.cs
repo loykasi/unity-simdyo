@@ -15,8 +15,6 @@ namespace Loykas.Scripting
         public Vector2 Pan { get; set; }
         public SceneEntity Entity;
 
-        [SerializeField] private GetVariable _getVariableNodeData;
-
         public List<ScriptNode> Nodes = new();
         public List<NodeConnection> Connections = new();
         public List<ScriptFunction> Functions = new();
@@ -61,9 +59,10 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(ScriptNodeData nodeData)
+        public void AddNode(Type nodeType)
         {
-            ScriptNode node = nodeData.Create();
+            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
+
             node.Flow = this;
             Nodes.Add(node);
             OnNodeAdded?.Invoke(node);
@@ -232,7 +231,7 @@ namespace Loykas.Scripting
 
         public void AddGetVariableNode(string key)
         {
-            GetVariableNode node = (GetVariableNode)_getVariableNodeData.Create();
+            GetVariableNode node = ScriptNodeFactory.Instance.CreateNode<GetVariableNode>();
 
             node.Input.SetValue(key);
 

@@ -34,5 +34,6 @@ MonoBehaviour:
       IsList: 0
     InputPrefab: {fileID: 4807153160745906245, guid: e2d4e181c3da152489d134e6d22b92f4, type: 3}
   VariableNameInputPrefab: {fileID: 8432855615421663560, guid: 75bed57d6ec178f49a24f56341252fd0, type: 3}
+  GlobalVariableNameInputPrefab: {fileID: 9018127834600653979, guid: 6c5d8cbb8a1987e46afd57d4955e07a5, type: 3}
   ListInputPrefab: {fileID: 959947589436971323, guid: aa93fe0770fcfff4f8dacfdb69fc893a, type: 3}
   KeyInputPrefab: {fileID: 9217825416394108689, guid: 11ea5ff2a70f184478c02fe45ad9a2af, type: 3}

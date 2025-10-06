@@ -2133,7 +2133,7 @@ MonoBehaviour:
   _typeInput: {fileID: 1434233518887028580}
   _removeButton: {fileID: 9199583807639029204}
   _inputHolder: {fileID: 2850877116424231039}
-  _inputDataReference: {fileID: 11400000, guid: c9b321bf8663e424f8d4b1478872c8c1, type: 2}
+  _inputDataReference: {fileID: 11400000, guid: 17d581ef26c6b0a4b907e19ff4f37228, type: 2}
 --- !u!1 &7793245644713817948
 GameObject:
   m_ObjectHideFlags: 0

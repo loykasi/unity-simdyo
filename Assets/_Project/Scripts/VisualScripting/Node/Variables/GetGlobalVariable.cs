@@ -5,21 +5,21 @@ using UnityEngine;
 namespace Loykas.Scripting
 {
     [ScriptNode(ScriptNodeCategory.Data)]
-    public class GetVariableNodeContent : ScriptNodeContent
+    public class GetGlobalVariableNodeContent : ScriptNodeContent
     {
-        public override Type Type => typeof(GetVariableNode);
-        public override ScriptNode Create() => new GetVariableNode();
+        public override Type Type => typeof(GetGlobalVariableNode);
+        public override ScriptNode Create() => new GetGlobalVariableNode();
     }
 
-    public class GetVariableNode : ScriptNode
+    public class GetGlobalVariableNode : ScriptNode
     {
         public InputValue Input;
         public OutputValue Output;
 
-        public GetVariableNode()
+        public GetGlobalVariableNode() : base()
         {
             Input = InputValue(nameof(Input))
-                            .UseVariableInput()
+                            .UseGlobalVariableInput()
                             .DisableConnection()
                             .HideLabel();
 
@@ -31,13 +31,13 @@ namespace Loykas.Scripting
         private object Get(ScriptFlow vs)
         {
             string name = Input.GetValue(vs).ToString();
-            return vs.GetVariable(name).Value;
+            return EngineManager.Instance.GlobalScript.GetVariable(name).Value;
         }
 
         private void OnInputValueChanged()
         {
             string name = Input.GetValue(Flow).ToString();
-            Variable variable = Flow.GetVariable(name);
+            Variable variable = EngineManager.Instance.GlobalScript.GetVariable(name);
 
             if (variable == null)
             {

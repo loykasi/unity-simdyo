@@ -132,9 +132,9 @@ namespace Loykas.Scripting
             _nodes.Add(node);
         }
 
-        public void AddNode(ScriptNodeData nodeData)
+        public void AddNode(Type nodeType)
         {
-            Flow.AddNode(nodeData);
+            Flow.AddNode(nodeType);
         }
 
         public List<RaycastResult> results = new();

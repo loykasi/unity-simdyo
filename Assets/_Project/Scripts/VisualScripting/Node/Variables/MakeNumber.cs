@@ -1,10 +1,17 @@
+using System;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "MakeNumber", menuName = "Scriptable Objects/Visual Scripting/Node/Make Number")]
-    public class MakeNumber : MakeVariable
+    [ScriptNode(ScriptNodeCategory.Data)]
+    public class MakeNumberContent : ScriptNodeContent
     {
-        public override ScriptDataType Type => ScriptDataType.Single(DataType.Number);
+        public override Type Type => typeof(MakeNumberNode);
+        public override ScriptNode Create() => new MakeNumberNode();
+    }
+
+    public class MakeNumberNode : MakeVariableNode
+    {
+        public MakeNumberNode() : base(DataType.Number) { }
     }
 }

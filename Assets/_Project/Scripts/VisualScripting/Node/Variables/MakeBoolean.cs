@@ -1,10 +1,17 @@
+using System;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "MakeBoolean", menuName = "Scriptable Objects/Visual Scripting/Node/Make Boolean")]
-    public class MakeBoolen : MakeVariable
+    [ScriptNode(ScriptNodeCategory.Data)]
+    public class MakeBooleanContent : ScriptNodeContent
     {
-        public override ScriptDataType Type => ScriptDataType.Single(DataType.Boolean);
+        public override Type Type => typeof(MakeBooleanNode);
+        public override ScriptNode Create() => new MakeBooleanNode();
+    }
+
+    public class MakeBooleanNode : MakeVariableNode
+    {
+        public MakeBooleanNode() : base(DataType.Boolean) { }
     }
 }

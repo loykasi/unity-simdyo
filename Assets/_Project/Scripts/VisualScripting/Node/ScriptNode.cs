@@ -6,7 +6,7 @@ using UnityEngine.Events;
 
 namespace Loykas.Scripting
 {
-    public abstract class ScriptNode : IScriptNode
+    public class ScriptNode : IScriptNode
     {
         public UnityAction OnNodeUpdated;
 
@@ -50,6 +50,11 @@ namespace Loykas.Scripting
             {
                 yield return item;
             }
+        }
+
+        public ScriptNode()
+        {
+            ID = Guid.NewGuid();
         }
 
         public ScriptNode(string title)

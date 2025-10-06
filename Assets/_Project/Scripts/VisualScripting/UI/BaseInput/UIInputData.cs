@@ -15,6 +15,7 @@ namespace Loykas.Scripting
         public UIInput[] Inputs;
 
         public BaseInput VariableNameInputPrefab;
+        public BaseInput GlobalVariableNameInputPrefab;
         public BaseInput ListInputPrefab;
         public BaseInput KeyInputPrefab;
 
@@ -115,6 +116,13 @@ namespace Loykas.Scripting
 
                 var list = entity.Script.GetVariableOptions();
                 variableInput.Init(list);
+
+                return input;
+            }
+
+            if (inputType == InputValueTypes.GlobalVariable)
+            {
+                BaseInput input = Instantiate(GlobalVariableNameInputPrefab);
 
                 return input;
             }

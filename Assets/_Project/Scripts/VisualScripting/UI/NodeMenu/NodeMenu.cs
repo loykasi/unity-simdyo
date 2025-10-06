@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,12 +8,10 @@ namespace Loykas.Scripting
 {
     public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private NodeCollectionData _nodeCollection;
-        [SerializeField] private NodeCategoryCollection _categoryCollection;
         [SerializeField] private RectTransform _content;
         [SerializeField] private NodeMenuCategory _categoryPrefab;
 
-        private Dictionary<NodeCategoryData, NodeMenuCategory> _categories = new();
+        private Dictionary<ScriptNodeCategory, NodeMenuCategory> _categories = new();
 
         private Vector2 _offsetFromMouse;
         private bool _isHover = false;
@@ -26,10 +25,10 @@ namespace Loykas.Scripting
 
         private void InitMenu()
         {
-            foreach (var category in _categoryCollection.Categories)
+            foreach (ScriptNodeCategory category in Enum.GetValues(typeof(ScriptNodeCategory)))
             {
                 NodeMenuCategory item = Instantiate(_categoryPrefab, _content);
-                item.Init(category.Title, _content, this);
+                item.Init(category.ToString(), _content, this);
 
                 if (!_categories.ContainsKey(category))
                 {
@@ -37,13 +36,9 @@ namespace Loykas.Scripting
                 }
             }
 
-            foreach (var node in _nodeCollection.Nodes)
+            foreach (var node in ScriptNodeFactory.Instance.Nodes.Values)
             {
-                NodeCategoryData category = node.Category;
-                if (category == null)
-                {
-                    continue;
-                }
+                ScriptNodeCategory category = node.Category;
                 if (_categories.TryGetValue(category, out NodeMenuCategory item))
                 {
                     item.AddItem(node);
@@ -78,9 +73,10 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(ScriptNodeData nodeData)
+        public void AddNode(ScriptNodeContent nodeData)
         {
-            _nodeBoard.AddNode(nodeData);
+            Debug.Log($"Add node {nodeData}");
+            _nodeBoard.AddNode(nodeData.Type);
 
             Close();
         }

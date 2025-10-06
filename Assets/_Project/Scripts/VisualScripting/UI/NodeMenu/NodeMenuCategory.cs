@@ -17,6 +17,8 @@ namespace Loykas.Scripting
         private int _itemCount = 0;
         private bool _isContentActive = false;
 
+        private readonly float _defaultHeight = 40f;
+
         public void Init(string title, RectTransform parentRect, NodeMenu nodeMenu)
         {
             _titleField.SetText(title);
@@ -36,16 +38,16 @@ namespace Loykas.Scripting
 
             if (value)
             {
-                _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, 40 + _content.sizeDelta.y);
+                _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, _defaultHeight + _content.sizeDelta.y);
             }
             else
             {
-                _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, 40);
+                _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, _defaultHeight);
             }
             LayoutRebuilder.MarkLayoutForRebuild(_parentRect);
         }
 
-        public void AddItem(ScriptNodeData nodeData)
+        public void AddItem(ScriptNodeContent nodeData)
         {
             NodeMenuItem item = Instantiate(_itemPrefab, _content);
             item.NodeData = nodeData;
