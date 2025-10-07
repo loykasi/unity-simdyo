@@ -8,7 +8,7 @@ namespace Loykas.Scripting
 {
     public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private RectTransform _content;
+        [SerializeField] private RectTransform _contentRect;
         [SerializeField] private NodeMenuCategory _categoryPrefab;
 
         private Dictionary<ScriptNodeCategory, NodeMenuCategory> _categories = new();
@@ -18,6 +18,8 @@ namespace Loykas.Scripting
 
         private NodeBoard _nodeBoard;
 
+        private List<ScriptNodeContent> _nodes = new();
+
         private void Start()
         {
             InitMenu();
@@ -25,24 +27,30 @@ namespace Loykas.Scripting
 
         private void InitMenu()
         {
-            foreach (ScriptNodeCategory category in Enum.GetValues(typeof(ScriptNodeCategory)))
+            ScriptNodeFactory.Instance.GetNodes(_nodes);
+
+            // UpdateMenuElement();
+        }
+
+        private void UpdateMenuElement()
+        {
+            foreach (NodeMenuCategory categoryElement in _categories.Values)
             {
-                NodeMenuCategory item = Instantiate(_categoryPrefab, _content);
-                item.Init(category.ToString(), _content, this);
-
-                if (!_categories.ContainsKey(category))
-                {
-                    _categories[category] = item;
-                }
+                Destroy(categoryElement.gameObject);
             }
+            _categories.Clear();
 
-            foreach (var node in ScriptNodeFactory.Instance.Nodes.Values)
+            foreach (var node in _nodes)
             {
                 ScriptNodeCategory category = node.Category;
-                if (_categories.TryGetValue(category, out NodeMenuCategory item))
+                if (!_categories.TryGetValue(category, out NodeMenuCategory item))
                 {
-                    item.AddItem(node);
+                    item = Instantiate(_categoryPrefab, _contentRect);
+                    item.Init(category.ToString(), _contentRect, this);
+                    _categories.Add(category, item);
                 }
+
+                item.AddItem(node);
             }
         }
 
@@ -54,15 +62,28 @@ namespace Loykas.Scripting
             }
         }
 
-        private void Close()
-        {
-            _nodeBoard = null;
-            gameObject.SetActive(false);
-        }
-
         public void Open(NodeBoard nodeBoard, Vector3 position)
         {
             _nodeBoard = nodeBoard;
+
+            ScriptNodeFactory.Instance.GetNodes(_nodes);
+            UpdateMenuElement();
+
+            gameObject.SetActive(true);
+            transform.position = position;
+
+            foreach (var item in _categories)
+            {
+                item.Value.SetOpen(false);
+            }
+        }
+
+        public void Open(NodeBoard nodeBoard, Vector3 position, IPort port)
+        {
+            _nodeBoard = nodeBoard;
+
+            ScriptNodeFactory.Instance.GetNodes(_nodes, port);
+            UpdateMenuElement();
 
             gameObject.SetActive(true);
             transform.position = position;
@@ -79,6 +100,13 @@ namespace Loykas.Scripting
             _nodeBoard.AddNode(nodeData.Type);
 
             Close();
+        }
+
+        private void Close()
+        {
+            _nodeBoard.OnMenuClosed();
+            _nodeBoard = null;
+            gameObject.SetActive(false);
         }
 
         public void OnBeginDrag(PointerEventData eventData)

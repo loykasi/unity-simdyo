@@ -1,5 +1,4 @@
 using System.Collections;
-using Newtonsoft.Json;
 using UnityEngine;
 
 namespace Loykas.Scripting

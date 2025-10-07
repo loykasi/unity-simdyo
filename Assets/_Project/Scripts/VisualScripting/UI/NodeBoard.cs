@@ -42,6 +42,8 @@ namespace Loykas.Scripting
         private bool _isHover = false;
         private Vector3 _openMenuPosition;
 
+        private bool _waitToAddNode = false;
+
         public void Init()
         {
             ClearBoard();
@@ -120,6 +122,49 @@ namespace Loykas.Scripting
             scriptNode.Position = node.transform.localPosition;
 
             _nodes.Add(node);
+
+            if (_waitToAddNode)
+            {
+                _waitToAddNode = false;
+                _nodeConnectionPreview.EndPreviewConnect();
+
+                // determine which port to connect;
+                if (_fromUIPort.Port is InputValue || _fromUIPort.Port is InputTrigger)
+                {
+                    foreach (UINodePort port in node.OutputPorts)
+                    {
+                        if (_fromUIPort.Port.CanConnect(port.Port))
+                        {
+                            _toUIPort = port;
+                            break;
+                        }
+                    }
+                }
+                if (_fromUIPort.Port is OutputValue || _fromUIPort.Port is OutputTrigger)
+                {
+                    foreach (UINodePort port in node.InputPorts)
+                    {
+                        if (_fromUIPort.Port.CanConnect(port.Port))
+                        {
+                            _toUIPort = port;
+                            break;
+                        }
+                    }
+                }
+
+                _nodeConnectionPreview.EndPreviewConnect();
+
+                SwapPort();
+                if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
+                {
+                    AddConnectionLine();
+
+                    AfterAdd();
+                }
+
+                _fromUIPort = null;
+                _toUIPort = null;
+            }
         }
 
         private void AddNodeToBoard(ScriptNode scriptNode)
@@ -135,6 +180,11 @@ namespace Loykas.Scripting
         public void AddNode(Type nodeType)
         {
             Flow.AddNode(nodeType);
+        }
+
+        public void OnMenuClosed()
+        {
+            _nodeConnectionPreview.EndPreviewConnect();
         }
 
         public List<RaycastResult> results = new();
@@ -286,8 +336,6 @@ namespace Loykas.Scripting
 
         public void EndPreviewConnect()
         {
-            _nodeConnectionPreview.EndPreviewConnect();
-
             TryConnect();
         }
 
@@ -321,7 +369,17 @@ namespace Loykas.Scripting
 
         private void TryConnect()
         {
-            if (!_hasPort) return;
+            if (!_hasPort)
+            {                
+                Vector3 mousePosition = Mouse.current.position.ReadValue();
+                _openMenuPosition = mousePosition;
+
+                _nodeMenu.Open(this, mousePosition, _fromUIPort.Port);
+                _waitToAddNode = true;
+                return;
+            }
+
+            _nodeConnectionPreview.EndPreviewConnect();
 
             SwapPort();
 
@@ -370,8 +428,7 @@ namespace Loykas.Scripting
 
             lineConnection.Init(this, Flow.GetConnection(_fromUIPort.Port, _toUIPort.Port));
 
-            lineObject.transform.SetParent(_holder);
-            rect.anchoredPosition = Vector2.zero;
+            lineObject.transform.SetParent(_holder, false);
 
             UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
             lineRenderer.Rect = rect;
@@ -384,22 +441,7 @@ namespace Loykas.Scripting
             lineRenderer.CornerRadius = 30;
             lineRenderer.CornerSegment = 5;
 
-            // calculate bound;
-            Vector3 fromPosition = _fromUIPort.HandlePosition;
-            Vector3 toPosition = _toUIPort.HandlePosition;
-
-            fromPosition = _holder.InverseTransformPoint(fromPosition) * _holder.localScale.x / 1f;
-            toPosition = _holder.InverseTransformPoint(toPosition) * _holder.localScale.x / 1f;
-
-            Vector3 size = fromPosition - toPosition;
-            Vector3 center = (fromPosition + toPosition) / 2.0f;
-
-            lineRenderer.Points[0] = fromPosition - center;
-            lineRenderer.Points[1] = fromPosition + Vector3.right * 50f - center;
-            lineRenderer.Points[2] = toPosition + Vector3.left * 50f - center;
-            lineRenderer.Points[3] = toPosition - center;
-            rect.position = _holder.position + center;
-            rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
+            UpdateLineVisual(lineRenderer, _fromUIPort, _toUIPort);
 
             _fromUIPort.AddConnection(lineConnection);
             _toUIPort.AddConnection(lineConnection);
@@ -410,16 +452,26 @@ namespace Loykas.Scripting
         public void UpdateLines(UILineConnection line)
         {
             UILineRenderer lineRenderer = line.LineRenderer;
-            float scaleFactor = 1f / _holder.localScale.x;
-            Vector3 fromPosition = scaleFactor * (line.Source.HandlePosition - line.transform.position);
-            Vector3 toPostion = scaleFactor * (line.Destination.HandlePosition - line.transform.position);
+            UpdateLineVisual(lineRenderer, line.Source, line.Destination);
 
-            lineRenderer.Points[0] = fromPosition;
-            lineRenderer.Points[1] = fromPosition + Vector3.right * 50f;
-            lineRenderer.Points[2] = toPostion + Vector3.left * 50f;
-            lineRenderer.Points[3] = toPostion;
+            //RecalculateLineBound(lineRenderer);
+        }
 
-            RecalculateLineBound(lineRenderer);
+        public void UpdateLineVisual(UILineRenderer line, UINodePort fromPort, UINodePort toPort)
+        {
+            Vector3 fromPosition = (fromPort.HandlePosition - _holder.position) * 1f / _holder.localScale.x;
+            Vector3 toPosition = (toPort.HandlePosition - _holder.position) * 1f / _holder.localScale.x;
+
+            Vector3 size = fromPosition - toPosition;
+            Vector3 center = (fromPosition + toPosition) / 2.0f;
+
+            line.Points[0] = fromPosition - center;
+            line.Points[1] = fromPosition + Vector3.right * 50f - center;
+            line.Points[2] = toPosition + Vector3.left * 50f - center; ;
+            line.Points[3] = toPosition - center; ;
+            line.Rect.localPosition = center;
+            line.Rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
+            line.UpdateVertex();
         }
 
         public void RecalculateLineBound(UILineRenderer lineRenderer)

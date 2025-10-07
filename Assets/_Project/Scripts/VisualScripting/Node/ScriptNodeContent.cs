@@ -6,6 +6,12 @@ namespace Loykas.Scripting
     {
         public virtual Type Type => default;
         public ScriptNodeCategory Category;
+        public ScriptNode Base;
+
+        public ScriptNodeContent()
+        {
+            Base = Create();
+        }
 
         public virtual ScriptNode Create()
         {

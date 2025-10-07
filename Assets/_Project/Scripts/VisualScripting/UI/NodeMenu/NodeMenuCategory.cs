@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ namespace Loykas.Scripting
 
         private int _itemCount = 0;
         private bool _isContentActive = false;
+
+        private List<NodeMenuItem> _menuItems = new();
 
         private readonly float _defaultHeight = 40f;
 
@@ -58,6 +61,15 @@ namespace Loykas.Scripting
             _content.sizeDelta = new Vector2(_content.sizeDelta.x, _content.sizeDelta.y + height);
 
             _itemCount++;
+            _menuItems.Add(item);
         }
+
+        // public void Clear()
+        // {
+        //     for (int i = 0; i < _menuItems.Count; i++)
+        //     {
+        //         Destroy(_menuItems[i].gameObject);
+        //     }
+        // }
     }
 }
