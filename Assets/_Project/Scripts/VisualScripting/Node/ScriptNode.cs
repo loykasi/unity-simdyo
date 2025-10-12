@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,24 +13,16 @@ namespace Loykas.Scripting
         public Vector2 Position { get; set; }
         public Dictionary<string, object> DefaultValues { get; set; } = new();
 
-        [JsonIgnore]
         public ScriptFlow Flow { get; set; }
 
-        [JsonIgnore]
         public string Title;
 
-        [JsonIgnore]
+        public bool HasInputTrigger => InputTriggers.Count > 0;
+        public InputTrigger EnterTrigger => InputTriggers[0];
         public List<InputTrigger> InputTriggers = new();
-
-        [JsonIgnore]
         public List<OutputTrigger> OutputTriggers = new();
-
-        [JsonIgnore]
         public List<InputValue> ValueInputs = new();
-
-        [JsonIgnore]
         public List<OutputValue> ValueOutputs = new();
-
         public IEnumerable<IPort> Ports()
         {
             foreach (var item in InputTriggers)

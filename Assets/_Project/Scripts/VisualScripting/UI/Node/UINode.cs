@@ -21,9 +21,11 @@ namespace Loykas.Scripting
 
         private ScriptNode _node;
 
+        public UINodePort EnterPort;
         [HideInInspector] public List<UINodePort> Ports = new();
         [HideInInspector] public List<UINodePort> InputPorts = new();
-        [HideInInspector] public List<UINodePort> OutputPorts = new();
+        [HideInInspector] public List<UINodePort> OutputTriggerPorts = new();
+        [HideInInspector] public List<UINodePort> OutputValuePorts = new();
 
         [Header("References")]
         [SerializeField] private TMP_Text _nodeTitle;
@@ -83,14 +85,14 @@ namespace Loykas.Scripting
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
             _minWidth = labelSize.x + 20f;
 
-            for (int i = 0; i < Node.InputTriggers.Count; i++)
+            if (Node.HasInputTrigger)
             {
                 UINodePort port = Instantiate(_inputTriggerPrefab, _inputHolder);
                 port.UINode = this;
-                port.Port = Node.InputTriggers[i];
+                port.Port = Node.EnterTrigger;
                 port.Init();
                 Ports.Add(port);
-                InputPorts.Add(port);
+                EnterPort = port;
             }
 
             for (int i = 0; i < Node.OutputTriggers.Count; i++)
@@ -100,7 +102,7 @@ namespace Loykas.Scripting
                 port.Port = Node.OutputTriggers[i];
                 port.Init();
                 Ports.Add(port);
-                OutputPorts.Add(port);
+                OutputTriggerPorts.Add(port);
             }
 
             for (int i = 0; i < Node.ValueInputs.Count; i++)
@@ -120,7 +122,7 @@ namespace Loykas.Scripting
                 port.Port = Node.ValueOutputs[i];
                 port.Init();
                 Ports.Add(port);
-                OutputPorts.Add(port);
+                OutputValuePorts.Add(port);
             }
 
             LayoutRebuilder.ForceRebuildLayoutImmediate(_inputHolder);
@@ -131,22 +133,39 @@ namespace Loykas.Scripting
 
         private void UpdateUI()
         {
-            Debug.Log("Update UI");
+            // for (int i = 0; i < Ports.Count; i++)
+            // {
+            //     Ports[i].UpdateUI();
+            // }
+
             for (int i = 0; i < Ports.Count; i++)
             {
-                Ports[i].UpdateUI();
+                Ports[i].DeleteAllLines();
+                Destroy(Ports[i].gameObject);
             }
+            Ports.Clear();
+            InputPorts.Clear();
+            OutputTriggerPorts.Clear();
+            OutputValuePorts.Clear();
+
+            Init();
         }
 
         public void UpdateSize()
         {
             Vector2 inputSize = GetPortGroupMaxSize(InputPorts);
-            Vector2 outputSize = GetPortGroupMaxSize(OutputPorts);
-            float inputHeight = _inputHolder.sizeDelta.y;
-            float outputHeight = _outputHolder.sizeDelta.y;
+            Vector2 outputValueSize = GetPortGroupMaxSize(OutputValuePorts);
+            Vector2 outputTriggerSize = GetPortGroupMaxSize(OutputTriggerPorts);
+
+            // float inputHeight = _inputHolder.sizeDelta.y;
+            // float outputHeight = _outputHolder.sizeDelta.y;
+            // float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
+
+            float inputHeight = inputSize.y;
+            float outputHeight = outputValueSize.y + outputTriggerSize.y + (OutputValuePorts.Count + OutputTriggerPorts.Count - 1) * 10f;
             float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
 
-            float x = inputSize.x + outputSize.x + _inputOutputDistance;
+            float x = inputSize.x + Mathf.Max(outputValueSize.x, outputTriggerSize.x) + _inputOutputDistance;
             x = Mathf.Max(x, _minWidth);
 
             _head.sizeDelta = new Vector2(x, _head.sizeDelta.y);
@@ -223,6 +242,10 @@ namespace Loykas.Scripting
         public void Delete()
         {
             Board.DeleteNode(this);
+        }
+
+        public void DeleteVisual()
+        {
             Destroy(gameObject);
         }
 

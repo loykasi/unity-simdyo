@@ -80,8 +80,10 @@ namespace Loykas.Scripting
         private void LoadBoard()
         {
             _holder.localPosition = Flow.Pan;
+
             List<ScriptNode> nodes = Flow.Nodes;
             List<NodeConnection> connections = Flow.Connections;
+
             for (int i = 0; i < nodes.Count; i++)
             {
                 AddNodeToBoard(nodes[i]);
@@ -97,10 +99,10 @@ namespace Loykas.Scripting
 
                 if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
                 {
-                    // Debug.Log($"{source} | {connection.Source} | {source.Node} | {destinationPort} | {connection.Destination} | {destination.Node}");
-                    return;
+                    continue;
                 }
-                Connect(sourcePort, destinationPort);
+                //Connect(sourcePort, destinationPort);
+                AddConnectionToBoard(sourcePort, destinationPort);
             }
 
             // Debug.Log("======From System");
@@ -110,61 +112,6 @@ namespace Loykas.Scripting
             // Debug.Log("======From UI");
             // Debug.Log($"Node count: {_nodes.Count}");
             // Debug.Log($"Connection count: {_lines.Count}");
-        }
-
-        private void OnNodeAdded(ScriptNode scriptNode)
-        {
-            UINode node = Instantiate(_nodePrefab, _holder);
-
-            node.Board = this;
-            node.Node = scriptNode;
-            node.transform.position = _openMenuPosition;
-            scriptNode.Position = node.transform.localPosition;
-
-            _nodes.Add(node);
-
-            if (_waitToAddNode)
-            {
-                _waitToAddNode = false;
-                _nodeConnectionPreview.EndPreviewConnect();
-
-                // determine which port to connect;
-                if (_fromUIPort.Port is InputValue || _fromUIPort.Port is InputTrigger)
-                {
-                    foreach (UINodePort port in node.OutputPorts)
-                    {
-                        if (_fromUIPort.Port.CanConnect(port.Port))
-                        {
-                            _toUIPort = port;
-                            break;
-                        }
-                    }
-                }
-                if (_fromUIPort.Port is OutputValue || _fromUIPort.Port is OutputTrigger)
-                {
-                    foreach (UINodePort port in node.InputPorts)
-                    {
-                        if (_fromUIPort.Port.CanConnect(port.Port))
-                        {
-                            _toUIPort = port;
-                            break;
-                        }
-                    }
-                }
-
-                _nodeConnectionPreview.EndPreviewConnect();
-
-                SwapPort();
-                if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
-                {
-                    AddConnectionLine();
-
-                    AfterAdd();
-                }
-
-                _fromUIPort = null;
-                _toUIPort = null;
-            }
         }
 
         private void AddNodeToBoard(ScriptNode scriptNode)
@@ -177,8 +124,96 @@ namespace Loykas.Scripting
             _nodes.Add(node);
         }
 
+        private void AddConnectionToBoard(UINodePort source, UINodePort destination)
+        {
+            UILineConnection lineConnection = CreateLine(source, destination);
+
+            source.AddConnection(lineConnection);
+            destination.AddConnection(lineConnection);
+
+            _lines.Add(lineConnection);
+        }
+
+        private UILineConnection CreateLine(UINodePort source, UINodePort destination)
+        {
+            GameObject lineObject = new("line");
+
+            lineObject.AddComponent<CanvasRenderer>();
+            lineObject.transform.SetParent(_holder, false);
+
+            UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
+            RectTransform rect = lineObject.AddComponent<RectTransform>();
+            UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
+
+            lineConnection.Init(this, Flow.GetConnection(source.Port, destination.Port));
+
+            lineRenderer.Rect = rect;
+            lineConnection.LineRenderer = lineRenderer;
+            lineConnection.Source = source;
+            lineConnection.Destination = destination;
+
+            lineRenderer.Init(4);
+            lineRenderer.Thickness = 6;
+            lineRenderer.CornerRadius = 30;
+            lineRenderer.CornerSegment = 5;
+
+            UpdateLineVisual(lineRenderer, source, destination);
+
+            return lineConnection;
+        }
+
+        //==============================//==============================
+
+        private void OnNodeAdded(ScriptNode scriptNode)
+        {
+            UINode node = Instantiate(_nodePrefab, _holder);
+
+            node.Board = this;
+            node.Node = scriptNode;
+            node.transform.position = _openMenuPosition;
+            scriptNode.Position = node.transform.localPosition;
+
+            _nodes.Add(node);
+
+            // if (_waitToAddNode)
+            // {
+            //     _waitToAddNode = false;
+            //     _nodeConnectionPreview.EndPreviewConnect();
+
+            //     foreach (UINodePort port in node.Ports)
+            //     {
+            //         if (_fromUIPort.Port.CanConnect(port.Port))
+            //         {
+            //             _toUIPort = port;
+            //             break;
+            //         }
+            //     }
+
+            //     _nodeConnectionPreview.EndPreviewConnect();
+
+            //     SwapPort();
+            //     if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
+            //     {
+            //         AddConnectionLine();
+
+            //         AfterAdd();
+            //     }
+
+            //     _fromUIPort = null;
+            //     _toUIPort = null;
+            // }
+        }
+
         public void AddNode(Type nodeType)
         {
+            if (_waitToAddNode)
+            {
+                _waitToAddNode = false;
+                Flow.AddNode(nodeType, _openMenuPosition);
+
+                return;
+            }
+
             Flow.AddNode(nodeType);
         }
 
@@ -293,6 +328,7 @@ namespace Loykas.Scripting
 
             Flow.DeleteNode(node.Node);
 
+            node.DeleteVisual();
             _nodes.Remove(node);
         }
 
@@ -357,16 +393,6 @@ namespace Loykas.Scripting
             _nodeConnectionPreview.ExitPort();
         }
 
-        private void Connect(UINodePort fromUIPort, UINodePort toUIPort)
-        {
-            _fromUIPort = fromUIPort;
-            _toUIPort = toUIPort;
-
-            AddConnectionLine();
-            _fromUIPort = null;
-            _toUIPort = null;
-        }
-
         private void TryConnect()
         {
             if (!_hasPort)
@@ -385,7 +411,8 @@ namespace Loykas.Scripting
 
             if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
             {
-                AddConnectionLine();
+                // AddConnectionLine();
+                AddConnectionToBoard(_fromUIPort, _toUIPort);
 
                 AfterAdd();
             }
@@ -418,43 +445,10 @@ namespace Loykas.Scripting
             }
         }
 
-        private void AddConnectionLine()
-        {
-            GameObject lineObject = new("line");
-
-            lineObject.AddComponent<CanvasRenderer>();
-            UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
-            RectTransform rect = lineObject.AddComponent<RectTransform>();
-
-            lineConnection.Init(this, Flow.GetConnection(_fromUIPort.Port, _toUIPort.Port));
-
-            lineObject.transform.SetParent(_holder, false);
-
-            UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
-            lineRenderer.Rect = rect;
-            lineConnection.LineRenderer = lineRenderer;
-            lineConnection.Source = _fromUIPort;
-            lineConnection.Destination = _toUIPort;
-
-            lineRenderer.Init(4);
-            lineRenderer.Thickness = 6;
-            lineRenderer.CornerRadius = 30;
-            lineRenderer.CornerSegment = 5;
-
-            UpdateLineVisual(lineRenderer, _fromUIPort, _toUIPort);
-
-            _fromUIPort.AddConnection(lineConnection);
-            _toUIPort.AddConnection(lineConnection);
-
-            _lines.Add(lineConnection);
-        }
-
         public void UpdateLines(UILineConnection line)
         {
             UILineRenderer lineRenderer = line.LineRenderer;
             UpdateLineVisual(lineRenderer, line.Source, line.Destination);
-
-            //RecalculateLineBound(lineRenderer);
         }
 
         public void UpdateLineVisual(UILineRenderer line, UINodePort fromPort, UINodePort toPort)
@@ -474,27 +468,11 @@ namespace Loykas.Scripting
             line.UpdateVertex();
         }
 
-        public void RecalculateLineBound(UILineRenderer lineRenderer)
-        {
-            Vector3 center = lineRenderer.transform.position;
-            Vector3 newCenter = (lineRenderer.Points[0] + lineRenderer.Points[3]) / 2.0f + lineRenderer.transform.position;
-            Vector2 size = lineRenderer.Points[3] - lineRenderer.Points[0];
-            size = new(Mathf.Abs(size.x), Mathf.Abs(size.y));
-            Vector3 offset = center - newCenter;
-
-            for (int i = 0; i < lineRenderer.Points.Length; i++)
-            {
-                lineRenderer.Points[i] += offset;
-            }
-
-            lineRenderer.Rect.sizeDelta = size;
-            lineRenderer.Rect.position = newCenter;
-            lineRenderer.UpdateVertex();
-        }
-
+        // handle drag and drop to create node
         public void OnDrop(PointerEventData eventData)
         {
             // Debug.Log($"Drop {eventData.pointerDrag}");
+
             if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
             {
                 Vector3 mousePosition = Mouse.current.position.ReadValue();
@@ -502,6 +480,70 @@ namespace Loykas.Scripting
 
                 Flow.AddGetVariableNode(variableItem.VariableName);
             }
+
+            if (eventData.pointerDrag.TryGetComponent(out FunctionBoardItem functionItem))
+            {
+                Flow.AddFunctionCallNode(functionItem.Function);
+            }
         }
+
+        // private void Connect(UINodePort fromUIPort, UINodePort toUIPort)
+        // {
+        //     _fromUIPort = fromUIPort;
+        //     _toUIPort = toUIPort;
+
+        //     AddConnectionLine();
+        //     _fromUIPort = null;
+        //     _toUIPort = null;
+        // }
+
+        // private void AddConnectionLine()
+        // {
+        //     GameObject lineObject = new("line");
+
+        //     lineObject.AddComponent<CanvasRenderer>();
+        //     UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
+        //     RectTransform rect = lineObject.AddComponent<RectTransform>();
+
+        //     lineConnection.Init(this, Flow.GetConnection(_fromUIPort.Port, _toUIPort.Port));
+
+        //     lineObject.transform.SetParent(_holder, false);
+
+        //     UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
+        //     lineRenderer.Rect = rect;
+        //     lineConnection.LineRenderer = lineRenderer;
+        //     lineConnection.Source = _fromUIPort;
+        //     lineConnection.Destination = _toUIPort;
+
+        //     lineRenderer.Init(4);
+        //     lineRenderer.Thickness = 6;
+        //     lineRenderer.CornerRadius = 30;
+        //     lineRenderer.CornerSegment = 5;
+
+        //     UpdateLineVisual(lineRenderer, _fromUIPort, _toUIPort);
+
+        //     _fromUIPort.AddConnection(lineConnection);
+        //     _toUIPort.AddConnection(lineConnection);
+
+        //     _lines.Add(lineConnection);
+        // }
+
+        // public void RecalculateLineBound(UILineRenderer lineRenderer)
+        // {
+        //     Vector3 center = lineRenderer.transform.position;
+        //     Vector3 newCenter = (lineRenderer.Points[0] + lineRenderer.Points[3]) / 2.0f + lineRenderer.transform.position;
+        //     Vector2 size = lineRenderer.Points[3] - lineRenderer.Points[0];
+        //     size = new(Mathf.Abs(size.x), Mathf.Abs(size.y));
+        //     Vector3 offset = center - newCenter;
+
+        //     for (int i = 0; i < lineRenderer.Points.Length; i++)
+        //     {
+        //         lineRenderer.Points[i] += offset;
+        //     }
+
+        //     lineRenderer.Rect.sizeDelta = size;
+        //     lineRenderer.Rect.position = newCenter;
+        //     lineRenderer.UpdateVertex();
+        // }
     }
 }

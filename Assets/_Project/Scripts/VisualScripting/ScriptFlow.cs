@@ -35,6 +35,8 @@ namespace Loykas.Scripting
 
         public bool ShouldUpdateConnections { get; set; } = false;
 
+        private List<string> _functionNames = new();    // For generate new unique name
+
         private void LateUpdate()
         {
             if (ShouldUpdateConnections)
@@ -61,9 +63,16 @@ namespace Loykas.Scripting
 
         public void AddNode(Type nodeType)
         {
+            AddNode(nodeType, Vector3.zero);
+        }
+
+        public void AddNode(Type nodeType, Vector3 position)
+        {
             ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
 
             node.Flow = this;
+            node.Position = position;
+
             Nodes.Add(node);
             OnNodeAdded?.Invoke(node);
 
@@ -99,6 +108,22 @@ namespace Loykas.Scripting
                     source.Disconnect(destination);
                     destination.Disconnect(source);
 
+
+                    ShouldUpdateConnections = true;
+                    connection.ShouldRemove = true;
+                }
+            }
+        }
+
+        public void Disconnect(IPort port)
+        {
+            for (int i = 0; i < Connections.Count; i++)
+            {
+                NodeConnection connection = Connections[i];
+                if (connection.Source == port || connection.Destination == port)
+                {
+                    connection.Source.Disconnect(connection.Destination);
+                    connection.Destination.Disconnect(connection.Source);
 
                     ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
@@ -240,6 +265,22 @@ namespace Loykas.Scripting
             OnNodeAdded?.Invoke(node);
         }
 
+        public void AddFunctionCallNode(ScriptFunction function)
+        {
+            Debug.Log("Add function call");
+            FunctionCallNode node = ScriptNodeFactory.Instance.CreateNode<FunctionCallNode>();
+
+            function.CallNode = node;
+            node.Init(function);
+
+            node.Flow = this;
+            Nodes.Add(node);
+            OnNodeAdded?.Invoke(node);
+        }
+
+
+        // Function
+
         public ScriptFunction AddFunction()
         {
             string baseName = "NewFunction";
@@ -253,47 +294,32 @@ namespace Loykas.Scripting
             };
 
             Functions.Add(function);
+            AddEnterFuncionNode(function);
 
             return function;
         }
 
+        private void AddEnterFuncionNode(ScriptFunction function)
+        {
+            FunctionEnterNode node = ScriptNodeFactory.Instance.CreateNode<FunctionEnterNode>();
+
+            function.StartNode = node;
+            node.Init(function);
+
+            node.Flow = this;
+            Nodes.Add(node);
+            OnNodeAdded?.Invoke(node);
+        }
+
         private string GetFunctionName(string baseName)
         {
-            string pattern = @$"^{baseName}(?: \((\d+)\))?$";
-
-            Regex regex = new(pattern, RegexOptions.Compiled);
-
-            List<int> ints = new();
-
-            int i = 0;
-
-            for (i = 0; i < Functions.Count; i++)
+            _functionNames.Clear();
+            for (int i = 0; i < Functions.Count; i++)
             {
-                Match match = regex.Match(Functions[i].Name);
-                if (match.Success)
-                {
-                    string value = match.Groups[1].Value;
-                    int number = value == string.Empty ? 0 : int.Parse(value);
-                    ints.Add(number);
-                }
-            }
-            ints.Sort();
-
-            for (i = 0; i < ints.Count; i++)
-            {
-                if (i != ints[i])
-                {
-                    break;
-                }
+                _functionNames.Add(Functions[i].Name);
             }
 
-            // Debug.Log(string.Join(" ", ints));
-
-            if (i == 0)
-            {
-                return baseName;
-            }
-            return string.Concat(baseName, " (", i, ")");
+            return Utils.GenerateUniqueName(baseName, _functionNames);
         }
 
         // Events

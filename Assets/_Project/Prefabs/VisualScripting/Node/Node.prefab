@@ -202,9 +202,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e74eb6cf83cfb7346b29c59a27e0a5bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EnterPort: {fileID: 0}
   Ports: []
   InputPorts: []
-  OutputPorts: []
+  OutputTriggerPorts: []
+  OutputValuePorts: []
   _nodeTitle: {fileID: 3930395652367057755}
   _selectedBorder: {fileID: 7229879760432287941}
   _borderSize: 5

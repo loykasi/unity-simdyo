@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 namespace Loykas.Scripting
 {
-    public class UILineConnection : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IGraphElement
+    public class UILineConnection : MonoBehaviour, IGraphElement, IPointerEnterHandler, IPointerExitHandler
     {
         public NodeBoard Board { get; set; }
         public NodeConnection Connection { get; set; }
