@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             }
             else
             {
-                Debug.Log(value);
+                Debug.Log($"[{Time.frameCount}] {value}");
             }
 
             return Exit;

@@ -18,10 +18,13 @@ namespace Loykas.Scripting
 
         private ScriptFunction _function;
 
+        private bool _firstRun = true;
+        private NodeTask _task = new();
+
         public FunctionCallNode()
         {
             Enter = InputTrigger(nameof(Enter), TriggerFunction);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = OutputTrigger(nameof(Exit)).HideLabel();
         }
 
         public override string GetNameKey()
@@ -40,7 +43,29 @@ namespace Loykas.Scripting
 
         public OutputTrigger TriggerFunction(ScriptFlow flow)
         {
-            return _function.StartNode.Exit;
+            if (_firstRun)
+            {
+                _firstRun = false;
+
+                _task.From = _function.StartNode.Exit;
+                _task.Trigger = _function.StartNode.Exit.Invoke(flow);
+            }
+
+            for (int i = 0; i < _function.Inputs.Count; i++)
+            {
+                FunctionInput argument = _function.Inputs[i];
+                InputValue input = ValueInputs[i];
+                argument.Value = input.GetValue(flow);
+            }
+
+            _task.Invoke(flow);
+            if (!_task.IsDone)
+            {
+                return null;
+            }
+
+            _firstRun = true;
+            return Exit;
         }
 
         private void OnFunctionUpdated()

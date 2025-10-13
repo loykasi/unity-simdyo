@@ -5,13 +5,23 @@ namespace Loykas.Scripting
 {
     public class NodeTask
     {
+        public bool IsDone;
         public OutputTrigger From;
         public InputTrigger Trigger;
 
         public Stack<InputTrigger> _loops = new();
 
+        private bool _shouldRemoveOnDone;
+
+        public NodeTask SetRemoveOnDone(bool value)
+        {
+            _shouldRemoveOnDone = true;
+            return this;
+        }
+
         public void Invoke(ScriptFlow flow)
         {
+            IsDone = false;
             while (Trigger != null)
             {
                 bool isDone = Trigger.Invoke(flow);
@@ -31,7 +41,12 @@ namespace Loykas.Scripting
                     }
                     else
                     {
-                        flow.RemoveTask(this);
+                        if (_shouldRemoveOnDone)
+                        {
+                            flow.RemoveTask(this);
+                        }
+
+                        IsDone = true;
                         return;
                     }
                 }

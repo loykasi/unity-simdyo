@@ -182,6 +182,11 @@ namespace Loykas.Scripting
 
         // handle node task
 
+        public NodeTask GetNodeTask(OutputTrigger from)
+        {
+            return _tasks.Find(t => t.From == from);
+        }
+
         public NodeTask GetNodeTask(InputTrigger trigger)
         {
             return _tasks.Find(t => t.Trigger == trigger);
@@ -200,6 +205,7 @@ namespace Loykas.Scripting
                 From = outputTrigger,
                 Trigger = outputTrigger.Invoke(this)
             };
+            task.SetRemoveOnDone(true);
             _tasks.Add(task);
         }
 

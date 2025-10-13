@@ -67,6 +67,8 @@ namespace Loykas.Scripting
         {
             Name = name;
             OnUpdated?.Invoke();
+
+            StartNode.Init(this);
         }
     }
 }

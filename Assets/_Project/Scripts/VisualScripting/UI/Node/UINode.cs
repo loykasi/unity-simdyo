@@ -81,6 +81,7 @@ namespace Loykas.Scripting
 
             transform.localPosition = Node.Position;
 
+            Debug.Log("Update node title");
             _nodeTitle.SetText(Node.GetNameKey());
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
             _minWidth = labelSize.x + 20f;
