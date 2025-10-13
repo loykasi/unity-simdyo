@@ -82,6 +82,40 @@ namespace Loykas.Scripting
             }
         }
 
+        public void AddNode(Type nodeType, Vector3 position, IPort portToConnect, bool isSourcePort)
+        {
+            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
+
+            node.Flow = this;
+            node.Position = position;
+
+            Nodes.Add(node);
+
+            if (node is EventNode eventNode)
+            {
+                eventNode.Register(this);
+            }
+
+            foreach (IPort port in node.Ports())
+            {
+                if (port.CanConnect(portToConnect))
+                {
+                    if (isSourcePort)
+                    {
+                        TryConnect(portToConnect, port);
+                    }
+                    else
+                    {
+                        TryConnect(port, portToConnect);
+                    }
+
+                    break;
+                }
+            }
+            
+            OnNodeAdded?.Invoke(node);
+        }
+
         public void DeleteNode(ScriptNode node)
         {
             Nodes.Remove(node);
@@ -141,6 +175,10 @@ namespace Loykas.Scripting
             return Connections.Find(c => c.Source == source && c.Destination == destination);
         }
 
+        public IEnumerable<NodeConnection> GetConnections(IScriptNode node)
+        {
+            return Connections.Where(c => c.Source.Node == node || c.Destination.Node == node);
+        }
 
         // handle node task
 
@@ -265,13 +303,14 @@ namespace Loykas.Scripting
             OnNodeAdded?.Invoke(node);
         }
 
-        public void AddFunctionCallNode(ScriptFunction function)
+        public void AddFunctionCallNode(ScriptFunction function, Vector3 position)
         {
             Debug.Log("Add function call");
             FunctionCallNode node = ScriptNodeFactory.Instance.CreateNode<FunctionCallNode>();
 
             function.CallNode = node;
             node.Init(function);
+            node.Position = position;
 
             node.Flow = this;
             Nodes.Add(node);

@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public void Log(object message)
         {
-            _textBox.SetText(_textBox.text + "\n" + message.ToString());
+            //_textBox.SetText(_textBox.text + "\n" + message.ToString());
         }
     }
 }

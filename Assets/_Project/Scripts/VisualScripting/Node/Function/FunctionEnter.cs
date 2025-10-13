@@ -13,17 +13,24 @@ namespace Loykas.Scripting
 
     public class FunctionEnterNode : ScriptNode
     {
-        public InputTrigger Enter;
         public OutputTrigger Exit;
+
+        private ScriptFunction _function;
 
         public FunctionEnterNode()
         {
-            Enter = InputTrigger(nameof(Enter), TriggerFunction);
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
+        }
+
+        public override string GetNameKey()
+        {
+            return _function.Name;
         }
 
         public void Init(ScriptFunction function)
         {
+            _function = function;
+
             for (int i = 0; i < ValueOutputs.Count; i++)
             {
                 Flow.Disconnect(ValueOutputs[i]);

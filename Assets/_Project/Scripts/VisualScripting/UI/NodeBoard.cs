@@ -167,41 +167,31 @@ namespace Loykas.Scripting
         private void OnNodeAdded(ScriptNode scriptNode)
         {
             UINode node = Instantiate(_nodePrefab, _holder);
+            _nodes.Add(node);
 
             node.Board = this;
             node.Node = scriptNode;
-            node.transform.position = _openMenuPosition;
-            scriptNode.Position = node.transform.localPosition;
+            // node.transform.position = _openMenuPosition;
+            // scriptNode.Position = node.transform.localPosition;
 
-            _nodes.Add(node);
+            IEnumerable<NodeConnection> connections = Flow.GetConnections(scriptNode);
 
-            // if (_waitToAddNode)
-            // {
-            //     _waitToAddNode = false;
-            //     _nodeConnectionPreview.EndPreviewConnect();
+            int count = 0;
+            foreach (NodeConnection connection in connections)
+            {
+                count++;
+                UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
+                UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
+                UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
+                UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
 
-            //     foreach (UINodePort port in node.Ports)
-            //     {
-            //         if (_fromUIPort.Port.CanConnect(port.Port))
-            //         {
-            //             _toUIPort = port;
-            //             break;
-            //         }
-            //     }
+                if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
+                {
+                    continue;
+                }
 
-            //     _nodeConnectionPreview.EndPreviewConnect();
-
-            //     SwapPort();
-            //     if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
-            //     {
-            //         AddConnectionLine();
-
-            //         AfterAdd();
-            //     }
-
-            //     _fromUIPort = null;
-            //     _toUIPort = null;
-            // }
+                AddConnectionToBoard(sourcePort, destinationPort);
+            }
         }
 
         public void AddNode(Type nodeType)
@@ -209,12 +199,14 @@ namespace Loykas.Scripting
             if (_waitToAddNode)
             {
                 _waitToAddNode = false;
-                Flow.AddNode(nodeType, _openMenuPosition);
+                
+                bool isSourcePort = _fromUIPort.Edge == NodePortEdge.Right;
+                Flow.AddNode(nodeType, ToBoardPosition(_openMenuPosition), _fromUIPort.Port, isSourcePort);
 
                 return;
             }
 
-            Flow.AddNode(nodeType);
+            Flow.AddNode(nodeType, ToBoardPosition(_openMenuPosition));
         }
 
         public void OnMenuClosed()
@@ -396,7 +388,7 @@ namespace Loykas.Scripting
         private void TryConnect()
         {
             if (!_hasPort)
-            {                
+            {
                 Vector3 mousePosition = Mouse.current.position.ReadValue();
                 _openMenuPosition = mousePosition;
 
@@ -405,9 +397,9 @@ namespace Loykas.Scripting
                 return;
             }
 
-            _nodeConnectionPreview.EndPreviewConnect();
-
             SwapPort();
+
+            _nodeConnectionPreview.EndPreviewConnect();
 
             if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
             {
@@ -483,8 +475,20 @@ namespace Loykas.Scripting
 
             if (eventData.pointerDrag.TryGetComponent(out FunctionBoardItem functionItem))
             {
-                Flow.AddFunctionCallNode(functionItem.Function);
+                Vector3 position = GetMouseBoardPosition();
+                Flow.AddFunctionCallNode(functionItem.Function, position);
             }
+        }
+
+        private Vector3 GetMouseBoardPosition()
+        {
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            return ToBoardPosition(mousePosition);
+        }
+
+        private Vector3 ToBoardPosition(Vector3 worldPosition)
+        {
+            return (worldPosition - _holder.position) * 1f / _holder.localScale.x;
         }
 
         // private void Connect(UINodePort fromUIPort, UINodePort toUIPort)

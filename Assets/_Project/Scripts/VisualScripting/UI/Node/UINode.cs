@@ -81,7 +81,7 @@ namespace Loykas.Scripting
 
             transform.localPosition = Node.Position;
 
-            _nodeTitle.SetText(Node.GetType().Name);
+            _nodeTitle.SetText(Node.GetNameKey());
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
             _minWidth = labelSize.x + 20f;
 
@@ -161,7 +161,7 @@ namespace Loykas.Scripting
             // float outputHeight = _outputHolder.sizeDelta.y;
             // float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
 
-            float inputHeight = inputSize.y;
+            float inputHeight = inputSize.y + (Node.HasInputTrigger ? EnterPort.Rect.sizeDelta.y : 0) + (InputPorts.Count + (Node.HasInputTrigger ? 1 : 0) - 1) * 10f;
             float outputHeight = outputValueSize.y + outputTriggerSize.y + (OutputValuePorts.Count + OutputTriggerPorts.Count - 1) * 10f;
             float bodyHeight = (inputHeight > outputHeight ? inputHeight : outputHeight) + _topBottomPadding;
 

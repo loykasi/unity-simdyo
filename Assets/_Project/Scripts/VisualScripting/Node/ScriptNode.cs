@@ -54,6 +54,11 @@ namespace Loykas.Scripting
             Title = title;
         }
 
+        public virtual string GetNameKey()
+        {
+            return GetType().Name;
+        }
+
         protected InputTrigger InputTrigger(string key, Func<ScriptFlow, OutputTrigger> action)
         {
             InputTrigger inputTrigger = new(key, action)
