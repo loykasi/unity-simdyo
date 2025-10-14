@@ -196,6 +196,7 @@ namespace Loykas.Scripting
 
         public void AddNode(Type nodeType)
         {
+            Debug.Log("Add");
             if (_waitToAddNode)
             {
                 _waitToAddNode = false;
@@ -211,6 +212,9 @@ namespace Loykas.Scripting
 
         public void OnMenuClosed()
         {
+            Debug.Log("Close");
+            _fromUIPort = null;
+            _waitToAddNode = false;
             _nodeConnectionPreview.EndPreviewConnect();
         }
 
@@ -353,13 +357,13 @@ namespace Loykas.Scripting
         public void StartPreviewConnect(UINodePort fromPort, Vector3 startPosition, NodePortEdge edge)
         {
             _fromUIPort = fromPort;
-
-            _nodeConnectionPreview.StartPreviewConnect(startPosition, edge);
+            
+            _nodeConnectionPreview.StartPreviewConnect(ToBoardPosition(startPosition), edge);
         }
 
         public void DragPreviewConnect(Vector3 mousePosition)
         {
-            _nodeConnectionPreview.DragPreviewConnect(mousePosition);
+            _nodeConnectionPreview.DragPreviewConnect(ToBoardPosition(mousePosition));
         }
 
         public void EndPreviewConnect()
@@ -376,7 +380,7 @@ namespace Loykas.Scripting
             _toUIPort = toPort;
             _hasPort = true;
 
-            _nodeConnectionPreview.EnterPort(position);
+            _nodeConnectionPreview.EnterPort(ToBoardPosition(position));
         }
 
         public void OnExitPort()

@@ -21,7 +21,7 @@ namespace Loykas.Scripting
 
         public void StartPreviewConnect(Vector3 startPosition, NodePortEdge edge)
         {
-            _startPosition = startPosition - _previewLine.transform.position;
+            _startPosition = startPosition;
             _edge = edge;
             _previewLine.gameObject.SetActive(true);
 
@@ -40,7 +40,7 @@ namespace Loykas.Scripting
 
         public void DragPreviewConnect(Vector3 mousePosition)
         {
-            Vector3 endPosition = mousePosition - _previewLine.transform.position;
+            Vector3 endPosition = mousePosition;
             float dist = (mousePosition - _startPosition).sqrMagnitude;
             float delta = dist / (_maxDistance * _maxDistance);
             float radius = Mathf.Lerp(_cornerRadiusMinMax.x, _cornerRadiusMinMax.y, delta);
@@ -69,8 +69,7 @@ namespace Loykas.Scripting
 
         public void EnterPort(Vector3 position)
         {
-            Vector3 localPosition = position - _connectedPreviewLine.transform.position;
-            // _hasPort = true;
+            Vector3 localPosition = position;
             _connectedPreviewLine.gameObject.SetActive(true);
 
             switch (_edge)
