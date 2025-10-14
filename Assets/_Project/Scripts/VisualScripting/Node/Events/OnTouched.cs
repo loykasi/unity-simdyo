@@ -3,15 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "On Touched", menuName = "Scriptable Objects/Visual Scripting/Node/OnTouched")]
-    public class OnTouched : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new OnTouchedNode(Title);
-        }
-    }
-
     public class OnTouchedNode : EventNode
     {
         public OutputValue OtherEntity;

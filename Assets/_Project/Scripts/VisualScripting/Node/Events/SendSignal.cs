@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "SendSignal", menuName = "Scriptable Objects/Visual Scripting/Node/SendSignal")]
-    public class SendSignal : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new SendSignalNode(Title);
-        }
-    }
-
     class SendSignalNode : ScriptNode
     {
         public InputTrigger Enter;

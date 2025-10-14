@@ -3,15 +3,6 @@ using UnityEngine.InputSystem;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "OnKeyPressedNode", menuName = "Scriptable Objects/Visual Scripting/Node/KeyPressed")]
-    public class OnKeyPressed : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new OnKeyPressedNode(Title);
-        }
-    }
-
     public class OnKeyPressedNode : EventNode
     {
         public InputValue KeyCode;

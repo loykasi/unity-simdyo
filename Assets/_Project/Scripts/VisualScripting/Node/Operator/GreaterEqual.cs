@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "GreaterEqual", menuName = "Scriptable Objects/Visual Scripting/Node/GreaterEqual")]
-public class GreaterEqual : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new GreaterEqualNode(Title);
-    }
-}
-
     class GreaterEqualNode : ScriptNode
     {
         public InputValue A;

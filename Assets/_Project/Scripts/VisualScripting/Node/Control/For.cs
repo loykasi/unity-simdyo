@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "For", menuName = "Scriptable Objects/Visual Scripting/Node/For")]
-    public class For : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new ForNode(Title);
-        }
-    }
 
     class ForNode : ScriptNode
     {

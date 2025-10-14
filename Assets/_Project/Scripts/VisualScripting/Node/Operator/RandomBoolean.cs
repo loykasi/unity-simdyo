@@ -2,18 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "RandomBoolean", menuName = "Scriptable Objects/Visual Scripting/Node/RandomBoolean")]
-    public class RandomBoolean : ScriptNodeData
-    {
-        public string InputA;
-        public string InputB;
-
-        public override ScriptNode Create()
-        {
-            return new RandomBooleanNode(Title);
-        }
-    }
-
     class RandomBooleanNode : ScriptNode
     {
         public InputValue Chance;

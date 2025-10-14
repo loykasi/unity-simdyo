@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "Branch", menuName = "Scriptable Objects/Visual Scripting/Node/Branch")]
-    public class Branch : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new BranchNode(Title);
-        }
-    }
 
     class BranchNode : ScriptNode
     {

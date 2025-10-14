@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "Or", menuName = "Scriptable Objects/Visual Scripting/Node/Or")]
-public class Or : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new OrNode(Title);
-    }
-}
 
     class OrNode : ScriptNode
     {

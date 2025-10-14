@@ -3,15 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "InsertItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Insert")]
-    public class InsertListItem : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new InsertListItemNode(Title);
-        }
-    }
-
     class InsertListItemNode : ScriptNode
     {
         public InputTrigger Enter;

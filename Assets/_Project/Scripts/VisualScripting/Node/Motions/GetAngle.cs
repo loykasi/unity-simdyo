@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "GetAngle", menuName = "Scriptable Objects/Visual Scripting/Node/Get Angle")]
-    public class GetAngle : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new GetAngleNode(Title);
-        }
-    }
 
     class GetAngleNode : ScriptNode
     {

@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "Modulo", menuName = "Scriptable Objects/Visual Scripting/Node/Modulo")]
-public class Modulo : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new ModuloNode(Title);
-    }
-}
-
     class ModuloNode : ScriptNode
     {
         public InputValue A;

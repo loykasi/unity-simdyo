@@ -4,14 +4,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "SetItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Set Item")]
-    public class SetListItem : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new SetListItemNode(Title);
-        }
-    }
 
     class SetListItemNode : ScriptNode
     {

@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "GetPosition", menuName = "Scriptable Objects/Visual Scripting/Node/Get Position")]
-    public class GetPosition : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new GetPositionNode(Title);
-        }
-    }
 
     class GetPositionNode : ScriptNode
     {

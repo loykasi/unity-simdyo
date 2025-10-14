@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "Join", menuName = "Scriptable Objects/Visual Scripting/Node/Join")]
-    public class Join : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new JoinNode(Title);
-        }
-    }
 
     class JoinNode : ScriptNode
     {

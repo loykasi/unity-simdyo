@@ -2,17 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "RandomNumber", menuName = "Scriptable Objects/Visual Scripting/Node/RandomNumber")]
-    public class RandomNumber : ScriptNodeData
-    {
-        public string InputA;
-        public string InputB;
-
-        public override ScriptNode Create()
-        {
-            return new RandomNumberNode(Title);
-        }
-    }
 
     class RandomNumberNode : ScriptNode
     {

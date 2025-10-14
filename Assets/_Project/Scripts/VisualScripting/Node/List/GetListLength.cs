@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "GetListLength", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Length")]
-    public class GetListLength : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new GetListLengthNode(Title);
-        }
-    }
 
     class GetListLengthNode : ScriptNode
     {

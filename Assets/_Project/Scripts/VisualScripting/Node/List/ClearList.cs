@@ -4,14 +4,7 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "ClearList", menuName = "Scriptable Objects/Visual Scripting/Node/List/Clear")]
-    public class ClearList : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new ClearListNode(Title);
-        }
-    }
+
 
     class ClearListNode : ScriptNode
     {

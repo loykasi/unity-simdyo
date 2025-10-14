@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "Break", menuName = "Scriptable Objects/Visual Scripting/Node/Break")]
-    public class Break : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new BreakNode(Title);
-        }
-    }
-
     class BreakNode : ScriptNode
     {
         public InputTrigger Enter;

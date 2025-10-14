@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "Divide", menuName = "Scriptable Objects/Visual Scripting/Node/Divide")]
-public class Divide : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new DivideNode(Title);
-    }
-}
-
     class DivideNode : ScriptNode
     {
         public InputValue A;

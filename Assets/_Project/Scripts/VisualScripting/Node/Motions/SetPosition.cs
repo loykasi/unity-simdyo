@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "SetPosition", menuName = "Scriptable Objects/Visual Scripting/Node/Set Position")]
-    public class SetPosition : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new SetPositionNode(Title);
-        }
-    }
 
     class SetPositionNode : ScriptNode
     {

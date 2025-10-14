@@ -3,14 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "Update", menuName = "Scriptable Objects/Visual Scripting/Node/Update")]
-    public class Update : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new UpdateNode(Title);
-        }
-    }
 
     [ScriptNode(ScriptNodeCategory.Event)]
     public class UpdateNodeContent : ScriptNodeContent

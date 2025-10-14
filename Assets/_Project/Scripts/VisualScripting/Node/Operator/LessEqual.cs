@@ -2,15 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "LessEqual", menuName = "Scriptable Objects/Visual Scripting/Node/LessEqual")]
-public class LessEqual : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new LessEqualNode(Title);
-    }
-}
-
     class LessEqualNode : ScriptNode
     {
         public InputValue A;

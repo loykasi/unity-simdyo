@@ -2,14 +2,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-[CreateAssetMenu(fileName = "Subtract", menuName = "Scriptable Objects/Visual Scripting/Node/Subtract")]
-public class Subtract : ScriptNodeData
-{
-    public override ScriptNode Create()
-    {
-        return new SubtractNode(Title);
-    }
-}
 
     class SubtractNode : ScriptNode
     {

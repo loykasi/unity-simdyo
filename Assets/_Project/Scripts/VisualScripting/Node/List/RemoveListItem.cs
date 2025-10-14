@@ -4,14 +4,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "RemoveItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Remove Item")]
-    public class RemoveListItem : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new RemoveListItemNode(Title);
-        }
-    }
 
     class RemoveListItemNode : ScriptNode
     {

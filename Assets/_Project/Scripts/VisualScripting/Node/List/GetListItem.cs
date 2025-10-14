@@ -3,15 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "GetListItem", menuName = "Scriptable Objects/Visual Scripting/Node/List/Get Item")]
-    public class GetListItem : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new GetListItemNode(Title);
-        }
-    }
-
     class GetListItemNode : ScriptNode
     {
         public InputValue ListInput;
