@@ -3,15 +3,6 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [CreateAssetMenu(fileName = "StartNode", menuName = "Scriptable Objects/Visual Scripting/Node/Start")]
-    public class StartNodeData : ScriptNodeData
-    {
-        public override ScriptNode Create()
-        {
-            return new StartNode(Title);
-        }
-    }
-
     [ScriptNode(ScriptNodeCategory.Event)]
     public class StartNodeContent : ScriptNodeContent
     {

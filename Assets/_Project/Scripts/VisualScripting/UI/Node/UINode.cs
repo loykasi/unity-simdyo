@@ -53,6 +53,7 @@ namespace Loykas.Scripting
         private float _minWidth = 50f;
         private readonly float _topBottomPadding = 20f;
 
+
         private void SetNode(ScriptNode node)
         {
             if (_node != null)
@@ -81,8 +82,11 @@ namespace Loykas.Scripting
 
             transform.localPosition = Node.Position;
 
-            Debug.Log("Update node title");
-            _nodeTitle.SetText(Node.GetNameKey());
+            // title
+            string titleKey = Node.GetNameKey();
+            string title = GlobalLocalization.Instance.GetValue(titleKey);
+            _nodeTitle.SetText(title);
+            
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
             _minWidth = labelSize.x + 20f;
 

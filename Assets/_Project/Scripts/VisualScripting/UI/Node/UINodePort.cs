@@ -40,7 +40,9 @@ namespace Loykas.Scripting
             {
                 if (Port.ShouldShowLabel)
                 {
-                    _label.text = Port.Key;
+                    string key = Port.Node.GetNameKey() + "." + Port.Key;
+                    string name = GlobalLocalization.Instance.GetValue(key);
+                    _label.text = name;
                 }
                 else
                 {
@@ -55,7 +57,9 @@ namespace Loykas.Scripting
             {
                 if (Port.ShouldShowLabel)
                 {
-                    _label.text = Port.Key;
+                    string key = Port.Node.GetNameKey() + "." + Port.Key;
+                    string name = GlobalLocalization.Instance.GetValue(key);
+                    _label.text = name;
                 }
                 else
                 {

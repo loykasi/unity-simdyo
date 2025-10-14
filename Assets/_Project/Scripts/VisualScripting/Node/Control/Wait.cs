@@ -22,7 +22,7 @@ namespace Loykas.Scripting
         public WaitNode()
         {
             Enter = InputTrigger(nameof(Enter), Wait);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = OutputTrigger(nameof(Exit)).HideLabel();
 
             WaitTime = InputValue(nameof(WaitTime), ScriptDataType.Single(DataType.Number)).UseInput();
         }

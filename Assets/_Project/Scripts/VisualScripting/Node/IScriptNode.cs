@@ -10,5 +10,6 @@ namespace Loykas.Scripting
         ScriptFlow Flow { get; set; }
 
         void UpdateNode();
+        string GetNameKey();
     }
 }
