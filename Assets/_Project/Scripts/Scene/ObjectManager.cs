@@ -141,9 +141,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entityData.Color = entity.CurrentColor;
             entityData.TextureSlot = entity.TextureSlot;
 
-            entityData.Script.Nodes = entity.Script.Nodes;
-            entityData.Script.Connections = entity.Script.Connections;
-            entityData.Script.Variables = entity.Script.Variables;
+            ScriptSaveHandler.Save(entityData.Script, entity.Script);
+
+            // entityData.Script.Nodes = entity.Script.Nodes;
+            // entityData.Script.Connections = entity.Script.Connections;
+            // entityData.Script.Variables = entity.Script.Variables;
 
             data.Scene.Entities.Add(entityData);
         }
@@ -171,9 +173,12 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     {
                         box.SetTexture(boxData.TextureSlot, AssetController.Instance.Textures[boxData.TextureSlot]);
                     }
-                    box.Script.Nodes.AddRange(entity.Script.Nodes);
-                    box.Script.Connections.AddRange(entity.Script.Connections);
-                    box.Script.Variables = entity.Script.Variables;
+                    
+                    ScriptSaveHandler.Load(boxData.Script, box.Script);
+                    
+                    // box.Script.Nodes.AddRange(entity.Script.Nodes);
+                    // box.Script.Connections.AddRange(entity.Script.Connections);
+                    // box.Script.Variables = entity.Script.Variables;
                     break;
                 case EntityType.Circle:
                     CircleEntityData circleData = (CircleEntityData)entity;
@@ -183,16 +188,19 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     {
                         circle.SetTexture(circleData.TextureSlot, AssetController.Instance.Textures[circleData.TextureSlot]);
                     }
-                    circle.Script.Nodes = entity.Script.Nodes;
-                    circle.Script.Connections = entity.Script.Connections;
-                    circle.Script.Variables = entity.Script.Variables;
+
+                    ScriptSaveHandler.Load(circleData.Script, circle.Script);
+                    
+                    // circle.Script.Nodes = entity.Script.Nodes;
+                    // circle.Script.Connections = entity.Script.Connections;
+                    // circle.Script.Variables = entity.Script.Variables;
                     break;
             }
         }
 
-        foreach (var entity in SceneEntities)
-        {
-            entity.Script.Load();
-        }
+        // foreach (var entity in SceneEntities)
+        // {
+        //     entity.Script.Load();
+        // }
     }
 }

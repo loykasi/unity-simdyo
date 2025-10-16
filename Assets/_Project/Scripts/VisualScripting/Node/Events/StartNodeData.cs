@@ -16,11 +16,6 @@ namespace Loykas.Scripting
         {
         }
 
-        public StartNode(string title) : base(title)
-        {
-        }
-
-
         public override EventHook Hook => EventHook.Start;
     }
 }

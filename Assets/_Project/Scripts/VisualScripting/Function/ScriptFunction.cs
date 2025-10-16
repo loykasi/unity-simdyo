@@ -19,7 +19,6 @@ namespace Loykas.Scripting
         // Node references
         public FunctionEnterNode StartNode;
         public ScriptNode ReturnNode;
-        public ScriptNode CallNode;
 
         public void AddInput(string name)
         {

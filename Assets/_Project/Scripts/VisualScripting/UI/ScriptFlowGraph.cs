@@ -22,6 +22,7 @@ namespace Loykas.Scripting
         public void Open(ScriptFlow flow)
         {
             Flow = flow;
+            _functionBoard.Init();
             _variableBoard.Init();
             _nodeBoard.Init();
         }

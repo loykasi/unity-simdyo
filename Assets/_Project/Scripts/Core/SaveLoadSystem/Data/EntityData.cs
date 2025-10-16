@@ -8,5 +8,5 @@ public class EntityData
     public Quaternion Rotation;
     public ColorHSV Color;
     public int TextureSlot;
-    public ScriptElementData Script = new();
+    public ScriptFlowData Script = new();
 }

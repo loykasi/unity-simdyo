@@ -70,6 +70,8 @@ namespace Loykas.Scripting
         {
             ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
 
+            // Debug.Log($"{node.GetType().FullName} | {node.GetType().Assembly}");
+
             node.Flow = this;
             node.Position = position;
 
@@ -314,7 +316,6 @@ namespace Loykas.Scripting
             Debug.Log("Add function call");
             FunctionCallNode node = ScriptNodeFactory.Instance.CreateNode<FunctionCallNode>();
 
-            function.CallNode = node;
             node.Init(function);
             node.Position = position;
 

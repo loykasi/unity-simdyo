@@ -1,7 +1,7 @@
 using Loykas.Scripting;
 using UnityEngine;
 
-public class EngineManager : Singleton<EngineManager>
+public class EngineManager : Singleton<EngineManager>, ISaveable
 {
     [Header("Camera")]
     public float EditorCameraHeight { get; set; } = 5f;
@@ -13,6 +13,9 @@ public class EngineManager : Singleton<EngineManager>
     public Vector2 ZoomHeighLimit;
 
     public bool IsRunning => _isRunning;
+
+    public int SaveLoadOrder { get; set; } = 0;
+
     private bool _isRunning = false;
 
     [Header("Global")]
@@ -87,5 +90,15 @@ public class EngineManager : Singleton<EngineManager>
         {
             entities[i].OnUpdate();
         }
+    }
+
+    public void SaveData(GameData data)
+    {
+        ScriptSaveHandler.Save(data.Scene.GlobalScript, GlobalScript);
+    }
+
+    public void LoadData(GameData data)
+    {
+        ScriptSaveHandler.Load(data.Scene.GlobalScript, GlobalScript);
     }
 }

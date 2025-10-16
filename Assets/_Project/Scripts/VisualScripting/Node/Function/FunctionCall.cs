@@ -16,7 +16,7 @@ namespace Loykas.Scripting
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
-        private ScriptFunction _function;
+        public ScriptFunction Function;
 
         private bool _firstRun = true;
         private NodeTask _task = new();
@@ -29,14 +29,14 @@ namespace Loykas.Scripting
 
         public override string GetNameKey()
         {
-            return _function.Name;
+            return Function.Name;
         }
 
         public void Init(ScriptFunction function)
         {
-            _function = function;
+            Function = function;
 
-            _function.OnUpdated += OnFunctionUpdated;
+            Function.OnUpdated += OnFunctionUpdated;
 
             OnFunctionUpdated();
         }
@@ -47,13 +47,13 @@ namespace Loykas.Scripting
             {
                 _firstRun = false;
 
-                _task.From = _function.StartNode.Exit;
-                _task.Trigger = _function.StartNode.Exit.Invoke(flow);
+                _task.From = Function.StartNode.Exit;
+                _task.Trigger = Function.StartNode.Exit.Invoke(flow);
             }
 
-            for (int i = 0; i < _function.Inputs.Count; i++)
+            for (int i = 0; i < Function.Inputs.Count; i++)
             {
-                FunctionInput argument = _function.Inputs[i];
+                FunctionInput argument = Function.Inputs[i];
                 InputValue input = ValueInputs[i];
                 argument.Value = input.GetValue(flow);
             }
@@ -76,9 +76,9 @@ namespace Loykas.Scripting
             }
             ValueInputs.Clear();
 
-            for (int i = 0; i < _function.Inputs.Count; i++)
+            for (int i = 0; i < Function.Inputs.Count; i++)
             {
-                FunctionInput argument = _function.Inputs[i];
+                FunctionInput argument = Function.Inputs[i];
                 InputValue input = InputValue
                 (
                     argument.Name,

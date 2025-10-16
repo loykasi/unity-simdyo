@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class SceneMenuController : MonoBehaviour
+public class SceneMenuController : MonoBehaviour, ISaveable
 {
     [SerializeField] private Color BackgroundColor;
     private CameraSettings _settings = new();
@@ -10,6 +10,8 @@ public class SceneMenuController : MonoBehaviour
     [SerializeField] private SpriteRenderer _sceneCameraArea;
     private Camera _editorCamera => EngineManager.Instance.EditorCamera;
     private Camera _sceneCamera => EngineManager.Instance.SceneCamera;
+
+    public int SaveLoadOrder { get; set; } = 0;
 
     private void Awake()
     {
@@ -43,6 +45,11 @@ public class SceneMenuController : MonoBehaviour
             ObjectManager.Instance.OnObjectSelected -= OnObjectSelected;
             ObjectManager.Instance.OnObjectDeselected -= OnObjectDeselected;
         }
+    }
+
+    public void UpdatePosition(Vector2 position)
+    {
+        UpdatePosition(position.x, position.y);
     }
 
     public void UpdatePosition(float x, float y)
@@ -80,5 +87,19 @@ public class SceneMenuController : MonoBehaviour
     public void OpenGlobalScript()
     {
         ScriptGraph.Instance.ToggleGlobalScriptPanel();
+    }
+
+    public void SaveData(GameData data)
+    {
+        data.Scene.BackgroundColor = _settings.Color;
+        data.Scene.CameraPosition = _settings.Position;
+        data.Scene.CameraSize = _settings.Size;
+    }
+
+    public void LoadData(GameData data)
+    {
+        UpdatePosition(data.Scene.CameraPosition);
+        UpdateSize(data.Scene.CameraSize);
+        OnColorUpdated(data.Scene.BackgroundColor);
     }
 }

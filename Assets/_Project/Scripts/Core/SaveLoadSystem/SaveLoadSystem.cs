@@ -18,6 +18,7 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
 
     public void SaveScene()
     {
+        _gameData.Clear();
         foreach (var item in _saveables)
         {
             item.SaveData(_gameData);

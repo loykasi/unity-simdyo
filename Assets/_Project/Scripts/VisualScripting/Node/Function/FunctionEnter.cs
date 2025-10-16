@@ -15,7 +15,7 @@ namespace Loykas.Scripting
     {
         public OutputTrigger Exit;
 
-        private ScriptFunction _function;
+        public ScriptFunction Function;
 
         public FunctionEnterNode()
         {
@@ -24,12 +24,12 @@ namespace Loykas.Scripting
 
         public override string GetNameKey()
         {
-            return _function.Name;
+            return Function.Name;
         }
 
         public void Init(ScriptFunction function)
         {
-            _function = function;
+            Function = function;
 
             for (int i = 0; i < ValueOutputs.Count; i++)
             {

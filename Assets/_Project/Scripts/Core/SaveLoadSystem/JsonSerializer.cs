@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Loykas.Scripting;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 public class JsonSerializer : ISerializer
 {
@@ -15,6 +17,7 @@ public class JsonSerializer : ISerializer
         _settings.Converters.Add(new VariableConverter());
         _settings.Converters.Add(new SceneEntityConverter());
         _settings.Converters.Add(new StringEnumConverter());
+        _settings.Converters.Add(new ScriptNodeConverter());
         _settings.Formatting = Formatting.Indented;
         _settings.TypeNameHandling = TypeNameHandling.None;
 
@@ -25,7 +28,13 @@ public class JsonSerializer : ISerializer
                 typeof(InputTrigger),
                 typeof(OutputTrigger),
                 typeof(InputValue),
-                typeof(OutputValue)
+                typeof(OutputValue),
+                typeof(List<InputTrigger>),
+                typeof(List<OutputTrigger>),
+                typeof(List<InputValue>),
+                typeof(List<OutputValue>),
+                typeof(ScriptFlow),
+                typeof(UnityAction),
             }
         );
     }

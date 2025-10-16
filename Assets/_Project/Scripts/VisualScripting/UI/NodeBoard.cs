@@ -196,7 +196,6 @@ namespace Loykas.Scripting
 
         public void AddNode(Type nodeType)
         {
-            Debug.Log("Add");
             if (_waitToAddNode)
             {
                 _waitToAddNode = false;
@@ -212,7 +211,7 @@ namespace Loykas.Scripting
 
         public void OnMenuClosed()
         {
-            Debug.Log("Close");
+
             _fromUIPort = null;
             _waitToAddNode = false;
             _nodeConnectionPreview.EndPreviewConnect();
