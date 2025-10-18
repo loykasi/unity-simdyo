@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using SFB;
 using UnityEngine;
 
 public class SaveLoadSystem : Singleton<SaveLoadSystem>
@@ -25,6 +26,41 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
         }
 
         _dataService.Save(Name, _gameData);
+    }
+
+    public void Save()
+    {
+        string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
+        
+        Debug.Log($"Save at: {path}");
+        _dataService.SetPath(path);
+        
+        _gameData.Clear();
+        foreach (var item in _saveables)
+        {
+            item.SaveData(_gameData);
+        }
+
+        _dataService.Save(Name, _gameData);
+    }
+
+    public void Load()
+    {
+        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+        if (paths.Length == 0)
+        {
+            return;
+        }
+
+        string path = paths[0];
+
+        _dataService.SetPath(path);
+        _dataService.Load(Name, _gameData);
+
+        foreach (var item in _saveables)
+        {
+            item.LoadData(_gameData);
+        }
     }
 
     public void LoadScene()

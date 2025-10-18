@@ -12,8 +12,8 @@ public class PanTool : ITool
     private bool _isZooming;
     private float TargetHeight
     {
-        get => EngineManager.Instance.EditorCameraHeight;
-        set => EngineManager.Instance.EditorCameraHeight = value;
+        get => SceneManager.Instance.EditorCameraHeight;
+        set => SceneManager.Instance.EditorCameraHeight = value;
     }
 
     public virtual void Disable()

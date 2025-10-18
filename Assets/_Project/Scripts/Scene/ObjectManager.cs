@@ -104,6 +104,22 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return SceneEntities.Find(entity => entity.ID == id);
     }
 
+    public void ResetState()
+    {
+        if (SelectedObject != null)
+        {
+            SelectedObject.Deselect();
+            SelectedObject = null;
+        }
+
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            Destroy(SceneEntities[i].gameObject);
+        }
+
+        SceneEntities.Clear();
+    }
+
     public void DeleteEntity(SceneEntity entity)
     {
         if (SelectedObject == entity)

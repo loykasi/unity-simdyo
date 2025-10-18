@@ -8,6 +8,7 @@ public class DataService : IDataService
     private ISerializer _serializer;
 
     private readonly string _dataPath = "C:\\Users\\Admin\\Desktop\\_\\playground\\unity";
+    private string _path;
 
     private readonly string _dataExtension = ".zip";
     private readonly string _sceneExtension = ".json";
@@ -18,9 +19,15 @@ public class DataService : IDataService
         _serializer = serializer;
     }
 
+    public void SetPath(string path)
+    {
+        _path = path;
+    }
+
     private string GetPath(string name)
     {
-        return Path.Combine(_dataPath, string.Concat(name, _dataExtension));
+        return _path;
+        // return Path.Combine(_path, string.Concat(name, _dataExtension));
     }
 
     public void Save(string name, GameData data)

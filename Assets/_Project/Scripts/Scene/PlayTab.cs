@@ -10,18 +10,18 @@ public class PlayTab : MonoBehaviour
     public void PlayToggle()
     {
         _isRunning = !_isRunning;
-        if (_isRunning)
-        {
-            EngineManager.Instance.Play();
+        // if (_isRunning)
+        // {
+        //     EngineManager.Instance.Play();
 
-            _playButtonTextField.text = "Stop";
-        }
-        else
-        {
-            EngineManager.Instance.Stop();
+        //     _playButtonTextField.text = "Stop";
+        // }
+        // else
+        // {
+        //     EngineManager.Instance.Stop();
 
-            _playButtonTextField.text = "Play";
-        }
+        //     _playButtonTextField.text = "Play";
+        // }
     }
 
 

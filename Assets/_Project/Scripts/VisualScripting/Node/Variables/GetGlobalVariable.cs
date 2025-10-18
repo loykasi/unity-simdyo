@@ -31,13 +31,13 @@ namespace Loykas.Scripting
         private object Get(ScriptFlow vs)
         {
             string name = Input.GetValue(vs).ToString();
-            return EngineManager.Instance.GlobalScript.GetVariable(name).Value;
+            return SceneManager.Instance.GlobalScript.GetVariable(name).Value;
         }
 
         private void OnInputValueChanged()
         {
             string name = Input.GetValue(Flow).ToString();
-            Variable variable = EngineManager.Instance.GlobalScript.GetVariable(name);
+            Variable variable = SceneManager.Instance.GlobalScript.GetVariable(name);
 
             if (variable == null)
             {

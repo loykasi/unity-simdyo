@@ -89,6 +89,13 @@ public class SceneMenuController : MonoBehaviour, ISaveable
         ScriptGraph.Instance.ToggleGlobalScriptPanel();
     }
 
+    public void ResetState()
+    {
+        UpdatePosition(Vector2.zero);
+        UpdateSize(5f);
+        OnColorUpdated(new ColorHSV(BackgroundColor));
+    }
+
     public void SaveData(GameData data)
     {
         data.Scene.BackgroundColor = _settings.Color;

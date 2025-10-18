@@ -10,7 +10,7 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
     public void ToggleGlobalScriptPanel()
     {
-        ScriptFlow flow = EngineManager.Instance.GlobalScript;
+        ScriptFlow flow = SceneManager.Instance.GlobalScript;
         TogglePanel(flow);
     }
 

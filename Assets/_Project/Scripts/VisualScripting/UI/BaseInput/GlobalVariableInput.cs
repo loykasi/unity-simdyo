@@ -15,7 +15,7 @@ namespace Loykas.Scripting
 
         public void Init()
         {
-            List<string> options = EngineManager.Instance.GlobalScript.GetVariableOptions();
+            List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
 
             Dropdown.ClearOptions();
             Dropdown.AddOptions(options);

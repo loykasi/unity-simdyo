@@ -37,6 +37,16 @@ namespace Loykas.Scripting
 
         private List<string> _functionNames = new();    // For generate new unique name
 
+        public void ResetState()
+        {
+            Nodes.Clear();
+            Connections.Clear();
+            Functions.Clear();
+
+            _eventNodes.Clear();
+            _variables.Clear();
+        }
+
         private void LateUpdate()
         {
             if (ShouldUpdateConnections)
