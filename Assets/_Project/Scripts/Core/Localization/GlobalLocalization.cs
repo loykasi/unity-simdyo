@@ -12,6 +12,11 @@ public class GlobalLocalization : Singleton<GlobalLocalization>
         yield return LocalizationSettings.InitializationOperation;
     }
 
+    public void SetLanguage(int id)
+    {
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[id];
+    }
+
     public string GetValue(string key)
     {
         VisualScriptingTable = LocalizationSettings.StringDatabase.GetTable("VisualScripting");
