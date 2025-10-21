@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 namespace Loykas.Scripting
 {
     public class GlobalVariableNameInput : BaseInput
     {
         public TMP_Dropdown Dropdown;
+        private string _value;
 
         private void Awake()
         {
@@ -24,20 +26,21 @@ namespace Loykas.Scripting
         private void OnValueChanged(int index)
         {
             string name = Dropdown.options[index].text;
+            if (name.Equals("Select..."))
+            {
+                name = string.Empty;
+            }
             OnSubmit?.Invoke(name);
         }
 
         public override object GetValue()
         {
-            if (Dropdown.options.Count == 0)
-            {
-                return string.Empty;
-            }
-            return Dropdown.options[Dropdown.value].text;
+            return _value;
         }
 
         public override void SetValue(object value)
         {
+            _value = (string)value;
             string variableName = (string)value;
             if (Dropdown.options.Count > 0)
             {

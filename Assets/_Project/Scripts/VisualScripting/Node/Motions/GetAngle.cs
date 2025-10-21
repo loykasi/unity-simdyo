@@ -7,7 +7,7 @@ namespace Loykas.Scripting
     {
         public OutputValue Value;
 
-        public GetAngleNode(string title) : base(title)
+        public GetAngleNode()
         {
             Value = OutputValue(nameof(Value), Get);
         }

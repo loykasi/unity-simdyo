@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public InputValue Value;
 
-        public SetAngleNode(string title) : base(title)
+        public SetAngleNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));

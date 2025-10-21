@@ -14,7 +14,7 @@ namespace Loykas.Scripting
         public InputValue Index;
         public OutputValue Output;
 
-        public RemoveListItemNode(string title) : base(title)
+        public RemoveListItemNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));

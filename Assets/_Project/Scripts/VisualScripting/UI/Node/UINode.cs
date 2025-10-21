@@ -83,8 +83,12 @@ namespace Loykas.Scripting
             transform.localPosition = Node.Position;
 
             // title
-            string titleKey = Node.GetNameKey();
-            string title = GlobalLocalization.Instance.GetValue(titleKey);
+            string title = Node.GetNameKey();
+            if (Node.ShouldLocalized)
+            {
+                Debug.Log(title);
+                title = GlobalLocalization.Instance.GetValue(title);   
+            }
             _nodeTitle.SetText(title);
             
             Vector2 labelSize = _nodeTitle.GetPreferredValues();

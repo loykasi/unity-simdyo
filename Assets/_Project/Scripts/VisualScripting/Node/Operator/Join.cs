@@ -10,7 +10,7 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public JoinNode(string title) : base(title)
+        public JoinNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any)).UseInput();

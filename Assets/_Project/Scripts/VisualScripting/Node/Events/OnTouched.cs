@@ -15,7 +15,7 @@ namespace Loykas.Scripting
         //private Vector3 _normal;
         private Vector3 _position;
 
-        public OnTouchedNode(string title) : base(title)
+        public OnTouchedNode()
         {
             OtherEntity = OutputValue(nameof(OtherEntity), ScriptDataType.Single(DataType.Entity), (flow) => _otherEntity);
 

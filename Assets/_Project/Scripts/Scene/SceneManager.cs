@@ -24,18 +24,14 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Play()
     {
-        StartGame();
-    }
-
-    private void StartGame()
-    {
         Time.timeScale = 1;
         EditorCamera.gameObject.SetActive(false);
         SceneCamera.gameObject.SetActive(true);
         _playModeCanvas.SetActive(true);
+
+        GlobalScript.OnSceneStart();
         
         var entities = ObjectManager.Instance.SceneEntities;
-        // first loop to init all scene object
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].OnSceneStart();
@@ -50,6 +46,24 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         _isRunning = true;
     }
 
+    public void Stop()
+    {
+        Time.timeScale = 0;
+        EditorCamera.gameObject.SetActive(true);
+        SceneCamera.gameObject.SetActive(false);
+        _playModeCanvas.SetActive(false);
+
+        GlobalScript.OnSceneStop();
+
+        var entities = ObjectManager.Instance.SceneEntities;
+        for (int i = 0; i < entities.Count; i++)
+        {
+            entities[i].OnSceneStop();
+        }
+
+        _isRunning = false;
+    }
+    
     private void UpdateGame()
     {
         if (!_isRunning)

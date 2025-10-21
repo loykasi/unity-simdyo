@@ -14,7 +14,7 @@ namespace Loykas.Scripting
         public InputValue Item;
         public OutputValue Output;
 
-        public AddListItemNode(string title) : base(title)
+        public AddListItemNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));

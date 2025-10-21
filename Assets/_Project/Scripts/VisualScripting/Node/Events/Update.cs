@@ -16,10 +16,6 @@ namespace Loykas.Scripting
     {
         public UpdateNode() { }
 
-        public UpdateNode(string title) : base(title)
-        {
-        }
-
         public override EventHook Hook => EventHook.Update;
     }
 }

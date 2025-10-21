@@ -10,7 +10,7 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public RandomNumberNode(string title) : base(title)
+        public RandomNumberNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();

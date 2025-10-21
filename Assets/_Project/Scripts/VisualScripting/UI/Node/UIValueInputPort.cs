@@ -45,7 +45,7 @@ namespace Loykas.Scripting
             _input.Rect.SetParent(_inputHolder, false);
             _input.SetValue(_inputValue.Value);
 
-            _inputValue.SetValue(_input.GetValue());
+            // _inputValue.SetValue(_input.GetValue());
 
             _input.OnValueUpdated += OnInputValueChanged;
             _input.OnSubmit += OnSubmit;

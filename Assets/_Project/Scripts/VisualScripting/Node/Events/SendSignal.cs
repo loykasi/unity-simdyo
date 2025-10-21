@@ -8,7 +8,7 @@ namespace Loykas.Scripting
         public OutputTrigger Exit;
         public InputValue Name;
 
-        public SendSignalNode(string title) : base(title)
+        public SendSignalNode()
         {
             Enter = InputTrigger(nameof(Enter), SendSignal);
             Exit = OutputTrigger(nameof(Exit)).HideLabel();

@@ -7,6 +7,7 @@ namespace Loykas.Scripting
     [ScriptNode(ScriptNodeCategory.Data)]
     public class GetVariableNodeContent : ScriptNodeContent
     {
+        public override bool CanUseGlobal => false;
         public override Type Type => typeof(GetVariableNode);
         public override ScriptNode Create() => new GetVariableNode();
     }
@@ -28,23 +29,48 @@ namespace Loykas.Scripting
             Input.OnValueChanged += OnInputValueChanged;
         }
 
+        public override void FlowAssigned()
+        {
+            Flow.OnVariableUpdated += OnVariableUpdated;
+        }
+
         private object Get(ScriptFlow vs)
         {
             string name = Input.GetValue(vs).ToString();
             return vs.GetVariable(name).Value;
         }
 
+        private void OnVariableUpdated()
+        {
+            if (Flow == null) return;
+
+            string name = Input.GetValue(Flow).ToString();
+
+            bool exist = false;
+            foreach (string key in Flow.Variables.Keys)
+            {
+                if (key.Equals(name))
+                {
+                    exist = true;
+                }
+            }
+
+            if (!exist)
+            {
+                Input.SetValue("");
+            }
+        }
+
         private void OnInputValueChanged()
         {
+            if (Flow == null) return;
+
             string name = Input.GetValue(Flow).ToString();
             Variable variable = Flow.GetVariable(name);
 
-            if (variable == null)
-            {
-                return;
-            }
+            ScriptDataType type = variable == null ? ScriptDataType.Single(DataType.Any) : variable.Type;
 
-            Output.SetType(variable.Type);
+            Output.SetType(type);
             OnNodeUpdated?.Invoke();
 
             IEnumerable<NodeConnection> connections = Flow.GetConnections(Output);

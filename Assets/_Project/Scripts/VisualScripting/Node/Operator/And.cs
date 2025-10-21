@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public AndNode(string title) : base(title)
+        public AndNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Boolean)).UseInput();

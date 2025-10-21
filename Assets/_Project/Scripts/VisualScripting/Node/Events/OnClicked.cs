@@ -4,7 +4,7 @@ namespace Loykas.Scripting
 {
     public class OnClickedNode : EventNode
     {
-        public OnClickedNode(string title) : base(title)
+        public OnClickedNode()
         {
         }
 

@@ -18,7 +18,7 @@ namespace Loykas.Scripting
 
         public GetGlobalVariableNode() : base()
         {
-            Input = InputValue(nameof(Input))
+            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.String))
                             .UseGlobalVariableInput()
                             .DisableConnection()
                             .HideLabel();
@@ -28,23 +28,48 @@ namespace Loykas.Scripting
             Input.OnValueChanged += OnInputValueChanged;
         }
 
+        public override void FlowAssigned()
+        {
+            SceneManager.Instance.GlobalScript.OnVariableUpdated += OnVariableUpdated;
+        }
+
         private object Get(ScriptFlow vs)
         {
             string name = Input.GetValue(vs).ToString();
             return SceneManager.Instance.GlobalScript.GetVariable(name).Value;
         }
 
+        private void OnVariableUpdated()
+        {
+            if (Flow == null) return;
+
+            string name = Input.GetValue(Flow).ToString();
+
+            bool exist = false;
+            foreach (string key in SceneManager.Instance.GlobalScript.Variables.Keys)
+            {
+                if (key.Equals(name))
+                {
+                    exist = true;
+                }
+            }
+
+            if (!exist)
+            {
+                Input.SetValue("");
+            }
+        }
+
         private void OnInputValueChanged()
         {
+            if (Flow == null) return;
+
             string name = Input.GetValue(Flow).ToString();
             Variable variable = SceneManager.Instance.GlobalScript.GetVariable(name);
 
-            if (variable == null)
-            {
-                return;
-            }
+            ScriptDataType type = variable == null ? ScriptDataType.Single(DataType.Any) : variable.Type;
 
-            Output.SetType(variable.Type);
+            Output.SetType(type);
             OnNodeUpdated?.Invoke();
 
             IEnumerable<NodeConnection> connections = Flow.GetConnections(Output);

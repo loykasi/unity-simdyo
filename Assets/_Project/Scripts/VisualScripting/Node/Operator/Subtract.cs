@@ -10,7 +10,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public SubtractNode(string title) : base(title)
+        public SubtractNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();

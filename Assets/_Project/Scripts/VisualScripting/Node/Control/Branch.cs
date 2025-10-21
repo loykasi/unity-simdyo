@@ -11,7 +11,7 @@ namespace Loykas.Scripting
 
         public InputValue Condition;
 
-        public BranchNode(string title) : base(title)
+        public BranchNode()
         {
             Enter = InputTrigger(
                 nameof(Enter),

@@ -17,6 +17,11 @@ namespace Loykas.Scripting
 
         private FunctionBoardItem _selectedItem;
 
+        private void OnDisable()
+        {
+            FlowGraph.Flow.OnFunctionDeleted -= OnFunctionDeleted;
+        }
+
         public void Init()
         {
             Clear();
@@ -35,6 +40,7 @@ namespace Loykas.Scripting
         private void Load()
         {
             ScriptFlow flow = FlowGraph.Flow;
+            flow.OnFunctionDeleted += OnFunctionDeleted;
 
             for (int i = 0; i < flow.Functions.Count; i++)
             {
@@ -42,13 +48,28 @@ namespace Loykas.Scripting
             }
         }
 
+        private void OnFunctionDeleted(ScriptFunction function)
+        {
+            int index = _functionsItem.FindIndex(f => f.Function == function);
+            if (index != -1)
+            {
+                FunctionBoardItem functionItem = _functionsItem[index];
+                Destroy(functionItem.gameObject);
+                _functionsItem.RemoveAt(index);
+
+                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _rect.sizeDelta.y - 45f);
+                FlowGraph.RebuildSideBarUI();
+            }
+        }
+
         public void AddFunction()
         {
             ScriptFunction function = FlowGraph.Flow.AddFunction();
-            AddFunctionItem(function);
+            FunctionBoardItem functionItem = AddFunctionItem(function);
+            Select(functionItem);
         }
         
-        public void AddFunctionItem(ScriptFunction function)
+        public FunctionBoardItem AddFunctionItem(ScriptFunction function)
         {
             FunctionBoardItem functionItem = Instantiate(_functionItemPrefab, _holder);
             functionItem.Init(this, function);
@@ -57,6 +78,8 @@ namespace Loykas.Scripting
             _functionsItem.Add(functionItem);
 
             FlowGraph.RebuildSideBarUI();
+
+            return functionItem;
         }
 
         public void Select(FunctionBoardItem item)

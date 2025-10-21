@@ -15868,7 +15868,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1308617649}
   - component: {fileID: 1308617648}
-  - component: {fileID: 1308617650}
   m_Layer: 0
   m_Name: EngineManager
   m_TagString: Untagged
@@ -15906,19 +15905,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1308617650
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308617647}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 40c01c51c643ac243acb034664d14695, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Entity: {fileID: 0}
 --- !u!1 &1310699937
 GameObject:
   m_ObjectHideFlags: 0
@@ -24996,7 +24982,7 @@ MonoBehaviour:
   isNotDestroyOnLoad: 0
   EditorCamera: {fileID: 519420031}
   SceneCamera: {fileID: 1478302204}
-  _playModeCanvas: {fileID: 0}
+  _playModeCanvas: {fileID: 78114221}
   GlobalScript: {fileID: 2103662043}
   SceneController: {fileID: 2059443556}
 --- !u!4 &2103662045

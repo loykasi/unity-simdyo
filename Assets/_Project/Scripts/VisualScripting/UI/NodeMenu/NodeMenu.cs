@@ -20,18 +20,6 @@ namespace Loykas.Scripting
 
         private List<ScriptNodeContent> _nodes = new();
 
-        private void Start()
-        {
-            InitMenu();
-        }
-
-        private void InitMenu()
-        {
-            ScriptNodeFactory.Instance.GetNodes(_nodes);
-
-            // UpdateMenuElement();
-        }
-
         private void UpdateMenuElement()
         {
             foreach (NodeMenuCategory categoryElement in _categories.Values)
@@ -66,7 +54,7 @@ namespace Loykas.Scripting
         {
             _nodeBoard = nodeBoard;
 
-            ScriptNodeFactory.Instance.GetNodes(_nodes);
+            ScriptNodeFactory.Instance.GetNodes(_nodes, _nodeBoard.Flow.IsGlobal);
             UpdateMenuElement();
 
             gameObject.SetActive(true);
@@ -82,7 +70,7 @@ namespace Loykas.Scripting
         {
             _nodeBoard = nodeBoard;
 
-            ScriptNodeFactory.Instance.GetNodes(_nodes, port);
+            ScriptNodeFactory.Instance.GetNodes(_nodes, port, _nodeBoard.Flow.IsGlobal);
             UpdateMenuElement();
 
             gameObject.SetActive(true);

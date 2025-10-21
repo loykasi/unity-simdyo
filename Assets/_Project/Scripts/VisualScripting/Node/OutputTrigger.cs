@@ -9,6 +9,12 @@ namespace Loykas.Scripting
         {
         }
 
+        public OutputTrigger NoLocalize()
+        {
+            ShouldLocalized = false;
+            return this;
+        }
+
         public OutputTrigger HideLabel()
         {
             ShouldShowLabel = false;

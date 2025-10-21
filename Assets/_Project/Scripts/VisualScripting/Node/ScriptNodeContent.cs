@@ -7,6 +7,8 @@ namespace Loykas.Scripting
         public virtual Type Type => default;
         public ScriptNodeCategory Category;
         public ScriptNode Base;
+        public bool ShouldIncludeInMenu;
+        public virtual bool CanUseGlobal => true;
 
         public ScriptNodeContent()
         {

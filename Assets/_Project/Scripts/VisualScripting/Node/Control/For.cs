@@ -17,7 +17,7 @@ namespace Loykas.Scripting
         private int _index;
         private bool _firstRun;
 
-        public ForNode(string title) : base(title)
+        public ForNode()
         {
             Enter = InputTrigger(nameof(Enter), Loop);
             Completed = OutputTrigger(nameof(Completed));

@@ -10,7 +10,7 @@ namespace Loykas.Scripting
         public OutputValue X;
         public OutputValue Y;
 
-        public GetPositionNode(string title) : base(title)
+        public GetPositionNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .UseInput()

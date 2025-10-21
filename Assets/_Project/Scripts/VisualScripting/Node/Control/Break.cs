@@ -6,7 +6,7 @@ namespace Loykas.Scripting
     {
         public InputTrigger Enter;
 
-        public BreakNode(string title) : base(title)
+        public BreakNode()
         {
             Enter = InputTrigger(
                 nameof(Enter),

@@ -13,7 +13,7 @@ namespace Loykas.Scripting
 
         public InputValue ListInput;
 
-        public ClearListNode(string title) : base(title)
+        public ClearListNode()
         {
             Enter = InputTrigger(nameof(Enter), Clear);
             Exit = OutputTrigger(nameof(Exit));

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,10 +9,18 @@ namespace Loykas.Scripting
     public class ScriptFlow : MonoBehaviour
     {
         public event UnityAction<ScriptNode> OnNodeAdded;
+        public event UnityAction<ScriptNode> OnNodeDeleted;
+
+        public event UnityAction<NodeConnection> OnConnectionDeleted;
+        
         public event UnityAction OnVariableAdded;
+        public event UnityAction OnVariableUpdated;
+
+        public event UnityAction<ScriptFunction> OnFunctionDeleted;
 
         public Vector2 Pan { get; set; }
         public SceneEntity Entity;
+        public bool IsGlobal => Entity == null;
 
         public List<ScriptNode> Nodes = new();
         public List<NodeConnection> Connections = new();
@@ -80,8 +87,6 @@ namespace Loykas.Scripting
         {
             ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
 
-            // Debug.Log($"{node.GetType().FullName} | {node.GetType().Assembly}");
-
             node.Flow = this;
             node.Position = position;
 
@@ -130,7 +135,19 @@ namespace Loykas.Scripting
 
         public void DeleteNode(ScriptNode node)
         {
+            foreach (IPort port in node.Ports())
+            {
+                Disconnect(port);
+            }
+
             Nodes.Remove(node);
+
+            if (node is FunctionEnterNode functionEnterNode)
+            {
+                DeleteFunction(functionEnterNode.Function);
+            }
+
+            OnNodeDeleted?.Invoke(node);
         }
 
         public bool TryConnect(IPort fromPort, IPort toPort)
@@ -157,6 +174,7 @@ namespace Loykas.Scripting
 
                     ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
+                    OnConnectionDeleted?.Invoke(connection);
                 }
             }
         }
@@ -367,6 +385,26 @@ namespace Loykas.Scripting
             OnNodeAdded?.Invoke(node);
         }
 
+        private void DeleteFunction(ScriptFunction function)
+        {
+            Functions.Remove(function);
+            OnFunctionDeleted?.Invoke(function);
+
+            // remove all call node
+            for (int i = Nodes.Count - 1; i >= 0; i--)
+            {
+                if (Nodes[i] is FunctionCallNode functionCallNode)
+                {
+                    if (functionCallNode.Function != function)
+                    {
+                        continue;
+                    }
+
+                    DeleteNode(functionCallNode);
+                }
+            }
+        }
+
         private string GetFunctionName(string baseName)
         {
             _functionNames.Clear();
@@ -450,6 +488,8 @@ namespace Loykas.Scripting
             if (!_variables.ContainsKey(name))
             {
                 _variables.Add(name, new Variable());
+
+                OnVariableAdded?.Invoke();
                 return true;
             }
 
@@ -462,6 +502,8 @@ namespace Loykas.Scripting
             {
                 Debug.Log($"Update {name} = {value}");
                 variable.Value = value;
+
+                OnVariableUpdated?.Invoke();
             }
         }
 
@@ -479,6 +521,8 @@ namespace Loykas.Scripting
             if (_variables.ContainsKey(name))
             {
                 _variables.Remove(name);
+
+                OnVariableUpdated?.Invoke();
                 return true;
             }
             return false;
@@ -486,7 +530,9 @@ namespace Loykas.Scripting
 
         public List<string> GetVariableOptions()
         {
-            return _variables.Select(s => s.Key).ToList();
+            List<string> options = _variables.Select(s => s.Key).ToList();
+            options.Insert(0, "Select...");
+            return options;
         }
     }
 }

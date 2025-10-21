@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Data)]
+    [ScriptNode(ScriptNodeCategory.Data, false)]
     public class FunctionCallContent : ScriptNodeContent
     {
         public override Type Type => typeof(FunctionCallNode);
@@ -13,6 +13,8 @@ namespace Loykas.Scripting
 
     public class FunctionCallNode : ScriptNode
     {
+        public override bool ShouldLocalized => false;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
@@ -83,7 +85,7 @@ namespace Loykas.Scripting
                 (
                     argument.Name,
                     argument.Type
-                );
+                ).NoLocalize();
             }
 
             OnNodeUpdated?.Invoke();

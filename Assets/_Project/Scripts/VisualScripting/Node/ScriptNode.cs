@@ -13,9 +13,18 @@ namespace Loykas.Scripting
         public Vector2 Position { get; set; }
         public Dictionary<string, object> DefaultValues { get; set; } = new();
 
-        public ScriptFlow Flow { get; set; }
+        public ScriptFlow Flow
+        {
+            get => _flow;
+            set
+            {
+                _flow = value;
+                FlowAssigned();
+            }
+        }
+        private ScriptFlow _flow;
 
-        public string Title;
+        public virtual bool ShouldLocalized { get; } = true;
 
         public bool HasInputTrigger => InputTriggers.Count > 0;
         public InputTrigger EnterTrigger => InputTriggers[0];
@@ -48,10 +57,9 @@ namespace Loykas.Scripting
             ID = Guid.NewGuid();
         }
 
-        public ScriptNode(string title)
+        public virtual void FlowAssigned()
         {
-            ID = Guid.NewGuid();
-            Title = title;
+            
         }
 
         public virtual string GetNameKey()

@@ -9,7 +9,7 @@ namespace Loykas.Scripting
         public InputValue ListInput;
         public OutputValue Output;
 
-        public GetListLengthNode(string title) : base(title)
+        public GetListLengthNode()
         {
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
             Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);

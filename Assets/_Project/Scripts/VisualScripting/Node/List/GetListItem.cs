@@ -9,7 +9,7 @@ namespace Loykas.Scripting
         public InputValue Index;
         public OutputValue Output;
 
-        public GetListItemNode(string title) : base(title)
+        public GetListItemNode()
         {
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
             Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();

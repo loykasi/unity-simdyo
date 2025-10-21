@@ -49,6 +49,8 @@ namespace Loykas.Scripting
             ClearBoard();
 
             Flow.OnNodeAdded += OnNodeAdded;
+            Flow.OnNodeDeleted += OnNodeDeleted;
+            Flow.OnConnectionDeleted += OnConnectionDeleted;
 
             LoadBoard();
         }
@@ -58,6 +60,8 @@ namespace Loykas.Scripting
             if (Flow != null)
             {
                 Flow.OnNodeAdded -= OnNodeAdded;
+                Flow.OnNodeDeleted -= OnNodeDeleted;
+                Flow.OnConnectionDeleted -= OnConnectionDeleted;
             }
             _selectedElement = null;
         }
@@ -199,7 +203,7 @@ namespace Loykas.Scripting
             if (_waitToAddNode)
             {
                 _waitToAddNode = false;
-                
+
                 bool isSourcePort = _fromUIPort.Edge == NodePortEdge.Right;
                 Flow.AddNode(nodeType, ToBoardPosition(_openMenuPosition), _fromUIPort.Port, isSourcePort);
 
@@ -305,7 +309,7 @@ namespace Loykas.Scripting
         public void DeleteConnection(UILineConnection lineConnection)
         {
             Flow.Disconnect(lineConnection.Source.Port, lineConnection.Destination.Port);
-            DeleteConnectionVisual(lineConnection);
+            // DeleteConnectionVisual(lineConnection);
         }
 
         public void DeleteConnectionVisual(UILineConnection lineConnection)
@@ -314,17 +318,44 @@ namespace Loykas.Scripting
             _lines.Remove(lineConnection);
         }
 
-        public void DeleteNode(UINode node)
+        public void OnConnectionDeleted(NodeConnection connection)
         {
-            for (int i = 0; i < node.Ports.Count; i++)
+            int index = _lines.FindIndex(n => n.Connection == connection);
+            if (index == -1)
             {
-                node.Ports[i].DeleteAllLines();
+                return;
             }
 
-            Flow.DeleteNode(node.Node);
+            UILineConnection connectionElement = _lines[index];
+            DeleteConnectionVisual(connectionElement);
+        }
 
-            node.DeleteVisual();
-            _nodes.Remove(node);
+        public void DeleteNode(UINode node)
+        {
+            Flow.DeleteNode(node.Node);
+        }
+
+        public void OnNodeDeleted(ScriptNode node)
+        {
+            int index = _nodes.FindIndex(n => n.Node == node);
+            if (index == -1)
+            {
+                return;
+            }
+
+            UINode nodeElement = _nodes[index];
+
+            for (int i = 0; i < nodeElement.Ports.Count; i++)
+            {
+                UINodePort port = nodeElement.Ports[i];
+                for (int j = port.LineConnections.Count - 1; j >= 0; j--)
+                {
+                    DeleteConnectionVisual(port.LineConnections[i]);
+                }
+            }
+
+            nodeElement.DeleteVisual();
+            _nodes.Remove(nodeElement);
         }
 
         public void OnScroll(PointerEventData eventData)

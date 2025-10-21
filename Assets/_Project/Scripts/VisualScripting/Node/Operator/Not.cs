@@ -8,7 +8,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public NotNode(string title) : base(title)
+        public NotNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
 

@@ -10,11 +10,6 @@ namespace Loykas.Scripting
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
         }
 
-        public EventNode(string title) : base(title)
-        {
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
-        }
-
         public void Register(ScriptFlow vs)
         {
             vs.RegisterEventNode(Hook, this);

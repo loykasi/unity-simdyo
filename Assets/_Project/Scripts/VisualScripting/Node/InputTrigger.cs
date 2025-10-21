@@ -40,5 +40,11 @@ namespace Loykas.Scripting
                 Sources.Remove(port);
             }
         }
+
+        public InputTrigger NoLocalize()
+        {
+            ShouldLocalized = false;
+            return this;
+        }
     }
 }

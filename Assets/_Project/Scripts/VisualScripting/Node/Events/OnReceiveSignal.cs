@@ -6,7 +6,7 @@ namespace Loykas.Scripting
     {
         public InputValue Name;
         
-        public OnReceiveSignalNode(string title) : base(title)
+        public OnReceiveSignalNode()
         {
             Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
         }

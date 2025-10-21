@@ -40,9 +40,14 @@ namespace Loykas.Scripting
             {
                 if (Port.ShouldShowLabel)
                 {
-                    string key = Port.Node.GetNameKey() + "." + Port.Key;
-                    string name = GlobalLocalization.Instance.GetValue(key);
-                    _label.text = name;
+                    string key = Port.Key;
+                    if (Port.ShouldLocalized)
+                    {
+                        string name = Port.Node.GetNameKey();
+                        key = name + "." + Port.Key;
+                        key = GlobalLocalization.Instance.GetValue(key);   
+                    }
+                    _label.text = key;
                 }
                 else
                 {
@@ -57,9 +62,14 @@ namespace Loykas.Scripting
             {
                 if (Port.ShouldShowLabel)
                 {
-                    string key = Port.Node.GetNameKey() + "." + Port.Key;
-                    string name = GlobalLocalization.Instance.GetValue(key);
-                    _label.text = name;
+                    string key = Port.Key;
+                    if (Port.ShouldLocalized)
+                    {
+                        string name = Port.Node.GetNameKey();
+                        key = name + "." + Port.Key;
+                        key = GlobalLocalization.Instance.GetValue(key);   
+                    }
+                    _label.text = key;
                 }
                 else
                 {
@@ -134,7 +144,7 @@ namespace Loykas.Scripting
 
             UpdateHandleVisual();
         }
-
+        
         public virtual void ValidConnection(IPort port)
         {
             for (int i = 0; i < LineConnections.Count; i++)

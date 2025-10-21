@@ -11,7 +11,7 @@ namespace Loykas.Scripting
         public InputValue Item;
         public OutputValue Output;
 
-        public ListContainsItemNode(string title) : base(title)
+        public ListContainsItemNode()
         {
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
             Item = InputValue(nameof(Item));

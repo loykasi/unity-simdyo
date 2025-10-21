@@ -10,7 +10,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public OrNode(string title) : base(title)
+        public OrNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Boolean)).UseInput();

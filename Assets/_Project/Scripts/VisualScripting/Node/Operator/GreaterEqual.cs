@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public GreaterEqualNode(string title) : base(title)
+        public GreaterEqualNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();

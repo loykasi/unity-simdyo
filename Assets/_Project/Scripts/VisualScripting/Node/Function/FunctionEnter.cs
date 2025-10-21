@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Data)]
+    [ScriptNode(ScriptNodeCategory.Data, false)]
     public class FunctionEnterContent : ScriptNodeContent
     {
         public override Type Type => typeof(FunctionEnterNode);
@@ -13,8 +12,9 @@ namespace Loykas.Scripting
 
     public class FunctionEnterNode : ScriptNode
     {
-        public OutputTrigger Exit;
+        public override bool ShouldLocalized => false;
 
+        public OutputTrigger Exit;
         public ScriptFunction Function;
 
         public FunctionEnterNode()
@@ -45,7 +45,7 @@ namespace Loykas.Scripting
                     argument.Name,
                     argument.Type,
                     (flow) => argument.Value
-                );
+                ).NoLocalize();
             }
 
             OnNodeUpdated?.Invoke();

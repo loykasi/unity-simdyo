@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public OutputValue Output;
 
-        public MultiplyNode(string title) : base(title)
+        public MultiplyNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();

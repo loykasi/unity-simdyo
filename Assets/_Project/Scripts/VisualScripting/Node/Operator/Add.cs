@@ -10,7 +10,7 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public AddNode(string title) : base(title)
+        public AddNode()
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();

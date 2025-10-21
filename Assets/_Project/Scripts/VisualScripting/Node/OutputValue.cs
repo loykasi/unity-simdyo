@@ -55,5 +55,11 @@ namespace Loykas.Scripting
         {
             return port.Type.IsList == Type.IsList && (Type.IsAny || port.Type.IsAny || port.Type == Type);
         }
+
+        public OutputValue NoLocalize()
+        {
+            ShouldLocalized = false;
+            return this;
+        }
     }
 }

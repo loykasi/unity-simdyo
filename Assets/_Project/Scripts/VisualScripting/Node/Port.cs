@@ -9,7 +9,8 @@ namespace Loykas.Scripting
 
         public IScriptNode Node { get; set; }
         public string Key { get; set; }
-
+        
+        public bool ShouldLocalized { get; set; } = true;
         public bool ShouldShowLabel { get; set; } = true;
 
         public Port(string key)

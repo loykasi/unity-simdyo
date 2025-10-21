@@ -11,7 +11,7 @@ namespace Loykas.Scripting
         public InputValue X;
         public InputValue Y;
 
-        public SetPositionNode(string title) : base(title)
+        public SetPositionNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));

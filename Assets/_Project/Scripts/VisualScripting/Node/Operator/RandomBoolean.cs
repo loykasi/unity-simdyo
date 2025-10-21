@@ -8,7 +8,7 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public RandomBooleanNode(string title) : base(title)
+        public RandomBooleanNode()
         {
             Chance = InputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
 

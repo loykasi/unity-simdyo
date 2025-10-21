@@ -50,6 +50,12 @@ public enum InputValueTypes
             Type = type;
         }
 
+        public InputValue NoLocalize()
+        {
+            ShouldLocalized = false;
+            return this;
+        }
+
         public void UpdateDefaultValue()
         {
             if (InputType != InputValueTypes.None)
