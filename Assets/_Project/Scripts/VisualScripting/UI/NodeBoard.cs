@@ -501,10 +501,8 @@ namespace Loykas.Scripting
 
             if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
             {
-                Vector3 mousePosition = Mouse.current.position.ReadValue();
-                _openMenuPosition = mousePosition;
-
-                Flow.AddGetVariableNode(variableItem.VariableName);
+                Vector3 position = GetMouseBoardPosition();
+                Flow.AddGetVariableNode(variableItem.Variable, position);
             }
 
             if (eventData.pointerDrag.TryGetComponent(out FunctionBoardItem functionItem))

@@ -1,7 +1,12 @@
+using UnityEngine.Events;
+
 namespace Loykas.Scripting
 {
     public class Variable
     {
+        public UnityAction OnUpdated;
+
+        public string Name;
         public ScriptDataType Type;
 
         public object Value;
@@ -27,6 +32,13 @@ namespace Loykas.Scripting
         public void OnSceneStop()
         {
             Value = _default;
+        }
+
+        public void SetName(string name)
+        {
+            Name = name;
+            
+            OnUpdated?.Invoke();
         }
     }
 }

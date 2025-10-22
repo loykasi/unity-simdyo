@@ -13,8 +13,9 @@ namespace Loykas.Scripting
 
         public event UnityAction<NodeConnection> OnConnectionDeleted;
         
-        public event UnityAction OnVariableAdded;
+        public event UnityAction<Variable> OnVariableAdded;
         public event UnityAction OnVariableUpdated;
+        public event UnityAction<Variable> OnVariableDeleted;
 
         public event UnityAction<ScriptFunction> OnFunctionDeleted;
 
@@ -33,25 +34,26 @@ namespace Loykas.Scripting
 
         private List<NodeTask> _tasks = new();
 
-        public Dictionary<string, Variable> Variables
-        {
-            get => _variables;
-            set => _variables = value;
-        }
-        private Dictionary<string, Variable> _variables = new();
+        // public Dictionary<string, Variable> Variables
+        // {
+        //     get => _variables;
+        //     set => _variables = value;
+        // }
+        public Dictionary<string, Variable> Variables = new();
 
         public bool ShouldUpdateConnections { get; set; } = false;
 
-        private List<string> _functionNames = new();    // For generate new unique name
+        private List<string> _functionNames = new();    // For generate unique name
+        private List<string> _variableNames = new();    // For generate unique name
 
         public void ResetState()
         {
             Nodes.Clear();
             Connections.Clear();
             Functions.Clear();
+            Variables.Clear();
 
             _eventNodes.Clear();
-            _variables.Clear();
         }
 
         private void LateUpdate()
@@ -312,29 +314,40 @@ namespace Loykas.Scripting
 
         public void OnSceneStart()
         {
-            foreach (var item in _variables)
+            foreach (var item in Variables.Values)
             {
-                item.Value.OnSceneStart();
+                item.OnSceneStart();
             }
         }
 
         public void OnSceneStop()
         {
-            foreach (var item in _variables)
+            foreach (var item in Variables.Values)
             {
-                item.Value.OnSceneStop();
+                item.OnSceneStop();
             }
         }
 
         // Add node from drag and drop
 
-        public void AddGetVariableNode(string key)
+        public void AddGetVariableNode(Variable variable, Vector3 position)
         {
-            GetVariableNode node = ScriptNodeFactory.Instance.CreateNode<GetVariableNode>();
-
-            node.Input.SetValue(key);
-
-            node.Flow = this;
+            ScriptNode node;
+            if (IsGlobal)
+            {
+                GetGlobalVariableNode variableNode = ScriptNodeFactory.Instance.CreateNode<GetGlobalVariableNode>();
+                variableNode.Flow = this;
+                variableNode.Input.SetValue(variable.Name);
+                node = variableNode;
+            }
+            else
+            {
+                GetVariableNode variableNode = ScriptNodeFactory.Instance.CreateNode<GetVariableNode>();
+                variableNode.Flow = this;
+                variableNode.Input.SetValue(variable.Name);
+                node = variableNode;
+            }
+            node.Position = position;
             Nodes.Add(node);
             OnNodeAdded?.Invoke(node);
         }
@@ -477,60 +490,77 @@ namespace Loykas.Scripting
 
         // Variables
 
-        public bool AddVariable(string name)
+        public Variable AddVariable()
         {
-            if (name.Equals(string.Empty))
+            string baseName = "NewVariable";
+            string variableName = getVariableName(baseName);
+
+            Variable variable = new()
             {
-                Debug.Log("Variable cannot be empty");
-                return false;
-            }
+                Name = variableName
+            };
+            Variables.Add(variableName, variable);
 
-            if (!_variables.ContainsKey(name))
-            {
-                _variables.Add(name, new Variable());
+            OnVariableAdded?.Invoke(variable);
+            return variable;
+        }
 
-                OnVariableAdded?.Invoke();
-                return true;
-            }
+        private string getVariableName(string baseName)
+        {
+            _variableNames.Clear();
+            _variableNames.AddRange(Variables.Keys);
+            // for (int i = 0; i < Variables.Count; i++)
+            // {
+            //     _variableNames.Add(Variables[i].Name);
+            // }
 
-            return false;
+            return Utils.GenerateUniqueName(baseName, _variableNames);
         }
 
         public void UpdateVariable(string name, object value)
         {
-            if (_variables.TryGetValue(name, out Variable variable))
+            Variable variable = GetVariable(name);
+            if (variable != null)
             {
-                Debug.Log($"Update {name} = {value}");
                 variable.Value = value;
+                OnVariableUpdated?.Invoke();   
+            }
+        }
 
-                OnVariableUpdated?.Invoke();
+        public void ChangeVariableName(string oldName, string newName)
+        {
+            if (Variables.TryGetValue(oldName, out Variable variable))
+            {
+                Variables.Remove(oldName);
+                Variables.Add(newName, variable);
+                variable.SetName(newName);
             }
         }
 
         public Variable GetVariable(string name)
         {
-            if (_variables.TryGetValue(name, out Variable value))
+            if (Variables.TryGetValue(name, out Variable value))
             {
                 return value;
             }
             return null;
         }
 
-        public bool RemoveVariable(string name)
+        public bool RemoveVariable(Variable variable)
         {
-            if (_variables.ContainsKey(name))
+            if (Variables.Remove(variable.Name))
             {
-                _variables.Remove(name);
-
                 OnVariableUpdated?.Invoke();
-                return true;
+                OnVariableDeleted?.Invoke(variable);
+                return true;    
             }
+            
             return false;
         }
 
         public List<string> GetVariableOptions()
         {
-            List<string> options = _variables.Select(s => s.Key).ToList();
+            List<string> options = Variables.Select(s => s.Key).ToList();
             options.Insert(0, "Select...");
             return options;
         }

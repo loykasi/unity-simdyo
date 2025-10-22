@@ -7,7 +7,7 @@ public class ScriptFlowData
     public Vector2 Pan;
     public List<ScriptNodeSaveData> Nodes = new();
     public List<ScriptConnectionSaveData> Connections = new();
-    public Dictionary<string, ScriptVariableSaveData> Variables = new();
+    public List<ScriptVariableSaveData> Variables = new();
     public List<ScriptFunctionSaveData> Functions = new();
     
     public void Clear()

@@ -47,9 +47,9 @@ namespace Loykas.Scripting
             string name = Input.GetValue(Flow).ToString();
 
             bool exist = false;
-            foreach (string key in Flow.Variables.Keys)
+            foreach (Variable variable in Flow.Variables.Values)
             {
-                if (key.Equals(name))
+                if (variable.Name.Equals(name))
                 {
                     exist = true;
                 }

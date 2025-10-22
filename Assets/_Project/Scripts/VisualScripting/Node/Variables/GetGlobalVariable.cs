@@ -36,7 +36,7 @@ namespace Loykas.Scripting
         private object Get(ScriptFlow vs)
         {
             string name = Input.GetValue(vs).ToString();
-            return SceneManager.Instance.GlobalScript.GetVariable(name).Value;
+            return SceneManager.Instance.GlobalScript.GetVariable(name);
         }
 
         private void OnVariableUpdated()
@@ -46,9 +46,9 @@ namespace Loykas.Scripting
             string name = Input.GetValue(Flow).ToString();
 
             bool exist = false;
-            foreach (string key in SceneManager.Instance.GlobalScript.Variables.Keys)
+            foreach (Variable variable in SceneManager.Instance.GlobalScript.Variables.Values)
             {
-                if (key.Equals(name))
+                if (variable.Name.Equals(name))
                 {
                     exist = true;
                 }

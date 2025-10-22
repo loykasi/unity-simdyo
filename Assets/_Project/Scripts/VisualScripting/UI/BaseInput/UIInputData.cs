@@ -113,9 +113,7 @@ namespace Loykas.Scripting
             {
                 BaseInput input = Instantiate(VariableNameInputPrefab);
                 var variableInput = (VariableNameInput)input;
-
-                var list = entity.Script.GetVariableOptions();
-                variableInput.Init(list);
+                variableInput.Init(entity.Script);
 
                 return input;
             }

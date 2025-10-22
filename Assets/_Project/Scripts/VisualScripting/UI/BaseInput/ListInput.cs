@@ -36,6 +36,7 @@ namespace Loykas.Scripting
         private void OnAddElement()
         {
             AddElement();
+            OnValueUpdated?.Invoke();
         }
 
         private void AddElement(object value = null)
@@ -64,6 +65,7 @@ namespace Loykas.Scripting
         public void Remove(ListInputItem item)
         {
             Remove(IndexOfElement(item));
+            OnValueUpdated?.Invoke();
         }
 
         private void Remove(int index)

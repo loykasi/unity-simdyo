@@ -3,7 +3,9 @@
 [X] open dialog on create new function
 [X] delete function
 [X] reorder category in menu
-[] change variable flow to be the same as function
+[X] drag to create get variable node
+[X] variable menu modal
+[] toast
 
 == UI
 [] tools ui icon

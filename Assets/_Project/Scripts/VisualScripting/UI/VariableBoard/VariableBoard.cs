@@ -1,20 +1,23 @@
+using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
     public class VariableBoard : MonoBehaviour
     {
+        public static event Action<ScriptFlow, Variable> OnSelectItem;
         public ScriptFlowGraph FlowGraph { get; set; }
 
         [SerializeField] private VariableBoardItem _itemPrefab;
         [SerializeField] private Transform _contentHolder;
 
-        [Space]
-        [SerializeField] private TMP_InputField _nameInputField;
-
         private List<VariableBoardItem> _variableItems = new();
+
+        private void OnDisable()
+        {
+            FlowGraph.Flow.OnVariableDeleted -= OnVariableDeleted;
+        }
 
         public void Init()
         {
@@ -35,42 +38,44 @@ namespace Loykas.Scripting
         private void Load()
         {
             ScriptFlow flow = FlowGraph.Flow;
+            flow.OnVariableDeleted += OnVariableDeleted;
 
-            foreach (var item in flow.Variables)
+            foreach (var item in flow.Variables.Values)
             {
-                string name = item.Key;
-                AddVariableItem(name, item.Value);
+                AddVariableItem(item);
             }
         }
 
         public void AddVariable()
         {
             ScriptFlow flow = FlowGraph.Flow;
-            string name = _nameInputField.text;
+            Variable variable = flow.AddVariable();
 
-            if (flow.AddVariable(name))
-            {
-                VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-                item.Init(name, this);
-                _variableItems.Add(item);
-                _nameInputField.text = string.Empty;
-            }
+            AddVariableItem(variable);
         }
 
-        private void AddVariableItem(string name, Variable variable)
+        private void AddVariableItem(Variable variable)
         {
             VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
-            item.Init(name, variable.Type, variable.Value, this);
+            item.Init(this, variable);
             _variableItems.Add(item);
         }
 
-        public void RemoveVariable(string name, VariableBoardItem variableItem)
+        public void Select(VariableBoardItem item)
         {
-            if (FlowGraph.Flow.RemoveVariable(name))
+            OnSelectItem?.Invoke(FlowGraph.Flow, item.Variable);
+        }
+
+        private void OnVariableDeleted(Variable variable)
+        {
+            int index = _variableItems.FindIndex(v => v.Variable == variable);
+            if (index != -1)
             {
-                _variableItems.Remove(variableItem);
-                Destroy(variableItem.gameObject);
+                VariableBoardItem item = _variableItems[index];
+                Destroy(item.gameObject);
+                _variableItems.RemoveAt(index);
             }
+            
         }
     }
 }

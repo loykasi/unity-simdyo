@@ -61,15 +61,15 @@ public static class ScriptSaveHandler
             flowData.Connections.Add(connectionData);
         }
 
-        foreach (var item in flow.Variables)
-        {
+        foreach (Variable variable in flow.Variables.Values)
+        {   
             ScriptVariableSaveData variableData = new()
             {
-                Type = item.Value.Type.Type,
-                IsList = item.Value.Type.IsList,
-                Value = item.Value.Value
+                Type = variable.Type.Type,
+                IsList = variable.Type.IsList,
+                Value = variable.Value
             };
-            flowData.Variables.Add(item.Key, variableData);
+            flowData.Variables.Add(variableData);
         }
 
         for (int i = 0; i < flow.Functions.Count; i++)
@@ -199,11 +199,11 @@ public static class ScriptSaveHandler
         {
             Variable variable = new
             (
-                new ScriptDataType(item.Value.Type, item.Value.IsList),
-                item.Value.Value
+                new ScriptDataType(item.Type, item.IsList),
+                item.Value
             );
             
-            flow.Variables.Add(item.Key, variable);
+            flow.Variables.Add(variable.Name, variable);
         }
 
         flow.Load();
