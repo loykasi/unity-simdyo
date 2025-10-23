@@ -20,11 +20,8 @@ namespace Loykas.Scripting
             if (_flow != null)
             {
                 _flow.OnVariableAdded -= OnVariableAdded;   
-            }
-
-            if (_variable != null)
-            {
-                _variable.OnUpdated -= OnVariableUpdated;
+                _flow.OnVariableUpdated -= OnVariableUpdated;
+                _flow.OnVariableDeleted -= OnVariableDeleted;
             }
         }
 
@@ -32,6 +29,9 @@ namespace Loykas.Scripting
         {
             _flow = flow;
             _flow.OnVariableAdded += OnVariableAdded;
+            _flow.OnVariableUpdated += OnVariableUpdated;
+            _flow.OnVariableDeleted += OnVariableDeleted;
+
             List<string> options = _flow.GetVariableOptions();
 
             Dropdown.ClearOptions();
@@ -56,18 +56,24 @@ namespace Loykas.Scripting
             {
                 return;
             }
-            if (_variable != null)
-            {
-                _variable.OnUpdated -= OnVariableUpdated;
-            }
             _variable = _flow.GetVariable(name);
-            _variable.OnUpdated += OnVariableUpdated;
         }
 
-        private void OnVariableUpdated()
+        private void OnVariableUpdated(Variable variable)
         {
-            Dropdown.options[_selectedIndex].text = _variable.Name;
-            Dropdown.captionText.text = _variable.Name;
+            List<string> options = _flow.GetVariableOptions();
+
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(options);
+            Dropdown.SetValueWithoutNotify(_selectedIndex);
+        }
+
+        private void OnVariableDeleted(Variable variable)
+        {
+            List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
+
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(options);
         }
         
         public override object GetValue()
@@ -83,12 +89,7 @@ namespace Loykas.Scripting
                 int index = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
                 if (index != -1)
                 {
-                    if (_variable != null)
-                    {
-                        _variable.OnUpdated -= OnVariableUpdated;
-                    }
                     _variable = _flow.GetVariable(variableName);
-                    _variable.OnUpdated += OnVariableUpdated;
                 }
                 else
                 {

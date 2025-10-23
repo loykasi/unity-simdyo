@@ -12,9 +12,9 @@ namespace Loykas.Scripting
         public event UnityAction<ScriptNode> OnNodeDeleted;
 
         public event UnityAction<NodeConnection> OnConnectionDeleted;
-        
+
         public event UnityAction<Variable> OnVariableAdded;
-        public event UnityAction OnVariableUpdated;
+        public event UnityAction<Variable> OnVariableUpdated;
         public event UnityAction<Variable> OnVariableDeleted;
 
         public event UnityAction<ScriptFunction> OnFunctionDeleted;
@@ -34,12 +34,10 @@ namespace Loykas.Scripting
 
         private List<NodeTask> _tasks = new();
 
-        // public Dictionary<string, Variable> Variables
-        // {
-        //     get => _variables;
-        //     set => _variables = value;
-        // }
         public Dictionary<string, Variable> Variables = new();
+        public List<Variable> VariableList = new();
+        private List<string> _variableOptions = new();
+
 
         public bool ShouldUpdateConnections { get; set; } = false;
 
@@ -131,7 +129,7 @@ namespace Loykas.Scripting
                     break;
                 }
             }
-            
+
             OnNodeAdded?.Invoke(node);
         }
 
@@ -500,6 +498,7 @@ namespace Loykas.Scripting
                 Name = variableName
             };
             Variables.Add(variableName, variable);
+            VariableList.Add(variable);
 
             OnVariableAdded?.Invoke(variable);
             return variable;
@@ -523,7 +522,7 @@ namespace Loykas.Scripting
             if (variable != null)
             {
                 variable.Value = value;
-                OnVariableUpdated?.Invoke();   
+                OnVariableUpdated?.Invoke(variable);
             }
         }
 
@@ -533,7 +532,10 @@ namespace Loykas.Scripting
             {
                 Variables.Remove(oldName);
                 Variables.Add(newName, variable);
+
                 variable.SetName(newName);
+
+                OnVariableUpdated?.Invoke(variable);
             }
         }
 
@@ -550,19 +552,50 @@ namespace Loykas.Scripting
         {
             if (Variables.Remove(variable.Name))
             {
-                OnVariableUpdated?.Invoke();
+                VariableList.Remove(variable);
+                
                 OnVariableDeleted?.Invoke(variable);
-                return true;    
+                return true;
             }
-            
+
             return false;
         }
 
         public List<string> GetVariableOptions()
         {
-            List<string> options = Variables.Select(s => s.Key).ToList();
-            options.Insert(0, "Select...");
-            return options;
+            if (_variableOptions.Count == 0)
+            {
+                _variableOptions.Add("Select...");
+                _variableOptions.AddRange(VariableList.Select(s => s.Name).ToList());
+            }
+
+            UpdateVaribleOptions();
+
+            return _variableOptions;
+        }
+
+        private void UpdateVaribleOptions()
+        {
+            for (int i = 0; i < VariableList.Count; i++)
+            {
+                int index = i + 1;
+                if (index < _variableOptions.Count)
+                {
+                    _variableOptions[i + 1] = VariableList[i].Name;
+                }
+                else
+                {
+                    _variableOptions.Add(VariableList[i].Name);
+                }
+            }
+
+            int reserve = 1;
+            int count = _variableOptions.Count - VariableList.Count - reserve;
+            if (count > 0)
+            {
+                int from = _variableOptions.Count - count;
+                _variableOptions.RemoveRange(from, count);
+            }
         }
     }
 }

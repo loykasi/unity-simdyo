@@ -5,7 +5,7 @@
 [X] reorder category in menu
 [X] drag to create get variable node
 [X] variable menu modal
-[] toast
+[] simple toast + animation
 
 == UI
 [] tools ui icon

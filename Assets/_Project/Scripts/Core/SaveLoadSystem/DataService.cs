@@ -59,16 +59,18 @@ public class DataService : IDataService
             }
 
             var textureFolder = archive.CreateEntry("textures/");
-        
+
             // textures
             for (int i = 0; i < data.Textures.Count; i++)
             {
                 var texture = data.Textures[i];
-                var textureEntry = archive.CreateEntry($"textures/{i+1}.png", System.IO.Compression.CompressionLevel.NoCompression);
+                var textureEntry = archive.CreateEntry($"textures/{i + 1}.png", System.IO.Compression.CompressionLevel.NoCompression);
                 using Stream texturestream = textureEntry.Open();
                 using BinaryWriter binaryWriter = new(texturestream);
                 binaryWriter.Write(texture.EncodeToPNG());
             }
+
+            ToastSystem.Instance.Show($"Save as\n{path}");
         }
         catch (Exception ex)
         {

@@ -30,11 +30,15 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
 
     public void Save()
     {
-        string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
-        
+        // string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
+        StandaloneFileBrowser.SaveFilePanelAsync("Save File", "", "", "zip", Save);   
+    }
+    
+    public void Save(string path)
+    {
         Debug.Log($"Save at: {path}");
         _dataService.SetPath(path);
-        
+
         _gameData.Clear();
         foreach (var item in _saveables)
         {

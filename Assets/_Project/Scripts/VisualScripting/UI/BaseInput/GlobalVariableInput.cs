@@ -20,18 +20,23 @@ namespace Loykas.Scripting
         {
             if (SceneManager.Instance != null)
             {
-                SceneManager.Instance.GlobalScript.OnVariableAdded -= OnVariableAdded;   
+                SceneManager.Instance.GlobalScript.OnVariableAdded -= OnVariableAdded;
+                SceneManager.Instance.GlobalScript.OnVariableUpdated -= OnVariableUpdated;
+                SceneManager.Instance.GlobalScript.OnVariableDeleted -= OnVariableDeleted;
             }
 
-            if (_variable != null)
-            {
-                _variable.OnUpdated -= OnVariableUpdated;
-            }
+            // if (_variable != null)
+            // {
+            //     _variable.OnUpdated -= OnVariableUpdated;
+            // }
         }
 
         public void Init()
         {
             SceneManager.Instance.GlobalScript.OnVariableAdded += OnVariableAdded;
+            SceneManager.Instance.GlobalScript.OnVariableUpdated += OnVariableUpdated;
+            SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
+
             List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
 
             Dropdown.ClearOptions();
@@ -56,23 +61,34 @@ namespace Loykas.Scripting
             {
                 return;
             }
-            if (_variable != null)
-            {
-                _variable.OnUpdated -= OnVariableUpdated;
-            }
             _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
-            _variable.OnUpdated += OnVariableUpdated;
         }
 
-        private void OnVariableUpdated()
+        private void OnVariableUpdated(Variable variable)
         {
-            Dropdown.options[_selectedIndex].text = _variable.Name;
-            Dropdown.captionText.text = _variable.Name;
+            List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
+
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(options);
+            Dropdown.SetValueWithoutNotify(_selectedIndex);
+        }
+
+        private void OnVariableDeleted(Variable variable)
+        {
+            List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
+
+            Dropdown.ClearOptions();
+            Dropdown.AddOptions(options);
         }
 
         public override object GetValue()
         {
-            return _variable.Name;
+            string name = Dropdown.options[_selectedIndex].text;
+            if (name.Equals("Select..."))
+            {
+                name = string.Empty;
+            }
+            return name;
         }
 
         public override void SetValue(object value)
@@ -83,12 +99,7 @@ namespace Loykas.Scripting
                 _selectedIndex = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
                 if (_selectedIndex != -1)
                 {
-                    if (_variable != null)
-                    {
-                        _variable.OnUpdated -= OnVariableUpdated;
-                    }
-                    _variable = SceneManager.Instance.GlobalScript.GetVariable(variableName);
-                    _variable.OnUpdated += OnVariableUpdated;
+                    _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
                 }
                 else
                 {

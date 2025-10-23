@@ -88,6 +88,8 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         EditorCamera.transform.position = new Vector3(0f, 0f, EditorCamera.transform.position.z);
         EditorCamera.orthographicSize = 5f;
         EditorCameraHeight = 5f;
+
+        ToastSystem.Instance.Show("Create new scene.");
     }
 
     public void SaveData(GameData data)

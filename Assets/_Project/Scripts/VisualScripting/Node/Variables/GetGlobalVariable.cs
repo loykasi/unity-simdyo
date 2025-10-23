@@ -30,7 +30,7 @@ namespace Loykas.Scripting
 
         public override void FlowAssigned()
         {
-            SceneManager.Instance.GlobalScript.OnVariableUpdated += OnVariableUpdated;
+            SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
         }
 
         private object Get(ScriptFlow vs)
@@ -39,22 +39,13 @@ namespace Loykas.Scripting
             return SceneManager.Instance.GlobalScript.GetVariable(name);
         }
 
-        private void OnVariableUpdated()
+        private void OnVariableDeleted(Variable variable)
         {
             if (Flow == null) return;
 
             string name = Input.GetValue(Flow).ToString();
 
-            bool exist = false;
-            foreach (Variable variable in SceneManager.Instance.GlobalScript.Variables.Values)
-            {
-                if (variable.Name.Equals(name))
-                {
-                    exist = true;
-                }
-            }
-
-            if (!exist)
+            if (name.Equals(variable.Name))
             {
                 Input.SetValue("");
             }
