@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public interface IDataService
 {
-    void SetPath(string path);
-    void Save(string name, GameData data);
-    void Load(string name, GameData data);
+    void Save(GameData data);
+    void Load(GameData data, UnityAction callback);
 }

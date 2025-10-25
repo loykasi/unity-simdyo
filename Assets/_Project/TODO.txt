@@ -5,7 +5,8 @@
 [X] reorder category in menu
 [X] drag to create get variable node
 [X] variable menu modal
-[] simple toast + animation
+[X] simple toast + animation
+[] |save to / load from| device for webgl
 
 == UI
 [] tools ui icon

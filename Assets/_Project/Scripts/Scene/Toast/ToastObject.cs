@@ -37,6 +37,5 @@ public class ToastObject : MonoBehaviour
     private void Hide()
     {
         gameObject.SetActive(false);
-        Debug.Log(Time.frameCount);
     }
 }

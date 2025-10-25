@@ -1,9 +1,12 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayTab : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _playButtonTextField;
+    [SerializeField] private Image _playButtonImage;
+    [SerializeField] private Sprite _playSprite;
+    [SerializeField] private Sprite _stopSprite;
 
     private bool _isRunning;
 
@@ -14,13 +17,13 @@ public class PlayTab : MonoBehaviour
         {
             SceneManager.Instance.Play();
 
-            _playButtonTextField.text = "Stop";
+            _playButtonImage.sprite = _stopSprite;
         }
         else
         {
             SceneManager.Instance.Stop();
 
-            _playButtonTextField.text = "Play";
+            _playButtonImage.sprite = _playSprite;
         }
     }
 
