@@ -7,7 +7,8 @@ public class SceneMenuController : MonoBehaviour, ISaveable
     private CameraSettings _settings = new();
 
     [SerializeField] private SceneMenu _menu;
-    [SerializeField] private SpriteRenderer _sceneCameraArea;
+    // [SerializeField] private SpriteRenderer _sceneCameraArea;
+    [SerializeField] private SceneCameraArea _sceneCameraArea;
     private Camera _editorCamera => EngineManager.Instance.EditorCamera;
     private Camera _sceneCamera => EngineManager.Instance.SceneCamera;
 
@@ -66,7 +67,8 @@ public class SceneMenuController : MonoBehaviour, ISaveable
 
         float height = _settings.Size * 2f;
         float width = height * _sceneCamera.aspect;
-        _sceneCameraArea.size = new Vector2(width, height);
+        // _sceneCameraArea.size = new Vector2(width, height);
+        _sceneCameraArea.SetSize(new Vector2(width, height));
     }
 
     public void OpenColorEdit()

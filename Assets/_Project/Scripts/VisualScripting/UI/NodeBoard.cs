@@ -479,8 +479,8 @@ namespace Loykas.Scripting
 
         public void UpdateLineVisual(UILineRenderer line, UINodePort fromPort, UINodePort toPort)
         {
-            Vector3 fromPosition = (fromPort.HandlePosition - _holder.position) * 1f / _holder.localScale.x;
-            Vector3 toPosition = (toPort.HandlePosition - _holder.position) * 1f / _holder.localScale.x;
+            Vector3 fromPosition = ToBoardPosition(fromPort.HandlePosition);
+            Vector3 toPosition = ToBoardPosition(toPort.HandlePosition);
 
             Vector3 size = fromPosition - toPosition;
             Vector3 center = (fromPosition + toPosition) / 2.0f;
@@ -520,66 +520,13 @@ namespace Loykas.Scripting
 
         private Vector3 ToBoardPosition(Vector3 worldPosition)
         {
-            return (worldPosition - _holder.position) * 1f / _holder.localScale.x;
+            // world to screen point
+            // screen point to canvas
+            Camera camera = EngineManager.Instance.EditorCamera;
+            Vector2 screenPosition = camera.WorldToScreenPoint(worldPosition);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_holder, screenPosition, camera, out Vector2 point);
+            return point;
+            // return (worldPosition - _holder.position) * 1f / _holder.localScale.x;
         }
-
-        // private void Connect(UINodePort fromUIPort, UINodePort toUIPort)
-        // {
-        //     _fromUIPort = fromUIPort;
-        //     _toUIPort = toUIPort;
-
-        //     AddConnectionLine();
-        //     _fromUIPort = null;
-        //     _toUIPort = null;
-        // }
-
-        // private void AddConnectionLine()
-        // {
-        //     GameObject lineObject = new("line");
-
-        //     lineObject.AddComponent<CanvasRenderer>();
-        //     UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
-        //     RectTransform rect = lineObject.AddComponent<RectTransform>();
-
-        //     lineConnection.Init(this, Flow.GetConnection(_fromUIPort.Port, _toUIPort.Port));
-
-        //     lineObject.transform.SetParent(_holder, false);
-
-        //     UILineRenderer lineRenderer = lineObject.AddComponent<UILineRenderer>();
-        //     lineRenderer.Rect = rect;
-        //     lineConnection.LineRenderer = lineRenderer;
-        //     lineConnection.Source = _fromUIPort;
-        //     lineConnection.Destination = _toUIPort;
-
-        //     lineRenderer.Init(4);
-        //     lineRenderer.Thickness = 6;
-        //     lineRenderer.CornerRadius = 30;
-        //     lineRenderer.CornerSegment = 5;
-
-        //     UpdateLineVisual(lineRenderer, _fromUIPort, _toUIPort);
-
-        //     _fromUIPort.AddConnection(lineConnection);
-        //     _toUIPort.AddConnection(lineConnection);
-
-        //     _lines.Add(lineConnection);
-        // }
-
-        // public void RecalculateLineBound(UILineRenderer lineRenderer)
-        // {
-        //     Vector3 center = lineRenderer.transform.position;
-        //     Vector3 newCenter = (lineRenderer.Points[0] + lineRenderer.Points[3]) / 2.0f + lineRenderer.transform.position;
-        //     Vector2 size = lineRenderer.Points[3] - lineRenderer.Points[0];
-        //     size = new(Mathf.Abs(size.x), Mathf.Abs(size.y));
-        //     Vector3 offset = center - newCenter;
-
-        //     for (int i = 0; i < lineRenderer.Points.Length; i++)
-        //     {
-        //         lineRenderer.Points[i] += offset;
-        //     }
-
-        //     lineRenderer.Rect.sizeDelta = size;
-        //     lineRenderer.Rect.position = newCenter;
-        //     lineRenderer.UpdateVertex();
-        // }
     }
 }

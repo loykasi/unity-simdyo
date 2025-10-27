@@ -6,7 +6,7 @@ public class ResizeController : Singleton<ResizeController>
     [SerializeField] private RectTransform _bound;
 
     private ResizeBox _resizeBox = new();
-    private CircleResizeHandler _circleHandler = new();
+    private ResizeCircle _circleHandler = new();
 
     private IResize _handler;
 
@@ -87,5 +87,6 @@ public class ResizeController : Singleton<ResizeController>
     public void Resize(BoundsHandleDirection direction, Vector3 mousePosition)
     {
         _handler.Resize(direction, mousePosition);
+        Physics2D.SyncTransforms();
     }
 }

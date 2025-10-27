@@ -9,6 +9,7 @@ public class RotateTool : PanTool
     private Vector3 _fromDirection;
     private float _startAngle;
     private SceneEntity _entity;
+    private Quaternion _startQuaternion;
 
     public override void OnUpdate()
     {
@@ -32,7 +33,7 @@ public class RotateTool : PanTool
 
             _onRotation = true;
 
-            RotateController.Instance.EnableVisualization();
+            RotateController.Instance.EnableVisualization(_entity.transform.position, mousePosition);
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
@@ -48,19 +49,18 @@ public class RotateTool : PanTool
             float angle = Vector3.SignedAngle(_fromDirection, toDirection, Vector3.forward);
             angle = _startAngle + angle;
 
-            float centerToMouseSqrDist = (mousePosition - _entity.transform.position).sqrMagnitude;
-            float snapRadius = RotateController.Instance.GetSnapRadiusWorld();
-
-            if (centerToMouseSqrDist < snapRadius * snapRadius)
+            if (RotateController.Instance.IsSnapping(mousePosition, _entity.transform.position))
             {
                 angle = Mathf.Round(angle / 15f) * 15f;
             }
             Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
             _entity.Rotation = rotation;
 
-            RotateController.Instance.UpdateUI(_entity.transform.position, rotation);
+            RotateController.Instance.UpdateUI(_entity.transform.position, mousePosition);
+            
+            Physics2D.SyncTransforms();
 
-            Debug.Log(angle);
+            // Debug.Log(angle);
             Debug.DrawRay(_entity.transform.position, _fromDirection, Color.red);
             Debug.DrawRay(_entity.transform.position, toDirection, Color.blue);
         }

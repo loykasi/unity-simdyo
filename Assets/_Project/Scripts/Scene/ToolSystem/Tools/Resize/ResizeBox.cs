@@ -26,7 +26,7 @@ public class ResizeBox: IResize
 
         _bound.position = camera.WorldToScreenPoint(position);
         _bound.rotation = rotation;
-        _bound.sizeDelta = size * scale;
+        _bound.sizeDelta = scale * size / EngineManager.Instance.CanvasScale;
     }
 
     public void BeginResize(BoundsHandleDirection direction)

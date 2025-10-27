@@ -251,10 +251,9 @@ namespace Loykas.Scripting
             for (int i = 0; i < Points.Length - 3; i++)
             {
                 Vector3 center = GetCircleCenter(Points[i], Points[i + 1], Points[i + 2], out Vector3 tangent1, out Vector3 tangent2);
-                // Gizmos.color = Color.blue;
-                // Gizmos.DrawWireSphere(center + transform.position, CornerRadius);
 
                 Gizmos.color = Color.yellow;
+                
                 Gizmos.DrawWireSphere(tangent1 + transform.position, 10f);
                 Gizmos.DrawWireSphere(tangent2 + transform.position, 10f);
 

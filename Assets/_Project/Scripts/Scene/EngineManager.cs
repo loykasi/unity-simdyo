@@ -8,6 +8,10 @@ public class EngineManager : Singleton<EngineManager>
     [Header("Settings")]
     public Vector2 ZoomHeighLimit;
 
+    [Header("References")]
+    [SerializeField] private RectTransform _referenceCanvas;
+    public float CanvasScale => _referenceCanvas.localScale.x;
+
     protected override void Awake()
     {
         base.Awake();

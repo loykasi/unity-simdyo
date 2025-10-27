@@ -8,7 +8,7 @@ public class UIToolSelection : MonoBehaviour
     [SerializeField] private UIToolButton[] _toolElements;
 
     private Dictionary<ToolType, UIToolButton> _toolElementTable = new();
-    private Vector3 _selectionBorderOffset = new(- 10f, 10f, 0f);
+    private Vector2 _selectionBorderOffset = new(- 10f, 10f);
 
     private void Awake()
     {
@@ -52,7 +52,8 @@ public class UIToolSelection : MonoBehaviour
         if (_toolElementTable.TryGetValue(type, out UIToolButton element))
         {
             _selectionBorder.gameObject.SetActive(true);
-            _selectionBorder.position = element.transform.position + _selectionBorderOffset;
+            _selectionBorder.position = element.transform.position;
+            _selectionBorder.anchoredPosition += _selectionBorderOffset;
         }
         else
         {

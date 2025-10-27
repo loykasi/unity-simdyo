@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CircleResizeHandler : IResize
+public class ResizeCircle : IResize
 {
     private CircleEntity _entity;
     private RectTransform _bound;
@@ -30,7 +30,7 @@ public class CircleResizeHandler : IResize
         float scale = Screen.height / (camera.orthographicSize * 2);
 
         _bound.position = camera.WorldToScreenPoint(position);
-        _bound.sizeDelta = diameter * scale * Vector2.one;
+        _bound.sizeDelta = diameter * scale * Vector2.one / EngineManager.Instance.CanvasScale;
     }
 
     public void BeginResize(BoundsHandleDirection direction)

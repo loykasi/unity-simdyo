@@ -6,7 +6,12 @@
 [X] drag to create get variable node
 [X] variable menu modal
 [X] simple toast + animation
-[] |save to / load from| device for webgl
+[X] |save to / load from| device for webgl
+
+[X] ui responsive
+[X] fix camera area indicator size
+[X] add rotate visual indicator
+[] menu: fix camera size not update on load
 
 == UI
 [] tools ui icon
