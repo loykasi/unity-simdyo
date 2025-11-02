@@ -8,7 +8,6 @@ using UnityEngine.Events;
 using System.Collections;
 using UnityEngine.Networking;
 
-
 public class DataService : MonoBehaviour, IDataService
 {
     private ISerializer _serializer = new JsonSerializer();
@@ -37,12 +36,12 @@ public class DataService : MonoBehaviour, IDataService
         {
             byte[] bytes = CreateSaveData(data);
 
-            #if UNITY_WEBGL && !UNITY_EDITOR
+#if UNITY_WEBGL && !UNITY_EDITOR
             
             SaveFile(_defaultName, bytes, bytes.Length);
 
-            #else
-            
+#else
+
             string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
             if (File.Exists(path))
             {
@@ -50,10 +49,10 @@ public class DataService : MonoBehaviour, IDataService
             }
 
             File.WriteAllBytes(path, bytes);
-            
+
             ToastSystem.Instance.Show($"Save as\n{path}");
-            
-            #endif
+
+#endif
         }
         catch (Exception ex)
         {
@@ -98,6 +97,18 @@ public class DataService : MonoBehaviour, IDataService
 
         memoryStream.Position = 0;
         return memoryStream.ToArray();
+    }
+
+    public void Load(string path, GameData data, UnityAction callback)
+    {
+        _callback = callback;
+        if (!File.Exists(path))
+        {
+            throw new ArgumentException($"No save data");
+        }
+        
+        using ZipArchive archive = ZipFile.OpenRead(path);
+        LoadToGameData(archive, data);
     }
 
     public void Load(GameData data, UnityAction callback)

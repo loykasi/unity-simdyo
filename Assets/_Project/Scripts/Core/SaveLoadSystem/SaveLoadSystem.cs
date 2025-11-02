@@ -32,6 +32,11 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
         _dataService.Load(_gameData, OnSaveDataLoaded);
     }
 
+    public void Load(string path)
+    {
+        _dataService.Load(path, _gameData, OnSaveDataLoaded);
+    }
+
     private void OnSaveDataLoaded()
     {
         foreach (var item in _saveables)

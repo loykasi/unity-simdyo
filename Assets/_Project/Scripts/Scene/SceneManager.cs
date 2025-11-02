@@ -6,16 +6,23 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     public int SaveLoadOrder { get; set; } = 0;
 
     [Header("Camera")]
-    public float EditorCameraHeight { get; set; } = 5f;
-    public Camera EditorCamera;
     public Camera SceneCamera;
-    [SerializeField] private GameObject _playModeCanvas;
+    [SerializeField] private Color BackgroundColor;
+    public CameraSettings CameraSettings = new();
 
     [Header("References")]
     public ScriptFlow GlobalScript;
-    public SceneMenuController SceneController;
 
     private bool _isRunning = false;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        CameraSettings.Color = new ColorHSV(BackgroundColor);
+        CameraSettings.Size = SceneCamera.orthographicSize;
+        CameraSettings.Position = SceneCamera.transform.position;
+    }
 
     private void Update()
     {
@@ -24,10 +31,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Play()
     {
-        Time.timeScale = 1;
-        EditorCamera.gameObject.SetActive(false);
         SceneCamera.gameObject.SetActive(true);
-        _playModeCanvas.SetActive(true);
 
         GlobalScript.OnSceneStart();
         
@@ -48,10 +52,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Stop()
     {
-        Time.timeScale = 0;
-        EditorCamera.gameObject.SetActive(true);
         SceneCamera.gameObject.SetActive(false);
-        _playModeCanvas.SetActive(false);
 
         GlobalScript.OnSceneStop();
 
@@ -82,12 +83,9 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     public void ResetState()
     {
         GlobalScript.ResetState();
-        SceneController.ResetState();
         ObjectManager.Instance.ResetState();
 
-        EditorCamera.transform.position = new Vector3(0f, 0f, EditorCamera.transform.position.z);
-        EditorCamera.orthographicSize = 5f;
-        EditorCameraHeight = 5f;
+
 
         ToastSystem.Instance.Show("Create new scene.");
     }
@@ -95,10 +93,40 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     public void SaveData(GameData data)
     {
         ScriptSaveHandler.Save(data.Scene.GlobalScript, GlobalScript);
+
+        data.Scene.BackgroundColor = CameraSettings.Color;
+        data.Scene.CameraPosition = CameraSettings.Position;
+        data.Scene.CameraSize = CameraSettings.Size;
     }
 
     public void LoadData(GameData data)
     {
         ScriptSaveHandler.Load(data.Scene.GlobalScript, GlobalScript);
+
+        UpdatePosition(data.Scene.CameraPosition);
+        UpdateSize(data.Scene.CameraSize);
+        UpdateColor(data.Scene.BackgroundColor);
     }
+
+    #region Camera
+
+    public void UpdatePosition(Vector3 position)
+    {
+        CameraSettings.Position = new Vector3(position.x, position.y, SceneCamera.transform.position.z);
+        SceneCamera.transform.position = CameraSettings.Position;
+    }
+
+    public void UpdateSize(float value)
+    {
+        CameraSettings.Size = value;
+        SceneCamera.orthographicSize = CameraSettings.Size;
+    }
+
+    public void UpdateColor(ColorHSV color)
+    {
+        CameraSettings.Color = color;
+        SceneCamera.backgroundColor = color.ToUnityColor();
+    }
+
+    #endregion
 }

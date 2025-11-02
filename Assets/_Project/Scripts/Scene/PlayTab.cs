@@ -15,13 +15,13 @@ public class PlayTab : MonoBehaviour
         _isRunning = !_isRunning;
         if (_isRunning)
         {
-            SceneManager.Instance.Play();
+            EngineManager.Instance.Play();
 
             _playButtonImage.sprite = _stopSprite;
         }
         else
         {
-            SceneManager.Instance.Stop();
+            EngineManager.Instance.Stop();
 
             _playButtonImage.sprite = _playSprite;
         }

@@ -35,11 +35,11 @@ public class Singleton<T> : MonoBehaviour where T : Component
         InitializeSingleton();
     }
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    static void OnBeforeSceneLoad()
-    {
-        _isQuitting = false;
-    }
+    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    // static void OnBeforeSceneLoad()
+    // {
+    //     _isQuitting = false;
+    // }
 
     private void OnApplicationQuit()
     {

@@ -93,7 +93,7 @@ public class EntityMenuController : MonoBehaviour
 
     public void ChooseTexture()
     {
-        AssetController.Instance.OpenTextureMenu(_entity);
+        TextureMenu.Instance.OpenTextureMenu(_entity);
         // if (AssetController.Instance.TryChooseTextureFile(out Texture2D texture))
         // {
         //     _entity.SetTexture(texture);

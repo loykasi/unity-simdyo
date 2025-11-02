@@ -24,7 +24,7 @@ public class UITextureSlot : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        AssetController.Instance.SelectSlot(Index);
+        TextureMenu.Instance.SelectSlot(Index);
     }
 
     public void Select()

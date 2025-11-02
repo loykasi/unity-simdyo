@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class EngineManager : Singleton<EngineManager>
 {
-    public Camera EditorCamera => SceneManager.Instance.EditorCamera;
+    public float EditorCameraHeight { get; set; } = 5f;
+    public Camera EditorCamera;
     public Camera SceneCamera => SceneManager.Instance.SceneCamera;
+    [SerializeField] private GameObject _playModeCanvas;
 
     [Header("Settings")]
     public Vector2 ZoomHeighLimit;
 
     [Header("References")]
+    [SerializeField] private GameObject _sceneCameraArea;
     [SerializeField] private RectTransform _referenceCanvas;
     public float CanvasScale => _referenceCanvas.localScale.x;
 
@@ -17,19 +20,45 @@ public class EngineManager : Singleton<EngineManager>
         base.Awake();
     }
 
+    public void Play()
+    {
+        Time.timeScale = 1;
+        _sceneCameraArea.SetActive(false);
+        _playModeCanvas.SetActive(true);
+        EditorCamera.gameObject.SetActive(false);
+        SceneManager.Instance.Play();
+    }
+
+    public void Stop()
+    {
+        Time.timeScale = 0;
+        _sceneCameraArea.SetActive(true);
+        _playModeCanvas.SetActive(false);
+        EditorCamera.gameObject.SetActive(true);
+        SceneManager.Instance.Stop();
+    }
+
     public void NewScene()
     {
-        SceneManager.Instance.ResetState();
+        ResetState();
     }
 
     public void LoadScene()
     {
-        SceneManager.Instance.ResetState();
+        ResetState();
         SaveLoadSystem.Instance.Load();
     }
-    
+
     public void SaveScene()
     {
         SaveLoadSystem.Instance.Save();
+    }
+
+    public void ResetState()
+    {
+        EditorCamera.transform.position = new Vector3(0f, 0f, EditorCamera.transform.position.z);
+        EditorCamera.orthographicSize = 5f;
+        EditorCameraHeight = 5f;
+        SceneManager.Instance.ResetState();
     }
 }

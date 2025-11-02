@@ -1,25 +1,18 @@
 using System;
 using UnityEngine;
 
-public class SceneMenuController : MonoBehaviour, ISaveable
+public class SceneMenuController : MonoBehaviour
 {
-    [SerializeField] private Color BackgroundColor;
-    private CameraSettings _settings = new();
-
     [SerializeField] private SceneMenu _menu;
-    // [SerializeField] private SpriteRenderer _sceneCameraArea;
     [SerializeField] private SceneCameraArea _sceneCameraArea;
     private Camera _editorCamera => EngineManager.Instance.EditorCamera;
     private Camera _sceneCamera => EngineManager.Instance.SceneCamera;
 
-    public int SaveLoadOrder { get; set; } = 0;
+    public CameraSettings Settings => SceneManager.Instance.CameraSettings;
 
-    private void Awake()
+    private void Start()
     {
-        _settings.Color = new ColorHSV(BackgroundColor);
-        _settings.Size = _sceneCamera.orthographicSize;
-        _settings.Position = _sceneCamera.transform.position;
-        _menu.UpdateMenu(_settings);
+        _menu.UpdateMenu(Settings);
     }
 
     private void OnEnable()
@@ -31,7 +24,7 @@ public class SceneMenuController : MonoBehaviour, ISaveable
     private void OnObjectDeselected()
     {
         _menu.gameObject.SetActive(true);
-        _menu.UpdateMenu(_settings);
+        _menu.UpdateMenu(Settings);
     }
 
     private void OnObjectSelected(SceneEntity entity)
@@ -50,59 +43,36 @@ public class SceneMenuController : MonoBehaviour, ISaveable
 
     public void UpdatePosition(Vector2 position)
     {
-        UpdatePosition(position.x, position.y);
-    }
-
-    public void UpdatePosition(float x, float y)
-    {
-        _settings.Position = new Vector3(x, y, _sceneCamera.transform.position.z);
-        _sceneCamera.transform.position = _settings.Position;
-        _sceneCameraArea.transform.position = new Vector3(x, y);
+        Vector3 cameraPosition = new Vector3(position.x, position.y);
+        SceneManager.Instance.UpdatePosition(cameraPosition);
+        _sceneCameraArea.transform.position = cameraPosition;
     }
 
     public void UpdateSize(float value)
     {
-        _settings.Size = value;
-        _sceneCamera.orthographicSize = _settings.Size;
+        SceneManager.Instance.UpdateSize(value);
 
-        float height = _settings.Size * 2f;
+        float height = Settings.Size * 2f;
         float width = height * _sceneCamera.aspect;
-        // _sceneCameraArea.size = new Vector2(width, height);
         _sceneCameraArea.SetSize(new Vector2(width, height));
     }
 
     public void OpenColorEdit()
     {
-        ColorPickerController.Instance.Open(_settings.Color, OnColorUpdated);
+        ColorPickerController.Instance.Open(Settings.Color, OnColorUpdated);
     }
 
     private void OnColorUpdated(ColorHSV color)
     {
-        _settings.Color = color;
-        BackgroundColor = _settings.Color.ToUnityColor();
-        _menu.UpdateMenu(_settings);
+        SceneManager.Instance.UpdateColor(color);
+        _menu.UpdateMenu(Settings);
 
-        _editorCamera.backgroundColor = _settings.Color.ToUnityColor();
-        _sceneCamera.backgroundColor = _settings.Color.ToUnityColor();
+        _editorCamera.backgroundColor = color.ToUnityColor();
     }
 
     public void OpenGlobalScript()
     {
         ScriptGraph.Instance.ToggleGlobalScriptPanel();
-    }
-
-    public void ResetState()
-    {
-        UpdatePosition(Vector2.zero);
-        UpdateSize(5f);
-        OnColorUpdated(new ColorHSV(BackgroundColor));
-    }
-
-    public void SaveData(GameData data)
-    {
-        data.Scene.BackgroundColor = _settings.Color;
-        data.Scene.CameraPosition = _settings.Position;
-        data.Scene.CameraSize = _settings.Size;
     }
 
     public void LoadData(GameData data)

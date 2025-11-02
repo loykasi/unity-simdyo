@@ -39,6 +39,6 @@ public class SceneMenu : MonoBehaviour
 
     private void OnPositionSubmit(Vector3 value)
     {
-        _controller.UpdatePosition(value.x, value.y);
+        _controller.UpdatePosition(value);
     }
 }
