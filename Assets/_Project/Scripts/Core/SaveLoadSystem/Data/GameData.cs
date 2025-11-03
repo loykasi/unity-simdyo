@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class GameData
 {
+    public string Version;
     public SceneData Scene = new();
     public List<Texture2D> Textures;
 

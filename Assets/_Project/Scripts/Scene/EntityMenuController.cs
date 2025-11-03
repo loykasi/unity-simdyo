@@ -84,11 +84,13 @@ public class EntityMenuController : MonoBehaviour
     public void UpdatePosition(float x, float y)
     {
         _entity.Position = new Vector3(x, y);
+        Physics2D.SyncTransforms();
     }
 
     public void UpdateAngle(float angle)
     {
         _entity.Angle = angle;
+        Physics2D.SyncTransforms();
     }
 
     public void ChooseTexture()
@@ -109,6 +111,8 @@ public class EntityMenuController : MonoBehaviour
 
         ((BoxEntity)_entity).Width = width;
         ((BoxEntity)_entity).Height = height;
+
+        Physics2D.SyncTransforms();
     }
 
     public void UpdateRadius(float radius)
@@ -119,5 +123,7 @@ public class EntityMenuController : MonoBehaviour
         }
 
         ((CircleEntity)_entity).Radius = radius;
+
+        Physics2D.SyncTransforms();
     }
 }

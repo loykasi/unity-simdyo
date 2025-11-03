@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.InputSystem;
 
 public class ToolManagement : Singleton<ToolManagement>
 {
@@ -10,6 +8,8 @@ public class ToolManagement : Singleton<ToolManagement>
 
     public ToolType CurrentTool { get; private set; }
     public bool HasTool => _tool != null;
+
+    public float PanZoomSpeed;
 
     [SerializeField] private Camera _camera;
     [SerializeField] private ToolType _defaultTool;

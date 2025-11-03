@@ -32,8 +32,11 @@ public class ScriptGraph : Singleton<ScriptGraph>
 
     public void Close()
     {
-        _isOpen = false;
-        _panel.SetActive(_isOpen);
-        _flowGraph.Close();
+        if (_isOpen)
+        {
+            _isOpen = false;
+            _panel.SetActive(_isOpen);
+            _flowGraph.Close();
+        }
     }
 }

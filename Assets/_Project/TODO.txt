@@ -14,5 +14,5 @@
 [] menu: fix camera size not update on load
 
 == UI
-[] tools ui icon
-[] play tab ui icon
+[X] tools ui icon
+[X] play tab ui icon

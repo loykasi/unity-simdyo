@@ -16,6 +16,9 @@ public class PanTool : ITool
         set => EngineManager.Instance.EditorCameraHeight = value;
     }
 
+    private float _startZoom = 5f;
+    private float _zoomTime = 1f;
+
     public virtual void Disable()
     {
 
@@ -87,33 +90,49 @@ public class PanTool : ITool
 
     protected virtual void Zoom()
     {
+        Camera camera = EngineManager.Instance.EditorCamera;
         Vector3 mousePosition = GetMouseWorldPositon();
+
+        if (_zoomTime < 1)
+        {
+            _zoomTime += Time.unscaledDeltaTime * ToolManagement.Instance.PanZoomSpeed;
+        }
+        else
+        {
+            _zoomTime = 1;
+        }
+
+        camera.orthographicSize = Mathf.Lerp(_startZoom, TargetHeight, EaseZoom(_zoomTime));
+
+        Vector3 offset = mousePosition - GetMouseWorldPositon();
+        camera.transform.position += offset;
+
         if (ScreenInteractionUtils.IsOverUI())
         {
             return;
         }
 
-        Camera camera = EngineManager.Instance.EditorCamera;
         float scroll = Mouse.current.scroll.ReadValue().y;
-
         if (!_isZooming && scroll != 0)
         {
-            TargetHeight = camera.orthographicSize;
             _isZooming = true;
+
+            _startZoom = camera.orthographicSize;
+
+            Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
+            TargetHeight = Mathf.Clamp(camera.orthographicSize - scroll * camera.orthographicSize / 5f, limit.x, limit.y);
+            _zoomTime = 0;
         }
 
         if (_isZooming && scroll == 0)
         {
             _isZooming = false;
         }
-
-        Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
-        TargetHeight = Mathf.Clamp(TargetHeight - scroll * camera.orthographicSize / 5f, limit.x, limit.y); 
-
-        camera.orthographicSize = Mathf.Lerp(camera.orthographicSize, TargetHeight, Time.unscaledDeltaTime * 15f);
-        
-        Vector3 offset = mousePosition - GetMouseWorldPositon();
-        camera.transform.position += offset;
+    }
+    
+    private float EaseZoom(float t)
+    {
+        return 1 - Mathf.Pow(1 - t, 3);
     }
 
     protected Vector3 GetMouseWorldPositon()

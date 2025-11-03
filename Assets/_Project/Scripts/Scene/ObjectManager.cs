@@ -17,7 +17,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     // temporary
     private int _indexForID = 0;
 
-    public void Select(Vector3 screenPoint)
+    public void Deselect()
     {
         if (SelectedObject != null)
         {
@@ -26,6 +26,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
             OnObjectDeselected?.Invoke();
         }
+    }
+
+    public void Select(Vector3 screenPoint)
+    {
+        Deselect();
 
         if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
         {
@@ -154,14 +159,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entityData.Type = entity.EntityType;
             entityData.Position = entity.transform.position;
             entityData.Rotation = entity.transform.rotation;
+            entityData.GravityEnabled = entity.IsGravityEnabled;
+            entityData.ColliderEnabled = entity.IsColliderEnabled;
+            entityData.Layer = entity.Layer;
             entityData.Color = entity.CurrentColor;
             entityData.TextureSlot = entity.TextureSlot;
 
             ScriptSaveHandler.Save(entityData.Script, entity.Script);
-
-            // entityData.Script.Nodes = entity.Script.Nodes;
-            // entityData.Script.Connections = entity.Script.Connections;
-            // entityData.Script.Variables = entity.Script.Variables;
 
             data.Scene.Entities.Add(entityData);
         }
@@ -175,48 +179,38 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         SceneEntities.Clear();
 
-        Debug.Log(data.Scene.Entities.Count);
+        Debug.Log($"Load {data.Scene.Entities.Count} objects");
 
-        foreach (var entity in data.Scene.Entities)
+        foreach (var entityData in data.Scene.Entities)
         {
-            switch (entity.Type)
+            SceneEntity entity;
+            switch (entityData.Type)
             {
                 case EntityType.Box:
-                    BoxEntityData boxData = (BoxEntityData)entity;
-                    BoxEntity box = ShapeGenerator.Instance.AddBox(entity.Position, boxData.Width, boxData.Height);
-                    box.CurrentColor = boxData.Color;
-                    if (boxData.TextureSlot != -1)
-                    {
-                        box.SetTexture(boxData.TextureSlot, AssetController.Instance.Textures[boxData.TextureSlot]);
-                    }
-                    
-                    ScriptSaveHandler.Load(boxData.Script, box.Script);
-                    
-                    // box.Script.Nodes.AddRange(entity.Script.Nodes);
-                    // box.Script.Connections.AddRange(entity.Script.Connections);
-                    // box.Script.Variables = entity.Script.Variables;
+                    BoxEntityData boxData = (BoxEntityData)entityData;
+                    entity = ShapeGenerator.Instance.AddBox(boxData.Position, boxData.Width, boxData.Height);
                     break;
                 case EntityType.Circle:
-                    CircleEntityData circleData = (CircleEntityData)entity;
-                    CircleEntity circle = ShapeGenerator.Instance.AddCircle(circleData.Position, circleData.Radius);
-                    circle.CurrentColor = circleData.Color;
-                    if (circle.TextureSlot != -1)
-                    {
-                        circle.SetTexture(circleData.TextureSlot, AssetController.Instance.Textures[circleData.TextureSlot]);
-                    }
-
-                    ScriptSaveHandler.Load(circleData.Script, circle.Script);
-                    
-                    // circle.Script.Nodes = entity.Script.Nodes;
-                    // circle.Script.Connections = entity.Script.Connections;
-                    // circle.Script.Variables = entity.Script.Variables;
+                    CircleEntityData circleData = (CircleEntityData)entityData;
+                    entity = ShapeGenerator.Instance.AddCircle(circleData.Position, circleData.Radius);
                     break;
+                default:
+                    continue;
             }
-        }
 
-        // foreach (var entity in SceneEntities)
-        // {
-        //     entity.Script.Load();
-        // }
+            entity.Rotation = entityData.Rotation;
+            entity.CurrentColor = entityData.Color;
+
+            entity.ToggleCollider(entityData.ColliderEnabled);
+            entity.ToggleGravity(entityData.GravityEnabled);
+            entity.SetLayer(entityData.Layer);
+            
+            if (entity.TextureSlot != -1)
+            {
+                entity.SetTexture(entityData.TextureSlot, AssetController.Instance.Textures[entityData.TextureSlot]);
+            }
+            
+            ScriptSaveHandler.Load(entityData.Script, entity.Script);
+        }
     }
 }

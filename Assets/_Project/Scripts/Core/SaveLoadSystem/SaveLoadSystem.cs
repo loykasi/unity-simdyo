@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using SFB;
 using UnityEngine;
 
 public class SaveLoadSystem : Singleton<SaveLoadSystem>
 {
+    [SerializeField] private string _version = "0.1";
     [SerializeField] private DataService _dataService;
     private GameData _gameData = new();
     private List<ISaveable> _saveables;
@@ -19,6 +19,8 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
     public void Save()
     {
         _gameData.Clear();
+        _gameData.Version = _version;
+
         foreach (var item in _saveables)
         {
             item.SaveData(_gameData);

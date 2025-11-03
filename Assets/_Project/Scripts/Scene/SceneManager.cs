@@ -84,10 +84,6 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         GlobalScript.ResetState();
         ObjectManager.Instance.ResetState();
-
-
-
-        ToastSystem.Instance.Show("Create new scene.");
     }
 
     public void SaveData(GameData data)

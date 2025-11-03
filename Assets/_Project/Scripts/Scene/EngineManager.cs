@@ -3,6 +3,7 @@ using UnityEngine;
 public class EngineManager : Singleton<EngineManager>
 {
     public float EditorCameraHeight { get; set; } = 5f;
+    public Vector3 EditorCameraPostiion { get; set; } = Vector3.zero;
     public Camera EditorCamera;
     public Camera SceneCamera => SceneManager.Instance.SceneCamera;
     [SerializeField] private GameObject _playModeCanvas;
@@ -12,18 +13,25 @@ public class EngineManager : Singleton<EngineManager>
 
     [Header("References")]
     [SerializeField] private GameObject _sceneCameraArea;
+    [SerializeField] private GameObject _editorCanvas;
     [SerializeField] private RectTransform _referenceCanvas;
     public float CanvasScale => _referenceCanvas.localScale.x;
 
     protected override void Awake()
     {
+        Time.timeScale = 0;
         base.Awake();
     }
 
     public void Play()
     {
         Time.timeScale = 1;
+        
+        _editorCanvas.SetActive(false);
         _sceneCameraArea.SetActive(false);
+        ObjectManager.Instance.Deselect();
+        ScriptGraph.Instance.Close();
+
         _playModeCanvas.SetActive(true);
         EditorCamera.gameObject.SetActive(false);
         SceneManager.Instance.Play();
@@ -32,6 +40,8 @@ public class EngineManager : Singleton<EngineManager>
     public void Stop()
     {
         Time.timeScale = 0;
+
+        _editorCanvas.SetActive(true);
         _sceneCameraArea.SetActive(true);
         _playModeCanvas.SetActive(false);
         EditorCamera.gameObject.SetActive(true);

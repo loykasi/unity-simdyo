@@ -306,6 +306,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAutoUnparentOnAwake: 0
   isNotDestroyOnLoad: 0
+  _version: 0.1
   _dataService: {fileID: 135656532}
 --- !u!4 &135656531
 Transform:

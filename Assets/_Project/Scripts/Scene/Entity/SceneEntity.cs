@@ -72,7 +72,7 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public bool IsColliderEnabled => Collider.enabled;
+    public bool IsColliderEnabled { get; set; } = true;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
 
     private SceneEntityState _defaultState = new();
@@ -125,6 +125,8 @@ public class SceneEntity : MonoBehaviour
         _defaultState.Velocity = Rigidbody.linearVelocity;
         _defaultState.AngularVelocity = Rigidbody.angularVelocity;
 
+        Collider.enabled = IsColliderEnabled;
+
         Script.OnSceneStart();
     }
 
@@ -139,12 +141,14 @@ public class SceneEntity : MonoBehaviour
             Rigidbody.angularVelocity = _defaultState.AngularVelocity;
         }
 
+        Collider.enabled = true;
+
         Script.OnSceneStop();
     }
 
     public void ToggleCollider(bool value)
     {
-        Collider.enabled = value;
+        IsColliderEnabled = value;
     }
 
     public void ToggleGravity(bool value)
