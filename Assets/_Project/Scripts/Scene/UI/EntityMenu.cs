@@ -12,6 +12,7 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private MenuVectorInput _positionInput;
     [SerializeField] private MenuNumberInput _angleInput;
     [SerializeField] private Toggle _gravityToggle;
+    [SerializeField] private MenuVectorInput _velocityInput;
     [SerializeField] private Toggle _colliderToggle;
     [SerializeField] private Image _buttonColor;
 
@@ -38,6 +39,7 @@ public class EntityMenu : MonoBehaviour
 
         _positionInput.OnSubmit += OnPositionSubmit;
         _angleInput.OnSubmit += OnAngleSubmit;
+        _velocityInput.OnSubmit += OnVelocitySubmit;
     }
 
     private void CreateCollisionLayerMenu()
@@ -78,6 +80,7 @@ public class EntityMenu : MonoBehaviour
     {
         _positionInput.SetValue(entity.Position);
         _angleInput.SetValue(entity.Angle);
+        _velocityInput.SetValue(entity.Velocity);
 
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
@@ -123,6 +126,11 @@ public class EntityMenu : MonoBehaviour
     private void OnAngleSubmit(float value)
     {
         _controller.UpdateAngle(value);
+    }
+
+    private void OnVelocitySubmit(Vector3 value)
+    {
+        _controller.UpdateVelocity(value.x, value.y);
     }
 
     public void ToggleGravity(bool value)

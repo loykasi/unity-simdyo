@@ -93,6 +93,11 @@ public class EntityMenuController : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
+    public void UpdateVelocity(float x, float y)
+    {
+        _entity.Velocity = new Vector2(x, y);
+    }
+
     public void ChooseTexture()
     {
         TextureMenu.Instance.OpenTextureMenu(_entity);

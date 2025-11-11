@@ -19,7 +19,7 @@ namespace Loykas.Scripting
 
         public GetVariableNode()
         {
-            Input = InputValue(nameof(Input))
+            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.String))
                             .UseVariableInput()
                             .DisableConnection()
                             .HideLabel();

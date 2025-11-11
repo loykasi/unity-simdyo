@@ -2,13 +2,19 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
+    [ScriptNode(ScriptNodeCategory.Look)]
+    public class GetRadiusContent : ScriptNodeContent
+    {
+        public override System.Type Type => typeof(GetRadiusNode);
+        public override ScriptNode Create() => new GetRadiusNode();
+    }
 
-    class GetAngleNode : ScriptNode
+    class GetRadiusNode : ScriptNode
     {
         public InputValue Entity;
         public OutputValue Value;
 
-        public GetAngleNode()
+        public GetRadiusNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
@@ -27,7 +33,12 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return vs.Entity.Angle;
+            if (entity is not CircleEntity circleEntity)
+            {
+                return default(float);
+            }
+
+            return circleEntity.Radius;
         }
     }
 }

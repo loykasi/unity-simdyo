@@ -5,6 +5,7 @@ namespace Loykas.Scripting
         Event,
         Control,
         Motion,
+        Look,
         Operator,
         Debug,
         Data,

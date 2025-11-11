@@ -254,6 +254,20 @@ namespace Loykas.Scripting
 
         //
 
+        public SceneEntity GetEntity(InputValue inputValue)
+        {
+            SceneEntity entity = (SceneEntity)inputValue.GetValue(this);
+
+            if (entity == null
+                && inputValue.IsNullMeanSelf
+                && !IsGlobal)
+            {
+                entity = Entity;
+            }
+
+            return entity;
+        }
+
         public int GetCurrentLoop()
         {
             if (_loops.Count > 0)
@@ -553,7 +567,7 @@ namespace Loykas.Scripting
             if (Variables.Remove(variable.Name))
             {
                 VariableList.Remove(variable);
-                
+
                 OnVariableDeleted?.Invoke(variable);
                 return true;
             }

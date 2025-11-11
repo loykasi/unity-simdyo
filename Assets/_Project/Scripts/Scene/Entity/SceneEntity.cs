@@ -38,6 +38,26 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
+    // public Vector2 Velocity
+    // {
+    //     get => Rigidbody.linearVelocity;
+    //     set => Rigidbody.linearVelocity = value;
+    // }
+
+    public Vector2 Velocity
+    {
+        get
+        {
+            return _velocity;
+        }
+        set
+        {
+            _velocity = value;
+            Rigidbody.linearVelocity = value;
+        }
+    }
+    private Vector2 _velocity;
+
     public MeshFilter MeshFilter;
     public MeshRenderer Renderer;
     public Collider2D Collider;
@@ -122,10 +142,11 @@ public class SceneEntity : MonoBehaviour
         _defaultState.Rotation = rotation;
         _defaultState.ColliderEnabled = IsColliderEnabled;
         _defaultState.GravityEnabled = IsGravityEnabled;
-        _defaultState.Velocity = Rigidbody.linearVelocity;
+        _defaultState.Velocity = Velocity;
         _defaultState.AngularVelocity = Rigidbody.angularVelocity;
 
         Collider.enabled = IsColliderEnabled;
+        Rigidbody.linearVelocity = Velocity;
 
         Script.OnSceneStart();
     }
@@ -137,7 +158,7 @@ public class SceneEntity : MonoBehaviour
         ToggleGravity(_defaultState.GravityEnabled);
         if (_defaultState.GravityEnabled)
         {
-            Rigidbody.linearVelocity = _defaultState.Velocity;
+            Velocity = _defaultState.Velocity;
             Rigidbody.angularVelocity = _defaultState.AngularVelocity;
         }
 
@@ -207,6 +228,7 @@ public class SceneEntity : MonoBehaviour
 
     public void OnUpdate()
     {
+        _velocity = Rigidbody.linearVelocity;
         Script.UpdateVS();
     }
 

@@ -24,11 +24,6 @@ namespace Loykas.Scripting
                 SceneManager.Instance.GlobalScript.OnVariableUpdated -= OnVariableUpdated;
                 SceneManager.Instance.GlobalScript.OnVariableDeleted -= OnVariableDeleted;
             }
-
-            // if (_variable != null)
-            // {
-            //     _variable.OnUpdated -= OnVariableUpdated;
-            // }
         }
 
         public void Init()

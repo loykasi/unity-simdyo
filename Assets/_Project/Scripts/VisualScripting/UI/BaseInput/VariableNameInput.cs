@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -45,6 +46,7 @@ namespace Loykas.Scripting
 
         private void OnValueChanged(int index)
         {
+            Debug.Log(index);
             string name = Dropdown.options[index].text;
             if (name.Equals("Select..."))
             {
@@ -78,7 +80,12 @@ namespace Loykas.Scripting
         
         public override object GetValue()
         {
-            return _variable.Name;
+            string name = Dropdown.options[_selectedIndex].text;
+            if (name.Equals("Select..."))
+            {
+                name = string.Empty;
+            }
+            return name;
         }
 
         public override void SetValue(object value)
@@ -86,14 +93,14 @@ namespace Loykas.Scripting
             string variableName = (string)value;
             if (Dropdown.options.Count > 0)
             {
-                int index = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
-                if (index != -1)
+                _selectedIndex = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
+                if (_selectedIndex != -1)
                 {
                     _variable = _flow.GetVariable(variableName);
                 }
                 else
                 {
-                    Dropdown.value = 0;
+                    _selectedIndex = 0;
                 }
                 
                 Dropdown.SetValueWithoutNotify(_selectedIndex);

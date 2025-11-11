@@ -24,6 +24,7 @@ public enum InputValueTypes
 
         public InputValueTypes InputType = InputValueTypes.None;
         public bool IsDisableConnection;
+        public bool IsNullMeanSelf;
 
         public bool HasConnection => Source != null;
         public bool HasValue => Node.DefaultValues.ContainsKey(Key);
@@ -138,6 +139,12 @@ public enum InputValueTypes
         public InputValue HideLabel()
         {
             ShouldShowLabel = false;
+            return this;
+        }
+
+        public InputValue NullMeanSelf()
+        {
+            IsNullMeanSelf = true;
             return this;
         }
 

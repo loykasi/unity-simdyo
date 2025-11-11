@@ -13,7 +13,7 @@ public class CircleEntity : SceneEntity
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
-    public void SetRadius(float radius, int totalVert)
+    public void SetRadius(float radius, int totalVert = 8)
     {
         Radius = radius;
         TotalVert = totalVert;

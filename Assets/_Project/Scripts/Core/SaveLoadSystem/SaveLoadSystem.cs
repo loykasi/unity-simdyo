@@ -34,9 +34,9 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
         _dataService.Load(_gameData, OnSaveDataLoaded);
     }
 
-    public void Load(string path)
+    public void LoadFromUrl(string url)
     {
-        _dataService.Load(path, _gameData, OnSaveDataLoaded);
+        _dataService.LoadFromUrl(url, _gameData, OnSaveDataLoaded);
     }
 
     private void OnSaveDataLoaded()

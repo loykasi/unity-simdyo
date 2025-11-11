@@ -1,21 +1,15 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Motion)]
-    public class GetPositionContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(GetPositionNode);
-        public override ScriptNode Create() => new GetPositionNode();
-    }
-
-    class GetPositionNode : ScriptNode
+    class GetVelocityNode : ScriptNode
     {
         public InputValue Entity;
         public OutputValue X;
         public OutputValue Y;
 
-        public GetPositionNode()
+        public GetVelocityNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
@@ -35,24 +29,19 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return entity.Position.x;
+            return entity.Velocity.x;
         }
 
         private object GetY(ScriptFlow vs)
         {
-            SceneEntity entity = (SceneEntity)Entity.GetValue(vs);
-
-            if (entity == null && Entity.IsNullMeanSelf)
-            {
-                entity = Flow.Entity;
-            }
+            SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null)
             {
                 return default(float);
             }
 
-            return entity.Position.y;
+            return entity.Velocity.y;
         }
     }
 }

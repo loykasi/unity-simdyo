@@ -2,20 +2,22 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class SetAngleNode : ScriptNode
+    class SetVelocityNode : ScriptNode
     {
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
-        public InputValue Value;
+        public InputValue X;
+        public InputValue Y;
         public InputValue Entity;
 
-        public SetAngleNode()
+        public SetVelocityNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseInput();
+            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();
+            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
@@ -31,8 +33,10 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float angle = (float)Value.GetValue(vs);
-            vs.Entity.Angle = angle;
+            float x = (float)X.GetValue(vs);
+            float y = (float)Y.GetValue(vs);
+
+            vs.Entity.Velocity = new Vector2(x, y);
             return Exit;
         }
     }

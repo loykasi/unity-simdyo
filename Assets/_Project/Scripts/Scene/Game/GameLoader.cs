@@ -1,12 +1,17 @@
+using TMPro;
 using UnityEngine;
 
 public class GameLoader : MonoBehaviour
 {
-    public string path;
-    
+    public string Url;
+
     private void Start()
     {
         SceneManager.Instance.ResetState();
-        SaveLoadSystem.Instance.Load(path);
+    }
+
+    public void Load(string url)
+    {
+        SaveLoadSystem.Instance.LoadFromUrl(Url);
     }
 }

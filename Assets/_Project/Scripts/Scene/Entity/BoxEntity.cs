@@ -80,6 +80,7 @@ public class BoxEntity : SceneEntity
         }
     }
 
+    private Vector3[] _vertices = new Vector3[4];
 
     public void SetSize(float width, float height)
     {
@@ -90,14 +91,11 @@ public class BoxEntity : SceneEntity
         float halfWidth = width / 2f;
         float halfHeight = height / 2f;
 
-        Vector3[] vertices = new Vector3[4]
-        {
-            new Vector3(halfWidth, halfHeight),
-            new Vector3(- halfWidth, halfHeight),
-            new Vector3(- halfWidth, - halfHeight),
-            new Vector3(halfWidth, - halfHeight),
-        };
-        MeshFilter.mesh.vertices = vertices;
+        _vertices[0] = new Vector3(halfWidth, halfHeight);
+        _vertices[1] = new Vector3(- halfWidth, halfHeight);
+        _vertices[2] = new Vector3(- halfWidth, - halfHeight);
+        _vertices[3] = new Vector3(halfWidth, - halfHeight);
+        MeshFilter.mesh.vertices = _vertices;
     }
 
     public void UpdateBox(Vector3 from, Vector3 to)
@@ -110,14 +108,11 @@ public class BoxEntity : SceneEntity
 
         transform.position = center;
 
-        Vector3[] vertices = new Vector3[4]
-        {
-            new Vector3(halfWidth, halfHeight),
-            new Vector3(- halfWidth, halfHeight),
-            new Vector3(- halfWidth, - halfHeight),
-            new Vector3(halfWidth, - halfHeight),
-        };
-        MeshFilter.mesh.SetVertices(vertices);
+        _vertices[0] = new Vector3(halfWidth, halfHeight);
+        _vertices[1] = new Vector3(- halfWidth, halfHeight);
+        _vertices[2] = new Vector3(- halfWidth, - halfHeight);
+        _vertices[3] = new Vector3(halfWidth, - halfHeight);
+        MeshFilter.mesh.SetVertices(_vertices);
         MeshFilter.mesh.RecalculateBounds();
 
         ((BoxCollider2D)Collider).size = new Vector2(Width, Height);

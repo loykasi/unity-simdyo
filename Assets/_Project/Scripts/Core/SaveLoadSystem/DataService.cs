@@ -99,7 +99,15 @@ public class DataService : MonoBehaviour, IDataService
         return memoryStream.ToArray();
     }
 
-    public void Load(string path, GameData data, UnityAction callback)
+    public void LoadFromUrl(string url, GameData data, UnityAction callback)
+    {
+        // window.location.pathname.replace(/^\/|\/$/g, '').split("/").pop()
+        _callback = callback;
+        _data = data;
+        StartCoroutine(LoadFromUrl(url, OnFileLoaded));
+    }
+
+    public void LoadPath(string path, GameData data, UnityAction callback)
     {
         _callback = callback;
         if (!File.Exists(path))
@@ -188,37 +196,36 @@ public class DataService : MonoBehaviour, IDataService
         }
     }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-    public void OnFileUpload(string json)
+    private IEnumerator LoadFromUrl(string url, UnityAction<byte[]> callback = null)
     {
-        string[] urls = JsonUtils.FromJson<string>(json);
-        StartCoroutine(LoadFromUrl(urls[0], OnFileLoaded));
-    }
+        using UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
 
-    private IEnumerator LoadFromUrl(string url, UnityAction<byte[]> callback = null) {
-        using (UnityWebRequest www = UnityWebRequest.Get(url))
+        if (www.result == UnityWebRequest.Result.Success)
         {
-            yield return www.SendWebRequest();
+            byte[] data = new byte[www.downloadHandler.data.Length];
+            Array.Copy(www.downloadHandler.data, 0, data, 0, www.downloadHandler.data.Length);
 
-            if (www.result == UnityWebRequest.Result.Success)
-            {
-                byte[] data = new byte[www.downloadHandler.data.Length];
-                Array.Copy(www.downloadHandler.data, 0, data, 0, www.downloadHandler.data.Length);
-
-                callback?.Invoke(data);
-            }
-            else
-            {
-                Debug.Log($"Failed to load {url}: {www.error}");
-            }
+            callback?.Invoke(data);
+        }
+        else
+        {
+            Debug.Log($"Failed to load {url}: {www.error}");
         }
     }
-
+    
     private void OnFileLoaded(byte[] bytes)
     {
         using MemoryStream memoryStream = new(bytes);
         using ZipArchive archive = new(memoryStream, ZipArchiveMode.Read);
         LoadToGameData(archive, _data);
+    }
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    public void OnFileUpload(string json)
+    {
+        string[] urls = JsonUtils.FromJson<string>(json);
+        StartCoroutine(LoadFromUrl(urls[0], OnFileLoaded));
     }
 #else
     private ZipArchive LoadSaveData()

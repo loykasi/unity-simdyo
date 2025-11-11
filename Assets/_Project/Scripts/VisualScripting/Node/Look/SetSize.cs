@@ -1,0 +1,55 @@
+using UnityEngine;
+
+namespace Loykas.Scripting
+{
+    [ScriptNode(ScriptNodeCategory.Look)]
+    public class SetSizeContent : ScriptNodeContent
+    {
+        public override System.Type Type => typeof(SetSizeNode);
+        public override ScriptNode Create() => new SetSizeNode();
+    }
+
+    class SetSizeNode : ScriptNode
+    {
+        public InputTrigger Enter;
+        public OutputTrigger Exit;
+
+        public InputValue Width;
+        public InputValue Height;
+        public InputValue Entity;
+
+        public SetSizeNode()
+        {
+            Enter = InputTrigger(nameof(Enter), Set);
+            Exit = OutputTrigger(nameof(Exit));
+
+            Width = InputValue(nameof(Width), ScriptDataType.Single(DataType.Number)).UseInput();
+            Height = InputValue(nameof(Height), ScriptDataType.Single(DataType.Number)).UseInput();
+            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
+                        .HideLabel()
+                        .UseInput()
+                        .NullMeanSelf();
+        }
+
+        public OutputTrigger Set(ScriptFlow vs)
+        {
+            SceneEntity entity = Flow.GetEntity(Entity);
+
+            if (entity == null)
+            {
+                return Exit;
+            }
+
+            if (entity is not BoxEntity boxEntity)
+            {
+                return Exit;
+            }
+
+            float width = (float)Width.GetValue(vs);
+            float height = (float)Height.GetValue(vs);
+
+            boxEntity.SetSize(width, height);
+            return Exit;
+        }
+    }
+}

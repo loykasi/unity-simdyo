@@ -2,7 +2,14 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class SetAngleNode : ScriptNode
+    [ScriptNode(ScriptNodeCategory.Look)]
+    public class SetRadiusContent : ScriptNodeContent
+    {
+        public override System.Type Type => typeof(SetRadiusNode);
+        public override ScriptNode Create() => new SetRadiusNode();
+    }
+
+    class SetRadiusNode : ScriptNode
     {
         public InputTrigger Enter;
         public OutputTrigger Exit;
@@ -10,7 +17,7 @@ namespace Loykas.Scripting
         public InputValue Value;
         public InputValue Entity;
 
-        public SetAngleNode()
+        public SetRadiusNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
@@ -31,8 +38,13 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
+            if (entity is not CircleEntity circleEntity)
+            {
+                return Exit;
+            }
+
             float angle = (float)Value.GetValue(vs);
-            vs.Entity.Angle = angle;
+            circleEntity.SetRadius(angle);
             return Exit;
         }
     }

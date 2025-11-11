@@ -11,8 +11,17 @@
 [X] ui responsive
 [X] fix camera area indicator size
 [X] add rotate visual indicator
-[] menu: fix camera size not update on load
+[X] menu: fix camera size not update on load
 
 == UI
 [X] tools ui icon
 [X] play tab ui icon
+
+== NODE
+[x] velocity
+[x] width / height
+[x] radius
+[] gravity
+[] color
+[] collider / layer
+[] texture
