@@ -29,7 +29,7 @@ namespace Loykas.Scripting
                         .NullMeanSelf();
         }
 
-        public OutputTrigger Set(ScriptFlow vs)
+        public OutputTrigger Set()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -43,7 +43,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float angle = (float)Value.GetValue(vs);
+            float angle = (float)Value.GetValue();
             circleEntity.SetRadius(angle);
             return Exit;
         }

@@ -37,7 +37,6 @@ namespace Loykas.Scripting
 
         public void GetNodes(List<ScriptNodeContent> nodes, bool isGlobal = false)
         {
-            Debug.Log(isGlobal);
             nodes.Clear();
             foreach (ScriptNodeContent node in Nodes.Values)
             {

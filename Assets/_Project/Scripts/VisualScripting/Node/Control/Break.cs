@@ -8,15 +8,14 @@ namespace Loykas.Scripting
 
         public BreakNode()
         {
-            Enter = InputTrigger(
-                nameof(Enter),
-                (vs) =>
-                {
-                    vs.BreakLoop();
+            Enter = InputTrigger(nameof(Enter), BreakLoop);
+        }
 
-                    return null;
-                }
-            );
+        private OutputTrigger BreakLoop()
+        {
+            Flow.BreakLoop();
+
+            return null;
         }
     }
 }

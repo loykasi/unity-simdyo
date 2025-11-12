@@ -24,7 +24,7 @@ namespace Loykas.Scripting
                         .NullMeanSelf();
         }
 
-        public OutputTrigger Set(ScriptFlow vs)
+        public OutputTrigger Set()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -33,10 +33,10 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float x = (float)X.GetValue(vs);
-            float y = (float)Y.GetValue(vs);
+            float x = (float)X.GetValue();
+            float y = (float)Y.GetValue();
 
-            vs.Entity.Velocity = new Vector2(x, y);
+            Flow.Entity.Velocity = new Vector2(x, y);
             return Exit;
         }
     }

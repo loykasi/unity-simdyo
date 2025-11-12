@@ -20,7 +20,7 @@ namespace Loykas.Scripting
             Y = OutputValue(nameof(Y), GetY);
         }
 
-        private object GetX(ScriptFlow vs)
+        private object GetX()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -32,7 +32,7 @@ namespace Loykas.Scripting
             return entity.Velocity.x;
         }
 
-        private object GetY(ScriptFlow vs)
+        private object GetY()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 

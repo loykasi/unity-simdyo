@@ -30,11 +30,11 @@ namespace Loykas.Scripting
             Value = InputValue(nameof(Value));
         }
 
-        private OutputTrigger Set(ScriptFlow vs)
+        private OutputTrigger Set()
         {
-            string name = Variable.GetValue(vs).ToString();
-            object value = Value.GetValue(vs);
-            vs.UpdateVariable(name, value);
+            string name = Variable.GetValue().ToString();
+            object value = Value.GetValue();
+            Flow.UpdateVariable(name, value);
             return Exit;
         }
     }

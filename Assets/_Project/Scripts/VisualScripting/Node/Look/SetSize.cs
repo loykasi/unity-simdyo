@@ -31,7 +31,7 @@ namespace Loykas.Scripting
                         .NullMeanSelf();
         }
 
-        public OutputTrigger Set(ScriptFlow vs)
+        public OutputTrigger Set()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -45,8 +45,8 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float width = (float)Width.GetValue(vs);
-            float height = (float)Height.GetValue(vs);
+            float width = (float)Width.GetValue();
+            float height = (float)Height.GetValue();
 
             boxEntity.SetSize(width, height);
             return Exit;

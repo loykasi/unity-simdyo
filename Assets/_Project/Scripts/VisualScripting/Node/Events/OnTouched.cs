@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,16 +18,20 @@ namespace Loykas.Scripting
 
         public OnTouchedNode()
         {
-            OtherEntity = OutputValue(nameof(OtherEntity), ScriptDataType.Single(DataType.Entity), (flow) => _otherEntity);
+            OtherEntity = OutputValue(nameof(OtherEntity), ScriptDataType.Single(DataType.Entity), GetOtherEntity);
 
-            PositionY = OutputValue(nameof(PositionX), ScriptDataType.Single(DataType.Number), (flow) => _position.x);
-            PositionY = OutputValue(nameof(PositionY), ScriptDataType.Single(DataType.Number), (flow) => _position.y);
+            PositionY = OutputValue(nameof(PositionX), ScriptDataType.Single(DataType.Number), GetPositionX);
+            PositionY = OutputValue(nameof(PositionY), ScriptDataType.Single(DataType.Number), GetPositionX);
 
             //NormalXOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Number), (flow) => _normal.x);
             //NormalYOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Number), (flow) => _normal.y);
         }
 
         public override EventHook Hook => EventHook.OnTouched;
+
+        public object GetOtherEntity() => _otherEntity;
+        public object GetPositionX() => _position.x;
+        public object GetPositionY() => _position.y;
 
         public override void AssignArgument(object args)
         {

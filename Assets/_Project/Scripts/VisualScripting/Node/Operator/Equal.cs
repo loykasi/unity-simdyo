@@ -14,13 +14,9 @@ namespace Loykas.Scripting
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Output = OutputValue(
-                nameof(Output),
-                (vs) =>
-                {
-                    return A.GetValue<float>(vs) == B.GetValue<float>(vs);
-                }
-            );
+            Output = OutputValue(nameof(Output), Get);
         }
+
+        private object Get() => A.GetValue<float>() == B.GetValue<float>();
     }
 }

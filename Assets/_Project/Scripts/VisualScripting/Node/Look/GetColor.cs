@@ -3,25 +3,25 @@ using UnityEngine;
 namespace Loykas.Scripting
 {
     [ScriptNode(ScriptNodeCategory.Look)]
-    public class GetRadiusContent : ScriptNodeContent
+    public class GetColorContent : ScriptNodeContent
     {
-        public override System.Type Type => typeof(GetRadiusNode);
-        public override ScriptNode Create() => new GetRadiusNode();
+        public override System.Type Type => typeof(GetColorNode);
+        public override ScriptNode Create() => new GetColorNode();
     }
 
-    class GetRadiusNode : ScriptNode
+    class GetColorNode : ScriptNode
     {
         public InputValue Entity;
-        public OutputValue Value;
+        public OutputValue Color;
 
-        public GetRadiusNode()
+        public GetColorNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
                         .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), Get);
+            Color = OutputValue(nameof(Color), ScriptDataType.Single(DataType.Color), Get);
         }
 
         public object Get()
@@ -33,12 +33,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            if (entity is not CircleEntity circleEntity)
-            {
-                return default(float);
-            }
-
-            return circleEntity.Radius;
+            return Flow.Entity.CurrentColor;
         }
     }
 }

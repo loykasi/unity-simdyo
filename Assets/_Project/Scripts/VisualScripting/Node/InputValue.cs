@@ -9,6 +9,7 @@ public enum InputValueTypes
     String,
     Number,
     Boolean,
+    Color,
     Entity,
     Variable,
     GlobalVariable,
@@ -98,6 +99,7 @@ public enum InputValueTypes
                 DataType.Number => InputValueTypes.Number,
                 DataType.Boolean => InputValueTypes.Boolean,
                 DataType.Entity => InputValueTypes.Entity,
+                DataType.Color => InputValueTypes.Color,
                 _ => InputValueTypes.None
             };
             UpdateDefaultValue();
@@ -153,11 +155,11 @@ public enum InputValueTypes
             Source = port;
         }
 
-        public T GetValue<T>(ScriptFlow vs)
+        public T GetValue<T>()
         {
             if (Source != null)
             {
-                return (T)Source.GetValue(vs);
+                return (T)Source.GetValue();
             }
 
             if (HasValue)
@@ -168,11 +170,11 @@ public enum InputValueTypes
             return default;
         }
 
-        public object GetValue(ScriptFlow vs)
+        public object GetValue()
         {
             if (Source != null)
             {
-                return Source.GetValue(vs);
+                return Source.GetValue();
             }
 
             if (HasValue)

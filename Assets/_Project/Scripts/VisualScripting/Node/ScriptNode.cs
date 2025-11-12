@@ -67,7 +67,7 @@ namespace Loykas.Scripting
             return GetType().Name;
         }
 
-        protected InputTrigger InputTrigger(string key, Func<ScriptFlow, OutputTrigger> action)
+        protected InputTrigger InputTrigger(string key, Func<OutputTrigger> action)
         {
             InputTrigger inputTrigger = new(key, action)
             {
@@ -107,7 +107,7 @@ namespace Loykas.Scripting
             return valueInput;
         }
 
-        public OutputValue OutputValue(string key, Func<ScriptFlow, object> getValue)
+        public OutputValue OutputValue(string key, Func<object> getValue)
         {
             OutputValue valueOutput = new(key, getValue)
             {
@@ -117,7 +117,7 @@ namespace Loykas.Scripting
             return valueOutput;
         }
 
-        public OutputValue OutputValue(string key, ScriptDataType type, Func<ScriptFlow, object> getValue)
+        public OutputValue OutputValue(string key, ScriptDataType type, Func<object> getValue)
         {
             OutputValue valueOutput = new(key, getValue, type)
             {

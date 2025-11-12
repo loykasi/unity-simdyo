@@ -24,17 +24,17 @@ namespace Loykas.Scripting
             Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
         }
 
-        private OutputTrigger Set(ScriptFlow vs)
+        private OutputTrigger Set()
         {
-            IList list = (IList)ListInput.GetValue(vs);
-            object item = Item.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
+            object item = Item.GetValue();
             list.Add(item);
             return Exit;
         }
 
-        private object Get(ScriptFlow vs)
+        private object Get()
         {
-            IList list = (IList)ListInput.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
             return list;
         }
     }

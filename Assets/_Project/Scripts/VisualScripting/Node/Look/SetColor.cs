@@ -2,29 +2,27 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Motion)]
-    public class SetPositionContent : ScriptNodeContent
+    [ScriptNode(ScriptNodeCategory.Look)]
+    public class SetColorContent : ScriptNodeContent
     {
-        public override System.Type Type => typeof(SetPositionNode);
-        public override ScriptNode Create() => new SetPositionNode();
+        public override System.Type Type => typeof(SetColorNode);
+        public override ScriptNode Create() => new SetColorNode();
     }
 
-    class SetPositionNode : ScriptNode
+    class SetColorNode : ScriptNode
     {
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
-        public InputValue X;
-        public InputValue Y;
+        public InputValue Value;
         public InputValue Entity;
 
-        public SetPositionNode()
+        public SetColorNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color)).UseInput();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
@@ -40,10 +38,8 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float x = (float)X.GetValue();
-            float y = (float)Y.GetValue();
-
-            Flow.Entity.Position = new Vector3(x, y, 0f);
+            ColorHSV color = (ColorHSV)Value.GetValue();
+            Flow.Entity.SetColor(color.ToUnityColor());
             return Exit;
         }
     }

@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             Value = OutputValue(nameof(Value), Get);
         }
 
-        public object Get(ScriptFlow vs)
+        public object Get()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -27,7 +27,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return vs.Entity.Angle;
+            return Flow.Entity.Angle;
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Loykas.Scripting
             Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
         }
 
-        private object Get(ScriptFlow vs)
+        private object Get()
         {
-            IList list = (IList)ListInput.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
             return list.Count;
         }
     }

@@ -27,22 +27,21 @@ namespace Loykas.Scripting
             LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number)).UseInput();
             Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Index = OutputValue(
-                nameof(Index),
-                (vs) =>
-                {
-                    return _index;
-                }
-            );
+            Index = OutputValue(nameof(Index), GetIndex);
         }
 
-        private OutputTrigger Loop(ScriptFlow vs)
+        private object GetIndex()
         {
-            int firstIndex = (int)(float)FirstIndex.GetValue(vs);
-            int lastIndex = (int)(float)LastIndex.GetValue(vs);
-            int step = (int)(float)Step.GetValue(vs);
+            return _index;
+        }
 
-            NodeTask task = vs.GetNodeTask(Enter);
+        private OutputTrigger Loop()
+        {
+            int firstIndex = (int)(float)FirstIndex.GetValue();
+            int lastIndex = (int)(float)LastIndex.GetValue();
+            int step = (int)(float)Step.GetValue();
+
+            NodeTask task = Flow.GetNodeTask(Enter);
 
             if (_firstRun)
             {

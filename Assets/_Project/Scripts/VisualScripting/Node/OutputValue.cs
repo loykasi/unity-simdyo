@@ -7,16 +7,16 @@ namespace Loykas.Scripting
     public class OutputValue : Port<InputValue>
     {
         public ScriptDataType Type { get; private set; }
-        public Func<ScriptFlow, object> action;
+        public Func<object> action;
         public List<InputValue> Destinations = new();
 
-        public OutputValue(string key, Func<ScriptFlow, object> getValue) : base(key)
+        public OutputValue(string key, Func<object> getValue) : base(key)
         {
             action = getValue;
             Type = ScriptDataType.Any();
         }
 
-        public OutputValue(string key, Func<ScriptFlow, object> getValue, ScriptDataType type) : base(key)
+        public OutputValue(string key, Func<object> getValue, ScriptDataType type) : base(key)
         {
             action = getValue;
             Type = type;
@@ -28,9 +28,9 @@ namespace Loykas.Scripting
             return this;
         }
 
-        public object GetValue(ScriptFlow vs)
+        public object GetValue()
         {
-            return action(vs);
+            return action();
         }
 
         public void SetType(ScriptDataType type)

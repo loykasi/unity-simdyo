@@ -233,7 +233,7 @@ namespace Loykas.Scripting
             NodeTask task = new()
             {
                 From = outputTrigger,
-                Trigger = outputTrigger.Invoke(this)
+                Trigger = outputTrigger.Invoke()
             };
             task.SetRemoveOnDone(true);
             _tasks.Add(task);
@@ -256,7 +256,7 @@ namespace Loykas.Scripting
 
         public SceneEntity GetEntity(InputValue inputValue)
         {
-            SceneEntity entity = (SceneEntity)inputValue.GetValue(this);
+            SceneEntity entity = (SceneEntity)inputValue.GetValue();
 
             if (entity == null
                 && inputValue.IsNullMeanSelf

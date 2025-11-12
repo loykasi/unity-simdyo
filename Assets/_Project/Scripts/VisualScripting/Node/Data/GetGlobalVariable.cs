@@ -33,9 +33,9 @@ namespace Loykas.Scripting
             SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
         }
 
-        private object Get(ScriptFlow vs)
+        private object Get()
         {
-            string name = Input.GetValue(vs).ToString();
+            string name = Input.GetValue().ToString();
             return SceneManager.Instance.GlobalScript.GetVariable(name);
         }
 
@@ -43,7 +43,7 @@ namespace Loykas.Scripting
         {
             if (Flow == null) return;
 
-            string name = Input.GetValue(Flow).ToString();
+            string name = Input.GetValue().ToString();
 
             if (name.Equals(variable.Name))
             {
@@ -55,7 +55,7 @@ namespace Loykas.Scripting
         {
             if (Flow == null) return;
 
-            string name = Input.GetValue(Flow).ToString();
+            string name = Input.GetValue().ToString();
             Variable variable = SceneManager.Instance.GlobalScript.GetVariable(name);
 
             ScriptDataType type = variable == null ? ScriptDataType.Single(DataType.Any) : variable.Type;

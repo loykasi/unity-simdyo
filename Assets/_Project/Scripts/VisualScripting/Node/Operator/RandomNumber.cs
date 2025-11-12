@@ -18,10 +18,10 @@ namespace Loykas.Scripting
             Value = OutputValue(nameof(Value), GetRandom);
         }
 
-        private object GetRandom(ScriptFlow flow)
+        private object GetRandom()
         {
-            float a = (float)A.GetValue(flow);
-            float b = (float)B.GetValue(flow);
+            float a = (float)A.GetValue();
+            float b = (float)B.GetValue();
             return Random.Range(a, b);
         }
     }

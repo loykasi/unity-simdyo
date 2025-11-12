@@ -13,20 +13,19 @@ namespace Loykas.Scripting
 
         public BranchNode()
         {
-            Enter = InputTrigger(
-                nameof(Enter),
-                (vs) =>
-                {
-                    if ((bool)Condition.GetValue(vs))
-                    {
-                        return IfTrue;
-                    }
-                    return IfFalse;
-                }
-            );
+            Enter = InputTrigger(nameof(Enter), Branching);
             IfTrue = OutputTrigger(nameof(IfTrue));
             IfFalse = OutputTrigger(nameof(IfFalse));
             Condition = InputValue(nameof(Condition));
+        }
+
+        private OutputTrigger Branching()
+        {
+            if ((bool)Condition.GetValue())
+            {
+                return IfTrue;
+            }
+            return IfFalse;
         }
     }
 }

@@ -21,9 +21,9 @@ namespace Loykas.Scripting
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
         }
 
-        private OutputTrigger Clear(ScriptFlow vs)
+        private OutputTrigger Clear()
         {
-            IList list = (IList)ListInput.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
             list.Clear();
             return Exit;
         }

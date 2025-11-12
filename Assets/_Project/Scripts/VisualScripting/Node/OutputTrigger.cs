@@ -32,7 +32,7 @@ namespace Loykas.Scripting
             Destination = port;
         }
 
-        public InputTrigger Invoke(ScriptFlow vs)
+        public InputTrigger Invoke()
         {
             return Destination;
         }

@@ -15,9 +15,9 @@ namespace Loykas.Scripting
             Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
         }
 
-        private OutputTrigger SendSignal(ScriptFlow flow)
+        private OutputTrigger SendSignal()
         {
-            string signalName = (string)Name.GetValue(flow);
+            string signalName = (string)Name.GetValue();
             SignalSystem.Instance.SendSignal(signalName);
             return Exit;
         }

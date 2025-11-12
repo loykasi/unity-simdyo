@@ -15,13 +15,9 @@ namespace Loykas.Scripting
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Boolean)).UseInput();
 
-            Output = OutputValue(
-                nameof(Output),
-                (vs) =>
-                {
-                    return A.GetValue<bool>(vs) || B.GetValue<bool>(vs);
-                }
-            );
+            Output = OutputValue(nameof(Output), Get);
         }
+
+        private object Get() => A.GetValue<bool>() || B.GetValue<bool>();
     }
 }

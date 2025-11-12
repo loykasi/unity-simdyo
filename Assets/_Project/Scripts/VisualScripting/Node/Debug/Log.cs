@@ -23,9 +23,9 @@ namespace Loykas.Scripting
             Value = InputValue(nameof(Value));
         }
 
-        private OutputTrigger Log(ScriptFlow vs)
+        private OutputTrigger Log()
         {
-            var value = Value.GetValue(vs);
+            var value = Value.GetValue();
             LogCommand.Instance.Log(value);
 
             if (value is IList list)

@@ -18,10 +18,10 @@ namespace Loykas.Scripting
             ListInput.OnConnected += OnListInputConnected;
         }
 
-        private object Get(ScriptFlow vs)
+        private object Get()
         {
-            IList list = (IList)ListInput.GetValue(vs);
-            int index = (int)(float)Index.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
+            int index = (int)(float)Index.GetValue();
             return list[index];
         }
 

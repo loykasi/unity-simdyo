@@ -137,6 +137,7 @@ namespace Loykas.Scripting
                 InputValueTypes.Number => DataType.Number,
                 InputValueTypes.Boolean => DataType.Boolean,
                 InputValueTypes.Entity => DataType.Entity,
+                InputValueTypes.Color => DataType.Color,
                 _ => throw new System.NotImplementedException(),
             };
 

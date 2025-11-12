@@ -12,13 +12,9 @@ namespace Loykas.Scripting
         {
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
 
-            Output = OutputValue(
-                nameof(Output),
-                (vs) =>
-                {
-                    return ! A.GetValue<bool>(vs);
-                }
-            );
+            Output = OutputValue(nameof(Output), Get);
         }
+        
+        private object Get() => !A.GetValue<bool>();
     }
 }

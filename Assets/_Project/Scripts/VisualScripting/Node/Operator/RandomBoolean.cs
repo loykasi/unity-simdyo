@@ -15,9 +15,9 @@ namespace Loykas.Scripting
             Value = OutputValue(nameof(Value), GetRandom);
         }
 
-        private object GetRandom(ScriptFlow flow)
+        private object GetRandom()
         {
-            float chance = (float)Chance.GetValue(flow);
+            float chance = (float)Chance.GetValue();
             return Random.Range(0, 100) > chance;
         }
     }

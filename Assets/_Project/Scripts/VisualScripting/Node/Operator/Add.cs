@@ -15,13 +15,9 @@ namespace Loykas.Scripting
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Value = OutputValue(
-                nameof(Value),
-                (vs) =>
-                {
-                    return OperatorUtility.Add(A.GetValue(vs), B.GetValue(vs));
-                }
-            );
+            Value = OutputValue(nameof(Value), Get);
         }
+
+        private object Get() => OperatorUtility.Add(A.GetValue(), B.GetValue());
     }
 }

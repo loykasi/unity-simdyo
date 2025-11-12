@@ -27,11 +27,11 @@ namespace Loykas.Scripting
             WaitTime = InputValue(nameof(WaitTime), ScriptDataType.Single(DataType.Number)).UseInput();
         }
 
-        private OutputTrigger Wait(ScriptFlow flow)
+        private OutputTrigger Wait()
         {
             if (!_isStart)
             {
-                _time = (float)WaitTime.GetValue(flow);
+                _time = (float)WaitTime.GetValue();
                 _isStart = true;
             }
 

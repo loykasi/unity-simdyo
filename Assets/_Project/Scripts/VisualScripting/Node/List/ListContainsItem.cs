@@ -18,10 +18,10 @@ namespace Loykas.Scripting
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
         }
 
-        private object Get(ScriptFlow vs)
+        private object Get()
         {
-            IList list = (IList)ListInput.GetValue(vs);
-            object item = Item.GetValue(vs);
+            IList list = (IList)ListInput.GetValue();
+            object item = Item.GetValue();
             return list.Contains(item);
         }
     }

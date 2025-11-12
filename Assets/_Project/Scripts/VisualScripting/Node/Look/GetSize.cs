@@ -26,7 +26,7 @@ namespace Loykas.Scripting
             Height = OutputValue(nameof(Height), GetHeight);
         }
 
-        public object GetWidth(ScriptFlow vs)
+        public object GetWidth()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
@@ -43,7 +43,7 @@ namespace Loykas.Scripting
             return boxEntity.Width;
         }
 
-        public object GetHeight(ScriptFlow vs)
+        public object GetHeight()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 

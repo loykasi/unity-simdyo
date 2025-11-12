@@ -31,7 +31,7 @@ namespace Loykas.Scripting
                     return;
                 }
 
-                Trigger = Trigger.TargetOutputTrigger.Invoke(flow);
+                Trigger = Trigger.TargetOutputTrigger.Invoke();
                 if (Trigger == null)
                 {
                     if (IsInLoop())

@@ -43,24 +43,24 @@ namespace Loykas.Scripting
             OnFunctionUpdated();
         }
 
-        public OutputTrigger TriggerFunction(ScriptFlow flow)
+        public OutputTrigger TriggerFunction()
         {
             if (_firstRun)
             {
                 _firstRun = false;
 
                 _task.From = Function.StartNode.Exit;
-                _task.Trigger = Function.StartNode.Exit.Invoke(flow);
+                _task.Trigger = Function.StartNode.Exit.Invoke();
             }
 
             for (int i = 0; i < Function.Inputs.Count; i++)
             {
                 FunctionInput argument = Function.Inputs[i];
                 InputValue input = ValueInputs[i];
-                argument.Value = input.GetValue(flow);
+                argument.Value = input.GetValue();
             }
 
-            _task.Invoke(flow);
+            _task.Invoke(Flow);
             if (!_task.IsDone)
             {
                 return null;

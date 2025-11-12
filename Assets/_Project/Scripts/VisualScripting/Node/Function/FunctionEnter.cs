@@ -44,7 +44,7 @@ namespace Loykas.Scripting
                 (
                     argument.Name,
                     argument.Type,
-                    (flow) => argument.Value
+                    () => argument.Value
                 ).NoLocalize();
             }
 
