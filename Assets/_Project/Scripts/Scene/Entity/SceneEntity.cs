@@ -146,7 +146,11 @@ public class SceneEntity : MonoBehaviour
         _defaultState.AngularVelocity = Rigidbody.angularVelocity;
 
         Collider.enabled = IsColliderEnabled;
-        Rigidbody.linearVelocity = Velocity;
+
+        if (Rigidbody.bodyType != RigidbodyType2D.Static)
+        {
+            Rigidbody.linearVelocity = Velocity;   
+        }
 
         Script.OnSceneStart();
     }

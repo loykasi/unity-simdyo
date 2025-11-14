@@ -7,7 +7,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     [Header("Camera")]
     public Camera SceneCamera;
-    [SerializeField] private Color BackgroundColor;
+    [SerializeField] private Color _backgroundColor;
     public CameraSettings CameraSettings = new();
 
     [Header("References")]
@@ -19,7 +19,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         base.Awake();
 
-        CameraSettings.Color = new ColorHSV(BackgroundColor);
+        CameraSettings.Color = new ColorHSV(_backgroundColor);
         CameraSettings.Size = SceneCamera.orthographicSize;
         CameraSettings.Position = SceneCamera.transform.position;
     }
@@ -121,7 +121,8 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     public void UpdateColor(ColorHSV color)
     {
         CameraSettings.Color = color;
-        SceneCamera.backgroundColor = color.ToUnityColor();
+        // SceneCamera.backgroundColor = color.ToUnityColor();
+        BackgroundColor.Instance.SetColor(color.ToUnityColor());
     }
 
     #endregion

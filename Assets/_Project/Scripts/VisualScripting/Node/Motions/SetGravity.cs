@@ -15,7 +15,7 @@ namespace Loykas.Scripting
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean)).UseInput();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()

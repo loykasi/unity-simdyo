@@ -9,15 +9,11 @@ public class PanTool : ITool
     protected bool _onMouseRightDown;
     private Vector3 _origin;
 
-    private bool _isZooming;
     private float TargetHeight
     {
         get => EngineManager.Instance.EditorCameraHeight;
         set => EngineManager.Instance.EditorCameraHeight = value;
     }
-
-    private float _startZoom = 5f;
-    private float _zoomTime = 1f;
 
     public virtual void Disable()
     {
@@ -88,21 +84,17 @@ public class PanTool : ITool
         }
     }
 
+    private float ExponentialDecay(float a, float b, float decay, float dt)
+    {
+        return b + (a-b) * Mathf.Exp(-decay * dt);
+    }
+
     protected virtual void Zoom()
     {
         Camera camera = EngineManager.Instance.EditorCamera;
         Vector3 mousePosition = GetMouseWorldPositon();
 
-        if (_zoomTime < 1)
-        {
-            _zoomTime += Time.unscaledDeltaTime * ToolManagement.Instance.PanZoomSpeed;
-        }
-        else
-        {
-            _zoomTime = 1;
-        }
-
-        camera.orthographicSize = Mathf.Lerp(_startZoom, TargetHeight, EaseZoom(_zoomTime));
+        camera.orthographicSize = ExponentialDecay(camera.orthographicSize, TargetHeight, EngineManager.Instance.SmoothFactor, Time.unscaledDeltaTime);
 
         Vector3 offset = mousePosition - GetMouseWorldPositon();
         camera.transform.position += offset;
@@ -113,26 +105,14 @@ public class PanTool : ITool
         }
 
         float scroll = Mouse.current.scroll.ReadValue().y;
-        if (!_isZooming && scroll != 0)
+        if (scroll != 0)
         {
-            _isZooming = true;
-
-            _startZoom = camera.orthographicSize;
-
             Vector2 limit = EngineManager.Instance.ZoomHeighLimit;
-            TargetHeight = Mathf.Clamp(camera.orthographicSize - scroll * camera.orthographicSize / 5f, limit.x, limit.y);
-            _zoomTime = 0;
-        }
 
-        if (_isZooming && scroll == 0)
-        {
-            _isZooming = false;
+            float zoomValue = 1f + EngineManager.Instance.ZoomSpeed;
+            float zoomFactor = Mathf.Sign(scroll) > 0 ? 1f / zoomValue : zoomValue;
+            TargetHeight = Mathf.Clamp(TargetHeight * zoomFactor, limit.x, limit.y);
         }
-    }
-    
-    private float EaseZoom(float t)
-    {
-        return 1 - Mathf.Pow(1 - t, 3);
     }
 
     protected Vector3 GetMouseWorldPositon()

@@ -16,8 +16,8 @@ namespace Loykas.Scripting
                         .UseInput()
                         .NullMeanSelf();
 
-            X = OutputValue(nameof(X), GetX);
-            Y = OutputValue(nameof(Y), GetY);
+            X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX);
+            Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY);
         }
 
         private object GetX()

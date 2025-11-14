@@ -9,7 +9,9 @@ public class EngineManager : Singleton<EngineManager>
     [SerializeField] private GameObject _playModeCanvas;
 
     [Header("Settings")]
+    public float ZoomSpeed;
     public Vector2 ZoomHeighLimit;
+    public float SmoothFactor;
 
     [Header("References")]
     [SerializeField] private GameObject _sceneCameraArea;

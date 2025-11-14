@@ -3,19 +3,19 @@ using UnityEngine;
 namespace Loykas.Scripting
 {
 
-    class GetAngleNode : ScriptNode
+    class GetGravityNode : ScriptNode
     {
         public InputValue Entity;
         public OutputValue Value;
 
-        public GetAngleNode()
+        public GetGravityNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
                         .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get);
         }
 
         public object Get()

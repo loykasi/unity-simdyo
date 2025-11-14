@@ -1,9 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using SFB;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.Networking;
+using System.Runtime.InteropServices;
 
 public class AssetController : Singleton<AssetController>, ISaveable
 {
@@ -13,6 +16,13 @@ public class AssetController : Singleton<AssetController>, ISaveable
     private List<Texture2D> _textures = new();
     private int _currentIndex = 1;
 
+    private UnityAction<int, Texture2D> _addTextureCallback;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void LoadFile(string gameObjectName, string callbackMethod, string filter, bool multiple);
+#endif
+
     protected override void Awake()
     {
         base.Awake();
@@ -21,19 +31,6 @@ public class AssetController : Singleton<AssetController>, ISaveable
     public void SelectSlot(int index)
     {
         _currentIndex = index;
-    }
-
-    public bool AddTextureSlot(out int index, out Texture2D texture)
-    {
-        index = -1;
-        if (!TryChooseFromFile(out texture))
-        {
-            return false;
-        }
-
-        index = _textures.Count;
-        _textures.Add(texture);
-        return true;
     }
 
     public void ChangeTexture()
@@ -62,23 +59,64 @@ public class AssetController : Singleton<AssetController>, ISaveable
         return true;
     }
 
-    private bool TryChooseFromFile(out Texture2D texture)
+    public void AddTextureSlot(UnityAction<int, Texture2D> callback)
     {
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
-        if (paths.Length == 0)
+        _addTextureCallback = callback;
+        TryChooseFromFile();
+    }
+
+    private void TryChooseFromFile()
+    {
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            LoadFile(gameObject.name, nameof(OnFileUpload), "/image/*", false);
+        #else
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+            if (paths.Length == 0)
+            {
+                return;
+            }
+
+            string path = paths[0];
+            byte[] data = File.ReadAllBytes(path);
+
+            OnFileLoaded(data);
+        #endif
+    }
+
+    public void OnFileUpload(string json)
+    {
+        string[] urls = JsonUtils.FromJson<string>(json);
+        StartCoroutine(LoadFromUrl(urls[0], OnFileLoaded));
+    }
+
+    private IEnumerator LoadFromUrl(string url, UnityAction<byte[]> callback = null)
+    {
+        using UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.Success)
         {
-            texture = null;
-            return false;
+            byte[] data = new byte[www.downloadHandler.data.Length];
+            Array.Copy(www.downloadHandler.data, 0, data, 0, www.downloadHandler.data.Length);
+
+            callback?.Invoke(data);
         }
+        else
+        {
+            Debug.Log($"Failed to load {url}: {www.error}");
+        }
+    }
 
-        string path = paths[0];
-        byte[] data = File.ReadAllBytes(path);
-
-        texture = new(1, 1);
-        texture.LoadImage(data);
+    private void OnFileLoaded(byte[] bytes)
+    {
+        Texture2D texture = new(1, 1);
+        texture.LoadImage(bytes);
         texture.wrapMode = TextureWrapMode.Clamp;
 
-        return true;
+        int index = _textures.Count;
+        _textures.Add(texture);
+
+        _addTextureCallback?.Invoke(index, texture);
     }
 
     private byte[] ReadFile()

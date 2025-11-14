@@ -110,12 +110,7 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
 
     public void AddTextureSlot()
     {
-        if (!AssetController.Instance.AddTextureSlot(out int index, out Texture2D texture))
-        {
-            return;
-        }
-    
-        AddTextureSlotUI(index, texture);
+        AssetController.Instance.AddTextureSlot(AddTextureSlotUI);
     }
 
     public void ChangeTexture()

@@ -74,11 +74,4 @@ public class SceneMenuController : MonoBehaviour
     {
         ScriptGraph.Instance.ToggleGlobalScriptPanel();
     }
-
-    public void LoadData(GameData data)
-    {
-        UpdatePosition(data.Scene.CameraPosition);
-        UpdateSize(data.Scene.CameraSize);
-        OnColorUpdated(data.Scene.BackgroundColor);
-    }
 }
