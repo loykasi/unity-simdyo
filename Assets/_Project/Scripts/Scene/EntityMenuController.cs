@@ -50,12 +50,12 @@ public class EntityMenuController : MonoBehaviour
 
     public void ToggleGravity(bool value)
     {
-        _entity.ToggleGravity(value);
+        _entity.SetGravity(value);
     }
 
     public void ToggleCollider(bool value)
     {
-        _entity.ToggleCollider(value);
+        _entity.SetCollider(value);
     }
 
     public void OpenColorEdit()

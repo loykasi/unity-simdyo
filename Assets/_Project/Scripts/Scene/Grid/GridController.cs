@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class GridController : Singleton<GridController>
 {
-    public bool GridEnabled { get; set; }
-    public bool SnapEnabled { get; set; }
+    public bool GridEnabled { get; set; } = false;
+    public bool SnapEnabled { get; set; } = true;
 
     [SerializeField] private GridOverlay _gridOverlay;
 
@@ -76,7 +76,7 @@ public class GridController : Singleton<GridController>
         }
     }
 
-    public void ToogleSnap(bool value)
+    public void ToggleSnap(bool value)
     {
         SnapEnabled = value;
     }

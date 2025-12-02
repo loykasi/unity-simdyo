@@ -4,6 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class SceneData
 {
+    public string Version;
     public ColorHSV BackgroundColor;
     public Vector3 CameraPosition;
     public float CameraSize;

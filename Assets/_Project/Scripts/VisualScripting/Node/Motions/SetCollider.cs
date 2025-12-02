@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class SetGravityNode : ScriptNode
+    class SetColliderNode : ScriptNode
     {
         public InputTrigger Enter;
         public OutputTrigger Exit;
@@ -10,7 +10,7 @@ namespace Loykas.Scripting
         public InputValue Value;
         public InputValue Entity;
 
-        public SetGravityNode()
+        public SetColliderNode()
         {
             Enter = InputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
@@ -32,7 +32,7 @@ namespace Loykas.Scripting
             }
 
             bool enable = (bool)Value.GetValue();
-            Flow.Entity.SetGravity(enable);
+            Flow.Entity.SetCollider(enable);
             return Exit;
         }
     }

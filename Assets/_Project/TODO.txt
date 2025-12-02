@@ -13,15 +13,18 @@
 [X] add rotate visual indicator
 [X] menu: fix camera size not update on load
 
+== Scene entity
+[] Z depth
+
 == UI
 [X] tools ui icon
 [X] play tab ui icon
 
 == NODE
-[x] velocity
-[x] width / height
-[x] radius
-[] gravity
-[] color
+[X] velocity
+[X] width / height
+[X] radius
+[X] gravity
+[X] color
 [] collider / layer
 [] texture

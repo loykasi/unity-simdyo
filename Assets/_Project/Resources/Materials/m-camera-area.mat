@@ -55,7 +55,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _OutlineWidth: 0.05
+    - _OutlineWidth: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ZWrite: 0

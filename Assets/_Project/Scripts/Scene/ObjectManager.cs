@@ -201,13 +201,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entity.Rotation = entityData.Rotation;
             entity.CurrentColor = entityData.Color;
 
-            entity.ToggleCollider(entityData.ColliderEnabled);
-            entity.ToggleGravity(entityData.GravityEnabled);
+            entity.SetCollider(entityData.ColliderEnabled);
+            entity.SetGravity(entityData.GravityEnabled);
             entity.SetLayer(entityData.Layer);
             
-            if (entity.TextureSlot != -1)
+            if (entityData.TextureSlot > 0)
             {
-                entity.SetTexture(entityData.TextureSlot, AssetController.Instance.Textures[entityData.TextureSlot]);
+                entity.SetTexture(entityData.TextureSlot, TextureController.Instance.Textures[entityData.TextureSlot - 1]);
             }
             
             ScriptSaveHandler.Load(entityData.Script, entity.Script);

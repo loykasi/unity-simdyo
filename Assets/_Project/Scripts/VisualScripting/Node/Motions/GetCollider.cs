@@ -2,13 +2,12 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
-    class GetGravityNode : ScriptNode
+    class GetColliderNode : ScriptNode
     {
         public InputValue Entity;
         public OutputValue Value;
 
-        public GetGravityNode()
+        public GetColliderNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
@@ -27,7 +26,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return Flow.Entity.IsGravityEnabled;
+            return Flow.Entity.IsColliderEnabled;
         }
     }
 }

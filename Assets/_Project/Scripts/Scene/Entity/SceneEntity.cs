@@ -38,12 +38,6 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    // public Vector2 Velocity
-    // {
-    //     get => Rigidbody.linearVelocity;
-    //     set => Rigidbody.linearVelocity = value;
-    // }
-
     public Vector2 Velocity
     {
         get
@@ -64,7 +58,7 @@ public class SceneEntity : MonoBehaviour
     public Rigidbody2D Rigidbody;
     public ScriptFlow Script;
     public CollisionLayer Layer;
-    public int TextureSlot = -1;
+    public int TextureSlot = 0;
 
     public virtual Bounds Bounds => Renderer.bounds;
 
@@ -158,8 +152,8 @@ public class SceneEntity : MonoBehaviour
     public void OnSceneStop()
     {
         transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
-        ToggleCollider(_defaultState.ColliderEnabled);
-        ToggleGravity(_defaultState.GravityEnabled);
+        SetCollider(_defaultState.ColliderEnabled);
+        SetGravity(_defaultState.GravityEnabled);
         if (_defaultState.GravityEnabled)
         {
             Velocity = _defaultState.Velocity;
@@ -171,12 +165,12 @@ public class SceneEntity : MonoBehaviour
         Script.OnSceneStop();
     }
 
-    public void ToggleCollider(bool value)
+    public void SetCollider(bool value)
     {
         IsColliderEnabled = value;
     }
 
-    public void ToggleGravity(bool value)
+    public void SetGravity(bool value)
     {
         if (value)
         {
@@ -222,6 +216,7 @@ public class SceneEntity : MonoBehaviour
     {
         TextureSlot = slot;
         Renderer.material.SetTexture(_textureProperty, texture);
+        Debug.Log(TextureSlot);
     }
 
     // trigger hook

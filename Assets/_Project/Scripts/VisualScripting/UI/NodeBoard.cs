@@ -497,7 +497,7 @@ namespace Loykas.Scripting
         // handle drag and drop to create node
         public void OnDrop(PointerEventData eventData)
         {
-            // Debug.Log($"Drop {eventData.pointerDrag}");
+            Debug.Log($"Drop {eventData.pointerDrag}");
 
             if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
             {

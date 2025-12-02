@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Loykas.Scripting
 {
-    public class FunctionBoardItem : MonoBehaviour, IDragHandler
+    public class FunctionBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public FunctionBoard Board { get; set; }
         public ScriptFunction Function;
@@ -46,6 +46,16 @@ namespace Loykas.Scripting
         public void OnDrag(PointerEventData eventData)
         {
             
+        }
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            DragPreviewSystem.Instance.BeginDrag(transform.position, Function.Name);
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            DragPreviewSystem.Instance.EndDrag();
         }
     }
 }

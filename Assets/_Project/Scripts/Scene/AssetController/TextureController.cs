@@ -8,13 +8,17 @@ using UnityEngine.Events;
 using UnityEngine.Networking;
 using System.Runtime.InteropServices;
 
-public class AssetController : Singleton<AssetController>, ISaveable
+public class TextureController : Singleton<TextureController>, ISaveable
 {
     public int SaveLoadOrder { get; set; } = -1;
     public List<Texture2D> Textures => _textures;
 
     private List<Texture2D> _textures = new();
     private int _currentIndex = 1;
+
+    private readonly ExtensionFilter[] _extensions = new [] {
+        new ExtensionFilter("Image Files", "png", "jpg", "jpeg" ),
+    };
 
     private UnityAction<int, Texture2D> _addTextureCallback;
 
@@ -55,6 +59,7 @@ public class AssetController : Singleton<AssetController>, ISaveable
             return false;
         }
 
+        index = _currentIndex + 1;
         texture = _textures[_currentIndex];
         return true;
     }
@@ -70,7 +75,7 @@ public class AssetController : Singleton<AssetController>, ISaveable
         #if UNITY_WEBGL && !UNITY_EDITOR
             LoadFile(gameObject.name, nameof(OnFileUpload), "/image/*", false);
         #else
-            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", _extensions, false);
             if (paths.Length == 0)
             {
                 return;

@@ -31,6 +31,12 @@ public class EngineManager : Singleton<EngineManager>
         
         _editorCanvas.SetActive(false);
         _sceneCameraArea.SetActive(false);
+        
+        if (GridController.Instance != null)
+        {
+            GridController.Instance.ToggleGrid(false);
+        }
+        
         ObjectManager.Instance.Deselect();
         ScriptGraph.Instance.Close();
 
@@ -45,6 +51,7 @@ public class EngineManager : Singleton<EngineManager>
 
         _editorCanvas.SetActive(true);
         _sceneCameraArea.SetActive(true);
+
         _playModeCanvas.SetActive(false);
         EditorCamera.gameObject.SetActive(true);
         SceneManager.Instance.Stop();

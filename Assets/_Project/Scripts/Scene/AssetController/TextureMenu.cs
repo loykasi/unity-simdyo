@@ -40,7 +40,7 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         }
 
         _isLoaded = true;
-        Load(AssetController.Instance.Textures);
+        Load(TextureController.Instance.Textures);
     }
 
     private void Load(List<Texture2D> textures)
@@ -90,7 +90,7 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
 
     public void SelectSlot(int index)
     {
-        AssetController.Instance.SelectSlot(index);
+        TextureController.Instance.SelectSlot(index);
 
         for (int i = 0; i < _textureSlots.Count; i++)
         {
@@ -110,18 +110,18 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
 
     public void AddTextureSlot()
     {
-        AssetController.Instance.AddTextureSlot(AddTextureSlotUI);
+        TextureController.Instance.AddTextureSlot(AddTextureSlotUI);
     }
 
     public void ChangeTexture()
     {
-        AssetController.Instance.ChangeTexture();
+        TextureController.Instance.ChangeTexture();
     }
 
     
     public void Apply()
     {
-        if (!AssetController.Instance.Apply(out int index, out Texture2D texture))
+        if (!TextureController.Instance.Apply(out int index, out Texture2D texture))
         {
             return;
         }

@@ -57,7 +57,7 @@ MonoBehaviour:
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
   Layer: 1
-  TextureSlot: -1
+  TextureSlot: 0
   Border: {fileID: 2692295455764732596}
   Width: 0
   Height: 0
@@ -127,7 +127,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Entity: {fileID: 6554616567592302021}
-  _getVariableNodeData: {fileID: 11400000, guid: 12e807d7761dea048b456dbd77fedf58, type: 2}
 --- !u!50 &-7824645102635766432
 Rigidbody2D:
   serializedVersion: 5

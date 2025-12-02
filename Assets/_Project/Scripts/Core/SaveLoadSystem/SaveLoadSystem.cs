@@ -19,7 +19,7 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
     public void Save()
     {
         _gameData.Clear();
-        _gameData.Version = _version;
+        _gameData.Scene.Version = _version;
 
         foreach (var item in _saveables)
         {
