@@ -50,7 +50,7 @@ namespace Loykas.Scripting
             LayoutRebuilder.MarkLayoutForRebuild(_parentRect);
         }
 
-        public void AddItem(ScriptNodeContent nodeData)
+        public void AddItem(ScriptNode nodeData)
         {
             NodeMenuItem item = Instantiate(_itemPrefab, _content);
             item.NodeData = nodeData;

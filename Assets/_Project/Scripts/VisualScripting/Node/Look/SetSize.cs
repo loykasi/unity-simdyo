@@ -2,15 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Look)]
-    public class SetSizeContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(SetSizeNode);
-        public override ScriptNode Create() => new SetSizeNode();
-    }
-
     class SetSizeNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
@@ -18,9 +13,14 @@ namespace Loykas.Scripting
         public InputValue Height;
         public InputValue Entity;
 
+        public override ScriptNode Create()
+        {
+            return new SetSizeNode();
+        }
+
         public SetSizeNode()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             Width = InputValue(nameof(Width), ScriptDataType.Single(DataType.Number)).UseInput();

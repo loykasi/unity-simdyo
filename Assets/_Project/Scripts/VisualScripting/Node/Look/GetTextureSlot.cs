@@ -2,26 +2,26 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class GetAngleNode : ScriptNode
+    class GetTextureSlotNode : ScriptNode
     {
-        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
 
         public InputValue Entity;
         public OutputValue Value;
 
-        public GetAngleNode()
+        public override ScriptNode Create()
+        {
+            return new GetTextureSlotNode();
+        }
+
+        public GetTextureSlotNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
                         .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
-        }
-
-        public override ScriptNode Create()
-        {
-            return new GetAngleNode();
+            Value = OutputValue(nameof(Value), Get);
         }
 
         public object Get()
@@ -33,7 +33,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return Flow.Entity.Angle;
+            return entity.TextureSlot;
         }
     }
 }

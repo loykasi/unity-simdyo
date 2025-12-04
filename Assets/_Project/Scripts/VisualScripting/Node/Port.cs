@@ -9,7 +9,8 @@ namespace Loykas.Scripting
 
         public IScriptNode Node { get; set; }
         public string Key { get; set; }
-        
+
+        public bool IsDisableConnection { get; set; } = false;
         public bool ShouldLocalized { get; set; } = true;
         public bool ShouldShowLabel { get; set; } = true;
 
@@ -20,7 +21,7 @@ namespace Loykas.Scripting
 
         public virtual bool CanConnect(IPort port)
         {
-            return Node != port.Node && port is TOtherPort other && CanConnectTo(other);
+            return !IsDisableConnection && Node != port.Node && port is TOtherPort other && CanConnectTo(other);
         }
 
         public abstract bool CanConnectTo(TOtherPort port);

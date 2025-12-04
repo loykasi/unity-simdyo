@@ -3,22 +3,22 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Debug)]
-    public class LogNodeContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(LogNode);
-        public override ScriptNode Create() => new LogNode();
-    }
-
     class LogNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Debug;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
         public InputValue Value;
 
+        public override ScriptNode Create()
+        {
+            return new LogNode();
+        }
+
         public LogNode() : base()
         {
-            Enter = InputTrigger(nameof(Enter), Log);
+            Enter = CreateInputTrigger(nameof(Enter), Log);
             Exit = OutputTrigger(nameof(Exit));
             Value = InputValue(nameof(Value));
         }

@@ -7,6 +7,11 @@ namespace Loykas.Scripting
     {
         public InputValue KeyCode;
 
+        public override ScriptNode Create()
+        {
+            return new OnKeyPressedNode();
+        }
+
         public OnKeyPressedNode()
         {
             KeyCode = InputValue(nameof(KeyCode)).UseKeyCodeInput().DisableConnection();

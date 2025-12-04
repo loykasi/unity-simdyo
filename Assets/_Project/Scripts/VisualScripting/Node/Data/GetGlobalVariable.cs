@@ -4,17 +4,17 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Data)]
-    public class GetGlobalVariableNodeContent : ScriptNodeContent
-    {
-        public override Type Type => typeof(GetGlobalVariableNode);
-        public override ScriptNode Create() => new GetGlobalVariableNode();
-    }
-
     public class GetGlobalVariableNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
+
         public InputValue Input;
         public OutputValue Output;
+
+        public override ScriptNode Create()
+        {
+            return new GetGlobalVariableNode();
+        }
 
         public GetGlobalVariableNode() : base()
         {

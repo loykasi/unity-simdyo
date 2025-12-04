@@ -55,15 +55,11 @@ namespace Loykas.Scripting
         {
             UpdateLabel();
 
-            float width = _inputValue.IsDisableConnection ? 10f : _handleSize;
+            float width = _handleSize;
 
             if (_inputValue.ShouldShowLabel)
             {
                 width += _label.rectTransform.sizeDelta.x + _inputOffset;
-            }
-            else
-            {
-                width += _inputOffset;
             }
       
             _inputHolder.anchoredPosition = new Vector2(width, 0f);

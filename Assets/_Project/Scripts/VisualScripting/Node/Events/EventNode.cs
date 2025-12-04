@@ -2,6 +2,8 @@ namespace Loykas.Scripting
 {
     public abstract class EventNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Event;
+
         public OutputTrigger Exit;
         public abstract EventHook Hook { get; }
 

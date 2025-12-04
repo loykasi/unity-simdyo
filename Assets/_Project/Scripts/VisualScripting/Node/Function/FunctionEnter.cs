@@ -3,15 +3,9 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Data, false)]
-    public class FunctionEnterContent : ScriptNodeContent
-    {
-        public override Type Type => typeof(FunctionEnterNode);
-        public override ScriptNode Create() => new FunctionEnterNode();
-    }
-
     public class FunctionEnterNode : ScriptNode
     {
+        public override bool ShouldIncludeInMenu => false;
         public override bool ShouldLocalized => false;
 
         public OutputTrigger Exit;

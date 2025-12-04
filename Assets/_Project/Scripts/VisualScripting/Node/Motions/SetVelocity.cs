@@ -4,6 +4,8 @@ namespace Loykas.Scripting
 {
     class SetVelocityNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
@@ -11,9 +13,14 @@ namespace Loykas.Scripting
         public InputValue Y;
         public InputValue Entity;
 
+        public override ScriptNode Create()
+        {
+            return new SetVelocityNode();
+        }
+
         public SetVelocityNode()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();

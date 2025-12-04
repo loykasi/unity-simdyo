@@ -26,5 +26,6 @@
 [X] radius
 [X] gravity
 [X] color
-[] collider / layer
-[] texture
+[X] collider
+[X] texture
+[] layer

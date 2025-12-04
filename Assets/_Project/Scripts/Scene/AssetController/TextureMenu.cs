@@ -121,12 +121,12 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
     
     public void Apply()
     {
-        if (!TextureController.Instance.Apply(out int index, out Texture2D texture))
+        if (!TextureController.Instance.Apply(out int index))
         {
             return;
         }
         
-        _entity.SetTexture(index, texture);
+        _entity.SetTexture(index);
         CloseTextureMenu();
     }
 }

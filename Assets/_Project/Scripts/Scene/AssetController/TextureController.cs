@@ -50,18 +50,21 @@ public class TextureController : Singleton<TextureController>, ISaveable
     }
 
     
-    public bool Apply(out int index, out Texture2D texture)
+    public bool Apply(out int index)
     {
         index = -1;
-        texture = null;
         if (_currentIndex == -1)
         {
             return false;
         }
 
         index = _currentIndex + 1;
-        texture = _textures[_currentIndex];
         return true;
+    }
+
+    public Texture2D GetTexture(int slot)
+    {
+        return _textures[slot - 1];
     }
 
     public void AddTextureSlot(UnityAction<int, Texture2D> callback)

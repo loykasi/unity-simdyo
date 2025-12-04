@@ -4,6 +4,8 @@ namespace Loykas.Scripting
 {
     class GetColliderNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputValue Entity;
         public OutputValue Value;
 
@@ -15,6 +17,11 @@ namespace Loykas.Scripting
                         .NullMeanSelf();
                         
             Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get);
+        }
+
+        public override ScriptNode Create()
+        {
+            return new GetColliderNode();
         }
 
         public object Get()

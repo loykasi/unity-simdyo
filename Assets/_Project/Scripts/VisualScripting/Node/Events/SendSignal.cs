@@ -10,9 +10,14 @@ namespace Loykas.Scripting
 
         public SendSignalNode()
         {
-            Enter = InputTrigger(nameof(Enter), SendSignal);
+            Enter = CreateInputTrigger(nameof(Enter), SendSignal);
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
             Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
+        }
+
+        public override ScriptNode Create()
+        {
+            return new SendSignalNode();
         }
 
         private OutputTrigger SendSignal()

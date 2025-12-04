@@ -3,11 +3,17 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class GetListLengthNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.List;
+
         public InputValue ListInput;
         public OutputValue Output;
+
+        public override ScriptNode Create()
+        {
+            return new GetListLengthNode();
+        }
 
         public GetListLengthNode()
         {

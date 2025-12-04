@@ -4,15 +4,22 @@ namespace Loykas.Scripting
 {
     class SetGravityNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
         public InputValue Value;
         public InputValue Entity;
 
+        public override ScriptNode Create()
+        {
+            return new SetGravityNode();
+        }
+
         public SetGravityNode()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean)).UseInput();

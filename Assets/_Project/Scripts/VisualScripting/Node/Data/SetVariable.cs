@@ -1,25 +1,25 @@
 using UnityEngine;
 
 namespace Loykas.Scripting
-{
-    [ScriptNode(ScriptNodeCategory.Data)]
-    public class SetVariableNodeContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(SetVariableNode);
-        public override ScriptNode Create() => new SetVariableNode();
-    }
-    
+{    
     public class SetVariableNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
         public InputValue Variable;
         public InputValue Value;
 
+        public override ScriptNode Create()
+        {
+            return new SetVariableNode();
+        }
+
         public SetVariableNode() : base()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             Variable = InputValue(nameof(Variable))

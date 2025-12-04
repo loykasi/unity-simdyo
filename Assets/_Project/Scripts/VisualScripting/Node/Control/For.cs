@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class ForNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Control;
+
         public InputTrigger Enter;
         public OutputTrigger Completed;
         public OutputTrigger LoopBody;
@@ -19,7 +20,7 @@ namespace Loykas.Scripting
 
         public ForNode()
         {
-            Enter = InputTrigger(nameof(Enter), Loop);
+            Enter = CreateInputTrigger(nameof(Enter), Loop);
             Completed = OutputTrigger(nameof(Completed));
             LoopBody = OutputTrigger(nameof(LoopBody));
 
@@ -28,6 +29,11 @@ namespace Loykas.Scripting
             Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number)).UseInput();
 
             Index = OutputValue(nameof(Index), GetIndex);
+        }
+
+        public override ScriptNode Create()
+        {
+            return new ForNode();
         }
 
         private object GetIndex()

@@ -207,7 +207,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             
             if (entityData.TextureSlot > 0)
             {
-                entity.SetTexture(entityData.TextureSlot, TextureController.Instance.Textures[entityData.TextureSlot - 1]);
+                entity.SetTexture(entityData.TextureSlot);
             }
             
             ScriptSaveHandler.Load(entityData.Script, entity.Script);

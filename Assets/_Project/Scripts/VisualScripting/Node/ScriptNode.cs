@@ -7,6 +7,10 @@ namespace Loykas.Scripting
 {
     public class ScriptNode : IScriptNode
     {
+        public virtual ScriptNodeCategory Category => default;
+        public virtual bool ShouldIncludeInMenu => true;
+        public virtual bool CanUseGlobal => true;
+
         public UnityAction OnNodeUpdated;
 
         public Guid ID { get; set; }
@@ -52,6 +56,11 @@ namespace Loykas.Scripting
             }
         }
 
+        public virtual ScriptNode Create()
+        {
+            throw new NotImplementedException();
+        }
+
         public ScriptNode()
         {
             ID = Guid.NewGuid();
@@ -67,7 +76,7 @@ namespace Loykas.Scripting
             return GetType().Name;
         }
 
-        protected InputTrigger InputTrigger(string key, Func<OutputTrigger> action)
+        protected InputTrigger CreateInputTrigger(string key, Func<OutputTrigger> action)
         {
             InputTrigger inputTrigger = new(key, action)
             {

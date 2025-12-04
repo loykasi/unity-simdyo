@@ -4,10 +4,17 @@ namespace Loykas.Scripting
 {
     class EqualNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
+
         public InputValue A;
         public InputValue B;
 
         public OutputValue Output;
+
+        public override ScriptNode Create()
+        {
+            return new EqualNode();
+        }
 
         public EqualNode()
         {

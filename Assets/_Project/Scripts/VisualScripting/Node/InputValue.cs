@@ -24,7 +24,6 @@ public enum InputValueTypes
         public OutputValue Source;
 
         public InputValueTypes InputType = InputValueTypes.None;
-        public bool IsDisableConnection;
         public bool IsNullMeanSelf;
 
         public bool HasConnection => Source != null;
@@ -206,7 +205,7 @@ public enum InputValueTypes
 
         public override bool CanConnectTo(OutputValue port)
         {
-            return !IsDisableConnection && port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
+            return port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
         }
     }
 }

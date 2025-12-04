@@ -8,7 +8,7 @@ namespace Loykas.Scripting
         public RectTransform RectTransform;
 
         public NodeMenu NodeMenu { get; set; }
-        public ScriptNodeContent NodeData
+        public ScriptNode NodeData
         {
             get => _nodeData;
             set
@@ -17,13 +17,13 @@ namespace Loykas.Scripting
                 UpdateItem();
             }
         }
-        private ScriptNodeContent _nodeData;
+        private ScriptNode _nodeData;
 
         [SerializeField] private TMP_Text _textField;
 
         private void UpdateItem()
         {
-            _textField.SetText(_nodeData.Type.Name);
+            _textField.SetText(_nodeData.GetType().Name);
         }
 
         public void Add()

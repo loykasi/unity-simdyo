@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class GetGravityNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputValue Entity;
         public OutputValue Value;
 
@@ -16,6 +17,11 @@ namespace Loykas.Scripting
                         .NullMeanSelf();
                         
             Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get);
+        }
+
+        public override ScriptNode Create()
+        {
+            return new GetGravityNode();
         }
 
         public object Get()

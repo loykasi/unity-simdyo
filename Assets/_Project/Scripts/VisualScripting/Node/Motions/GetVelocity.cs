@@ -5,6 +5,8 @@ namespace Loykas.Scripting
 {
     class GetVelocityNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputValue Entity;
         public OutputValue X;
         public OutputValue Y;
@@ -18,6 +20,11 @@ namespace Loykas.Scripting
 
             X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX);
             Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY);
+        }
+
+        public override ScriptNode Create()
+        {
+            return new GetVelocityNode();
         }
 
         private object GetX()

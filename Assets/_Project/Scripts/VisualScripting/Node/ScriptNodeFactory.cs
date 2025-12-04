@@ -7,7 +7,8 @@ namespace Loykas.Scripting
 {
     public class ScriptNodeFactory : Singleton<ScriptNodeFactory>
     {
-        public Dictionary<Type, ScriptNodeContent> Nodes = new();
+        public Dictionary<Type, ScriptNode> Nodes;
+        private ScriptNode[] _nodes;
 
         protected override void Awake()
         {
@@ -18,27 +19,118 @@ namespace Loykas.Scripting
 
         private void LoadNodes()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
+            // Assembly assembly = Assembly.GetExecutingAssembly();
 
-            Type[] types = assembly.GetTypes();
+            // Type[] types = assembly.GetTypes();
 
-            foreach (Type type in types)
+            // foreach (Type type in types)
+            // {
+            //     ScriptNodeAttribute attribute = type.GetCustomAttribute<ScriptNodeAttribute>();
+            //     if (attribute != null)
+            //     {
+            //         var content = (ScriptNodeContent)Activator.CreateInstance(type);
+            //         content.Category = attribute.Category;
+            //         content.ShouldIncludeInMenu = attribute.ShoudlIncludeInMenu;
+            //         Nodes.Add(content.Type, content);
+            //     }
+            // }
+
+            _nodes = new ScriptNode[]
             {
-                ScriptNodeAttribute attribute = type.GetCustomAttribute<ScriptNodeAttribute>();
-                if (attribute != null)
-                {
-                    var content = (ScriptNodeContent)Activator.CreateInstance(type);
-                    content.Category = attribute.Category;
-                    content.ShouldIncludeInMenu = attribute.ShoudlIncludeInMenu;
-                    Nodes.Add(content.Type, content);
-                }
+                // Event
+                new StartNode(),
+                new UpdateNode(),
+                new SendSignalNode(),
+                new OnReceiveSignalNode(),
+                new OnClickedNode(),
+                new OnKeyPressedNode(),
+                new OnTouchedNode(),
+                
+                // Control
+                new WaitNode(),
+                new BranchNode(),
+                new ForNode(),
+                new BreakNode(),
+
+                // Motion,
+                new SetPositionNode(),
+                new SetAngleNode(),
+                new SetColliderNode(),
+                new SetGravityNode(),
+                new SetVelocityNode(),
+                
+                new GetPositionNode(),
+                new GetAngleNode(),
+                new GetColliderNode(),
+                new GetGravityNode(),
+                new GetVelocityNode(),
+
+                // Look,
+                new SetColorNode(),
+                new SetTextureSlotNode(),
+                new SetSizeNode(),
+                new SetRadiusNode(),
+
+                new GetColorNode(),
+                new GetTextureSlotNode(),
+                new GetSizeNode(),
+                new GetRadiusNode(),
+
+                // Operator,
+                new AddNode(),
+                new SubtractNode(),
+                new MultiplyNode(),
+                new DivideNode(),
+
+                new JoinNode(),
+
+                new EqualNode(),
+                new GreaterNode(),
+                new GreaterEqualNode(),
+                new LessNode(),
+                new LessEqualNode(),
+
+                new RandomNumberNode(),
+                new RandomBooleanNode(),
+
+                // Data,
+                new SetVariableNode(),
+                new GetVariableNode(),
+                new GetGlobalVariableNode(),
+                new MakeStringNode(),
+                new MakeNumberNode(),
+                new MakeBooleanNode(),
+                new MakeColorNode(),
+
+                // List
+                new AddListItemNode(),
+                new RemoveListItemNode(),
+                new InsertListItemNode(),
+                new SetListItemNode(),
+                new ClearListNode(),
+                new GetListItemNode(),
+                new GetListLengthNode(),
+                new ListContainsItemNode(),
+
+                // Debug,
+                new LogNode(),
+
+                // Hidden
+                new FunctionCallNode(),
+                new FunctionEnterNode()
+            };
+
+            Nodes = new(_nodes.Length);
+            foreach (ScriptNode node in _nodes)
+            {
+                Nodes.Add(node.GetType(), node);
             }
         }
 
-        public void GetNodes(List<ScriptNodeContent> nodes, bool isGlobal = false)
+        public void GetNodes(List<ScriptNode> nodes, bool isGlobal = false)
         {
             nodes.Clear();
-            foreach (ScriptNodeContent node in Nodes.Values)
+            foreach (ScriptNode node in _nodes)
             {
                 if (node.ShouldIncludeInMenu)
                 {
@@ -58,10 +150,10 @@ namespace Loykas.Scripting
             }
         }
 
-        public void GetNodes(List<ScriptNodeContent> nodes, IPort port, bool isGlobal = false)
+        public void GetNodes(List<ScriptNode> nodes, IPort port, bool isGlobal = false)
         {
             nodes.Clear();
-            foreach (ScriptNodeContent node in Nodes.Values)
+            foreach (ScriptNode node in _nodes)
             {
                 if (!node.ShouldIncludeInMenu)
                 {
@@ -75,9 +167,9 @@ namespace Loykas.Scripting
 
                 if (port is InputValue)
                 {
-                    for (int i = 0; i < node.Base.ValueOutputs.Count; i++)
+                    for (int i = 0; i < node.ValueOutputs.Count; i++)
                     {
-                        var output = node.Base.ValueOutputs[i];
+                        var output = node.ValueOutputs[i];
                         if (port.CanConnect(output))
                         {
                             SortedAdd(nodes, node);
@@ -86,9 +178,9 @@ namespace Loykas.Scripting
                 }
                 if (port is OutputValue)
                 {
-                    for (int i = 0; i < node.Base.ValueInputs.Count; i++)
+                    for (int i = 0; i < node.ValueInputs.Count; i++)
                     {
-                        var input = node.Base.ValueInputs[i];
+                        var input = node.ValueInputs[i];
                         if (port.CanConnect(input))
                         {
                             SortedAdd(nodes, node);
@@ -97,14 +189,14 @@ namespace Loykas.Scripting
                 }
                 if (port is InputTrigger)
                 {
-                    if (node.Base.OutputTriggers.Count > 0)
+                    if (node.OutputTriggers.Count > 0)
                     {
                         SortedAdd(nodes, node);
                     }
                 }
                 if (port is OutputTrigger)
                 {
-                    if (node.Base.InputTriggers.Count > 0)
+                    if (node.InputTriggers.Count > 0)
                     {
                         SortedAdd(nodes, node);
                     }
@@ -112,7 +204,7 @@ namespace Loykas.Scripting
             }
         }
 
-        private void SortedAdd(List<ScriptNodeContent> nodes, ScriptNodeContent node)
+        private void SortedAdd(List<ScriptNode> nodes, ScriptNode node)
         {
             int categoryOrder = (int)node.Category;
             for (int i = 0; i < nodes.Count; i++)
@@ -130,20 +222,18 @@ namespace Loykas.Scripting
 
         public T CreateNode<T>() where T : ScriptNode
         {
-            if (Nodes.TryGetValue(typeof(T), out ScriptNodeContent content))
+            if (Nodes.TryGetValue(typeof(T), out ScriptNode node))
             {
-                ScriptNode node = content.Create();
-                return (T)node;
+                return (T)node.Create();
             }
             return null;
         }
 
         public ScriptNode CreateNode(Type nodeType)
         {
-            if (Nodes.TryGetValue(nodeType, out ScriptNodeContent content))
+            if (Nodes.TryGetValue(nodeType, out ScriptNode node))
             {
-                ScriptNode node = content.Create();
-                return node;
+                return node.Create();
             }
             return null;
         }

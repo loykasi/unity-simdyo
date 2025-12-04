@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class AddListItemNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.List;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
@@ -14,9 +15,14 @@ namespace Loykas.Scripting
         public InputValue Item;
         public OutputValue Output;
 
+        public override ScriptNode Create()
+        {
+            return new AddListItemNode();
+        }
+
         public AddListItemNode()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));

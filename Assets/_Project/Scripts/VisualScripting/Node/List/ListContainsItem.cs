@@ -4,12 +4,18 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class ListContainsItemNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.List;
+
         public InputValue ListInput;
         public InputValue Item;
         public OutputValue Output;
+
+        public override ScriptNode Create()
+        {
+            return new ListContainsItemNode();
+        }
 
         public ListContainsItemNode()
         {

@@ -5,6 +5,8 @@ namespace Loykas.Scripting
 {
     public class MakeVariableNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
+        
         public InputValue Input;
         public OutputValue Output;
 

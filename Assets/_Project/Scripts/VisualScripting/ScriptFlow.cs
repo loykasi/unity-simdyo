@@ -78,14 +78,14 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(Type nodeType)
+        public void AddNode(ScriptNode node)
         {
-            AddNode(nodeType, Vector3.zero);
+            AddNode(node, Vector3.zero);
         }
 
-        public void AddNode(Type nodeType, Vector3 position)
+        public void AddNode(ScriptNode nodeContent, Vector3 position)
         {
-            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
+            ScriptNode node = nodeContent.Create();
 
             node.Flow = this;
             node.Position = position;
@@ -99,9 +99,9 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(Type nodeType, Vector3 position, IPort portToConnect, bool isSourcePort)
+        public void AddNode(ScriptNode nodeContent, Vector3 position, IPort portToConnect, bool isSourcePort)
         {
-            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeType);
+            ScriptNode node = nodeContent.Create();
 
             node.Flow = this;
             node.Position = position;

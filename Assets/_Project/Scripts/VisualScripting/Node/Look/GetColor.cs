@@ -2,17 +2,17 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Look)]
-    public class GetColorContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(GetColorNode);
-        public override ScriptNode Create() => new GetColorNode();
-    }
-
     class GetColorNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
+
         public InputValue Entity;
         public OutputValue Color;
+
+        public override ScriptNode Create()
+        {
+            return new GetColorNode();
+        }
 
         public GetColorNode()
         {

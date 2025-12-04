@@ -2,13 +2,19 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class JoinNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
+
         public InputValue A;
         public InputValue B;
 
         public OutputValue Value;
+
+        public override ScriptNode Create()
+        {
+            return new JoinNode();
+        }
 
         public JoinNode()
         {

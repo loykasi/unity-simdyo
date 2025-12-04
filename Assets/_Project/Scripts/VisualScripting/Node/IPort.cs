@@ -6,6 +6,9 @@ namespace Loykas.Scripting
     {
         IScriptNode Node { get; set; }
         string Key { get; set; }
+        
+        public bool IsDisableConnection { get; set; }
+
         bool ShouldShowLabel { get; set; }
         bool ShouldLocalized { get; set; }
 

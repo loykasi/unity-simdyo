@@ -4,9 +4,16 @@ namespace Loykas.Scripting
 {
     class RandomBooleanNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
+
         public InputValue Chance;
 
         public OutputValue Value;
+
+        public override ScriptNode Create()
+        {
+            return new RandomBooleanNode();
+        }
 
         public RandomBooleanNode()
         {

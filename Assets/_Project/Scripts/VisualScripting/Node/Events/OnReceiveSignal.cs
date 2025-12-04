@@ -11,6 +11,11 @@ namespace Loykas.Scripting
             Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
         }
 
+        public override ScriptNode Create()
+        {
+            return new OnReceiveSignalNode();
+        }
+
         public override EventHook Hook => EventHook.Signal;
     }
 }

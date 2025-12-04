@@ -2,15 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Control)]
-    public class WaitNodeContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(WaitNode);
-        public override ScriptNode Create() => new WaitNode();
-    }
-
     class WaitNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Control;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
@@ -19,9 +14,14 @@ namespace Loykas.Scripting
         private bool _isStart;
         private float _time;
 
+        public override ScriptNode Create()
+        {
+            return new WaitNode();
+        }
+
         public WaitNode()
         {
-            Enter = InputTrigger(nameof(Enter), Wait);
+            Enter = CreateInputTrigger(nameof(Enter), Wait);
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
 
             WaitTime = InputValue(nameof(WaitTime), ScriptDataType.Single(DataType.Number)).UseInput();

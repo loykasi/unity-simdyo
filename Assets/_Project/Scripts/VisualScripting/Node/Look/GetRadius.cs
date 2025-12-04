@@ -2,17 +2,17 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Look)]
-    public class GetRadiusContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(GetRadiusNode);
-        public override ScriptNode Create() => new GetRadiusNode();
-    }
-
     class GetRadiusNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
+
         public InputValue Entity;
         public OutputValue Value;
+
+        public override ScriptNode Create()
+        {
+            return new GetRadiusNode();
+        }
 
         public GetRadiusNode()
         {

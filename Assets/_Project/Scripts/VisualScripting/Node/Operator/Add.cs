@@ -2,13 +2,19 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class AddNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
+
         public InputValue A;
         public InputValue B;
 
         public OutputValue Value;
+
+        public override ScriptNode Create()
+        {
+            return new AddNode();
+        }
 
         public AddNode()
         {

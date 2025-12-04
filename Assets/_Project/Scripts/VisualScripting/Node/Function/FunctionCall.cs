@@ -1,18 +1,10 @@
 using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Data, false)]
-    public class FunctionCallContent : ScriptNodeContent
-    {
-        public override Type Type => typeof(FunctionCallNode);
-        public override ScriptNode Create() => new FunctionCallNode();
-    }
-
     public class FunctionCallNode : ScriptNode
     {
+        public override bool ShouldIncludeInMenu => false;
         public override bool ShouldLocalized => false;
 
         public InputTrigger Enter;
@@ -23,9 +15,14 @@ namespace Loykas.Scripting
         private bool _firstRun = true;
         private NodeTask _task = new();
 
+        public override ScriptNode Create()
+        {
+            return new FunctionCallNode();
+        }
+
         public FunctionCallNode()
         {
-            Enter = InputTrigger(nameof(Enter), TriggerFunction);
+            Enter = CreateInputTrigger(nameof(Enter), TriggerFunction);
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
         }
 

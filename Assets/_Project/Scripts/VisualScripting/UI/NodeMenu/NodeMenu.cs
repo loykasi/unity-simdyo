@@ -18,7 +18,7 @@ namespace Loykas.Scripting
 
         private NodeBoard _nodeBoard;
 
-        private List<ScriptNodeContent> _nodes = new();
+        private List<ScriptNode> _nodes = new();
 
         private void UpdateMenuElement()
         {
@@ -82,10 +82,10 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(ScriptNodeContent nodeData)
+        public void AddNode(ScriptNode node)
         {
-            Debug.Log($"Add node {nodeData}");
-            _nodeBoard.AddNode(nodeData.Type);
+            Debug.Log($"Add node {node}");
+            _nodeBoard.AddNode(node);
 
             Close();
         }

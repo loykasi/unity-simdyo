@@ -5,9 +5,16 @@ namespace Loykas.Scripting
 {
     class GetListItemNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.List;
+
         public InputValue ListInput;
         public InputValue Index;
         public OutputValue Output;
+
+        public override ScriptNode Create()
+        {
+            return new GetListItemNode();
+        }
 
         public GetListItemNode()
         {

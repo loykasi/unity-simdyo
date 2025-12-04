@@ -2,15 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Motion)]
-    public class GetPositionContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(GetPositionNode);
-        public override ScriptNode Create() => new GetPositionNode();
-    }
-
     class GetPositionNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
+
         public InputValue Entity;
         public OutputValue X;
         public OutputValue Y;
@@ -24,6 +19,11 @@ namespace Loykas.Scripting
 
             X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX);
             Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY);
+        }
+
+        public override ScriptNode Create()
+        {
+            return new GetPositionNode();
         }
 
         private object GetX()

@@ -2,24 +2,24 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Look)]
-    public class SetColorContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(SetColorNode);
-        public override ScriptNode Create() => new SetColorNode();
-    }
-
     class SetColorNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
+
         public InputTrigger Enter;
         public OutputTrigger Exit;
 
         public InputValue Value;
         public InputValue Entity;
 
+        public override ScriptNode Create()
+        {
+            return new SetColorNode();
+        }
+
         public SetColorNode()
         {
-            Enter = InputTrigger(nameof(Enter), Set);
+            Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
             Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color)).UseInput();

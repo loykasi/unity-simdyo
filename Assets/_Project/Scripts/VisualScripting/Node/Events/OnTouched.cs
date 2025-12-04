@@ -6,6 +6,8 @@ namespace Loykas.Scripting
 {
     public class OnTouchedNode : EventNode
     {
+        public override bool CanUseGlobal => false;
+
         public OutputValue OtherEntity;
         public OutputValue PositionX;
         public OutputValue PositionY;
@@ -15,6 +17,11 @@ namespace Loykas.Scripting
         private SceneEntity _otherEntity;
         //private Vector3 _normal;
         private Vector3 _position;
+
+        public override ScriptNode Create()
+        {
+            return new OnTouchedNode();
+        }
 
         public OnTouchedNode()
         {

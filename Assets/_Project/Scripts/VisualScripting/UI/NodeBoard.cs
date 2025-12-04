@@ -198,19 +198,19 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(Type nodeType)
+        public void AddNode(ScriptNode node)
         {
             if (_waitToAddNode)
             {
                 _waitToAddNode = false;
 
                 bool isSourcePort = _fromUIPort.Edge == NodePortEdge.Right;
-                Flow.AddNode(nodeType, ToBoardPosition(_openMenuPosition), _fromUIPort.Port, isSourcePort);
+                Flow.AddNode(node, ToBoardPosition(_openMenuPosition), _fromUIPort.Port, isSourcePort);
 
                 return;
             }
 
-            Flow.AddNode(nodeType, ToBoardPosition(_openMenuPosition));
+            Flow.AddNode(node, ToBoardPosition(_openMenuPosition));
         }
 
         public void OnMenuClosed()

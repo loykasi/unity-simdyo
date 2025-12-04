@@ -2,18 +2,18 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    [ScriptNode(ScriptNodeCategory.Look)]
-    public class GetSizeContent : ScriptNodeContent
-    {
-        public override System.Type Type => typeof(GetSizeNode);
-        public override ScriptNode Create() => new GetSizeNode();
-    }
-
     class GetSizeNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Look;
+
         public InputValue Entity;
         public OutputValue Width;
         public OutputValue Height;
+
+        public override ScriptNode Create()
+        {
+            return new GetSizeNode();
+        }
 
         public GetSizeNode()
         {

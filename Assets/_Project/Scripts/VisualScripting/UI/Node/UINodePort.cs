@@ -90,26 +90,51 @@ namespace Loykas.Scripting
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (Port.IsDisableConnection)
+            {
+                return;
+            }
+
             NodeBoard.StartPreviewConnect(this, _portHandle.position, Edge);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            if (Port.IsDisableConnection)
+            {
+                return;
+            }
+
             NodeBoard.DragPreviewConnect(Mouse.current.position.ReadValue());
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (Port.IsDisableConnection)
+            {
+                return;
+            }
+
             NodeBoard.EndPreviewConnect();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            if (Port.IsDisableConnection)
+            {
+                return;
+            }
+
             NodeBoard.OnEnterPort(this, _portHandle.position);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (Port.IsDisableConnection)
+            {
+                return;
+            }
+            
             NodeBoard.OnExitPort();
         }
 

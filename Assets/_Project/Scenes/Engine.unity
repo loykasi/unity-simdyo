@@ -3503,7 +3503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rect: {fileID: 306192981}
-  _zoomRange: {x: 0.5, y: 3}
+  _zoomRange: {x: 0.2, y: 4}
   _holder: {fileID: 925411785}
   _nodePrefab: {fileID: 1326961733633107249, guid: d56574083c796c640913f60bd173030d, type: 3}
   _nodeConnectionPreview: {fileID: 991638239}

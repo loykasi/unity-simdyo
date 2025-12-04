@@ -212,9 +212,10 @@ public class SceneEntity : MonoBehaviour
 
     }
 
-    public virtual void SetTexture(int slot, Texture2D texture)
+    public virtual void SetTexture(int slot)
     {
         TextureSlot = slot;
+        Texture2D texture = TextureController.Instance.GetTexture(slot);
         Renderer.material.SetTexture(_textureProperty, texture);
         Debug.Log(TextureSlot);
     }

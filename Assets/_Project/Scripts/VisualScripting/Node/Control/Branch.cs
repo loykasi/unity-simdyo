@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-
     class BranchNode : ScriptNode
     {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Control;
+
         public InputTrigger Enter;
         public OutputTrigger IfTrue;
         public OutputTrigger IfFalse;
@@ -13,10 +14,15 @@ namespace Loykas.Scripting
 
         public BranchNode()
         {
-            Enter = InputTrigger(nameof(Enter), Branching);
+            Enter = CreateInputTrigger(nameof(Enter), Branching);
             IfTrue = OutputTrigger(nameof(IfTrue));
             IfFalse = OutputTrigger(nameof(IfFalse));
             Condition = InputValue(nameof(Condition));
+        }
+
+        public override ScriptNode Create()
+        {
+            return new BranchNode();
         }
 
         private OutputTrigger Branching()
