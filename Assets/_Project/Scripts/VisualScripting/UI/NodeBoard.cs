@@ -344,13 +344,13 @@ namespace Loykas.Scripting
             }
 
             UINode nodeElement = _nodes[index];
-
+            
             for (int i = 0; i < nodeElement.Ports.Count; i++)
             {
                 UINodePort port = nodeElement.Ports[i];
                 for (int j = port.LineConnections.Count - 1; j >= 0; j--)
                 {
-                    DeleteConnectionVisual(port.LineConnections[i]);
+                    DeleteConnectionVisual(port.LineConnections[j]);
                 }
             }
 
@@ -497,8 +497,6 @@ namespace Loykas.Scripting
         // handle drag and drop to create node
         public void OnDrop(PointerEventData eventData)
         {
-            Debug.Log($"Drop {eventData.pointerDrag}");
-
             if (eventData.pointerDrag.TryGetComponent(out VariableBoardItem variableItem))
             {
                 Vector3 position = GetMouseBoardPosition();
