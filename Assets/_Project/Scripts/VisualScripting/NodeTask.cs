@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -10,10 +11,11 @@ namespace Loykas.Scripting
         public InputTrigger Trigger;
 
         public Stack<InputTrigger> _loops = new();
+        public bool ShouldBreak;
 
         private bool _shouldRemoveOnDone;
 
-        public NodeTask SetRemoveOnDone(bool value)
+        public NodeTask SetRemoveOnDone()
         {
             _shouldRemoveOnDone = true;
             return this;
@@ -31,7 +33,7 @@ namespace Loykas.Scripting
                     return;
                 }
 
-                Trigger = Trigger.TargetOutputTrigger.Invoke();
+                Trigger = Trigger.TargetOutputTrigger?.Destination;
                 if (Trigger == null)
                 {
                     if (IsInLoop())
@@ -61,6 +63,11 @@ namespace Loykas.Scripting
         public void ExitLoop()
         {
             Trigger = _loops.Pop();
+        }
+
+        public void BreakLoop()
+        {
+            ShouldBreak = true;
         }
 
         private bool IsInLoop()

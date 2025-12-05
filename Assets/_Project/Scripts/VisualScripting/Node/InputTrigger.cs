@@ -28,9 +28,8 @@ namespace Loykas.Scripting
 
         public bool Invoke(ScriptFlow vs)
         {
-            OutputTrigger trigger = Action?.Invoke();
-            TargetOutputTrigger = trigger;
-            return trigger != null;
+            TargetOutputTrigger = Action?.Invoke();
+            return !(Node.HasOutputTriggers && TargetOutputTrigger == null);
         }
 
         protected override void DisconnectPort(OutputTrigger port)

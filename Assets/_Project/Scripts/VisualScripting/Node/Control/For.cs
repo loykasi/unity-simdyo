@@ -16,7 +16,7 @@ namespace Loykas.Scripting
         public OutputValue Index;
 
         private int _index;
-        private bool _firstRun;
+        private bool _firstRun = true;
 
         public ForNode()
         {
@@ -49,8 +49,16 @@ namespace Loykas.Scripting
 
             NodeTask task = Flow.GetNodeTask(Enter);
 
+            if (task.ShouldBreak)
+            {
+                _firstRun = true;
+                task.ShouldBreak = false;
+                return Completed;
+            }
+
             if (_firstRun)
             {
+                // Debug.Log($"first run: step {step}");
                 task.EnterLoop(Enter);
                 _index = firstIndex;
 
@@ -97,9 +105,9 @@ namespace Loykas.Scripting
         //     return Completed;
         // }
 
-        private bool CanMoveNext(int index, int lastIndex, bool isAscending)
-        {
-            return isAscending ? (index <= lastIndex) : (index >= lastIndex);
-        }
+        // private bool CanMoveNext(int index, int lastIndex, bool isAscending)
+        // {
+        //     return isAscending ? (index <= lastIndex) : (index >= lastIndex);
+        // }
     }
 }

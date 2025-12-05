@@ -235,7 +235,7 @@ namespace Loykas.Scripting
                 From = outputTrigger,
                 Trigger = outputTrigger.Invoke()
             };
-            task.SetRemoveOnDone(true);
+            task.SetRemoveOnDone();
             _tasks.Add(task);
         }
 
@@ -278,40 +278,40 @@ namespace Loykas.Scripting
             return -1;
         }
 
-        public bool IsLoopNotBroken(int loop)
-        {
-            return GetCurrentLoop() == loop;
-        }
+        // public bool IsLoopNotBroken(int loop)
+        // {
+        //     return GetCurrentLoop() == loop;
+        // }
 
-        public int StartLoop()
-        {
-            int loop = _loopIdentifier++;
-            _loops.Push(loop);
+        // public int StartLoop()
+        // {
+        //     int loop = _loopIdentifier++;
+        //     _loops.Push(loop);
 
-            return loop;
-        }
+        //     return loop;
+        // }
 
-        public void BreakLoop()
-        {
-            if (GetCurrentLoop() < 0)
-            {
-                return;
-            }
+        // public void BreakLoop()
+        // {
+        //     if (GetCurrentLoop() < 0)
+        //     {
+        //         return;
+        //     }
 
-            _loopIdentifier--;
-            _loops.Pop();
-        }
+        //     _loopIdentifier--;
+        //     _loops.Pop();
+        // }
 
-        public void ExitLoop(int loop)
-        {
-            if (loop != GetCurrentLoop())
-            {
-                return;
-            }
+        // public void ExitLoop(int loop)
+        // {
+        //     if (loop != GetCurrentLoop())
+        //     {
+        //         return;
+        //     }
 
-            _loopIdentifier--;
-            _loops.Pop();
-        }
+        //     _loopIdentifier--;
+        //     _loops.Pop();
+        // }
 
         public void StartVS()
         {

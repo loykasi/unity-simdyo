@@ -17,6 +17,8 @@ namespace Loykas.Scripting
         public Vector2 Position { get; set; }
         public Dictionary<string, object> DefaultValues { get; set; } = new();
 
+        public bool HasOutputTriggers => OutputTriggers.Count > 0;
+
         public ScriptFlow Flow
         {
             get => _flow;

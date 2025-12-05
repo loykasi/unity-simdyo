@@ -9,6 +9,8 @@ namespace Loykas.Scripting
         Dictionary<string, object> DefaultValues { get; set; }
         ScriptFlow Flow { get; set; }
 
+        bool HasOutputTriggers { get; }
+
         void UpdateNode();
         string GetNameKey();
     }

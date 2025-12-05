@@ -5,6 +5,7 @@ namespace Loykas.Scripting
     public class SetVariableNode : ScriptNode
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
+        public override bool CanUseGlobal => false;
 
         public InputTrigger Enter;
         public OutputTrigger Exit;
