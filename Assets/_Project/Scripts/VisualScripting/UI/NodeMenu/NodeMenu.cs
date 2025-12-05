@@ -50,27 +50,19 @@ namespace Loykas.Scripting
             }
         }
 
-        public void Open(NodeBoard nodeBoard, Vector3 position)
+        public void Open(NodeBoard nodeBoard, Vector3 position, IPort port = null)
         {
             _nodeBoard = nodeBoard;
 
-            ScriptNodeFactory.Instance.GetNodes(_nodes, _nodeBoard.Flow.IsGlobal);
-            UpdateMenuElement();
-
-            gameObject.SetActive(true);
-            transform.position = position;
-
-            foreach (var item in _categories)
+            if (port == null)
             {
-                item.Value.SetOpen(false);
+                ScriptNodeFactory.Instance.GetNodes(_nodes, _nodeBoard.Flow.IsGlobal);
             }
-        }
+            else
+            {
+                ScriptNodeFactory.Instance.GetNodes(_nodes, port, _nodeBoard.Flow.IsGlobal);                
+            }
 
-        public void Open(NodeBoard nodeBoard, Vector3 position, IPort port)
-        {
-            _nodeBoard = nodeBoard;
-
-            ScriptNodeFactory.Instance.GetNodes(_nodes, port, _nodeBoard.Flow.IsGlobal);
             UpdateMenuElement();
 
             gameObject.SetActive(true);

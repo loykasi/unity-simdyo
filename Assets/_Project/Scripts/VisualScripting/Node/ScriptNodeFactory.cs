@@ -173,6 +173,7 @@ namespace Loykas.Scripting
                         if (port.CanConnect(output))
                         {
                             SortedAdd(nodes, node);
+                            break;
                         }
                     }
                 }
@@ -184,6 +185,7 @@ namespace Loykas.Scripting
                         if (port.CanConnect(input))
                         {
                             SortedAdd(nodes, node);
+                            break;
                         }
                     }
                 }

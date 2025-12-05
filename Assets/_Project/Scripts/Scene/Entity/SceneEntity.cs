@@ -168,6 +168,10 @@ public class SceneEntity : MonoBehaviour
     public void SetCollider(bool value)
     {
         IsColliderEnabled = value;
+        if (SceneManager.Instance.IsRuning)
+        {
+            Collider.enabled = IsColliderEnabled;
+        }
     }
 
     public void SetGravity(bool value)

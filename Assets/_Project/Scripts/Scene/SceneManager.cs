@@ -13,6 +13,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     [Header("References")]
     public ScriptFlow GlobalScript;
 
+    public bool IsRuning => _isRunning;
     private bool _isRunning = false;
 
     protected override void Awake()
