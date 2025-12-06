@@ -11,6 +11,11 @@ public class CursorSystem : Singleton<CursorSystem>
         SetCursor(CursorType.Default);
     }
 
+    // private void Update()
+    // {
+    //     Debug.Log($"Priority: {_priority}");
+    // }
+
     public void SetCursor(CursorType type, int priority = 0)
     {
         if (priority < _priority)
@@ -21,14 +26,16 @@ public class CursorSystem : Singleton<CursorSystem>
         _priority = priority;
         Texture2D cursor = _cursorData.Get(type);
         Cursor.SetCursor(cursor, new Vector2(8f, 8f), CursorMode.Auto);
+        Debug.Log($"{priority} | set cursor {type}");
     }
 
     public void ToDefault(int priority = 0)
     {
-        if (_priority == priority)
+        Debug.Log($"{priority} | to default");
+        if (_priority <= priority)
         {
-            SetCursor(CursorType.Default);
             _priority = 0;
+            SetCursor(CursorType.Default);
         }
     }
 
