@@ -37,8 +37,8 @@ namespace Loykas.Scripting
         private void OnDropdownChanged(int index)
         {
             DataType dataType = _types[index];
-            bool isList = _type.IsList;
-            _type = new ScriptDataType(dataType, isList);
+            DataKind kind = _type.Kind;
+            _type = new ScriptDataType(dataType, kind);
             
             OnSubmit?.Invoke(_type);
         }
@@ -46,8 +46,8 @@ namespace Loykas.Scripting
         private void OnListToggleChanged(bool value)
         {
             DataType dataType = _type.Type;
-            bool isList = value;
-            _type = new ScriptDataType(dataType, isList);
+            DataKind kind = value ? DataKind.List : DataKind.Simple;
+            _type = new ScriptDataType(dataType, kind);
             
             OnSubmit?.Invoke(_type);
         }
@@ -58,7 +58,7 @@ namespace Loykas.Scripting
 
             int index = TypeToDropdownIndex(_type);
             Dropdown.SetValueWithoutNotify(index);
-            ListToggle.SetIsOnWithoutNotify(_type.IsList);
+            ListToggle.SetIsOnWithoutNotify(_type.Kind == DataKind.List);
         }
 
         public override object GetValue()

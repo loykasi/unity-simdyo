@@ -8,7 +8,7 @@ namespace Loykas.Scripting
     {
         public static object GetDefaultValue(ScriptDataType type)
         {
-            if (type.IsList)
+            if (type.Kind == DataKind.List)
             {
                 return new List<object>();
             }
@@ -41,7 +41,7 @@ namespace Loykas.Scripting
 
         public static void ListAdd(Variable variable, object value)
         {
-            if (!variable.Type.IsList)
+            if (variable.Type.Kind != DataKind.List)
             {
                 return;
             }
@@ -54,7 +54,7 @@ namespace Loykas.Scripting
 
         public static void ListEdit(Variable variable, int index, object value)
         {
-            if (!variable.Type.IsList)
+            if (variable.Type.Kind != DataKind.List)
             {
                 return;
             }
@@ -67,7 +67,7 @@ namespace Loykas.Scripting
 
         public static void ListRemoveAt(Variable variable, int index)
         {
-            if (!variable.Type.IsList)
+            if (variable.Type.Kind != DataKind.List)
             {
                 return;
             }

@@ -2,7 +2,8 @@ using Loykas.Scripting;
 
 public class ScriptVariableSaveData
 {
+    public string Name;
     public DataType Type;
-    public bool IsList;
+    public DataKind Kind;
     public object Value;
 }

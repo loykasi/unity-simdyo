@@ -35,11 +35,15 @@ namespace Loykas.Scripting
 
         private void OnAddElement()
         {
-            AddElement();
+            ListInputItem listInputItem = AddElement();
+            if (ValueInstance != null)
+            {
+                ValueHandler.ListAdd(ValueInstance, listInputItem.Get());
+            }
             OnValueUpdated?.Invoke();
         }
 
-        private void AddElement(object value = null)
+        private ListInputItem AddElement(object value = null)
         {
             ListInputItem listInputItem = Instantiate(_listInputItemPrefab, _container);
 
@@ -47,6 +51,11 @@ namespace Loykas.Scripting
 
             listInputItem.Init(this, input);
             listInputItem.Rect.localPosition = new Vector3(0f, -listInputItem.Rect.sizeDelta.y * _inputItems.Count, 0f);
+
+            if (value != null)
+            {
+                listInputItem.Set(value);
+            }
 
             _inputItems.Add(listInputItem);
 
@@ -56,10 +65,7 @@ namespace Loykas.Scripting
                 Size.y + 30f
             );
 
-            if (ValueInstance != null)
-            {
-                ValueHandler.ListAdd(ValueInstance, listInputItem.Get());
-            }
+            return listInputItem;
         }
 
         public void Remove(ListInputItem item)

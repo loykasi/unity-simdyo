@@ -19,15 +19,7 @@ public class ToastSystem : Singleton<ToastSystem>
         }
         _coroutine = StartCoroutine(DelayShow(message));
     }
-
-    private void Update()
-    {
-        if (Keyboard.current.aKey.isPressed)
-        {
-            Show("Hello world!");
-        }
-    }
-
+    
     private IEnumerator DelayShow(string message)
     {
         yield return null;

@@ -53,7 +53,7 @@ namespace Loykas.Scripting
 
         public override bool CanConnectTo(InputValue port)
         {
-            return port.Type.IsList == Type.IsList && (Type.IsAny || port.Type.IsAny || port.Type == Type);
+            return ScriptDataType.IsCompatible(port.Type, Type);
         }
 
         public OutputValue NoLocalize()

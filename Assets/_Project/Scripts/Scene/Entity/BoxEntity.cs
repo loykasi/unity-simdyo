@@ -143,4 +143,16 @@ public class BoxEntity : SceneEntity
     {
         Border.Disable();
     }
+
+    public override void OnSceneStart()
+    {
+        _defaultState.Size = new Vector2(Width, Height);
+        base.OnSceneStart();
+    }
+
+    public override void OnSceneStop()
+    {
+        SetSize(_defaultState.Size.x, _defaultState.Size.y);
+        base.OnSceneStop();
+    }
 }

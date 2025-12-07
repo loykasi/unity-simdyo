@@ -13,6 +13,9 @@
 [X] add rotate visual indicator
 [X] menu: fix camera size not update on load
 
+[] Fix variable menu freeze on load list
+[] Fix and test list related nodes
+
 == Scene entity
 [] Z depth
 

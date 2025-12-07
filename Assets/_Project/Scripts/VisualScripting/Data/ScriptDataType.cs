@@ -4,19 +4,21 @@ namespace Loykas.Scripting
     public struct ScriptDataType
     {
         public DataType Type;
-        public bool IsList;
+        public DataKind Kind;
+        // public bool IsList;
 
         public readonly bool IsAny => Type == DataType.Any;
+        public readonly bool IsAnyKind => Kind == DataKind.Any;
 
-        public ScriptDataType(DataType type, bool isList)
+        public ScriptDataType(DataType type, DataKind kind)
         {
             Type = type;
-            IsList = isList;
+            Kind = kind;
         }
 
         public override readonly string ToString()
         {
-            if (IsList)
+            if (Kind == DataKind.List)
             {
                 return $"List | {Type}";
             }
@@ -26,27 +28,27 @@ namespace Loykas.Scripting
 
         public static ScriptDataType Default()
         {
-            return new ScriptDataType(DataType.String, false);
+            return new ScriptDataType(DataType.String, DataKind.Simple);
         }
 
         public static ScriptDataType Any()
         {
-            return new ScriptDataType(DataType.Any, false);
+            return new ScriptDataType(DataType.Any, DataKind.Any);
         }
 
         public static ScriptDataType Single(DataType type)
         {
-            return new ScriptDataType(type, false);
+            return new ScriptDataType(type, DataKind.Simple);
         }
 
         public static ScriptDataType List(DataType type)
         {
-            return new ScriptDataType(type, true);
+            return new ScriptDataType(type, DataKind.List);
         }
 
         public override readonly int GetHashCode()
         {
-            return System.HashCode.Combine(Type, IsList);
+            return System.HashCode.Combine(Type, Kind);
         }
 
         public readonly bool Equals(ScriptDataType scriptDataType)
@@ -63,7 +65,7 @@ namespace Loykas.Scripting
 
             ScriptDataType scriptDataType = (ScriptDataType)obj;
 
-            return Type == scriptDataType.Type && IsList == scriptDataType.IsList;
+            return Type == scriptDataType.Type && Kind == scriptDataType.Kind;
         }
 
         public static bool operator ==(ScriptDataType a, ScriptDataType b)
@@ -74,6 +76,12 @@ namespace Loykas.Scripting
         public static bool operator !=(ScriptDataType a, ScriptDataType b)
         {
             return !a.Equals(b);
+        }
+
+        public static bool IsCompatible(ScriptDataType a, ScriptDataType b)
+        {
+            return (a.IsAnyKind || b.IsAnyKind || a.Kind == b.Kind) &&
+            (a.IsAny || b.IsAny || a == b);
         }
     }
 }

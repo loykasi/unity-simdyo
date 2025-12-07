@@ -8,4 +8,7 @@ public class SceneEntityState
     public bool GravityEnabled;
     public Vector2 Velocity;
     public float AngularVelocity;
+
+    public float Radius;
+    public Vector2 Size;
 }

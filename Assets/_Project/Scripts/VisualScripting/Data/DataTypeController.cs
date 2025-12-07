@@ -10,17 +10,17 @@ namespace Loykas.Scripting
 
         public static ScriptDataType[] DataTypeList = new ScriptDataType[]
         {
-            new(DataType.String, false),
-            new(DataType.Number, false),
-            new(DataType.Boolean, false),
-            new(DataType.Color, false),
-            new(DataType.Entity, false),
+            ScriptDataType.Single(DataType.String),
+            ScriptDataType.Single(DataType.Number),
+            ScriptDataType.Single(DataType.Boolean),
+            ScriptDataType.Single(DataType.Color),
+            ScriptDataType.Single(DataType.Entity),
 
-            new(DataType.String, true),
-            new(DataType.Number, true),
-            new(DataType.Boolean, true),
-            new(DataType.Color, true),
-            new(DataType.Entity, true),
+            ScriptDataType.List(DataType.String),
+            ScriptDataType.List(DataType.Number),
+            ScriptDataType.List(DataType.Boolean),
+            ScriptDataType.List(DataType.Color),
+            ScriptDataType.List(DataType.Entity),
         };
 
         public static List<string> DataTypesDropdownValues = DataTypeList.Select(s => s.ToString()).ToList();
@@ -36,7 +36,7 @@ namespace Loykas.Scripting
                 DataType.Entity => 4,
             };
 
-            if (type.IsList)
+            if (type.Kind == DataKind.List)
             {
                 index += 5;
             }

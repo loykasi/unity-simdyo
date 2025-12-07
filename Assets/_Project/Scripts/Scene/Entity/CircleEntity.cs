@@ -13,7 +13,7 @@ public class CircleEntity : SceneEntity
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
-    public void SetRadius(float radius, int totalVert = 8)
+    public void SetRadius(float radius, int totalVert = 10)
     {
         Radius = radius;
         TotalVert = totalVert;
@@ -70,5 +70,17 @@ public class CircleEntity : SceneEntity
     public override void Deselect()
     {
         Border.Disable();
+    }
+
+    public override void OnSceneStart()
+    {
+        _defaultState.Radius = Radius;
+        base.OnSceneStart();
+    }
+
+    public override void OnSceneStop()
+    {
+        SetRadius(_defaultState.Radius);
+        base.OnSceneStop();
     }
 }

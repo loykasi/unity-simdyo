@@ -89,7 +89,7 @@ public class SceneEntity : MonoBehaviour
     public bool IsColliderEnabled { get; set; } = true;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
 
-    private SceneEntityState _defaultState = new();
+    protected SceneEntityState _defaultState = new();
 
     private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
 
@@ -128,7 +128,7 @@ public class SceneEntity : MonoBehaviour
         UpdateLayer();
     }
 
-    public void OnSceneStart()
+    public virtual void OnSceneStart()
     {
         transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
 
@@ -149,7 +149,7 @@ public class SceneEntity : MonoBehaviour
         Script.OnSceneStart();
     }
 
-    public void OnSceneStop()
+    public virtual void OnSceneStop()
     {
         transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
         SetCollider(_defaultState.ColliderEnabled);

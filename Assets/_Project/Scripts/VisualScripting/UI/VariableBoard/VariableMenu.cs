@@ -64,6 +64,7 @@ public class VariableMenu : MonoBehaviour
         _variable = variable;
 
         OnVariableUpdated();
+        UpdateSize();
     }
 
     private void Close()

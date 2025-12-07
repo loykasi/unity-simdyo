@@ -96,6 +96,7 @@ namespace Loykas.Scripting
                 // Data,
                 new SetVariableNode(),
                 new GetVariableNode(),
+                new SetGlobalVariableNode(),
                 new GetGlobalVariableNode(),
                 new MakeStringNode(),
                 new MakeNumberNode(),

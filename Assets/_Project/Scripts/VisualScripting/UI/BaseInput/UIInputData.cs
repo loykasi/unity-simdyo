@@ -74,7 +74,7 @@ namespace Loykas.Scripting
 
         public BaseInput GetPrefab(ScriptDataType type)
         {
-            if (type.IsList)
+            if (type.Kind == DataKind.List)
             {
                 return ListInputPrefab;
             }
@@ -91,14 +91,14 @@ namespace Loykas.Scripting
 
             BaseInput inputObject = Instantiate(inputPrefab);
 
-            if (!type.IsList && type.Type == DataType.Entity)
+            if (type.Kind != DataKind.List && type.Type == DataType.Entity)
             {
                 var options = ObjectManager.Instance.GetEntityOptions();
                 var entityInput = (EntityInput)inputObject;
                 entityInput.Init(options);
             }
 
-            if (type.IsList)
+            if (type.Kind == DataKind.List)
             {
                 ListInput input = (ListInput)inputObject;
                 input.ListType = type.Type;
@@ -141,7 +141,7 @@ namespace Loykas.Scripting
                 _ => throw new System.NotImplementedException(),
             };
 
-            return Get(new ScriptDataType(type, false));
+            return Get(new ScriptDataType(type, DataKind.Simple));
         }
     }
 }

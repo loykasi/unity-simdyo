@@ -204,8 +204,8 @@ public enum InputValueTypes
         }
 
         public override bool CanConnectTo(OutputValue port)
-        {
-            return port.Type.IsList == Type.IsList && (port.Type.IsAny || Type.IsAny || port.Type == Type);
+        {            
+            return ScriptDataType.IsCompatible(port.Type, Type);
         }
     }
 }

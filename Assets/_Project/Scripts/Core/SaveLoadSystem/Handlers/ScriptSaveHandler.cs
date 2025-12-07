@@ -65,8 +65,9 @@ public static class ScriptSaveHandler
         {   
             ScriptVariableSaveData variableData = new()
             {
+                Name = variable.Name,
                 Type = variable.Type.Type,
-                IsList = variable.Type.IsList,
+                Kind = variable.Type.Kind,
                 Value = variable.Value
             };
             flowData.Variables.Add(variableData);
@@ -88,7 +89,7 @@ public static class ScriptSaveHandler
                 {
                     Name = input.Name,
                     Type = input.Type.Type,
-                    IsList = input.Type.IsList
+                    Kind = input.Type.Kind
                 };
                 saveData.Inputs.Add(inputData);
             }
@@ -115,7 +116,7 @@ public static class ScriptSaveHandler
                 FunctionInput functionInput = new()
                 {
                     Name = inputData.Name,
-                    Type = new ScriptDataType(inputData.Type, inputData.IsList)
+                    Type = new ScriptDataType(inputData.Type, inputData.Kind)
                 };
 
                 function.Inputs.Add(functionInput);
@@ -199,9 +200,10 @@ public static class ScriptSaveHandler
         {
             Variable variable = new
             (
-                new ScriptDataType(item.Type, item.IsList),
+                new ScriptDataType(item.Type, item.Kind),
                 item.Value
             );
+            variable.Name = item.Name;
             
             flow.Variables.Add(variable.Name, variable);
         }

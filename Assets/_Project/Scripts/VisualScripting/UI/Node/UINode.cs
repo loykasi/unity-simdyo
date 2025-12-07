@@ -79,7 +79,7 @@ namespace Loykas.Scripting
         private void Init()
         {
             if (Node == null) return;
-
+            
             transform.localPosition = Node.Position;
 
             // title
@@ -271,6 +271,11 @@ namespace Loykas.Scripting
         public void OnPointerExit(PointerEventData eventData)
         {
             // _isMouseOver = false;
+        }
+
+        public UINodePort FindUIPort(IPort port)
+        {
+            return Ports.Find(p => p.Port == port);
         }
     }
 }

@@ -34,6 +34,11 @@ namespace Loykas.Scripting
             ListInput.Remove(this);
         }
 
+        public void Set(object value)
+        {
+            Input.SetValue(value);
+        }
+
         public object Get()
         {
             return Input.GetValue();

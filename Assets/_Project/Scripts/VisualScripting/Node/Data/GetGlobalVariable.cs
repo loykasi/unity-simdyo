@@ -36,7 +36,7 @@ namespace Loykas.Scripting
         private object Get()
         {
             string name = Input.GetValue().ToString();
-            return SceneManager.Instance.GlobalScript.GetVariable(name);
+            return SceneManager.Instance.GlobalScript.GetVariable(name).Value;
         }
 
         private void OnVariableDeleted(Variable variable)
@@ -59,6 +59,7 @@ namespace Loykas.Scripting
             Variable variable = SceneManager.Instance.GlobalScript.GetVariable(name);
 
             ScriptDataType type = variable == null ? ScriptDataType.Single(DataType.Any) : variable.Type;
+            Debug.Log(type);
 
             Output.SetType(type);
             OnNodeUpdated?.Invoke();

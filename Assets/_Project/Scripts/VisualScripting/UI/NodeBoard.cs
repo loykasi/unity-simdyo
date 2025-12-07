@@ -135,6 +135,9 @@ namespace Loykas.Scripting
             source.AddConnection(lineConnection);
             destination.AddConnection(lineConnection);
 
+            Debug.Log(source, source);
+            Debug.Log(destination, destination);
+
             _lines.Add(lineConnection);
         }
 
@@ -308,6 +311,7 @@ namespace Loykas.Scripting
 
         public void DeleteConnection(UILineConnection lineConnection)
         {
+            Debug.Log("Delete line");
             Flow.Disconnect(lineConnection.Source.Port, lineConnection.Destination.Port);
             // DeleteConnectionVisual(lineConnection);
         }
@@ -435,9 +439,17 @@ namespace Loykas.Scripting
 
             _nodeConnectionPreview.EndPreviewConnect();
 
+            UINode fromNode = _fromUIPort.UINode;
+            IPort fromPort = _fromUIPort.Port;
+
+            UINode toNode = _toUIPort.UINode;
+            IPort toPort = _toUIPort.Port;
+
             if (Flow.TryConnect(_fromUIPort.Port, _toUIPort.Port))
             {
-                // AddConnectionLine();
+                _fromUIPort = fromNode.FindUIPort(fromPort);
+                _toUIPort = toNode.FindUIPort(toPort);
+                
                 AddConnectionToBoard(_fromUIPort, _toUIPort);
 
                 AfterAdd();
