@@ -33,5 +33,10 @@ namespace Loykas.Scripting
         {
             ValueInstance = value;
         }
+
+        public virtual void SetWidth(float width)
+        {
+            
+        }
     }
 }

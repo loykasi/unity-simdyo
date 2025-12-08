@@ -307,4 +307,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Rect: {fileID: 1874948905922719016}
-  RemoveButton: {fileID: 5601335616009897564}
+  _removeButton: {fileID: 5601335616009897564}
+  _removeButtonWidth: 30

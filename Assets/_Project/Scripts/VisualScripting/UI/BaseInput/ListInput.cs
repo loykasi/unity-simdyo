@@ -17,6 +17,8 @@ namespace Loykas.Scripting
         [SerializeField] private ListInputItem _listInputItemPrefab;
         private List<ListInputItem> _inputItems = new();
 
+        private float _width;
+
         private void Awake()
         {
             _addButton.onClick.AddListener(OnAddElement);
@@ -50,6 +52,7 @@ namespace Loykas.Scripting
             BaseInput input = _inputData.GetInputInstance(ListType);
 
             listInputItem.Init(this, input);
+            listInputItem.SetWidth(_width);
             listInputItem.Rect.localPosition = new Vector3(0f, -listInputItem.Rect.sizeDelta.y * _inputItems.Count, 0f);
 
             if (value != null)
@@ -123,6 +126,13 @@ namespace Loykas.Scripting
             }
 
             return null;
+        }
+
+        public override void SetWidth(float width)
+        {
+            _width = width;
+            Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
+            _addButtonRect.sizeDelta = new Vector2(width, _addButtonRect.sizeDelta.y);
         }
     }
 }

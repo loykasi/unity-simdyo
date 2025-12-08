@@ -21,12 +21,12 @@ public class VariableMenu : MonoBehaviour
     [SerializeField] private RectTransform _valueRect;
     [SerializeField] private RectTransform _inputHolder;
     [SerializeField] private UIInputData _inputDataReference;
+    
     private BaseInput _input;
-
     private ScriptFlow _flow;
     private Variable _variable;
 
-    private readonly float _width = 400f;
+    // private readonly float _width = 400f;
     private readonly float _verticalPadding = 10f;
     private readonly float _titleAndTypeHeight = 60f;
 
@@ -98,6 +98,8 @@ public class VariableMenu : MonoBehaviour
         _input = _inputDataReference.Get(type);
         _input.Rect.SetParent(_inputHolder, false);
         _input.Enable();
+
+        _input.SetWidth(_inputHolder.sizeDelta.x);
 
         _input.OnValueUpdated += OnValueUpdated;
         _input.SetValueInstance(_variable);

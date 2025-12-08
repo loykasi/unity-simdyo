@@ -9,11 +9,13 @@ namespace Loykas.Scripting
         public BaseInput Input { get; set; }
 
         public RectTransform Rect;
-        public Button RemoveButton;
+        [SerializeField] private Button _removeButton;
+        [SerializeField] private float _removeButtonWidth;
+
 
         private void Awake()
         {
-            RemoveButton.onClick.AddListener(Remove);
+            _removeButton.onClick.AddListener(Remove);
         }
 
         public void Init(ListInput listInput, BaseInput input)
@@ -42,6 +44,12 @@ namespace Loykas.Scripting
         public object Get()
         {
             return Input.GetValue();
+        }
+
+        public void SetWidth(float width)
+        {
+            Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
+            Input.SetWidth(width - _removeButtonWidth);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -40,6 +41,11 @@ namespace Loykas.Scripting
         {
             var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
             return entity;
+        }
+
+        public override void SetWidth(float width)
+        {
+            Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
         }
     }
 }

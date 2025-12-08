@@ -34,11 +34,7 @@ namespace Loykas.Scripting
             {
                 Vector2 size = InputField.textComponent.GetPreferredValues(value);
                 float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-                Rect.sizeDelta = new Vector2
-                (
-                    x,
-                    Rect.sizeDelta.y
-                );   
+                Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);   
             }
             OnValueUpdated?.Invoke();
         }
@@ -57,6 +53,13 @@ namespace Loykas.Scripting
         public override void SetValue(object value)
         {
             InputField.SetTextWithoutNotify((string)value);
+        }
+
+        public override void SetWidth(float width)
+        {
+            MinWidth = width;
+            MaxWidth = width;
+            Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
         }
     }
 }

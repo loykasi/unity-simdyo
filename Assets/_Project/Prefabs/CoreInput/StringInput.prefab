@@ -193,6 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rect: {fileID: 5649632986782227700}
   InputField: {fileID: 5732344698952055725}
+  AutoRezise: 1
   MinWidth: 50
   MaxWidth: 200
 --- !u!1 &4829009348264547839
@@ -380,5 +381,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Padding: {x: -8, y: -5, z: -8, w: -5}
+  m_Padding: {x: -1, y: -5, z: -1, w: -5}
   m_Softness: {x: 0, y: 0}

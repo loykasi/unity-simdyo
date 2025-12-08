@@ -16,7 +16,7 @@ namespace Loykas.Scripting
         private void Awake()
         {
             InputField.onValueChanged.AddListener(OnValueChanged);
-            InputField.onEndEdit.AddListener(OnEndEdit);
+            // InputField.onEndEdit.AddListener(OnEndEdit);
 
             SetValue(0f);
         }
@@ -25,11 +25,7 @@ namespace Loykas.Scripting
         {
             Vector2 size = InputField.textComponent.GetPreferredValues(value);
             float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-            Rect.sizeDelta = new Vector2
-            (
-                x,
-                Rect.sizeDelta.y
-            );
+            Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
             OnValueUpdated?.Invoke();
         }
 
@@ -63,6 +59,13 @@ namespace Loykas.Scripting
         {
             _value = (float)value;
             InputField.SetTextWithoutNotify(_value.ToString());
+        }
+
+        public override void SetWidth(float width)
+        {
+            MinWidth = width;
+            MaxWidth = width;
+            Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
         }
     }
 }
