@@ -14,6 +14,7 @@ public class DragPreviewSystem : Singleton<DragPreviewSystem>
         if (_previewObject.gameObject.activeInHierarchy)
         {
             _previewObject.position = Mouse.current.position.ReadValue() + _offset;
+            CursorSystem.Instance.SetCursor(CursorType.Grabbing, 2);
         }
     }
 
@@ -22,14 +23,12 @@ public class DragPreviewSystem : Singleton<DragPreviewSystem>
         _offset = position - Mouse.current.position.ReadValue();
         _previewObject.gameObject.SetActive(true);
         _previewText.text = name;
-        
-        CursorSystem.Instance.SetCursor(CursorType.Grabbing, 1);
     }
 
     public void EndDrag()
     {
         _previewObject.gameObject.SetActive(false);
 
-        CursorSystem.Instance.ToDefault(1);
+        CursorSystem.Instance.ToDefault(2);
     }
 }

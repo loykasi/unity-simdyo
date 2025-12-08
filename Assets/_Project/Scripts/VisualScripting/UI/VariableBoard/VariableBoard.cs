@@ -11,6 +11,7 @@ namespace Loykas.Scripting
 
         [SerializeField] private VariableBoardItem _itemPrefab;
         [SerializeField] private Transform _contentHolder;
+        [SerializeField] private GameObject _noDataText;
 
         private List<VariableBoardItem> _variableItems = new();
 
@@ -52,6 +53,7 @@ namespace Loykas.Scripting
             Variable variable = flow.AddVariable();
 
             AddVariableItem(variable);
+            CheckForNoData();
         }
 
         private void AddVariableItem(Variable variable)
@@ -59,6 +61,11 @@ namespace Loykas.Scripting
             VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
             item.Init(this, variable);
             _variableItems.Add(item);
+        }
+
+        private void CheckForNoData()
+        {
+            _noDataText.SetActive(_variableItems.Count == 0);
         }
 
         public void Select(VariableBoardItem item)
@@ -74,6 +81,7 @@ namespace Loykas.Scripting
                 VariableBoardItem item = _variableItems[index];
                 Destroy(item.gameObject);
                 _variableItems.RemoveAt(index);
+                CheckForNoData();
             }
             
         }

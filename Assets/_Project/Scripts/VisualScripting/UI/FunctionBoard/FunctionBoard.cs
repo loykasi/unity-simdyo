@@ -12,10 +12,13 @@ namespace Loykas.Scripting
         [SerializeField] private RectTransform _rect;
         [SerializeField] private RectTransform _holder;
         [SerializeField] private FunctionBoardItem _functionItemPrefab;
+        [SerializeField] private GameObject _noDataText;
 
-        private List<FunctionBoardItem> _functionsItem = new();
+        private List<FunctionBoardItem> _functionsItems = new();
 
         private FunctionBoardItem _selectedItem;
+        
+        private readonly float _headerHeight = 40f;
 
         private void OnDisable()
         {
@@ -30,11 +33,11 @@ namespace Loykas.Scripting
 
         private void Clear()
         {
-            for (int i = 0; i < _functionsItem.Count; i++)
+            for (int i = 0; i < _functionsItems.Count; i++)
             {
-                Destroy(_functionsItem[i].gameObject);
+                Destroy(_functionsItems[i].gameObject);
             }
-            _functionsItem.Clear();
+            _functionsItems.Clear();
         }
         
         private void Load()
@@ -50,14 +53,16 @@ namespace Loykas.Scripting
 
         private void OnFunctionDeleted(ScriptFunction function)
         {
-            int index = _functionsItem.FindIndex(f => f.Function == function);
+            int index = _functionsItems.FindIndex(f => f.Function == function);
             if (index != -1)
             {
-                FunctionBoardItem functionItem = _functionsItem[index];
+                FunctionBoardItem functionItem = _functionsItems[index];
                 Destroy(functionItem.gameObject);
-                _functionsItem.RemoveAt(index);
+                _functionsItems.RemoveAt(index);
+                CheckForNoData();
 
-                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _rect.sizeDelta.y - 45f);
+                float bodyHeight = GetBodyHeight();
+                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
                 FlowGraph.RebuildSideBarUI();
             }
         }
@@ -66,6 +71,8 @@ namespace Loykas.Scripting
         {
             ScriptFunction function = FlowGraph.Flow.AddFunction();
             FunctionBoardItem functionItem = AddFunctionItem(function);
+            CheckForNoData();
+
             Select(functionItem);
         }
         
@@ -73,13 +80,29 @@ namespace Loykas.Scripting
         {
             FunctionBoardItem functionItem = Instantiate(_functionItemPrefab, _holder);
             functionItem.Init(this, function);
-            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _rect.sizeDelta.y + 45f);
 
-            _functionsItem.Add(functionItem);
+            _functionsItems.Add(functionItem);
+
+            float bodyHeight = GetBodyHeight();
+            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
 
             FlowGraph.RebuildSideBarUI();
 
             return functionItem;
+        }
+
+        private float GetBodyHeight()
+        {
+            if (_functionsItems.Count > 0)
+            {
+                return _functionsItems.Count * 40f + (_functionsItems.Count - 1) * 5f + 10f;
+            }
+            return 40f;
+        }
+
+        private void CheckForNoData()
+        {
+            _noDataText.SetActive(_functionsItems.Count == 0);
         }
 
         public void Select(FunctionBoardItem item)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Loykas.Scripting
 {
-    public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
+    public class VariableBoardItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         public Variable Variable;
         private VariableBoard _variableBoard;
@@ -56,16 +56,6 @@ namespace Loykas.Scripting
         public void OnEndDrag(PointerEventData eventData)
         {
             DragPreviewSystem.Instance.EndDrag();
-        }
-
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            CursorSystem.Instance.SetCursor(CursorType.Grab);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            CursorSystem.Instance.ToDefault();
         }
     }
 }

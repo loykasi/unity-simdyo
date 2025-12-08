@@ -11,6 +11,11 @@ namespace Loykas.Scripting
         public OutputTrigger Exit;
         public ScriptFunction Function;
 
+        public override ScriptNode Create()
+        {
+            return new FunctionEnterNode();
+        }
+
         public FunctionEnterNode()
         {
             Exit = OutputTrigger(nameof(Exit)).HideLabel();
@@ -43,7 +48,6 @@ namespace Loykas.Scripting
             }
 
             OnNodeUpdated?.Invoke();
-            Debug.Log($"Update start node: output - {ValueOutputs.Count}");
         }
 
         public OutputTrigger TriggerFunction(ScriptFlow flow)
