@@ -13,7 +13,6 @@ namespace Loykas.Scripting
 
         public InputValue ListInput;
         public InputValue Index;
-        public OutputValue Output;
 
         public override ScriptNode Create()
         {
@@ -26,22 +25,20 @@ namespace Loykas.Scripting
             Exit = OutputTrigger(nameof(Exit));
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Index = InputValue(nameof(Index));
-            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
         }
 
         private OutputTrigger Set()
         {
             IList list = (IList)ListInput.GetValue();
             int index = (int)(float)Index.GetValue();
-            list.RemoveAt(index);
+            
+            if (index >= 0 && index < list.Count)
+            {
+                list.RemoveAt(index);   
+            }
+            
             return Exit;
-        }
-
-        private object Get()
-        {
-            IList list = (IList)ListInput.GetValue();
-            return list;
         }
     }
 }

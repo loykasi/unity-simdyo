@@ -5,7 +5,7 @@ namespace Loykas.Scripting
     {
         public DataType Type;
         public DataKind Kind;
-        // public bool IsList;
+        public readonly bool IsList => Kind == DataKind.List;
 
         public readonly bool IsAny => Type == DataType.Any;
         public readonly bool IsAnyKind => Kind == DataKind.Any;

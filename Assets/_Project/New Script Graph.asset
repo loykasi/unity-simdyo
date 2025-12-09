@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95e66c6366d904e98bc83428217d4fd7, type: 3}
+  m_Name: New Script Graph
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"graph":{"variables":{"Kind":"Flow","collection":{"$content":[],"$version":"A"},"$version":"A"},"controlInputDefinitions":[],"controlOutputDefinitions":[],"valueInputDefinitions":[],"valueOutputDefinitions":[],"title":null,"summary":null,"pan":{"x":0.0,"y":0.0},"zoom":1.0,"elements":[{"type":"System.Collections.Generic.List`1[[System.String,
+      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]","value":{"$content":[],"$type":"System.Collections.Generic.List`1[[System.String,
+      mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]"},"defaultValues":{},"position":{"x":-609.0,"y":-185.0},"guid":"00c124a4-b444-42ca-93a4-ae1b890b02ee","$version":"A","$type":"Unity.VisualScripting.Literal","$id":"9"},{"defaultValues":{"index":{"$content":0,"$type":"System.Int32"}},"position":{"x":-390.0,"y":11.0},"guid":"5d930cf7-29f1-4189-8b48-bc766fbb0fb5","$version":"A","$type":"Unity.VisualScripting.GetListItem","$id":"12"},{"defaultValues":{},"position":{"x":-168.0,"y":-176.0},"guid":"e6b4e8ba-5378-48c6-8dce-8503e3a1beb4","$version":"A","$type":"Unity.VisualScripting.AddListItem","$id":"14"},{"sourceUnit":{"$ref":"9"},"sourceKey":"output","destinationUnit":{"$ref":"12"},"destinationKey":"list","guid":"e42a506c-afc5-43a3-b741-c324fc05ddf5","$type":"Unity.VisualScripting.ValueConnection"},{"sourceUnit":{"$ref":"9"},"sourceKey":"output","destinationUnit":{"$ref":"14"},"destinationKey":"listInput","guid":"c6f7c5f5-c1cf-410e-ac22-4f053c1e2f0e","$type":"Unity.VisualScripting.ValueConnection"}],"$version":"A"}}'
+    _objectReferences: []

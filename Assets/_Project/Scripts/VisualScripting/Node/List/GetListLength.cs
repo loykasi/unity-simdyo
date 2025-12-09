@@ -18,7 +18,7 @@ namespace Loykas.Scripting
         public GetListLengthNode()
         {
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get);
         }
 
         private object Get()

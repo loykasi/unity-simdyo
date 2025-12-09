@@ -102,6 +102,19 @@ public static class ScriptSaveHandler
     {
         flow.Pan = flowData.Pan;
 
+        flow.Variables.Clear();
+        foreach (var item in flowData.Variables)
+        {
+            Variable variable = new
+            (
+                new ScriptDataType(item.Type, item.Kind),
+                item.Value
+            );
+            variable.Name = item.Name;
+            
+            flow.AddVariable(variable);
+        }
+
         flow.Functions.Clear();
         for (int i = 0; i < flowData.Functions.Count; i++)
         {
@@ -193,19 +206,6 @@ public static class ScriptSaveHandler
             connection.DestinationKey = saveData.DestinationKey;
 
             flow.Connections.Add(connection);
-        }
-
-        flow.Variables.Clear();
-        foreach (var item in flowData.Variables)
-        {
-            Variable variable = new
-            (
-                new ScriptDataType(item.Type, item.Kind),
-                item.Value
-            );
-            variable.Name = item.Name;
-            
-            flow.Variables.Add(variable.Name, variable);
         }
 
         flow.Load();

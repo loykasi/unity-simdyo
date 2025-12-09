@@ -5,6 +5,8 @@ namespace Loykas.Scripting
     public class UIOutputTriggerPort : UINodePort
     {
         public override NodePortEdge Edge => NodePortEdge.Right;
+        public override NodePortType Type => NodePortType.Trigger;
+
         private readonly float _handleSize = 20f;
         private readonly float _height = 30f;
 

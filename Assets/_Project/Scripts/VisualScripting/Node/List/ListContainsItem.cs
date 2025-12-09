@@ -20,7 +20,7 @@ namespace Loykas.Scripting
         public ListContainsItemNode()
         {
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Item = InputValue(nameof(Item));
+            Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any));
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
         }
 

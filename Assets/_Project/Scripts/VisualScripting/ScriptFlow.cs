@@ -511,11 +511,16 @@ namespace Loykas.Scripting
             {
                 Name = variableName
             };
-            Variables.Add(variableName, variable);
-            VariableList.Add(variable);
+            AddVariable(variable);
 
             OnVariableAdded?.Invoke(variable);
             return variable;
+        }
+
+        public void AddVariable(Variable variable)
+        {
+            Variables.Add(variable.Name, variable);
+            VariableList.Add(variable);
         }
 
         private string getVariableName(string baseName)
@@ -540,8 +545,19 @@ namespace Loykas.Scripting
             }
         }
 
-        public void ChangeVariableName(string oldName, string newName)
+        public bool TryChangeVariableName(string oldName, string newName)
         {
+            if (oldName == newName)
+            {
+                return false;
+            }
+
+            if (Variables.ContainsKey(newName))
+            {
+                ToastSystem.Instance.Show($"Variable named \"{newName}\" already exists");
+                return false;
+            }
+
             if (Variables.TryGetValue(oldName, out Variable variable))
             {
                 Variables.Remove(oldName);
@@ -550,7 +566,10 @@ namespace Loykas.Scripting
                 variable.SetName(newName);
 
                 OnVariableUpdated?.Invoke(variable);
+                return true;
             }
+
+            return false;
         }
 
         public Variable GetVariable(string name)

@@ -135,9 +135,6 @@ namespace Loykas.Scripting
             source.AddConnection(lineConnection);
             destination.AddConnection(lineConnection);
 
-            Debug.Log(source, source);
-            Debug.Log(destination, destination);
-
             _lines.Add(lineConnection);
         }
 

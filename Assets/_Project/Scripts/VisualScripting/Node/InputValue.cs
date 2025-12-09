@@ -194,6 +194,11 @@ public enum InputValueTypes
             OnValueChanged?.Invoke();
         }
 
+        public void SetType(ScriptDataType type)
+        {
+            Type = type;
+        }
+
         protected override void DisconnectPort(OutputValue port)
         {
             if (Source != port)

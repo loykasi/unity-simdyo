@@ -49,6 +49,7 @@ namespace Loykas.Scripting
             {
                 AddFunctionItem(flow.Functions[i]);
             }
+            CheckForNoData();
         }
 
         private void OnFunctionDeleted(ScriptFunction function)

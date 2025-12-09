@@ -27,7 +27,7 @@ namespace Loykas.Scripting
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
             Item = InputValue(nameof(Item));
-            Index = InputValue(nameof(Index));
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
             Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
         }
 

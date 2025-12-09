@@ -27,8 +27,8 @@ namespace Loykas.Scripting
             Exit = OutputTrigger(nameof(Exit));
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Item = InputValue(nameof(Item));
-            Index = InputValue(nameof(Index));
+            Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any));
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
             Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get);
         }
 
@@ -37,7 +37,12 @@ namespace Loykas.Scripting
             IList list = (IList)ListInput.GetValue();
             object item = Item.GetValue();
             int index = (int)(float)Index.GetValue();
-            list[index] = item;
+
+            if (index >= 0 && index < list.Count)
+            {
+                list[index] = item;    
+            }
+            
             return Exit;
         }
 

@@ -5,9 +5,8 @@ namespace Loykas.Scripting
     public class UIValueInputPort : UINodePort
     {
         public override NodePortEdge Edge => NodePortEdge.Left;
+        public override NodePortType Type => NodePortType.Value;
         private InputValue _inputValue;
-
-        [SerializeField] private PortVisual _portVisual;
 
         [SerializeField] private RectTransform _inputHolder;
         [SerializeField] private UIInputData _inputDataReference;

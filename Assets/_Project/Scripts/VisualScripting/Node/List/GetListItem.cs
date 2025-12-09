@@ -28,6 +28,7 @@ namespace Loykas.Scripting
         private object Get()
         {
             IList list = (IList)ListInput.GetValue();
+            Debug.Log(Index.GetValue());
             int index = (int)(float)Index.GetValue();
             return list[index];
         }

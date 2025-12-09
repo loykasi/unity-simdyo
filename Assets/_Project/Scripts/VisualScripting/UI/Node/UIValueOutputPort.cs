@@ -6,8 +6,8 @@ namespace Loykas.Scripting
     public class UIValueOutputPort : UINodePort
     {
         public override NodePortEdge Edge => NodePortEdge.Right;
+        public override NodePortType Type => NodePortType.Value;
 
-        [SerializeField] private PortVisual _portVisual;
         private OutputValue _outputValue;
 
         private readonly float _handleSize = 20f;

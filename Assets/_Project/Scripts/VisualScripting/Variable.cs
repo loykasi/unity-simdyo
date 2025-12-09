@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Loykas.Scripting
@@ -26,12 +29,27 @@ namespace Loykas.Scripting
 
         public void OnSceneStart()
         {
-            _default = Value;
+            if (Type.IsList)
+            {
+                _default = new List<object>();
+                CopyList((IList)Value, (IList)_default);
+            }
+            else
+            {
+                _default = Value;
+            }
         }
 
         public void OnSceneStop()
         {
-            Value = _default;
+            if (Type.IsList)
+            {
+                CopyList((IList)_default, (IList)Value);
+            }
+            else
+            {
+                Value = _default;
+            }
         }
 
         public void SetName(string name)
@@ -39,6 +57,15 @@ namespace Loykas.Scripting
             Name = name;
             
             OnUpdated?.Invoke();
+        }
+
+        private void CopyList(IList a, IList b)
+        {
+            b.Clear();
+            foreach (var item in a)
+            {
+                b.Add(item);
+            }
         }
     }
 }

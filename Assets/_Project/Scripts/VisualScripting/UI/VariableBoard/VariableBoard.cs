@@ -45,6 +45,7 @@ namespace Loykas.Scripting
             {
                 AddVariableItem(item);
             }
+            CheckForNoData();
         }
 
         public void AddVariable()

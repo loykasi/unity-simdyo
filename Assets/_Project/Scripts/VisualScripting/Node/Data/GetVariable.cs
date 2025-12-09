@@ -24,7 +24,7 @@ namespace Loykas.Scripting
                             .DisableConnection()
                             .HideLabel();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get);
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get).HideLabel();
 
             Input.OnValueChanged += OnInputValueChanged;
         }

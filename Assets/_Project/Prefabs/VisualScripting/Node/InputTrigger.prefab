@@ -85,6 +85,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2900222151818526442}
   - component: {fileID: 6495299535904794035}
+  - component: {fileID: 606102592292702618}
   m_Layer: 5
   m_Name: InputTrigger
   m_TagString: Untagged
@@ -126,8 +127,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rect: {fileID: 2900222151818526442}
   _portHandle: {fileID: 5888955623813502842}
-  _handleImage: {fileID: 4268221707433320349}
-  _handleSprite: {fileID: 6892412995266152832, guid: 919821f1211d433478dcfb7091100841, type: 3}
-  _handleConnectedSprite: {fileID: -741999757109457381, guid: 69a430e6c931f3b4698692f886a0e4e4, type: 3}
+  _portVisual: {fileID: 606102592292702618}
   _label: {fileID: 0}
   LineConnections: []
+--- !u!114 &606102592292702618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2395113178014290946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 249bea8a90ea0f44e963099367deb7dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _typeColorData: {fileID: 11400000, guid: 38c9fcca66073ab40aa782f89a401216, type: 2}
+  _portHandle: {fileID: 5888955623813502842}
+  _handleImage: {fileID: 4268221707433320349}
+  _triggerHandleSprite: {fileID: 6892412995266152832, guid: 919821f1211d433478dcfb7091100841, type: 3}
+  _triggerHandleConnectedSprite: {fileID: -741999757109457381, guid: 69a430e6c931f3b4698692f886a0e4e4, type: 3}
+  _valueHandleSprite: {fileID: -5571388701947734151, guid: 0e53d37400c35264ebdd78c1dc358bdd, type: 3}
+  _valueHandleConnectedSprite: {fileID: 2762301457124479399, guid: 4c6f4ff21f19de84191b382142759c86, type: 3}
+  _listHandleSprite: {fileID: -8563275072054367399, guid: fc99d1bff77eaa643b31b5660dbefa1b, type: 3}
+  _listHandleConnectedSprite: {fileID: 848511719888828260, guid: 91125bef06e198a41a6b1f29966838f4, type: 3}

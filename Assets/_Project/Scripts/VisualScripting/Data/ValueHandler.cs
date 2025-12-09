@@ -8,21 +8,48 @@ namespace Loykas.Scripting
     {
         public static object GetDefaultValue(ScriptDataType type)
         {
-            if (type.Kind == DataKind.List)
-            {
-                return new List<object>();
-            }
+            // if (type.Kind == DataKind.List)
+            // {
+            //     return new List<object>();
+            // }
 
-            return type.Type switch
+            // return type.Type switch
+            // {
+            //     DataType.String => default(string),
+            //     DataType.Number => default(float),
+            //     DataType.Boolean => default(bool),
+            //     DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
+            //     DataType.Entity => default,
+            //     DataType.Any => default,
+            //     _ => default,
+            // };
+            switch (type.Kind)
             {
-                DataType.String => default(string),
-                DataType.Number => default(float),
-                DataType.Boolean => default(bool),
-                DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
-                DataType.Entity => default,
-                DataType.Any => default,
-                _ => default,
-            };
+                case DataKind.Simple:
+                {
+                    return type.Type switch
+                    {
+                        DataType.String => default(string),
+                        DataType.Number => default(float),
+                        DataType.Boolean => default(bool),
+                        DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
+                        _ => default,
+                    };
+                };
+                case DataKind.List:
+                {
+                    return type.Type switch
+                    {
+                        DataType.String => new List<string>(),
+                        DataType.Number => new List<float>(),
+                        DataType.Boolean => new List<bool>(),
+                        DataType.Color => new List<ColorHSV>(),
+                        _ => default,
+                    };
+                }
+                default:
+                    return default;
+            }
         }
 
         public static void SetDefaultValue(Variable variable, ScriptDataType type)

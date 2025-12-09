@@ -16,7 +16,7 @@ namespace Loykas.Scripting
         private void Awake()
         {
             InputField.onValueChanged.AddListener(OnValueChanged);
-            // InputField.onEndEdit.AddListener(OnEndEdit);
+            InputField.onEndEdit.AddListener(OnEndEdit);
 
             SetValue(0f);
         }

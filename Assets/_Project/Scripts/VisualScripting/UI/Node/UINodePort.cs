@@ -13,10 +13,17 @@ namespace Loykas.Scripting
         Right
     }
 
+    public enum NodePortType
+    {
+        Trigger,
+        Value
+    }
+
     public abstract class UINodePort : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         public IPort Port;
         public UINode UINode { get; set; }
+        public abstract NodePortType Type { get; }
         public abstract NodePortEdge Edge { get; }
         public Vector3 HandlePosition => _portHandle.position;
 
@@ -26,9 +33,7 @@ namespace Loykas.Scripting
 
         [Header("Handle")]
         [SerializeField] protected RectTransform _portHandle;
-        [SerializeField] private Image _handleImage;
-        [SerializeField] private Sprite _handleSprite;
-        [SerializeField] private Sprite _handleConnectedSprite;
+        [SerializeField] protected PortVisual _portVisual;
 
         [SerializeField] protected TextMeshProUGUI _label;
 
@@ -54,6 +59,8 @@ namespace Loykas.Scripting
                     _label.gameObject.SetActive(false);
                 }
             }
+
+            _portVisual.SetPortType(Type);
         }
 
         public virtual void UpdateUI()
@@ -183,14 +190,7 @@ namespace Loykas.Scripting
 
         private void UpdateHandleVisual()
         {
-            if (LineConnections.Count > 0)
-            {
-                _handleImage.sprite = _handleConnectedSprite;
-            }
-            else
-            {
-                _handleImage.sprite = _handleSprite;
-            }
+            _portVisual.SetConnectionStatus(LineConnections.Count > 0);
         }
     }
 }

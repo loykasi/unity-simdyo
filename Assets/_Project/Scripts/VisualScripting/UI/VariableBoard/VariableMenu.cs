@@ -53,7 +53,10 @@ public class VariableMenu : MonoBehaviour
     private void OnNameChanged(object value)
     {
         string name = (string)value;
-        _flow.ChangeVariableName(_variable.Name, name);
+        if (!_flow.TryChangeVariableName(_variable.Name, name))
+        {
+            _nameInput.SetValue(_variable.Name);
+        }
     }
 
     private void OnSelectItem(ScriptFlow flow, Variable variable)
