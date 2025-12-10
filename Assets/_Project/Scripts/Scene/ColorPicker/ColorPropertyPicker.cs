@@ -13,6 +13,9 @@ public abstract class ColorPropertyPicker : ColorProperty
 
     private void Awake()
     {
+        _slider.onValueChanged.AddListener(UpdateFromSlider);
+        _input.onEndEdit.AddListener(UpdateFromInput);
+
         CreateImage();
     }
 

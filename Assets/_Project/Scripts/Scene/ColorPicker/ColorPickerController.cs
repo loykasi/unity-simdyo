@@ -68,14 +68,12 @@ public class ColorPickerController : Singleton<ColorPickerController>
         _alpha = color.A;
 
         _callback = action;
-        _window.gameObject.SetActive(true);
-        _window.Init();
+        _window.Open();
     }
 
     public void Close()
     {
         _callback = null;
-        _window.gameObject.SetActive(false);
     }
 
     private void ColorUpdated()
