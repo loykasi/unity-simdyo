@@ -31,7 +31,7 @@ public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerEx
         Debug.Log($"screen: {position}");
 
         float xDiff = position.x + _rect.sizeDelta.x - _canvas.sizeDelta.x;
-        float yDiff = _canvas.sizeDelta.y - position.y - _rect.sizeDelta.y;
+        float yDiff = _rect.sizeDelta.y - position.y;
 
         if (xDiff > 0)
         {
