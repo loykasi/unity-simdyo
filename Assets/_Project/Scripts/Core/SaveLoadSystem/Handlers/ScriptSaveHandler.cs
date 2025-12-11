@@ -34,7 +34,11 @@ public static class ScriptSaveHandler
                 nodeData = new();
             }
 
+            Debug.Log(typeName);
+
+            // Remove string "Node"
             nodeData.Type = typeName.Substring(0, typeName.Length - 4);
+
             nodeData.ID = node.ID;
             nodeData.Position = node.Position;
 
@@ -171,9 +175,9 @@ public static class ScriptSaveHandler
             
             foreach (var item in saveData.DefaultValues)
             {
-                Debug.Log($"Load value: {item.Value}");
+                Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
                 object value;
-                if (item.Value.GetType() == typeof(double))
+                if (item.Value != null && item.Value.GetType() == typeof(double))
                 {
                     value = (float)(double)item.Value;
                 }

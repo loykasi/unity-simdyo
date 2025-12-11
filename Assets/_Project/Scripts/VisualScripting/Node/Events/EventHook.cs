@@ -6,6 +6,7 @@ namespace Loykas.Scripting
         Update,
         OnTouched,
         Clicked,
-        Signal
+        Signal,
+        StartAsClone
     }
 }

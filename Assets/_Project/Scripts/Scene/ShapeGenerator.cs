@@ -66,7 +66,6 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.SetSize(width, height);
         sceneEntity.CurrentColor = GetRandomColor();
 
-        ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
 
         return sceneEntity;
@@ -141,7 +140,6 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.SetRadius(radius, _totalVert);
         sceneEntity.CurrentColor = GetRandomColor();
 
-        ObjectManager.Instance.AddEntity(sceneEntity);
         Physics2D.SyncTransforms();
 
         return sceneEntity;

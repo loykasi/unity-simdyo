@@ -1,8 +1,12 @@
 using Loykas.Scripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SceneManager : Singleton<SceneManager>, ISaveable
 {
+    public event UnityAction OnSceneStart;
+    public event UnityAction OnSceneStop;
+
     public int SaveLoadOrder { get; set; } = 0;
 
     [Header("Camera")]
@@ -34,15 +38,18 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         SceneCamera.gameObject.SetActive(true);
 
-        GlobalScript.OnSceneStart();
+        OnSceneStart?.Invoke();
+
+        // GlobalScript.OnSceneStart();
         
-        var entities = ObjectManager.Instance.SceneEntities;
-        for (int i = 0; i < entities.Count; i++)
-        {
-            entities[i].OnSceneStart();
-        }
+        // for (int i = 0; i < entities.Count; i++)
+        // {
+        //     entities[i].OnSceneStart();
+        // }
 
         GlobalScript.StartVS();
+
+        var entities = ObjectManager.Instance.SceneEntities;
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].OnStart();
@@ -55,13 +62,15 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         SceneCamera.gameObject.SetActive(false);
 
-        GlobalScript.OnSceneStop();
+        OnSceneStop?.Invoke();
 
-        var entities = ObjectManager.Instance.SceneEntities;
-        for (int i = 0; i < entities.Count; i++)
-        {
-            entities[i].OnSceneStop();
-        }
+        // GlobalScript.OnSceneStop();
+
+        // var entities = ObjectManager.Instance.SceneEntities;
+        // for (int i = 0; i < entities.Count; i++)
+        // {
+        //     entities[i].OnSceneStop();
+        // }
 
         _isRunning = false;
     }

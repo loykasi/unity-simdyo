@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
+
 public class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;
+
+    // Marked as true if added during running scene
+    public bool IsDirty { get; set; } = false;
 
     public string ID;
     public virtual EntityType EntityType => EntityType.Polygon;
@@ -98,6 +102,24 @@ public class SceneEntity : MonoBehaviour
         CollisionLayerController.Instance.UpdateObjectLayer(this);
     }
 
+    private void OnEnable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart += OnSceneStart;
+            SceneManager.Instance.OnSceneStop += OnSceneStop;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart -= OnSceneStart;
+            SceneManager.Instance.OnSceneStop -= OnSceneStop;
+        }
+    }
+
     public void AssignCollider(Collider2D collider)
     {
         Collider = collider;
@@ -146,7 +168,7 @@ public class SceneEntity : MonoBehaviour
             Rigidbody.linearVelocity = Velocity;   
         }
 
-        Script.OnSceneStart();
+        // Script.OnSceneStart();
     }
 
     public virtual void OnSceneStop()
@@ -162,7 +184,7 @@ public class SceneEntity : MonoBehaviour
 
         Collider.enabled = true;
 
-        Script.OnSceneStop();
+        // Script.OnSceneStop();
     }
 
     public void SetCollider(bool value)
@@ -239,5 +261,10 @@ public class SceneEntity : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         Script.TriggerEvent(EventHook.OnTouched, collision);   
+    }
+
+    public virtual SceneEntity CloneEntity()
+    {
+        return null;
     }
 }

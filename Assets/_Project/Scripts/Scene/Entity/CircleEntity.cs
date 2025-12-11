@@ -1,3 +1,4 @@
+using Loykas.Scripting;
 using UnityEngine;
 
 public class CircleEntity : SceneEntity
@@ -80,7 +81,34 @@ public class CircleEntity : SceneEntity
 
     public override void OnSceneStop()
     {
+        if (IsDirty)
+        {
+            return;
+        }
         SetRadius(_defaultState.Radius);
         base.OnSceneStop();
+    }
+
+    public override SceneEntity CloneEntity()
+    {
+        CircleEntity entity = ShapeGenerator.Instance.AddCircle(Position, Radius);
+
+        entity.Rotation = Rotation;
+        entity.CurrentColor = CurrentColor;
+
+        entity.SetCollider(IsColliderEnabled);
+        entity.SetGravity(IsGravityEnabled);
+        entity.SetLayer(Layer);
+        
+        if (TextureSlot > 0)
+        {
+            entity.SetTexture(TextureSlot);
+        }
+        
+        ScriptFlowClone.CloneScript(Script, entity.Script);
+        
+        ObjectManager.Instance.AddEntity(entity);
+
+        return entity;
     }
 }

@@ -31,7 +31,7 @@ public class BoxTool : PanTool
             _onMouseMove = false;
 
             ShapePreview.Instance.StopBoxPreview();
-            ShapeGenerator.Instance.AddBox(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
+            ObjectManager.Instance.AddBox(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
         }
 
         if (_onMouseMove)

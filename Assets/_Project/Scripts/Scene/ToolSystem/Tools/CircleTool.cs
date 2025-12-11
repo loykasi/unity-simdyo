@@ -30,7 +30,7 @@ public class CircleTool : PanTool
         {
             _onMouseMove = false;
 
-            ShapeGenerator.Instance.AddCircle(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
+            ObjectManager.Instance.AddCircle(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
             ShapePreview.Instance.StopCirclePreview();
         }
 

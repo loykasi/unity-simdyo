@@ -27,7 +27,6 @@ namespace Loykas.Scripting
         public List<NodeConnection> Connections = new();
         public List<ScriptFunction> Functions = new();
 
-        private int _loopIdentifier = 0;
         private Stack<int> _loops = new();
 
         private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
@@ -43,6 +42,25 @@ namespace Loykas.Scripting
 
         private List<string> _functionNames = new();    // For generate unique name
         private List<string> _variableNames = new();    // For generate unique name
+
+
+        private void OnEnable()
+        {
+            if (SceneManager.Instance != null)
+            {
+                SceneManager.Instance.OnSceneStart += OnSceneStart;
+                SceneManager.Instance.OnSceneStop += OnSceneStop;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (SceneManager.Instance != null)
+            {
+                SceneManager.Instance.OnSceneStart -= OnSceneStart;
+                SceneManager.Instance.OnSceneStop -= OnSceneStop;
+            }
+        }
 
         public void ResetState()
         {
@@ -278,41 +296,6 @@ namespace Loykas.Scripting
             return -1;
         }
 
-        // public bool IsLoopNotBroken(int loop)
-        // {
-        //     return GetCurrentLoop() == loop;
-        // }
-
-        // public int StartLoop()
-        // {
-        //     int loop = _loopIdentifier++;
-        //     _loops.Push(loop);
-
-        //     return loop;
-        // }
-
-        // public void BreakLoop()
-        // {
-        //     if (GetCurrentLoop() < 0)
-        //     {
-        //         return;
-        //     }
-
-        //     _loopIdentifier--;
-        //     _loops.Pop();
-        // }
-
-        // public void ExitLoop(int loop)
-        // {
-        //     if (loop != GetCurrentLoop())
-        //     {
-        //         return;
-        //     }
-
-        //     _loopIdentifier--;
-        //     _loops.Pop();
-        // }
-
         public void StartVS()
         {
             TriggerEvent(EventHook.Start);
@@ -324,7 +307,7 @@ namespace Loykas.Scripting
             UpdateTask();
         }
 
-        public void OnSceneStart()
+        private void OnSceneStart()
         {
             foreach (var item in Variables.Values)
             {
@@ -332,7 +315,7 @@ namespace Loykas.Scripting
             }
         }
 
-        public void OnSceneStop()
+        private void OnSceneStop()
         {
             foreach (var item in Variables.Values)
             {

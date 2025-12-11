@@ -45,12 +45,15 @@ namespace Loykas.Scripting
                 new OnClickedNode(),
                 new OnKeyPressedNode(),
                 new OnTouchedNode(),
+                new StartAsCloneNode(),
                 
                 // Control
                 new WaitNode(),
                 new BranchNode(),
                 new ForNode(),
                 new BreakNode(),
+                new CreateCloneNode(),
+                new DeleteSelfNode(),
 
                 // Motion,
                 new SetPositionNode(),

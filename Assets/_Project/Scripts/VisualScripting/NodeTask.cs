@@ -23,35 +23,42 @@ namespace Loykas.Scripting
 
         public void Invoke(ScriptFlow flow)
         {
-            IsDone = false;
-            while (Trigger != null)
+            try
             {
-                bool isDone = Trigger.Invoke(flow);
-
-                if (!isDone)
+                IsDone = false;
+                while (Trigger != null)
                 {
-                    return;
-                }
+                    bool isDone = Trigger.Invoke(flow);
 
-                Trigger = Trigger.TargetOutputTrigger?.Destination;
-                if (Trigger == null)
-                {
-                    if (IsInLoop())
+                    if (!isDone)
                     {
-                        ExitLoop();
-                        continue;
-                    }
-                    else
-                    {
-                        if (_shouldRemoveOnDone)
-                        {
-                            flow.RemoveTask(this);
-                        }
-
-                        IsDone = true;
                         return;
                     }
-                }
+
+                    Trigger = Trigger.TargetOutputTrigger?.Destination;
+                    if (Trigger == null)
+                    {
+                        if (IsInLoop())
+                        {
+                            ExitLoop();
+                            continue;
+                        }
+                        else
+                        {
+                            if (_shouldRemoveOnDone)
+                            {
+                                flow.RemoveTask(this);
+                            }
+
+                            IsDone = true;
+                            return;
+                        }
+                    }
+                }   
+            }
+            catch (System.Exception)
+            {
+                throw;
             }
         }
 

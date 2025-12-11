@@ -14,8 +14,31 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public SceneEntity SelectedObject { get; set; }
     public int SaveLoadOrder { get; set; } = 0;
 
+    [SerializeField] private Transform _holder;
+
+    // use on running scene
+    private List<SceneEntity> _snapshotEntities = new();
+
     // temporary
     private int _indexForID = 0;
+
+    private void OnEnable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart += OnSceneStart;
+            SceneManager.Instance.OnSceneStop += OnSceneStop;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart -= OnSceneStart;
+            SceneManager.Instance.OnSceneStop -= OnSceneStop;
+        }
+    }
 
     public void Deselect()
     {
@@ -93,20 +116,93 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         return SceneEntities[index];
     }
+    
+    public void AddBox(Vector3 from, Vector3 to)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddBox(from, to);
+        AddEntity(entity);
+    }
+
+    public void AddCircle(Vector3 from, Vector3 to)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
+        AddEntity(entity);
+    }
 
     public void AddEntity(SceneEntity entity)
     {
-        SceneEntities.Add(entity);
-
         // Temporary Method for Set ID
         // use it for both ID and Name now, will sperate in futures
         entity.ID = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
         _indexForID++;
+
+        entity.transform.SetParent(_holder);
+        SceneEntities.Add(entity);
+
+        if (SceneManager.Instance.IsRuning)
+        {
+            entity.IsDirty = true;
+        }
+    }
+
+    public void DeleteEntity(SceneEntity entity)
+    {
+        if (SelectedObject == entity)
+        {
+            SelectedObject = null;
+            OnObjectDeselected?.Invoke();
+        }
+
+        SceneEntities.Remove(entity);
+
+        if (SceneManager.Instance.IsRuning)
+        {
+            if (entity.IsDirty)
+            {
+                Destroy(entity.gameObject);
+            }
+            else
+            {
+                entity.gameObject.SetActive(false);
+            }
+        }
+        else
+        {
+            Destroy(entity.gameObject);
+        }
     }
 
     public SceneEntity GetEntity(string id)
     {
         return SceneEntities.Find(entity => entity.ID == id);
+    }
+
+    private void OnSceneStart()
+    {
+        _snapshotEntities.AddRange(SceneEntities);
+    }
+
+    private void OnSceneStop()
+    {
+        for (int i = SceneEntities.Count - 1; i >= 0; i--)
+        {
+            SceneEntity entity = SceneEntities[i];
+            if (entity.IsDirty)
+            {
+                Destroy(entity.gameObject);
+                SceneEntities.RemoveAt(i);
+            }
+        }
+
+        SceneEntities.Clear();
+        SceneEntities.AddRange(_snapshotEntities);
+        
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            SceneEntity entity = SceneEntities[i];
+            entity.gameObject.SetActive(true);
+        }
+        _snapshotEntities.Clear();
     }
 
     public void ResetState()
@@ -123,18 +219,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         SceneEntities.Clear();
-    }
-
-    public void DeleteEntity(SceneEntity entity)
-    {
-        if (SelectedObject == entity)
-        {
-            SelectedObject = null;
-            OnObjectDeselected?.Invoke();
-        }
-
-        SceneEntities.Remove(entity);
-        Destroy(entity.gameObject);
     }
 
     public void SaveData(GameData data)

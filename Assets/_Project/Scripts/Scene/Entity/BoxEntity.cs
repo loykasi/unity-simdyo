@@ -1,3 +1,4 @@
+using Loykas.Scripting;
 using UnityEngine;
 
 public class BoxEntity : SceneEntity
@@ -152,7 +153,34 @@ public class BoxEntity : SceneEntity
 
     public override void OnSceneStop()
     {
+        if (IsDirty)
+        {
+            return;
+        }
         SetSize(_defaultState.Size.x, _defaultState.Size.y);
         base.OnSceneStop();
+    }
+
+    public override SceneEntity CloneEntity()
+    {
+        BoxEntity entity = ShapeGenerator.Instance.AddBox(Position, Width, Height);
+
+        entity.Rotation = Rotation;
+        entity.CurrentColor = CurrentColor;
+
+        entity.SetCollider(IsColliderEnabled);
+        entity.SetGravity(IsGravityEnabled);
+        entity.SetLayer(Layer);
+        
+        if (TextureSlot > 0)
+        {
+            entity.SetTexture(TextureSlot);
+        }
+        
+        ScriptFlowClone.CloneScript(Script, entity.Script);
+
+        ObjectManager.Instance.AddEntity(entity);
+
+        return entity;
     }
 }
