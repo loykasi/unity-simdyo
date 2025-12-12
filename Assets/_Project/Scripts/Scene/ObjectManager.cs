@@ -130,12 +130,22 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public void AddBox(Vector3 from, Vector3 to)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddBox(from, to);
+        if (entity == null)
+        {
+            return;
+        }
+
         AddEntity(entity);
     }
 
     public SceneEntity AddBox(Vector3 center, float width, float height)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddBox(center, width, height);
+        if (entity == null)
+        {
+            return null;
+        }
+
         AddEntity(entity);
         return entity;
     }
@@ -143,12 +153,22 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public void AddCircle(Vector3 from, Vector3 to)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
+        if (entity == null)
+        {
+            return;
+        }
+
         AddEntity(entity);
     }
 
     public SceneEntity AddCircle(Vector3 center, float radius)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddCircle(center, radius);
+        if (entity == null)
+        {
+            return null;
+        }
+
         AddEntity(entity);
         return entity;
     }

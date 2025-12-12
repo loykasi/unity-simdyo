@@ -42,6 +42,11 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
     public BoxEntity AddBox(Vector3 position, float width, float height)
     {
+        if (width == 0 || height == 0)
+        {
+            return null;
+        }
+
         BoxEntity sceneEntity = Instantiate(_boxEntityPrefab);
         
         sceneEntity.name = "Box";
@@ -116,6 +121,11 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
     public CircleEntity AddCircle(Vector3 position, float radius)
     {
+        if (radius == 0)
+        {
+            return null;
+        }
+
         CircleEntity sceneEntity = Instantiate(_circleEntityPrefab);
         sceneEntity.name = "Circle";
 

@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             }
 
             float angle = (float)Value.GetValue();
-            Flow.Entity.Angle = angle;
+            entity.Angle = angle;
             return Exit;
         }
     }

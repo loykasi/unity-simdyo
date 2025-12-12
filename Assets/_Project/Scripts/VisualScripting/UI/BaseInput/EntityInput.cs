@@ -33,7 +33,11 @@ namespace Loykas.Scripting
 
         public override void SetValue(object value)
         {
-            int index = ObjectManager.Instance.GetIndexByEntityID((int)value);
+            int index = 0;
+            if (value != null)
+            {
+                index = ObjectManager.Instance.GetIndexByEntityID((int)value);   
+            }
             Dropdown.SetValueWithoutNotify(index);
         }
 

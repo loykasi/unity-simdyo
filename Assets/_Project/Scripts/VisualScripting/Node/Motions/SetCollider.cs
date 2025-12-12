@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             }
 
             bool enable = (bool)Value.GetValue();
-            Flow.Entity.SetCollider(enable);
+            entity.SetCollider(enable);
             return Exit;
         }
     }

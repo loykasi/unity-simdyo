@@ -37,6 +37,11 @@ namespace Loykas.Scripting
         private OutputTrigger Clone()
         {
             _entity = Flow.Entity.CloneEntity();
+            if (_entity == null)
+            {
+                return Exit;
+            }
+
             _entity.Script.TriggerEvent(EventHook.StartAsClone);
             _entity.OnStart();
 

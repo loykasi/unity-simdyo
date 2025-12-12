@@ -33,7 +33,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return Flow.Entity.Angle;
+            return entity.Angle;
         }
     }
 }

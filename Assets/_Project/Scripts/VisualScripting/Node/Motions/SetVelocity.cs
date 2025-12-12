@@ -43,7 +43,7 @@ namespace Loykas.Scripting
             float x = (float)X.GetValue();
             float y = (float)Y.GetValue();
 
-            Flow.Entity.Velocity = new Vector2(x, y);
+            entity.Velocity = new Vector2(x, y);
             return Exit;
         }
     }
