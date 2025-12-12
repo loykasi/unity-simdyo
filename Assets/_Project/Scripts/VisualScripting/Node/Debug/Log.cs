@@ -28,20 +28,6 @@ namespace Loykas.Scripting
             var value = Value.GetValue();
             LogCommand.Instance.Log(value);
 
-            if (value is IList list)
-            {
-                string listValue = "";
-                foreach (var item in list)
-                {
-                    listValue += item.ToString() + " | ";
-                }
-                Debug.Log($"list: {listValue}");
-            }
-            else
-            {
-                Debug.Log($"[{Time.frameCount}] {value}");
-            }
-
             return Exit;
         }
     }

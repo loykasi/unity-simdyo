@@ -180,7 +180,7 @@ public enum InputValueTypes
             {
                 if (Type.Type == DataType.Entity && Value == null)
                 {
-                    return Node.Flow.Entity;
+                    return Node.Flow.Entity.Id;
                 }
                 return Value;
             }

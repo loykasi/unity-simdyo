@@ -38,13 +38,16 @@ namespace Loykas.Scripting
         {
             _entity = Flow.Entity.CloneEntity();
             _entity.Script.TriggerEvent(EventHook.StartAsClone);
+            _entity.OnStart();
+
+            Debug.Log("Create " + _entity.Id);
 
             return Exit;
         }
 
         private object Get()
         {
-            return _entity;
+            return _entity.Id;
         }
     }
 }

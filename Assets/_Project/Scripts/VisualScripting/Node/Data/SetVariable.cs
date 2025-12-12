@@ -23,7 +23,7 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Variable = InputValue(nameof(Variable))
+            Variable = InputValue(nameof(Variable), ScriptDataType.Single(DataType.String))
                             .UseVariableInput()
                             .DisableConnection()
                             .HideLabel();

@@ -274,7 +274,9 @@ namespace Loykas.Scripting
 
         public SceneEntity GetEntity(InputValue inputValue)
         {
-            SceneEntity entity = (SceneEntity)inputValue.GetValue();
+            Debug.Log("Log from " + Entity.Id);
+            int id = (int)inputValue.GetValue();
+            SceneEntity entity = ObjectManager.Instance.GetEntityById(id);
 
             if (entity == null
                 && inputValue.IsNullMeanSelf

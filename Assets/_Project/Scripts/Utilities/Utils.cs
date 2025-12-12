@@ -5,7 +5,8 @@ public static class Utils
 {
     public static string GenerateUniqueName(string baseName, List<string> exists)
     {
-        string pattern = @$"^{baseName}(?: \((\d+)\))?$";
+        // string pattern = @$"^{baseName}(?: \((\d+)\))?$";
+        string pattern = @$"^{baseName}(?:(\d+))?$";
 
         Regex regex = new(pattern, RegexOptions.Compiled);
 
@@ -37,6 +38,6 @@ public static class Utils
         {
             return baseName;
         }
-        return string.Concat(baseName, " (", i, ")");
+        return string.Concat(baseName, i);
     }
 }

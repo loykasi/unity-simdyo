@@ -40,13 +40,6 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
         OnSceneStart?.Invoke();
 
-        // GlobalScript.OnSceneStart();
-        
-        // for (int i = 0; i < entities.Count; i++)
-        // {
-        //     entities[i].OnSceneStart();
-        // }
-
         GlobalScript.StartVS();
 
         var entities = ObjectManager.Instance.SceneEntities;
@@ -63,14 +56,6 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         SceneCamera.gameObject.SetActive(false);
 
         OnSceneStop?.Invoke();
-
-        // GlobalScript.OnSceneStop();
-
-        // var entities = ObjectManager.Instance.SceneEntities;
-        // for (int i = 0; i < entities.Count; i++)
-        // {
-        //     entities[i].OnSceneStop();
-        // }
 
         _isRunning = false;
     }

@@ -17,6 +17,7 @@ public class JsonSerializer : ISerializer
         _settings.Converters.Add(new VariableConverter());
         _settings.Converters.Add(new SceneEntityConverter());
         _settings.Converters.Add(new ScriptNodeConverter());
+        _settings.Converters.Add(new ScriptNodeValueConverter());
         _settings.Converters.Add(new StringEnumConverter());
         _settings.Formatting = Formatting.Indented;
         _settings.TypeNameHandling = TypeNameHandling.None;

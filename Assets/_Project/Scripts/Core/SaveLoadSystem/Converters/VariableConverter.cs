@@ -30,6 +30,7 @@ public class VariableConverter : JsonConverter<ScriptVariableSaveData>
                 switch (type)
                 {
                     case DataType.String:
+                    case DataType.Entity:
                         variable.Value = obj["Value"].ToObject<string>(serializer);
                         break;
                     case DataType.Number:
@@ -49,6 +50,7 @@ public class VariableConverter : JsonConverter<ScriptVariableSaveData>
                 switch (type)
                 {
                     case DataType.String:
+                    case DataType.Entity:
                         variable.Value = obj["Value"].ToObject<IList<string>>(serializer);
                         break;
                     case DataType.Number:
@@ -65,10 +67,9 @@ public class VariableConverter : JsonConverter<ScriptVariableSaveData>
             }
             default:
                 break;
-        }            
+        }
 
         return variable;
-        // throw new NotImplementedException();
     }
 
     public override void WriteJson(JsonWriter writer, ScriptVariableSaveData value, Newtonsoft.Json.JsonSerializer serializer)

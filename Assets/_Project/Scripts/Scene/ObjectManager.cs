@@ -20,7 +20,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     private List<SceneEntity> _snapshotEntities = new();
 
     // temporary
-    private int _indexForID = 0;
+    private int _indexForId = 1;
 
     private void OnEnable()
     {
@@ -72,7 +72,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             return;
         }
-
+        
         entity.Script.TriggerEvent(EventHook.Clicked);
     }
 
@@ -93,16 +93,26 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return true;
     }
 
+    public SceneEntity GetEntityById(int id)
+    {
+        return SceneEntities.Find(e => e.Id == id);
+    }
+
     public List<string> GetEntityOptions()
     {
-        var list = SceneEntities.Select(e => e.ID).ToList();
+        var list = SceneEntities.Select(e => e.Id.ToString()).ToList();
         list.Insert(0, "Null");
         return list;
     }
 
-    public int GetIndexByEntity(SceneEntity entity)
+    // public int GetIndexByEntity(SceneEntity entity)
+    // {
+    //     return SceneEntities.FindIndex(e => e == entity) + 1;
+    // }
+
+    public int GetIndexByEntityID(int id)
     {
-        return SceneEntities.FindIndex(e => e == entity) + 1;
+        return SceneEntities.FindIndex(e => e.Id == id) + 1;
     }
 
     public SceneEntity GetEntityByIndex(int index)
@@ -123,18 +133,33 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         AddEntity(entity);
     }
 
+    public SceneEntity AddBox(Vector3 center, float width, float height)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddBox(center, width, height);
+        AddEntity(entity);
+        return entity;
+    }
+
     public void AddCircle(Vector3 from, Vector3 to)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
         AddEntity(entity);
     }
 
+    public SceneEntity AddCircle(Vector3 center, float radius)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddCircle(center, radius);
+        AddEntity(entity);
+        return entity;
+    }
+
     public void AddEntity(SceneEntity entity)
     {
         // Temporary Method for Set ID
         // use it for both ID and Name now, will sperate in futures
-        entity.ID = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
-        _indexForID++;
+        // entity.Id = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
+        entity.Id = _indexForId;
+        _indexForId++;
 
         entity.transform.SetParent(_holder);
         SceneEntities.Add(entity);
@@ -172,9 +197,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
     }
 
-    public SceneEntity GetEntity(string id)
+    public SceneEntity GetEntity(int id)
     {
-        return SceneEntities.Find(entity => entity.ID == id);
+        return SceneEntities.Find(entity => entity.Id == id);
     }
 
     private void OnSceneStart()
@@ -219,6 +244,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         SceneEntities.Clear();
+        _indexForId = 1;
     }
 
     public void SaveData(GameData data)
@@ -240,6 +266,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 _ => new(),
             };
 
+            entityData.Id = entity.Id;
             entityData.Type = entity.EntityType;
             entityData.Position = entity.transform.position;
             entityData.Rotation = entity.transform.rotation;
@@ -272,11 +299,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             {
                 case EntityType.Box:
                     BoxEntityData boxData = (BoxEntityData)entityData;
-                    entity = ShapeGenerator.Instance.AddBox(boxData.Position, boxData.Width, boxData.Height);
+                    entity = AddBox(boxData.Position, boxData.Width, boxData.Height);
                     break;
                 case EntityType.Circle:
                     CircleEntityData circleData = (CircleEntityData)entityData;
-                    entity = ShapeGenerator.Instance.AddCircle(circleData.Position, circleData.Radius);
+                    entity = AddCircle(circleData.Position, circleData.Radius);
                     break;
                 default:
                     continue;
@@ -296,5 +323,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             
             ScriptSaveHandler.Load(entityData.Script, entity.Script);
         }
+
+        SceneEntities.Sort((a, b) => a.Id.CompareTo(b.Id));
+        _indexForId = SceneEntities[^1].Id + 1;
+        Debug.Log("Next Id: " + _indexForId);
     }
 }

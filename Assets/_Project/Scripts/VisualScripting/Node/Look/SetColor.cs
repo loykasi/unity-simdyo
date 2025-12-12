@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             }
 
             ColorHSV color = (ColorHSV)Value.GetValue();
-            Flow.Entity.SetColor(color.ToUnityColor());
+            entity.SetColor(color.ToUnityColor());
             return Exit;
         }
     }

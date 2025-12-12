@@ -9,7 +9,7 @@ public class SceneEntity : MonoBehaviour
     // Marked as true if added during running scene
     public bool IsDirty { get; set; } = false;
 
-    public string ID;
+    public int Id;
     public virtual EntityType EntityType => EntityType.Polygon;
 
     public Vector3 Position

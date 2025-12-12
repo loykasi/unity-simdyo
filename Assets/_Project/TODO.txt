@@ -14,7 +14,8 @@
 [X] menu: fix camera size not update on load
 
 [] Fix variable menu freeze on load list
-[] Fix and test list related nodes
+[x] Fix and test list related nodes
+[] Fix clone issues of script
 
 == Scene entity
 [] Z depth

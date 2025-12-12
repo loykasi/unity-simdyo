@@ -35,6 +35,8 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
+            Debug.Log("Move " + entity.Id);
+
             if (entity == null)
             {
                 return Exit;
@@ -43,7 +45,7 @@ namespace Loykas.Scripting
             float x = (float)X.GetValue();
             float y = (float)Y.GetValue();
 
-            Flow.Entity.Position = new Vector3(x, y, 0f);
+            entity.Position = new Vector3(x, y, 0f);
             return Exit;
         }
     }

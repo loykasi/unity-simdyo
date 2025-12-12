@@ -34,8 +34,6 @@ public static class ScriptSaveHandler
                 nodeData = new();
             }
 
-            Debug.Log(typeName);
-
             // Remove string "Node"
             nodeData.Type = typeName.Substring(0, typeName.Length - 4);
 
@@ -44,7 +42,9 @@ public static class ScriptSaveHandler
 
             foreach (var item in node.DefaultValues)
             {
-                nodeData.DefaultValues.Add(item.Key, item.Value);
+                // nodeData.DefaultValues.Add(item.Key, item.Value);
+                InputValue input = node.ValueInputs.Find(n => n.Key == item.Key);
+                nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, item.Value, input.Type.Type));
             }
 
             flowData.Nodes.Add(nodeData);
@@ -158,7 +158,6 @@ public static class ScriptSaveHandler
             if (saveData is ScriptNodeFunctionSaveData nodeFunctionData)
             {
                 string funcionName = nodeFunctionData.Name;
-                Debug.Log(funcionName);
 
                 ScriptFunction function = flow.Functions.Find(f => f.Name == funcionName);
 
@@ -175,16 +174,8 @@ public static class ScriptSaveHandler
             
             foreach (var item in saveData.DefaultValues)
             {
-                Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
-                object value;
-                if (item.Value != null && item.Value.GetType() == typeof(double))
-                {
-                    value = (float)(double)item.Value;
-                }
-                else
-                {
-                    value = item.Value;
-                }
+                // Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
+                object value = ConvertValue(item.Value);
                 
                 if (!node.DefaultValues.ContainsKey(item.Key))
                 {
@@ -213,5 +204,20 @@ public static class ScriptSaveHandler
         }
 
         flow.Load();
+    }
+
+    private static object ConvertValue(object value)
+    {
+        if (value == null)
+        {
+            return null;
+        }
+
+        if (value.GetType() == typeof(double))
+        {
+            return (float)(double)value;
+        }
+
+        return value;
     }
 }

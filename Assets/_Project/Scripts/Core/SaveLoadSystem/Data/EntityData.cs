@@ -3,6 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public class EntityData
 {
+    public int Id;
     public EntityType Type;
     public Vector3 Position;
     public Quaternion Rotation;

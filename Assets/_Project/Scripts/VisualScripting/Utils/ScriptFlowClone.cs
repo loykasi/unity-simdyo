@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             foreach (var item in a.Nodes)
             {
                 ScriptNode node = item.Create();
-                node.Flow = a;
+                node.Flow = b;
                 node.ID = item.ID;
                 node.Position = item.Position;
 

@@ -22,7 +22,7 @@ namespace Loykas.Scripting
                 ValueHandler.SetValue(ValueInstance, entity);
             }
 
-            OnSubmit?.Invoke(entity);
+            OnSubmit?.Invoke(entity.Id);
         }
 
         public void Init(List<string> options)
@@ -33,14 +33,14 @@ namespace Loykas.Scripting
 
         public override void SetValue(object value)
         {
-            int index = ObjectManager.Instance.GetIndexByEntity((SceneEntity)value);
+            int index = ObjectManager.Instance.GetIndexByEntityID((int)value);
             Dropdown.SetValueWithoutNotify(index);
         }
 
         public override object GetValue()
         {
             var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
-            return entity;
+            return entity.Id;
         }
 
         public override void SetWidth(float width)
