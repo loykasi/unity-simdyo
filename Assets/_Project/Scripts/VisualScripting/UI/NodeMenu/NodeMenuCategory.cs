@@ -12,6 +12,11 @@ namespace Loykas.Scripting
         [SerializeField] private RectTransform _content;
         [SerializeField] private NodeMenuItem _itemPrefab;
 
+        [Header("Visualization")]
+        [SerializeField] private Image _leadingImage;
+        [SerializeField] private Sprite _closedImage;
+        [SerializeField] private Sprite _openedImage;
+
         private RectTransform _parentRect;
         private NodeMenu _nodeMenu;
 
@@ -48,6 +53,8 @@ namespace Loykas.Scripting
                 _rectTransfrom.sizeDelta = new Vector2(_rectTransfrom.sizeDelta.x, _defaultHeight);
             }
             LayoutRebuilder.MarkLayoutForRebuild(_parentRect);
+
+            _leadingImage.sprite = _isContentActive? _openedImage : _closedImage;
         }
 
         public void AddItem(ScriptNode nodeData)

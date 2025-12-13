@@ -8,6 +8,9 @@ namespace Loykas.Scripting
 {
     public class NodeMenu : MonoBehaviour, IBeginDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
+        [SerializeField] private RectTransform _rect;
+        [SerializeField] private RectTransform _canvas;
+
         [SerializeField] private RectTransform _contentRect;
         [SerializeField] private NodeMenuCategory _categoryPrefab;
 
@@ -50,6 +53,14 @@ namespace Loykas.Scripting
             }
         }
 
+        public void AddNode(ScriptNode node)
+        {
+            Debug.Log($"Add node {node}");
+            _nodeBoard.AddNode(node);
+
+            Close();
+        }
+
         public void Open(NodeBoard nodeBoard, Vector3 position, IPort port = null)
         {
             _nodeBoard = nodeBoard;
@@ -67,6 +78,7 @@ namespace Loykas.Scripting
 
             gameObject.SetActive(true);
             transform.position = position;
+            SetPosition();
 
             foreach (var item in _categories)
             {
@@ -74,12 +86,30 @@ namespace Loykas.Scripting
             }
         }
 
-        public void AddNode(ScriptNode node)
+        private void SetPosition()
         {
-            Debug.Log($"Add node {node}");
-            _nodeBoard.AddNode(node);
+            Vector3 worldPosition = Mouse.current.position.ReadValue();
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas, worldPosition, null, out Vector2 point);
+            Vector2 position = point + new Vector2(_canvas.sizeDelta.x * 0.5f, _canvas.sizeDelta.y * 0.5f);
 
-            Close();
+            Debug.Log($"screen: {position}");
+
+            float xDiff = position.x + _rect.sizeDelta.x - _canvas.sizeDelta.x;
+            float yDiff = _rect.sizeDelta.y - position.y;
+
+            if (xDiff > 0)
+            {
+                position.x -= xDiff;
+            }
+
+            if (yDiff > 0)
+            {
+                position.y += yDiff;
+            }
+
+            Debug.Log($"new position: {position}");
+
+            _rect.anchoredPosition = position;
         }
 
         private void Close()

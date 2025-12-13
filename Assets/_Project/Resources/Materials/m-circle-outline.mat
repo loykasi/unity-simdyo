@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: m-circleOutline
+  m_Name: m-circle-outline
   m_Shader: {fileID: -6465566751694194690, guid: 93c56f4c17f783c4aa9e5a76db400c67, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
