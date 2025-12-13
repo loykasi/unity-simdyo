@@ -175,19 +175,31 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void AddEntity(SceneEntity entity)
     {
-        // Temporary Method for Set ID
-        // use it for both ID and Name now, will sperate in futures
+        // use for both ID and Name now, will sperate in futures
         // entity.Id = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
         entity.Id = _indexForId;
         _indexForId++;
 
+        // z depth
+        int depth = -1;
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            SceneEntity target = SceneEntities[i];
+            if (target.ZDepth > depth)
+            {
+                depth = target.ZDepth;
+            }
+        }
+        entity.ZDepth = depth + 1;
+
         entity.transform.SetParent(_holder);
-        SceneEntities.Add(entity);
 
         if (SceneManager.Instance.IsRuning)
         {
             entity.IsDirty = true;
         }
+
+        SceneEntities.Add(entity);
     }
 
     public void DeleteEntity(SceneEntity entity)
@@ -215,6 +227,37 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             Destroy(entity.gameObject);
         }
+    }
+
+    public void MoveToBack(SceneEntity entity)
+    {
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            SceneEntity target = SceneEntities[i];
+            if (target.ZDepth < entity.ZDepth)
+            {
+                target.ZDepth++;
+            }
+        }
+        entity.ZDepth = 0;
+    }
+
+    public void MoveToFront(SceneEntity entity)
+    {
+        int depth = 0;
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            SceneEntity target = SceneEntities[i];
+            if (target.ZDepth > depth)
+            {
+                depth = target.ZDepth;
+            }
+            if (target.ZDepth > entity.ZDepth)
+            {
+                target.ZDepth--;
+            }
+        }
+        entity.ZDepth = depth;
     }
 
     public SceneEntity GetEntity(int id)

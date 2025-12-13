@@ -33,6 +33,11 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private float _spaceBetweenLayer;
     private CollisionLayerToggle[] _collisionLayerToggles;
 
+    [Header("Selection")]
+    [SerializeField] private MenuNumberInput _depthInput;
+    [SerializeField] private Button _moveToBackButton;
+    [SerializeField] private Button _moveToFrontButton;
+
     private void Awake()
     {
         CreateCollisionLayerMenu();
@@ -40,6 +45,9 @@ public class EntityMenu : MonoBehaviour
         _positionInput.OnSubmit += OnPositionSubmit;
         _angleInput.OnSubmit += OnAngleSubmit;
         _velocityInput.OnSubmit += OnVelocitySubmit;
+
+        _moveToBackButton.onClick.AddListener(MoveToBack);
+        _moveToFrontButton.onClick.AddListener(MoveToFront);
     }
 
     private void CreateCollisionLayerMenu()
@@ -85,6 +93,8 @@ public class EntityMenu : MonoBehaviour
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
         _buttonColor.color = entity.UnityColor;
+
+        _depthInput.SetValue(entity.ZDepth);
 
         for (int i = 0; i < _collisionLayerToggles.Length; i++)
         {
@@ -167,5 +177,15 @@ public class EntityMenu : MonoBehaviour
     public void ChooseTexture()
     {
         _controller.ChooseTexture();
+    }
+
+    public void MoveToBack()
+    {
+        _controller.MoveToBack();
+    }
+
+    public void MoveToFront()
+    {
+        _controller.MoveToFront();
     }
 }

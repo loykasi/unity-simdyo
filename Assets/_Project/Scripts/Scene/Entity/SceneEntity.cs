@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
+using UnityEngine.Rendering;
 
 public class SceneEntity : MonoBehaviour
 {
@@ -62,7 +63,18 @@ public class SceneEntity : MonoBehaviour
     public Rigidbody2D Rigidbody;
     public ScriptFlow Script;
     public CollisionLayer Layer;
+    public SortingGroup SortingGroup;
     public int TextureSlot = 0;
+
+    public int ZDepth
+    {
+        get => SortingGroup.sortingOrder;
+        set
+        {
+            SortingGroup.sortingOrder = value;
+            OnUpdateProperty();
+        }
+    }
 
     public virtual Bounds Bounds => Renderer.bounds;
 

@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 4180602330645767054}
   - component: {fileID: -7824645102635766432}
   - component: {fileID: 4245882747138995468}
+  - component: {fileID: 5470259173528960719}
   m_Layer: 0
   m_Name: BoxEntity
   m_TagString: Untagged
@@ -50,13 +51,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4228906756ad3f149ab21bf9aec17dce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ID: 
+  Id: 0
   MeshFilter: {fileID: 3394529686914236234}
   Renderer: {fileID: 7629192785450040781}
   Collider: {fileID: 4245882747138995468}
   Rigidbody: {fileID: -7824645102635766432}
   Script: {fileID: 4180602330645767054}
   Layer: 1
+  SortingGroup: {fileID: 5470259173528960719}
   TextureSlot: 0
   Border: {fileID: 2692295455764732596}
   Width: 0
@@ -200,6 +202,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!210 &5470259173528960719
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5878413833723873913}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &7636954223175437438
 GameObject:
   m_ObjectHideFlags: 0

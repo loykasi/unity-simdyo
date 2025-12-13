@@ -101,10 +101,6 @@ public class EntityMenuController : MonoBehaviour
     public void ChooseTexture()
     {
         TextureMenu.Instance.OpenTextureMenu(_entity);
-        // if (AssetController.Instance.TryChooseTextureFile(out Texture2D texture))
-        // {
-        //     _entity.SetTexture(texture);
-        // }
     }
 
     public void UpdateSize(float width, float height)
@@ -130,5 +126,15 @@ public class EntityMenuController : MonoBehaviour
         ((CircleEntity)_entity).Radius = radius;
 
         Physics2D.SyncTransforms();
+    }
+
+    public void MoveToBack()
+    {
+        ObjectManager.Instance.MoveToBack(_entity);
+    }
+
+    public void MoveToFront()
+    {
+        ObjectManager.Instance.MoveToFront(_entity);
     }
 }
