@@ -55,12 +55,12 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _OutlineWidth: 0.1
+    - _OutlineWidth: 0.04
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _Size: {r: 8.88889, g: 5, b: 0, a: 0}
   m_BuildTextureStacks: []

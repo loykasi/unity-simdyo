@@ -7,6 +7,7 @@ public class SceneCameraArea : MonoBehaviour
     public Vector2 Size;
     [SerializeField] private MeshFilter _meshFilter;
     [SerializeField] private MeshRenderer _meshRenderer;
+    [SerializeField] private Transform _label;
 
     private List<Vector3> _boxPoints = new List<Vector3>();
     private int[] _boxTriangles = new int[6];
@@ -92,9 +93,16 @@ public class SceneCameraArea : MonoBehaviour
         _meshRenderer.sharedMaterial.SetVector(_sizeProperty, halfSize);
     }
 
+    private void UpdateLabel()
+    {
+        Vector2 halfSize = Size / 2f;
+        _label.position = transform.position + new Vector3(- halfSize.x, halfSize.y, 0f);
+    }
+
     public void SetSize(Vector2 size)
     {
         Size = size;
         UpdateMesh();
+        UpdateLabel();
     }
 }
