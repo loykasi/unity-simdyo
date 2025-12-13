@@ -52,19 +52,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.name = "Box";
         sceneEntity.transform.position = position;
 
-        Vector2 halfSize = new(width / 2f, height / 2f);
-
-        GenerateBoxVertices(halfSize);
-        GenerateBoxTriangles();
-        GenerateBoxUV();
-
-        Mesh mesh = new()
-        {
-            name = "Quad"
-        };
-        mesh.SetVertices(_boxPoints);
-        mesh.triangles = _boxTriangles;
-        mesh.uv = _boxUV;
+        Mesh mesh = GenerateBoxMesh("Box", new Vector2(width, height));
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _material;
@@ -76,33 +64,55 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         return sceneEntity;
     }
 
-    private void GenerateBoxVertices(Vector2 halfSize)
+    public Mesh GenerateBoxMesh(
+        string name,
+        Vector2 size,
+        List<Vector3> boxPoints = null)
     {
-        _boxPoints.Clear();
-        _boxPoints.Add(new Vector3(halfSize.x, halfSize.y));
-        _boxPoints.Add(new Vector3(- halfSize.x, halfSize.y));
-        _boxPoints.Add(new Vector3(- halfSize.x, - halfSize.y));
-        _boxPoints.Add(new Vector3(halfSize.x, - halfSize.y));
+        Mesh mesh = new()
+        {
+            name = name
+        };
+
+        GenerateBoxVertices(boxPoints ?? _boxPoints, size);
+        GenerateBoxTriangles(_boxTriangles);
+        GenerateBoxUV(_boxUV);
+
+        mesh.SetVertices(boxPoints ?? _boxPoints);
+        mesh.triangles = _boxTriangles;
+        mesh.uv = _boxUV;
+
+        return mesh;
+    }
+    
+    public void GenerateBoxVertices(List<Vector3> boxPoints, Vector2 size)
+    {
+        boxPoints.Clear();
+        Vector2 halfSize = size / 2f;
+        boxPoints.Add(new Vector3(halfSize.x, halfSize.y));
+        boxPoints.Add(new Vector3(- halfSize.x, halfSize.y));
+        boxPoints.Add(new Vector3(- halfSize.x, - halfSize.y));
+        boxPoints.Add(new Vector3(halfSize.x, - halfSize.y));
     }
 
-    private void GenerateBoxTriangles()
+    private void GenerateBoxTriangles(int[] boxTriangles)
     {
-        System.Array.Clear(_boxTriangles, 0, _boxTriangles.Length);
-        _boxTriangles[0] = 0;
-        _boxTriangles[1] = 2;
-        _boxTriangles[2] = 1;
-        _boxTriangles[3] = 0;
-        _boxTriangles[4] = 3;
-        _boxTriangles[5] = 2;
+        System.Array.Clear(boxTriangles, 0, boxTriangles.Length);
+        boxTriangles[0] = 0;
+        boxTriangles[1] = 2;
+        boxTriangles[2] = 1;
+        boxTriangles[3] = 0;
+        boxTriangles[4] = 3;
+        boxTriangles[5] = 2;
     }
 
-    private void GenerateBoxUV()
+    private void GenerateBoxUV(Vector2[] boxUV)
     {
-        System.Array.Clear(_boxUV, 0, _boxUV.Length);
-        _boxUV[0] = new Vector2(1f, 1f);
-        _boxUV[1] = new Vector2(0f, 1f);
-        _boxUV[2] = new Vector2(0f, 0f);
-        _boxUV[3] = new Vector2(1f, 0f);
+        System.Array.Clear(boxUV, 0, boxUV.Length);
+        boxUV[0] = new Vector2(1f, 1f);
+        boxUV[1] = new Vector2(0f, 1f);
+        boxUV[2] = new Vector2(0f, 0f);
+        boxUV[3] = new Vector2(1f, 0f);
     }
 
 
@@ -128,21 +138,9 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
         CircleEntity sceneEntity = Instantiate(_circleEntityPrefab);
         sceneEntity.name = "Circle";
-
         sceneEntity.transform.position = position;
 
-        float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
-        GenerateCircleVertices(vertRadius);
-        GenerateCircleTriangles();
-        GenerateCircleUV();
-
-        Mesh mesh = new()
-        {
-            name = "Circle"
-        };
-        mesh.SetVertices(_circlePoints);
-        mesh.triangles = _circleTriangles.ToArray();
-        mesh.uv = _circleUV.ToArray();
+        Mesh mesh = GenerateCircleMesh("Circle", radius);
 
         sceneEntity.MeshFilter.sharedMesh = mesh;
         sceneEntity.Renderer.material = _circleMaterial;
@@ -155,32 +153,54 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         return sceneEntity;
     }
 
-    private void GenerateCircleVertices(float radius)
+    public Mesh GenerateCircleMesh(
+        string name,
+        float radius,
+        List<Vector3> circlePoints = null)
     {
-        _circlePoints.Clear();
+        Mesh mesh  = new()
+        {
+            name = name
+        };
+        
+        GenerateCircleVertices(circlePoints ?? _circlePoints, radius);
+        GenerateCircleTriangles(_circleTriangles);
+        GenerateCircleUV(_circleUV);
+
+        mesh.SetVertices(circlePoints ?? _circlePoints);
+        mesh.triangles = _circleTriangles.ToArray();
+        mesh.uv = _circleUV.ToArray();
+
+        return mesh;
+    }
+
+    public void GenerateCircleVertices(List<Vector3> circlePoints, float radius)
+    {
+        circlePoints.Clear();
+        float vertRadius = radius / Mathf.Cos(Mathf.PI / _totalVert);
         for (int i = 0; i < _totalVert; i++)
         {
             float angle = i * 2 * Mathf.PI / _totalVert;
-            float x = radius * Mathf.Sin(angle);
-            float y = radius * Mathf.Cos(angle);
-            _circlePoints.Add(new Vector3(x, y, 0f));
+            float x = vertRadius * Mathf.Sin(angle);
+            float y = vertRadius * Mathf.Cos(angle);
+            circlePoints.Add(new Vector3(x, y, 0f));
         }
     }
 
-    private void GenerateCircleTriangles()
+    private void GenerateCircleTriangles(List<int> circleTriangles)
     {
-        _circleTriangles.Clear();
+        circleTriangles.Clear();
         for (int i = 0; i < _totalVert - 2; i++)
         {
-            _circleTriangles.Add(0);
-            _circleTriangles.Add(i + 1);
-            _circleTriangles.Add(i + 2);
+            circleTriangles.Add(0);
+            circleTriangles.Add(i + 1);
+            circleTriangles.Add(i + 2);
         }
     }
 
-    private void GenerateCircleUV()
+    private void GenerateCircleUV(List<Vector2> circleUV)
     {
-        _circleUV.Clear();
+        circleUV.Clear();
         for (int i = 0; i < _totalVert; i++)
         {
             float angle = i * 2 * Mathf.PI / _totalVert;
@@ -188,7 +208,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             float y = 1f * Mathf.Cos(angle);
             x = x.MapRange(-1f, 1, 0f, 1f);
             y = y.MapRange(-1f, 1, 0f, 1f);
-            _circleUV.Add(new Vector3(x, y, 0f));
+            circleUV.Add(new Vector3(x, y, 0f));
         }
     }
 

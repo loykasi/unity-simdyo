@@ -294,7 +294,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fbe07728e20bdb54d83ae773d98d2b41, type: 2}
+  - {fileID: 2100000, guid: ef1cfab596047374891c56e5d5696284, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -324,7 +324,7 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7636954223175437438}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 1
-  m_SortAtRoot: 0
+  m_SortingLayerID: 1085780417
+  m_SortingLayer: 1
+  m_SortingOrder: 0
+  m_SortAtRoot: 1

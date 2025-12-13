@@ -9,11 +9,12 @@ public class CircleBorder : MonoBehaviour
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
     private readonly float _width = 0.05f;
 
-    private List<Vector3> _vertices = new(20);
+    private List<Vector3> _vertices = new();
 
     private void Awake()
     {
-        MeshFilter.sharedMesh = ShapeGenerator.Instance.GenerateRing(1f, _width);
+        // MeshFilter.sharedMesh = ShapeGenerator.Instance.GenerateRing(1f, _width);
+        MeshFilter.sharedMesh = ShapeGenerator.Instance.GenerateCircleMesh("Border", 1f, _vertices);
         MeshFilter.mesh.GetVertices(_vertices);
         Disable();
     }
@@ -32,7 +33,8 @@ public class CircleBorder : MonoBehaviour
     {
         Renderer.material.SetFloat(_radiusProperty, radius);
 
-        ShapeGenerator.Instance.GenerateRingVertices(_vertices, radius, _width);
+        // ShapeGenerator.Instance.GenerateRingVertices(_vertices, radius, _width);
+        ShapeGenerator.Instance.GenerateCircleVertices(_vertices, radius);
         MeshFilter.mesh.SetVertices(_vertices);
         MeshFilter.mesh.RecalculateBounds();
     }
