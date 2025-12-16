@@ -28,7 +28,11 @@ namespace Loykas.Scripting
 
         public override void Connect(InputTrigger port)
         {
-            DisconnectPort(Destination);
+            if (Destination != null)
+            {
+                Node.Flow.Disconnect(this, Destination);
+            }
+            // DisconnectPort(Destination);
             Destination = port;
         }
 

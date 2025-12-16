@@ -21,7 +21,7 @@ namespace Loykas.Scripting
                         .UseInput()
                         .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
         }
 
         public object Get()

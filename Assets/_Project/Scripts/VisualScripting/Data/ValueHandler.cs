@@ -52,10 +52,10 @@ namespace Loykas.Scripting
             }
         }
 
-        public static void SetDefaultValue(Variable variable, ScriptDataType type)
+        public static void SetDefaultValue(ScriptFlow flow, Variable variable, ScriptDataType type)
         {
             variable.Value = GetDefaultValue(type);
-            variable.Type = type;
+            variable.SetType(type);
 
             Debug.Log($"Set Default Value: {variable.Value}");
         }

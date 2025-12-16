@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,6 +16,7 @@ namespace Loykas.Scripting
         [SerializeField] private RectTransform _rect;        
         [SerializeField] private Vector2 _zoomRange;
         [SerializeField] private RectTransform _holder;
+        [SerializeField] private RectTransform _lineConnectionHolder;
         private Vector2 _offsetFromMouse;
 
         [Space]
@@ -43,6 +45,8 @@ namespace Loykas.Scripting
         private Vector3 _openMenuPosition;
 
         private bool _waitToAddNode = false;
+        
+        private readonly WaitForEndOfFrame _waitForEndOfFrame = new();
 
         public void Init()
         {
@@ -136,14 +140,17 @@ namespace Loykas.Scripting
             destination.AddConnection(lineConnection);
 
             _lines.Add(lineConnection);
+
+            // AfterAdd();
         }
 
         private UILineConnection CreateLine(UINodePort source, UINodePort destination)
         {
+            Debug.Log("Create line");
             GameObject lineObject = new("line");
 
             lineObject.AddComponent<CanvasRenderer>();
-            lineObject.transform.SetParent(_holder, false);
+            lineObject.transform.SetParent(_lineConnectionHolder, false);
 
             UILineConnection lineConnection = lineObject.AddComponent<UILineConnection>();
             RectTransform rect = lineObject.AddComponent<RectTransform>();
@@ -164,6 +171,46 @@ namespace Loykas.Scripting
             UpdateLineVisual(lineRenderer, source, destination);
 
             return lineConnection;
+        }
+
+        public void AddConnection(ScriptNode node)
+        {
+            StartCoroutine(AddConnectionNextFrame(node));
+        }
+
+        private IEnumerator AddConnectionNextFrame(ScriptNode node)
+        {
+            yield return _waitForEndOfFrame;
+
+            IEnumerable<NodeConnection> connections = Flow.GetConnections(node);
+
+            int count = 0;
+            foreach (NodeConnection connection in connections)
+            {
+                count++;
+                UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
+                UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
+                UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
+                UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
+
+                if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
+                {
+                    continue;
+                }
+
+                int index = _lines.FindIndex(l => l.Source == sourcePort && l.Destination == destinationPort);
+                if (index != -1)
+                {
+                    continue;
+                }
+
+                _fromUIPort = sourcePort;
+                _toUIPort = destinationPort;
+
+                AddConnectionToBoard(sourcePort, destinationPort);
+            }
+
+            Debug.Log("Load connection: " + count);
         }
 
         //==============================//==============================
@@ -193,6 +240,9 @@ namespace Loykas.Scripting
                 {
                     continue;
                 }
+
+                _fromUIPort = sourcePort;
+                _toUIPort = destinationPort;
 
                 AddConnectionToBoard(sourcePort, destinationPort);
             }
@@ -308,7 +358,6 @@ namespace Loykas.Scripting
 
         public void DeleteConnection(UILineConnection lineConnection)
         {
-            Debug.Log("Delete line");
             Flow.Disconnect(lineConnection.Source.Port, lineConnection.Destination.Port);
             // DeleteConnectionVisual(lineConnection);
         }
@@ -321,13 +370,13 @@ namespace Loykas.Scripting
 
         public void OnConnectionDeleted(NodeConnection connection)
         {
-            int index = _lines.FindIndex(n => n.Connection == connection);
-            if (index == -1)
+            Debug.Log("delete connection");
+            UILineConnection connectionElement = _lines.Find(n => n.Connection == connection);
+            if (connectionElement == null)
             {
                 return;
             }
 
-            UILineConnection connectionElement = _lines[index];
             DeleteConnectionVisual(connectionElement);
         }
 
@@ -448,8 +497,6 @@ namespace Loykas.Scripting
                 _toUIPort = toNode.FindUIPort(toPort);
                 
                 AddConnectionToBoard(_fromUIPort, _toUIPort);
-
-                AfterAdd();
             }
 
             _fromUIPort = null;
@@ -464,22 +511,6 @@ namespace Loykas.Scripting
             }
         }
 
-        private void AfterAdd()
-        {
-            {
-                if (_fromUIPort.Port is OutputTrigger fromPort)
-                {
-                    _fromUIPort.ValidConnection(fromPort.Destination);
-                }
-            }
-            {
-                if (_toUIPort.Port is InputValue toPort)
-                {
-                    _toUIPort.ValidConnection(toPort.Source);
-                }
-            }
-        }
-
         public void UpdateLines(UILineConnection line)
         {
             UILineRenderer lineRenderer = line.LineRenderer;
@@ -488,6 +519,9 @@ namespace Loykas.Scripting
 
         public void UpdateLineVisual(UILineRenderer line, UINodePort fromPort, UINodePort toPort)
         {
+            // temporary solution, should calculate manual instead
+            // StartCoroutine(UpdateLineVisualNextFrame(line, fromPort, toPort));
+
             Vector3 fromPosition = ToBoardPosition(fromPort.HandlePosition);
             Vector3 toPosition = ToBoardPosition(toPort.HandlePosition);
 
@@ -502,6 +536,25 @@ namespace Loykas.Scripting
             line.Rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
             line.UpdateVertex();
         }
+
+        // private IEnumerator UpdateLineVisualNextFrame(UILineRenderer line, UINodePort fromPort, UINodePort toPort)
+        // {
+        //     yield return _waitForEndOfFrame;
+
+        //     Vector3 fromPosition = ToBoardPosition(fromPort.HandlePosition);
+        //     Vector3 toPosition = ToBoardPosition(toPort.HandlePosition);
+
+        //     Vector3 size = fromPosition - toPosition;
+        //     Vector3 center = (fromPosition + toPosition) / 2.0f;
+
+        //     line.Points[0] = fromPosition - center;
+        //     line.Points[1] = fromPosition + Vector3.right * 50f - center;
+        //     line.Points[2] = toPosition + Vector3.left * 50f - center; ;
+        //     line.Points[3] = toPosition - center; ;
+        //     line.Rect.localPosition = center;
+        //     line.Rect.sizeDelta = new Vector2(Mathf.Abs(size.x) + _sizePadding, Mathf.Abs(size.y) + _sizePadding);
+        //     line.UpdateVertex();
+        // }
 
         // handle drag and drop to create node
         public void OnDrop(PointerEventData eventData)

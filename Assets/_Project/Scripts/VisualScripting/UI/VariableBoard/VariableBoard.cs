@@ -9,11 +9,17 @@ namespace Loykas.Scripting
         public static event Action<ScriptFlow, Variable> OnSelectItem;
         public ScriptFlowGraph FlowGraph { get; set; }
 
+        [SerializeField] private RectTransform _rect;
         [SerializeField] private VariableBoardItem _itemPrefab;
         [SerializeField] private Transform _contentHolder;
         [SerializeField] private GameObject _noDataText;
 
         private List<VariableBoardItem> _variableItems = new();
+
+        private readonly float _headerHeight = 40f;
+        private readonly float _itemHeight = 40f;
+        private readonly float _spacing = 5f;
+        private readonly float _padding = 10f;
 
         private void OnDisable()
         {
@@ -62,6 +68,20 @@ namespace Loykas.Scripting
             VariableBoardItem item = Instantiate(_itemPrefab, _contentHolder);
             item.Init(this, variable);
             _variableItems.Add(item);
+
+            float bodyHeight = GetBodyHeight();
+            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
+
+            FlowGraph.RebuildSideBarUI();
+        }
+
+        private float GetBodyHeight()
+        {
+            if (_variableItems.Count > 0)
+            {
+                return _variableItems.Count * _itemHeight + (_variableItems.Count - 1) * _spacing + _padding;
+            }
+            return 40f;
         }
 
         private void CheckForNoData()

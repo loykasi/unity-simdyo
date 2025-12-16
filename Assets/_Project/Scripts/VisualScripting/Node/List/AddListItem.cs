@@ -13,7 +13,6 @@ namespace Loykas.Scripting
 
         public InputValue ListInput;
         public InputValue Item;
-        public OutputValue Output;
 
         public override ScriptNode Create()
         {
@@ -27,9 +26,9 @@ namespace Loykas.Scripting
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any)).HideLabel();
             Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any)).HideLabel();
-            Output = OutputValue(nameof(Output), ScriptDataType.List(DataType.Any), Get).HideLabel();
 
             ListInput.OnConnected += OnListInputConnected;
+            ListInput.OnDisconnected += OnListInputDisconnected;
         }
 
         private OutputTrigger Set()
@@ -40,13 +39,12 @@ namespace Loykas.Scripting
             return Exit;
         }
 
-        private object Get()
+        private void OnListInputConnected()
         {
-            IList list = (IList)ListInput.GetValue();
-            return list;
+            UpdateNode();
         }
 
-        private void OnListInputConnected()
+        private void OnListInputDisconnected()
         {
             UpdateNode();
         }
@@ -58,12 +56,10 @@ namespace Loykas.Scripting
                 DataType type = ListInput.Source.Type.Type;
                 
                 Item.SetType(ScriptDataType.Single(type));
-                Output.SetType(ScriptDataType.List(type));
             }
             else
             {
                 Item.SetType(ScriptDataType.Single(DataType.Any));
-                Output.SetType(ScriptDataType.List(DataType.Any));
             }
 
             OnNodeUpdated?.Invoke();

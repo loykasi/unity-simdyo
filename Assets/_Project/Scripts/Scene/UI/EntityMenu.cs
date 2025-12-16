@@ -1,5 +1,5 @@
 using System;
-using TMPro;
+using Loykas.Scripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +9,8 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private EntityMenuController _controller;
 
     [Header("Menu")]
+    [SerializeField] private StringInput _idInput;
+    [SerializeField] private StringInput _nameInput;
     [SerializeField] private MenuVectorInput _positionInput;
     [SerializeField] private MenuNumberInput _angleInput;
     [SerializeField] private Toggle _gravityToggle;
@@ -41,6 +43,8 @@ public class EntityMenu : MonoBehaviour
     private void Awake()
     {
         CreateCollisionLayerMenu();
+
+        _nameInput.OnSubmit += OnNameSubmit;
 
         _positionInput.OnSubmit += OnPositionSubmit;
         _angleInput.OnSubmit += OnAngleSubmit;
@@ -86,6 +90,8 @@ public class EntityMenu : MonoBehaviour
 
     public void Init(SceneEntity entity)
     {
+        _idInput.SetValue(entity.Id.ToString());
+        _nameInput.SetValue(entity.Name);
         _positionInput.SetValue(entity.Position);
         _angleInput.SetValue(entity.Angle);
         _velocityInput.SetValue(entity.Velocity);
@@ -126,6 +132,11 @@ public class EntityMenu : MonoBehaviour
     public void UpdateMenu(SceneEntity entity)
     {
         _buttonColor.color = entity.UnityColor;
+    }
+
+    public void OnNameSubmit(object value)
+    {
+        _controller.UpdateName((string)value);
     }
 
     private void OnPositionSubmit(Vector3 value)

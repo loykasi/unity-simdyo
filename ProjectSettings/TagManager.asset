@@ -44,5 +44,8 @@ TagManager:
   - name: Border
     uniqueID: 1085780417
     locked: 0
+  - name: Preview
+    uniqueID: 452207165
+    locked: 0
   m_RenderingLayers:
   - Default

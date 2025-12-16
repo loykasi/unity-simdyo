@@ -81,6 +81,11 @@ public class EntityMenuController : MonoBehaviour
         _menu.gameObject.SetActive(false);
     }
 
+    public void UpdateName(string value)
+    {
+        ObjectManager.Instance.RenameEntity(_entity, value);
+    }
+
     public void UpdatePosition(float x, float y)
     {
         _entity.Position = new Vector3(x, y);

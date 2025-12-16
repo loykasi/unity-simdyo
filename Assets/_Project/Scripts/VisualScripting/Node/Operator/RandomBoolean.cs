@@ -19,7 +19,7 @@ namespace Loykas.Scripting
         {
             Chance = InputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Value = OutputValue(nameof(Value), GetRandom);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), GetRandom).HideLabel();
         }
 
         private object GetRandom()

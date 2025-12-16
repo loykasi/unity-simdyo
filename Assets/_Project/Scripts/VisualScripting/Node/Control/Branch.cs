@@ -17,7 +17,8 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Branching);
             IfTrue = OutputTrigger(nameof(IfTrue));
             IfFalse = OutputTrigger(nameof(IfFalse));
-            Condition = InputValue(nameof(Condition));
+            
+            Condition = InputValue(nameof(Condition), ScriptDataType.Single(DataType.Boolean));
         }
 
         public override ScriptNode Create()

@@ -171,24 +171,14 @@ namespace Loykas.Scripting
         {
             while (LineConnections.Count > 0)
             {
-                LineConnections[0].Delete();
+                // LineConnections[0].Delete();
+                NodeBoard.DeleteConnectionVisual(LineConnections[0]);
             }
 
             UpdateHandleVisual();
         }
-        
-        public virtual void ValidConnection(IPort port)
-        {
-            for (int i = 0; i < LineConnections.Count; i++)
-            {
-                if (LineConnections[i].Destination.Port != port)
-                {
-                    LineConnections[i].Delete();
-                }
-            }
-        }
 
-        private void UpdateHandleVisual()
+        protected virtual void UpdateHandleVisual()
         {
             _portVisual.SetConnectionStatus(LineConnections.Count > 0);
         }

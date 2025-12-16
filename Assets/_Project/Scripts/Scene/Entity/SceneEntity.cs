@@ -7,11 +7,22 @@ public class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;
 
+    public virtual EntityType EntityType => EntityType.Polygon;
+
     // Marked as true if added during running scene
     public bool IsDirty { get; set; } = false;
 
     public int Id;
-    public virtual EntityType EntityType => EntityType.Polygon;
+    
+    public string Name
+    {
+        get => gameObject.name;
+        set
+        {
+            gameObject.name = value;
+            OnUpdateProperty();
+        }
+    }
 
     public Vector3 Position
     {

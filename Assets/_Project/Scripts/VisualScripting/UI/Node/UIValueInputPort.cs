@@ -83,16 +83,11 @@ namespace Loykas.Scripting
             _inputHolder.gameObject.SetActive(true);
         }
 
-        public override void ValidConnection(IPort port)
-        {
-            for (int i = 0; i < LineConnections.Count; i++)
-            {
-                if (LineConnections[i].Source.Port != port)
-                {
-                    LineConnections[i].Delete();
-                }
-            }
 
+        protected override void UpdateHandleVisual()
+        {
+            base.UpdateHandleVisual();
+            
             if (_inputValue.HasConnection)
             {
                 HideInput();

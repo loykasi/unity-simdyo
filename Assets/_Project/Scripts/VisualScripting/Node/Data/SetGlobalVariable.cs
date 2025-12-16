@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loykas.Scripting
@@ -11,6 +12,8 @@ namespace Loykas.Scripting
 
         public InputValue Variable;
         public InputValue Value;
+
+        private Variable _variable;
 
         public override ScriptNode Create()
         {
@@ -27,7 +30,14 @@ namespace Loykas.Scripting
                             .DisableConnection()
                             .HideLabel();
                             
-            Value = InputValue(nameof(Value));
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any));
+
+            Variable.OnValueChanged += OnInputValueChanged;
+        }
+
+        public override void FlowAssigned()
+        {
+            SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
         }
 
         private OutputTrigger Set()
@@ -36,6 +46,60 @@ namespace Loykas.Scripting
             object value = Value.GetValue();
             Flow.UpdateVariable(name, value);
             return Exit;
+        }
+
+        private void OnVariableDeleted(Variable variable)
+        {
+            if (Flow == null) return;
+
+            object value = Variable.GetValue();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            string name = value.ToString();
+
+            if (name.Equals(variable.Name))
+            {
+                Variable.SetValue("");
+            }
+        }
+
+        private void OnInputValueChanged()
+        {
+            if (Flow == null) return;
+            
+            if (_variable != null)
+            {
+                _variable.OnTypeUpdated -= UpdateOutputType;
+            }
+
+            string name = Variable.GetValue().ToString();
+            _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
+
+            UpdateOutputType();
+
+            if (_variable != null)
+            {
+                _variable.OnTypeUpdated += UpdateOutputType;
+            }
+        }
+
+        private void UpdateOutputType()
+        {
+            ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
+
+            Value.SetType(type);
+
+            IEnumerable<NodeConnection> connections = Flow.GetConnections(Value);
+            foreach (var item in connections)
+            {
+                item.Validate();
+            }
+
+            OnNodeUpdated?.Invoke();
         }
     }
 }

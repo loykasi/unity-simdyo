@@ -22,6 +22,8 @@ namespace Loykas.Scripting
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
             Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any));
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
+
+            ListInput.OnConnected += OnListInputConnected;
         }
 
         private object Get()
@@ -29,6 +31,27 @@ namespace Loykas.Scripting
             IList list = (IList)ListInput.GetValue();
             object item = Item.GetValue();
             return list.Contains(item);
+        }
+        
+        private void OnListInputConnected()
+        {
+            UpdateNode();
+        }
+
+        public override void UpdateNode()
+        {
+            if (ListInput.Source != null)
+            {
+                DataType type = ListInput.Source.Type.Type;
+                
+                Item.SetType(ScriptDataType.Single(type));
+            }
+            else
+            {
+                Item.SetType(ScriptDataType.Single(DataType.Any));
+            }
+
+            OnNodeUpdated?.Invoke();
         }
     }
 }

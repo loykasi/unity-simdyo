@@ -86,7 +86,7 @@ public class VariableMenu : MonoBehaviour
     {
         ScriptDataType type = (ScriptDataType)value;
 
-        ValueHandler.SetDefaultValue(_variable, type);
+        ValueHandler.SetDefaultValue(_flow, _variable, type);
 
         ChangeInput(type);
     }

@@ -11,6 +11,8 @@ namespace Loykas.Scripting
         public InputValue Input;
         public OutputValue Output;
 
+        private Variable _variable;
+
         public override ScriptNode Create()
         {
             return new GetGlobalVariableNode();
@@ -43,7 +45,14 @@ namespace Loykas.Scripting
         {
             if (Flow == null) return;
 
-            string name = Input.GetValue().ToString();
+            object value = Input.GetValue();
+
+            if (value == null)
+            {
+                return;
+            }
+
+            string name = value.ToString();
 
             if (name.Equals(variable.Name))
             {
@@ -54,21 +63,36 @@ namespace Loykas.Scripting
         private void OnInputValueChanged()
         {
             if (Flow == null) return;
+            
+            if (_variable != null)
+            {
+                _variable.OnTypeUpdated -= UpdateOutputType;
+            }
 
             string name = Input.GetValue().ToString();
-            Variable variable = SceneManager.Instance.GlobalScript.GetVariable(name);
+            _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
 
-            ScriptDataType type = variable == null ? ScriptDataType.Single(DataType.Any) : variable.Type;
-            Debug.Log(type);
+            UpdateOutputType();
+
+            if (_variable != null)
+            {
+                _variable.OnTypeUpdated += UpdateOutputType;
+            }
+        }
+
+        private void UpdateOutputType()
+        {
+            ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
 
             Output.SetType(type);
-            OnNodeUpdated?.Invoke();
 
             IEnumerable<NodeConnection> connections = Flow.GetConnections(Output);
             foreach (var item in connections)
             {
                 item.Validate();
             }
+
+            OnNodeUpdated?.Invoke();
         }
     }
 }

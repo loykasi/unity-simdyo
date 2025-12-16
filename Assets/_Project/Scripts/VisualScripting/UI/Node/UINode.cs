@@ -158,6 +158,7 @@ namespace Loykas.Scripting
             OutputValuePorts.Clear();
 
             Init();
+            Board.AddConnection(Node);
         }
 
         public void UpdateSize()

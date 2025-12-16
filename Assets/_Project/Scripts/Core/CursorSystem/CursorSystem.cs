@@ -11,7 +11,8 @@ public class CursorSystem : Singleton<CursorSystem>
 
     private void Start()
     {
-        SetCursor(CursorType.Default);
+        Texture2D cursor = _cursorData.Get(CursorType.Default);
+        Cursor.SetCursor(cursor, new Vector2(8f, 8f), CursorMode.Auto);
     }
 
     private void LateUpdate()

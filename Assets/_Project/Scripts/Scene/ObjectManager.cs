@@ -16,11 +16,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     [SerializeField] private Transform _holder;
 
-    // use on running scene
-    private List<SceneEntity> _snapshotEntities = new();
-
-    // temporary
     private int _indexForId = 1;
+
+    private List<SceneEntity> _snapshotEntities = new();    // use on running scene
+    private List<string> _entityNames = new();    // For generate unique name
+    private readonly string _baseEntityName = "Entity";
 
     private void OnEnable()
     {
@@ -98,10 +98,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return SceneEntities.Find(e => e.Id == id);
     }
 
-    public List<string> GetEntityOptions()
+    public List<string> GetEntityOptions(SceneEntity entity = null)
     {
-        var list = SceneEntities.Select(e => e.Id.ToString()).ToList();
-        list.Insert(0, "Null");
+        var list = SceneEntities.Select(e => e.Name).ToList();
+        list.Insert(0, entity == null ? "Null" : "This");
         return list;
     }
 
@@ -177,8 +177,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         // use for both ID and Name now, will sperate in futures
         // entity.Id = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
-        entity.Id = _indexForId;
-        _indexForId++;
+        entity.Id = _indexForId++;
+
+        // name
+        string entityName = GetEntityName(_baseEntityName);
+        entity.Name = entityName;
 
         // z depth
         int depth = -1;
@@ -192,14 +195,30 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         entity.ZDepth = depth + 1;
 
-        entity.transform.SetParent(_holder);
-
         if (SceneManager.Instance.IsRuning)
         {
             entity.IsDirty = true;
         }
 
+        entity.transform.SetParent(_holder);
         SceneEntities.Add(entity);
+    }
+
+    private string GetEntityName(string baseName)
+    {
+        _entityNames.Clear();
+        for (int i = 0; i < SceneEntities.Count; i++)
+        {
+            _entityNames.Add(SceneEntities[i].Name);
+        }
+
+        return Utils.GenerateUniqueName(baseName, _entityNames);
+    }
+
+    public void RenameEntity(SceneEntity entity, string name)
+    {
+        int index = SceneEntities.FindIndex(e => e.Name == name);
+        entity.Name = index == -1 ? name : GetEntityName(_baseEntityName);
     }
 
     public void DeleteEntity(SceneEntity entity)
@@ -389,6 +408,5 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         SceneEntities.Sort((a, b) => a.Id.CompareTo(b.Id));
         _indexForId = SceneEntities[^1].Id + 1;
-        Debug.Log("Next Id: " + _indexForId);
     }
 }

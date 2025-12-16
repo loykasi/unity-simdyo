@@ -22,8 +22,8 @@ namespace Loykas.Scripting
                         .UseInput()
                         .NullMeanSelf();
                         
-            Width = OutputValue(nameof(Width), GetWidth);
-            Height = OutputValue(nameof(Height), GetHeight);
+            Width = OutputValue(nameof(Width), ScriptDataType.Single(DataType.Number), GetWidth);
+            Height = OutputValue(nameof(Height), ScriptDataType.Single(DataType.Number), GetHeight);
         }
 
         public object GetWidth()

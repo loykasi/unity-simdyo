@@ -81,7 +81,7 @@ namespace Loykas.Scripting
             return GetUIInput(type.Type).InputPrefab;
         }
 
-        public BaseInput Get(ScriptDataType type)
+        public BaseInput Get(ScriptDataType type, SceneEntity entity = null)
         {
             BaseInput inputPrefab = GetPrefab(type);
             if (inputPrefab == null)
@@ -93,7 +93,7 @@ namespace Loykas.Scripting
 
             if (type.Kind != DataKind.List && type.Type == DataType.Entity)
             {
-                var options = ObjectManager.Instance.GetEntityOptions();
+                var options = ObjectManager.Instance.GetEntityOptions(entity);
                 var entityInput = (EntityInput)inputObject;
                 entityInput.Init(options);
             }
@@ -141,7 +141,7 @@ namespace Loykas.Scripting
                 _ => throw new System.NotImplementedException(),
             };
 
-            return Get(new ScriptDataType(type, DataKind.Simple));
+            return Get(new ScriptDataType(type, DataKind.Simple), entity);
         }
     }
 }

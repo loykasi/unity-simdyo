@@ -9,7 +9,7 @@ namespace Loykas.Scripting
         public InputValue A;
         public InputValue B;
 
-        public OutputValue Value;
+        public OutputValue Output;
 
         public override ScriptNode Create()
         {
@@ -21,7 +21,7 @@ namespace Loykas.Scripting
             A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Value = OutputValue(nameof(Value), Get);
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
         }
 
         private object Get() => OperatorUtility.Add(A.GetValue(), B.GetValue());

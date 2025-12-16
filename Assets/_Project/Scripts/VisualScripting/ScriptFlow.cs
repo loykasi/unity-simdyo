@@ -186,13 +186,14 @@ namespace Loykas.Scripting
                 NodeConnection connection = Connections[i];
                 if (connection.Source == source && connection.Destination == destination)
                 {
-                    source.Disconnect(destination);
-                    destination.Disconnect(source);
-
-
                     ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
+
+                    source.Disconnect(destination);
+                    destination.Disconnect(source);
                     OnConnectionDeleted?.Invoke(connection);
+
+                    Debug.Log("Delete");
                 }
             }
         }
@@ -204,28 +205,29 @@ namespace Loykas.Scripting
                 NodeConnection connection = Connections[i];
                 if (connection.Source == port || connection.Destination == port)
                 {
-                    connection.Source.Disconnect(connection.Destination);
-                    connection.Destination.Disconnect(connection.Source);
-
                     ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
+
+                    connection.Source.Disconnect(connection.Destination);
+                    connection.Destination.Disconnect(connection.Source);
+                    OnConnectionDeleted?.Invoke(connection);
                 }
             }
         }
 
         public IEnumerable<NodeConnection> GetConnections(IPort port)
         {
-            return Connections.Where(c => c.Source == port || c.Destination == port);
+            return Connections.Where(c => (c.Source == port || c.Destination == port) && !c.ShouldRemove);
         }
 
         public NodeConnection GetConnection(IPort source, IPort destination)
         {
-            return Connections.Find(c => c.Source == source && c.Destination == destination);
+            return Connections.Find(c => c.Source == source && c.Destination == destination && !c.ShouldRemove);
         }
 
         public IEnumerable<NodeConnection> GetConnections(IScriptNode node)
         {
-            return Connections.Where(c => c.Source.Node == node || c.Destination.Node == node);
+            return Connections.Where(c => (c.Source.Node == node || c.Destination.Node == node) && !c.ShouldRemove);
         }
 
         // handle node task

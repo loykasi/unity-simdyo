@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Loykas.Scripting
@@ -18,12 +19,46 @@ namespace Loykas.Scripting
 
         public EqualNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any)).UseInput();
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any)).UseInput();
 
-            Output = OutputValue(nameof(Output), Get);
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
+
+            A.OnConnected += OnAConnected;
+            B.OnConnected += OnBConnected;
         }
 
-        private object Get() => A.GetValue<float>() == B.GetValue<float>();
+        private object Get()
+        {
+            object a = A.GetValue();
+            object b = B.GetValue();
+            
+            if (a.GetType() == b.GetType())
+            {
+                return a == b;
+            }
+
+            return false;
+        }
+
+        private void OnAConnected()
+        {
+            // if (A.Source != null)
+            // {
+            //     ScriptDataType type = A.Source.Type;
+            //     B.SetType(type);
+            // }
+            // else
+            // {
+            //     A.SetType(ScriptDataType.Single(DataType.Any));
+            // }
+
+            // OnNodeUpdated?.Invoke();
+        }
+
+        private void OnBConnected()
+        {
+            
+        }
     }
 }

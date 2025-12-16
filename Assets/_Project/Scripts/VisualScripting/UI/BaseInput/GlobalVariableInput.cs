@@ -8,7 +8,7 @@ namespace Loykas.Scripting
     {
         public TMP_Dropdown Dropdown;
         private int _selectedIndex;
-        private Variable _variable;
+        private string _variableName;
 
         private void Awake()
         {
@@ -43,22 +43,6 @@ namespace Loykas.Scripting
             Dropdown.options.Add(new TMP_Dropdown.OptionData(variable.Name));
         }
 
-        private void OnValueChanged(int index)
-        {
-            string name = Dropdown.options[index].text;
-            if (name.Equals("Select..."))
-            {
-                name = string.Empty;
-            }
-            OnSubmit?.Invoke(name);
-
-            if (name == string.Empty)
-            {
-                return;
-            }
-            _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
-        }
-
         private void OnVariableUpdated(Variable variable)
         {
             List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
@@ -74,6 +58,26 @@ namespace Loykas.Scripting
 
             Dropdown.ClearOptions();
             Dropdown.AddOptions(options);
+
+            int index = Dropdown.options.FindIndex(o => o.text == _variableName);
+            _selectedIndex = index == -1 ? 0 : index;
+            Dropdown.SetValueWithoutNotify(_selectedIndex);
+        }
+
+        private void OnValueChanged(int index)
+        {
+            string name = Dropdown.options[index].text;
+            if (name.Equals("Select..."))
+            {
+                name = string.Empty;
+            }
+            OnSubmit?.Invoke(name);
+
+            if (name == string.Empty)
+            {
+                return;
+            }
+            _variableName = SceneManager.Instance.GlobalScript.GetVariable(name).Name;
         }
 
         public override object GetValue()
@@ -94,7 +98,7 @@ namespace Loykas.Scripting
                 _selectedIndex = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
                 if (_selectedIndex != -1)
                 {
-                    _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
+                    _variableName = SceneManager.Instance.GlobalScript.GetVariable(variableName).Name;
                 }
                 else
                 {

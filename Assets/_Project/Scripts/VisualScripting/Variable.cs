@@ -7,7 +7,8 @@ namespace Loykas.Scripting
 {
     public class Variable
     {
-        public UnityAction OnUpdated;
+        public event UnityAction OnUpdated;
+        public event UnityAction OnTypeUpdated;
 
         public string Name;
         public ScriptDataType Type;
@@ -57,6 +58,12 @@ namespace Loykas.Scripting
             Name = name;
             
             OnUpdated?.Invoke();
+        }
+
+        public void SetType(ScriptDataType type)
+        {
+            Type = type;
+            OnTypeUpdated?.Invoke();
         }
 
         private void CopyList(IList a, IList b)

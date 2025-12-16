@@ -149,11 +149,6 @@ public enum InputValueTypes
             return this;
         }
 
-        public override void Connect(OutputValue port)
-        {
-            Source = port;
-        }
-
         public T GetValue<T>()
         {
             if (Source != null)
@@ -197,6 +192,15 @@ public enum InputValueTypes
         public void SetType(ScriptDataType type)
         {
             Type = type;
+        }
+
+        public override void Connect(OutputValue port)
+        {
+            if (Source != null)
+            {
+                Node.Flow.Disconnect(Source, this);
+            }
+            Source = port;
         }
 
         protected override void DisconnectPort(OutputValue port)

@@ -28,7 +28,7 @@ namespace Loykas.Scripting
             LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number)).UseInput();
             Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Index = OutputValue(nameof(Index), GetIndex);
+            Index = OutputValue(nameof(Index), ScriptDataType.Single(DataType.Number), GetIndex);
         }
 
         public override ScriptNode Create()

@@ -18,11 +18,14 @@
 [X] Fix clone issues of script
 
 == Scene entity
-[] Z depth
+[X] Z depth
+[X] Menu: Entity ID
+[X] Menu: Entity Name
 
 == UI
 [X] tools ui icon
 [X] play tab ui icon
+[X] port and connection misplace on connecting
 
 == NODE
 [X] velocity
@@ -33,3 +36,16 @@
 [X] collider
 [X] texture
 [] layer
+
+== Fix node
+[X] branch
+[X] for
+[X] get texture slot
+[X] get size
+[X] get radius
+[X] operators
+[X] equal node logic
+[X] list insert item
+[X] list set item
+[X] list contains item
+[X] set variable

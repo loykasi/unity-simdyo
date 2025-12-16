@@ -26,10 +26,7 @@ public class ColorPickerWindow : MonoBehaviour, IPointerEnterHandler, IPointerEx
         Vector3 worldPosition = Mouse.current.position.ReadValue();
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas, worldPosition, null, out Vector2 point);
         Vector2 position = point + new Vector2(_canvas.sizeDelta.x * 0.5f, _canvas.sizeDelta.y * 0.5f);
-
-        Debug.Log($"world: {worldPosition}");
-        Debug.Log($"screen: {position}");
-
+        
         float xDiff = position.x + _rect.sizeDelta.x - _canvas.sizeDelta.x;
         float yDiff = _rect.sizeDelta.y - position.y;
 

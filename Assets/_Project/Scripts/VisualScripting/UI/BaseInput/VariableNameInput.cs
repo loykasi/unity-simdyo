@@ -8,7 +8,7 @@ namespace Loykas.Scripting
     {
         public TMP_Dropdown Dropdown;
         private int _selectedIndex;
-        private Variable _variable;
+        private string _variableName;
         private ScriptFlow _flow;
 
         private void Awake()
@@ -58,7 +58,7 @@ namespace Loykas.Scripting
             {
                 return;
             }
-            _variable = _flow.GetVariable(name);
+            _variableName = _flow.GetVariable(name).Name;
         }
 
         private void OnVariableUpdated(Variable variable)
@@ -72,10 +72,14 @@ namespace Loykas.Scripting
 
         private void OnVariableDeleted(Variable variable)
         {
-            List<string> options = SceneManager.Instance.GlobalScript.GetVariableOptions();
+            List<string> options = _flow.GetVariableOptions();
 
             Dropdown.ClearOptions();
             Dropdown.AddOptions(options);
+
+            int index = Dropdown.options.FindIndex(o => o.text == _variableName);
+            _selectedIndex = index == -1 ? 0 : index;
+            Dropdown.SetValueWithoutNotify(_selectedIndex);
         }
         
         public override object GetValue()
@@ -96,7 +100,7 @@ namespace Loykas.Scripting
                 _selectedIndex = Dropdown.options.FindIndex(o => o.text.Equals(variableName));
                 if (_selectedIndex != -1)
                 {
-                    _variable = _flow.GetVariable(variableName);
+                    _variableName = _flow.GetVariable(variableName).Name;
                 }
                 else
                 {
