@@ -15,15 +15,15 @@ MonoBehaviour:
   m_TableCollectionName: VisualScripting
   m_TableCollectionNameGuidString: a9239085899d7f84fb049ef3dedbcf60
   m_Entries:
-  - m_Id: 149592989696
+  - m_Id: 23279649902690304
     m_Key: StartNode
     m_Metadata:
       m_Items: []
-  - m_Id: 19543215824896
+  - m_Id: 23279650049490944
     m_Key: WaitNode
     m_Metadata:
       m_Items: []
-  - m_Id: 24549159591936
+  - m_Id: 23279650049490945
     m_Key: WaitNode.WaitTime
     m_Metadata:
       m_Items: []

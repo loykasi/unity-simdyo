@@ -22,7 +22,7 @@ namespace Loykas.Scripting
         public AddListItemNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
 
             ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any)).HideLabel();
             Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any)).HideLabel();

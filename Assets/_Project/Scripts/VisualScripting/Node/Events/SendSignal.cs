@@ -11,7 +11,7 @@ namespace Loykas.Scripting
         public SendSignalNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), SendSignal);
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
             Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
         }
 

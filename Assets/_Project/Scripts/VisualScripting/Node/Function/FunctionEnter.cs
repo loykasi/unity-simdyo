@@ -18,7 +18,7 @@ namespace Loykas.Scripting
 
         public FunctionEnterNode()
         {
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
         }
 
         public override string GetNameKey()

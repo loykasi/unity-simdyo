@@ -12,7 +12,7 @@ namespace Loykas.Scripting
 
         public bool IsDisableConnection { get; set; } = false;
         public bool ShouldLocalized { get; set; } = true;
-        public bool ShouldShowLabel { get; set; } = true;
+        public virtual bool ShouldShowLabel { get; set; } = true;
 
         public Port(string key)
         {

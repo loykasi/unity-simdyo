@@ -15,8 +15,8 @@ namespace Loykas.Scripting
         public BranchNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Branching);
-            IfTrue = OutputTrigger(nameof(IfTrue));
-            IfFalse = OutputTrigger(nameof(IfFalse));
+            IfTrue = OutputTrigger(nameof(IfTrue)).ShowLabel();
+            IfFalse = OutputTrigger(nameof(IfFalse)).ShowLabel();
             
             Condition = InputValue(nameof(Condition), ScriptDataType.Single(DataType.Boolean));
         }

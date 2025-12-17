@@ -18,7 +18,7 @@ namespace Loykas.Scripting
         public DeleteSelfNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Delete);
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
         }
 
         private OutputTrigger Delete()

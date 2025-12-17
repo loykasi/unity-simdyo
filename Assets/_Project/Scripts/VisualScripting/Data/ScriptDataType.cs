@@ -80,8 +80,14 @@ namespace Loykas.Scripting
 
         public static bool IsCompatible(ScriptDataType a, ScriptDataType b)
         {
-            return (a.IsAnyKind || b.IsAnyKind || a.Kind == b.Kind) &&
-            (a.IsAny || b.IsAny || a == b);
+            // return (a.IsAnyKind || b.IsAnyKind || a.Kind == b.Kind) &&
+            // (a.IsAny || b.IsAny || a == b);
+
+            return 
+                (a == b) ||
+                (b.IsAnyKind && b.IsAny) ||
+                (a.Kind == b.Kind && b.IsAny) ||
+                (a.Type == b.Type && b.IsAnyKind);
         }
     }
 }

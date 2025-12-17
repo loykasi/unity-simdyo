@@ -5,6 +5,8 @@ namespace Loykas.Scripting
         public string Name;
         public InputTrigger Destination;
 
+        public override bool ShouldShowLabel { get; set; } = false;
+
         public OutputTrigger(string key) : base(key)
         {
         }
@@ -15,9 +17,9 @@ namespace Loykas.Scripting
             return this;
         }
 
-        public OutputTrigger HideLabel()
+        public OutputTrigger ShowLabel()
         {
-            ShouldShowLabel = false;
+            ShouldShowLabel = true;
             return this;
         }
 

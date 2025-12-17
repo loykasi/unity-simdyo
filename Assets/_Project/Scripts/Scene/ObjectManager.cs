@@ -407,6 +407,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         SceneEntities.Sort((a, b) => a.Id.CompareTo(b.Id));
-        _indexForId = SceneEntities[^1].Id + 1;
+        _indexForId = SceneEntities.Count > 0 ? SceneEntities[^1].Id + 1 : 1;
     }
 }

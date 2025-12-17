@@ -496,17 +496,17 @@ namespace Loykas.Scripting
                 _fromUIPort = fromNode.FindUIPort(fromPort);
                 _toUIPort = toNode.FindUIPort(toPort);
                 
-                StartCoroutine(ConnectNextFrame());
+                StartCoroutine(ConnectNextFrame(_fromUIPort, _toUIPort));
             }
 
             _fromUIPort = null;
             _toUIPort = null;
         }
 
-        private IEnumerator ConnectNextFrame()
+        private IEnumerator ConnectNextFrame(UINodePort fromPort, UINodePort toPort)
         {
             yield return _waitForEndOfFrame;
-            AddConnectionToBoard(_fromUIPort, _toUIPort);
+            AddConnectionToBoard(fromPort, toPort);
         }
 
         private void SwapPort()

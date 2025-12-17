@@ -24,7 +24,7 @@ namespace Loykas.Scripting
         public CreateCloneNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Clone);
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
 
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()

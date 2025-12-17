@@ -58,7 +58,7 @@ public class FunctionMenu : MonoBehaviour
         OnFunctionUpdate();
     }
 
-    private void Close()
+    public void Close()
     {
         _window.SetActive(false);
     }

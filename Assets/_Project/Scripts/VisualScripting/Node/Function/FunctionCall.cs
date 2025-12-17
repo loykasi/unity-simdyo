@@ -23,7 +23,7 @@ namespace Loykas.Scripting
         public FunctionCallNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), TriggerFunction);
-            Exit = OutputTrigger(nameof(Exit)).HideLabel();
+            Exit = OutputTrigger(nameof(Exit));
         }
 
         public override string GetNameKey()

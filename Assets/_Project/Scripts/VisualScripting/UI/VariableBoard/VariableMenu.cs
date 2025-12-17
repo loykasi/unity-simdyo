@@ -70,7 +70,7 @@ public class VariableMenu : MonoBehaviour
         UpdateSize();
     }
 
-    private void Close()
+    public void Close()
     {
         _window.SetActive(false);
     }
