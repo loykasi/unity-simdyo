@@ -192,8 +192,6 @@ namespace Loykas.Scripting
                     source.Disconnect(destination);
                     destination.Disconnect(source);
                     OnConnectionDeleted?.Invoke(connection);
-
-                    Debug.Log("Delete");
                 }
             }
         }
@@ -276,7 +274,6 @@ namespace Loykas.Scripting
 
         public SceneEntity GetEntity(InputValue inputValue)
         {
-            Debug.Log("Log from " + Entity.Id);
             int id = (int)inputValue.GetValue();
             SceneEntity entity = ObjectManager.Instance.GetEntityById(id);
 
@@ -353,7 +350,6 @@ namespace Loykas.Scripting
 
         public void AddFunctionCallNode(ScriptFunction function, Vector3 position)
         {
-            Debug.Log("Add function call");
             FunctionCallNode node = ScriptNodeFactory.Instance.CreateNode<FunctionCallNode>();
 
             node.Init(function);
@@ -371,8 +367,6 @@ namespace Loykas.Scripting
         {
             string baseName = "NewFunction";
             string functionName = GetFunctionName(baseName);
-
-            Debug.Log($"Function: {functionName}");
 
             ScriptFunction function = new()
             {

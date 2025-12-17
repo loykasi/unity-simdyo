@@ -23,7 +23,7 @@ namespace Loykas.Scripting
 
         public override string GetNameKey()
         {
-            return Function.Name;
+            return "Function: " + Function.Name;
         }
 
         public void Init(ScriptFunction function)

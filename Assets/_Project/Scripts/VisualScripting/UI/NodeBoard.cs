@@ -96,22 +96,24 @@ namespace Loykas.Scripting
             {
                 AddNodeToBoard(nodes[i]);
             }
-            for (int i = 0; i < connections.Count; i++)
-            {
-                NodeConnection connection = connections[i];
+            // for (int i = 0; i < connections.Count; i++)
+            // {
+            //     NodeConnection connection = connections[i];
 
-                UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
-                UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
-                UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
-                UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
+            //     UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
+            //     UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
+            //     UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
+            //     UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
 
-                if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
-                {
-                    continue;
-                }
-                //Connect(sourcePort, destinationPort);
-                AddConnectionToBoard(sourcePort, destinationPort);
-            }
+            //     if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
+            //     {
+            //         continue;
+            //     }
+            //     //Connect(sourcePort, destinationPort);
+            //     AddConnectionToBoard(sourcePort, destinationPort);
+            // }
+
+            RenderConnections(connections);
 
             // Debug.Log("======From System");
             // Debug.Log($"Node count: {nodes.Count}");
@@ -134,19 +136,22 @@ namespace Loykas.Scripting
 
         private void AddConnectionToBoard(UINodePort source, UINodePort destination)
         {
+            int index = _lines.FindIndex(l => l.Source == source && l.Destination == destination);
+            if (index != -1)
+            {
+                return;
+            }
+
             UILineConnection lineConnection = CreateLine(source, destination);
 
             source.AddConnection(lineConnection);
             destination.AddConnection(lineConnection);
 
             _lines.Add(lineConnection);
-
-            // AfterAdd();
         }
 
         private UILineConnection CreateLine(UINodePort source, UINodePort destination)
         {
-            Debug.Log("Create line");
             GameObject lineObject = new("line");
 
             lineObject.AddComponent<CanvasRenderer>();
@@ -170,6 +175,8 @@ namespace Loykas.Scripting
 
             UpdateLineVisual(lineRenderer, source, destination);
 
+            Debug.Log("connect");
+
             return lineConnection;
         }
 
@@ -183,11 +190,13 @@ namespace Loykas.Scripting
             yield return _waitForEndOfFrame;
 
             IEnumerable<NodeConnection> connections = Flow.GetConnections(node);
+            RenderConnections(connections);
+        }
 
-            int count = 0;
+        private void RenderConnections(IEnumerable<NodeConnection> connections)
+        {
             foreach (NodeConnection connection in connections)
             {
-                count++;
                 UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
                 UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
                 UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
@@ -198,19 +207,11 @@ namespace Loykas.Scripting
                     continue;
                 }
 
-                int index = _lines.FindIndex(l => l.Source == sourcePort && l.Destination == destinationPort);
-                if (index != -1)
-                {
-                    continue;
-                }
-
                 _fromUIPort = sourcePort;
                 _toUIPort = destinationPort;
 
                 AddConnectionToBoard(sourcePort, destinationPort);
             }
-
-            Debug.Log("Load connection: " + count);
         }
 
         //==============================//==============================
@@ -370,7 +371,6 @@ namespace Loykas.Scripting
 
         public void OnConnectionDeleted(NodeConnection connection)
         {
-            Debug.Log("delete connection");
             UILineConnection connectionElement = _lines.Find(n => n.Connection == connection);
             if (connectionElement == null)
             {
@@ -496,11 +496,17 @@ namespace Loykas.Scripting
                 _fromUIPort = fromNode.FindUIPort(fromPort);
                 _toUIPort = toNode.FindUIPort(toPort);
                 
-                AddConnectionToBoard(_fromUIPort, _toUIPort);
+                StartCoroutine(ConnectNextFrame());
             }
 
             _fromUIPort = null;
             _toUIPort = null;
+        }
+
+        private IEnumerator ConnectNextFrame()
+        {
+            yield return _waitForEndOfFrame;
+            AddConnectionToBoard(_fromUIPort, _toUIPort);
         }
 
         private void SwapPort()

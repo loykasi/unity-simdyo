@@ -8,11 +8,17 @@ public class CursorHover : MonoBehaviour, IPointerExitHandler, IPointerMoveHandl
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        CursorSystem.Instance.ToDefault(_priority);
+        if (CursorSystem.Instance != null)
+        {
+            CursorSystem.Instance.ToDefault(_priority);    
+        }
     }
 
     public void OnPointerMove(PointerEventData eventData)
     {
-        CursorSystem.Instance.SetCursor(_cursorType, _priority);
+        if (CursorSystem.Instance != null)
+        {
+            CursorSystem.Instance.SetCursor(_cursorType, _priority);
+        }
     }
 }
