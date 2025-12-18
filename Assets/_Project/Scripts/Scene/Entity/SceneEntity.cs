@@ -168,9 +168,14 @@ public class SceneEntity : MonoBehaviour
         }
         else
         {
-            Layer ^= layer;
+            Layer &= ~layer;
         }
         UpdateLayer();
+    }
+
+    public void SetLayer(int layer)
+    {
+        SetLayer((CollisionLayer)layer);
     }
 
     public virtual void OnSceneStart()

@@ -23,7 +23,8 @@ namespace Loykas.Scripting
 
         private void UpdateItem()
         {
-            _textField.SetText(_nodeData.GetType().Name);
+            string title = GlobalLocalization.Instance.GetValue(_nodeData.GetNameKey());
+            _textField.SetText(title);
         }
 
         public void Add()

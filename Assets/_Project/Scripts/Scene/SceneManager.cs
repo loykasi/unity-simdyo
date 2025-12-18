@@ -58,6 +58,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         OnSceneStop?.Invoke();
 
         _isRunning = false;
+        Physics2D.SyncTransforms();
     }
     
     private void UpdateGame()

@@ -18,6 +18,7 @@ namespace Loykas.Scripting
         public BaseInput GlobalVariableNameInputPrefab;
         public BaseInput ListInputPrefab;
         public BaseInput KeyInputPrefab;
+        public BaseInput CollisionLayerInput;
 
         private UIInput GetUIInput(DataType type)
         {
@@ -114,20 +115,24 @@ namespace Loykas.Scripting
                 BaseInput input = Instantiate(VariableNameInputPrefab);
                 var variableInput = (VariableNameInput)input;
                 variableInput.Init(entity.Script);
-
                 return input;
             }
 
             if (inputType == InputValueTypes.GlobalVariable)
             {
                 BaseInput input = Instantiate(GlobalVariableNameInputPrefab);
-
                 return input;
             }
 
             if (inputType == InputValueTypes.Key)
             {
                 BaseInput input = Instantiate(KeyInputPrefab);
+                return input;
+            }
+
+            if (inputType == InputValueTypes.CollisionLayer)
+            {
+                BaseInput input = Instantiate(CollisionLayerInput);
                 return input;
             }
 

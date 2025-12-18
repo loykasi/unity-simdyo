@@ -13,7 +13,8 @@ public enum InputValueTypes
     Entity,
     Variable,
     GlobalVariable,
-    Key
+    Key,
+    CollisionLayer
 }
 
     public class InputValue : Port<OutputValue>
@@ -122,11 +123,18 @@ public enum InputValueTypes
             return this;
         }
 
-
         public InputValue UseKeyCodeInput()
         {
             InputType = InputValueTypes.Key;
             SetDefaultValue(new Loykas.Scripting.Key(Loykas.Scripting.KeyCode.Any));
+
+            return this;
+        }
+
+        public InputValue UseCollisionLayerInput()
+        {
+            InputType = InputValueTypes.CollisionLayer;
+            UpdateDefaultValue();
 
             return this;
         }

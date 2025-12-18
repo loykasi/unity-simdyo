@@ -68,6 +68,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void Click(Vector3 screenPoint)
     {
+        SceneManager.Instance.GlobalScript.TriggerEvent(EventHook.Clicked);
+
         if (!TryGetSceneEntity(EngineManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
         {
             return;
