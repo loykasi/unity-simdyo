@@ -81,6 +81,7 @@ public class BoxEntity : SceneEntity
         }
     }
 
+    [SerializeField] private BoxCollider2D _interactionBox;
     private Vector3[] _vertices = new Vector3[4];
 
     public void SetSize(float width, float height)
@@ -97,6 +98,8 @@ public class BoxEntity : SceneEntity
         _vertices[2] = new Vector3(- halfWidth, - halfHeight);
         _vertices[3] = new Vector3(halfWidth, - halfHeight);
         MeshFilter.mesh.vertices = _vertices;
+
+        _interactionBox.size = ((BoxCollider2D)Collider).size;
     }
 
     public void UpdateBox(Vector3 from, Vector3 to)
@@ -118,6 +121,7 @@ public class BoxEntity : SceneEntity
 
         ((BoxCollider2D)Collider).size = new Vector2(Width, Height);
 
+        _interactionBox.size = ((BoxCollider2D)Collider).size;
         Border.SetBorder(Width, Height);
     }
 
@@ -168,8 +172,8 @@ public class BoxEntity : SceneEntity
         entity.Rotation = Rotation;
         entity.CurrentColor = CurrentColor;
 
-        entity.SetCollider(IsColliderEnabled);
-        entity.SetGravity(IsGravityEnabled);
+        entity.ToggleCollider(IsColliderEnabled);
+        entity.ToggleGravity(IsGravityEnabled);
         entity.SetLayer(Layer);
         
         if (TextureSlot > 0)

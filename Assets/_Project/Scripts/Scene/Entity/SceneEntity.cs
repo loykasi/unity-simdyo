@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
+using UnityEngine.EventSystems;
 
 public class SceneEntity : MonoBehaviour
 {
@@ -13,6 +14,14 @@ public class SceneEntity : MonoBehaviour
     public bool IsDirty { get; set; } = false;
 
     public int Id;
+    public MeshFilter MeshFilter;
+    public MeshRenderer Renderer;
+    public Collider2D Collider;
+    public Rigidbody2D Rigidbody;
+    public ScriptFlow Script;
+    public CollisionLayer Layer;
+    public SortingGroup SortingGroup;
+    public int TextureSlot = 0;
     
     public string Name
     {
@@ -68,15 +77,6 @@ public class SceneEntity : MonoBehaviour
     }
     private Vector2 _velocity;
 
-    public MeshFilter MeshFilter;
-    public MeshRenderer Renderer;
-    public Collider2D Collider;
-    public Rigidbody2D Rigidbody;
-    public ScriptFlow Script;
-    public CollisionLayer Layer;
-    public SortingGroup SortingGroup;
-    public int TextureSlot = 0;
-
     public int ZDepth
     {
         get => SortingGroup.sortingOrder;
@@ -86,8 +86,6 @@ public class SceneEntity : MonoBehaviour
             OnUpdateProperty();
         }
     }
-
-    public virtual Bounds Bounds => Renderer.bounds;
 
     public ColorHSV CurrentColor
     {
@@ -113,11 +111,11 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public bool IsColliderEnabled { get; set; } = true;
+    public bool IsColliderEnabled => Collider.enabled;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
+    public virtual Bounds Bounds => Renderer.bounds;
 
     protected SceneEntityState _defaultState = new();
-
     private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
 
     private void Awake()
@@ -189,8 +187,6 @@ public class SceneEntity : MonoBehaviour
         _defaultState.Velocity = Velocity;
         _defaultState.AngularVelocity = Rigidbody.angularVelocity;
 
-        Collider.enabled = IsColliderEnabled;
-
         if (Rigidbody.bodyType != RigidbodyType2D.Static)
         {
             Rigidbody.linearVelocity = Velocity;   
@@ -202,38 +198,25 @@ public class SceneEntity : MonoBehaviour
     public virtual void OnSceneStop()
     {
         transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
-        SetCollider(_defaultState.ColliderEnabled);
-        SetGravity(_defaultState.GravityEnabled);
+        ToggleCollider(_defaultState.ColliderEnabled);
+        ToggleGravity(_defaultState.GravityEnabled);
         if (_defaultState.GravityEnabled)
         {
             Velocity = _defaultState.Velocity;
             Rigidbody.angularVelocity = _defaultState.AngularVelocity;
         }
 
-        Collider.enabled = true;
-
         // Script.OnSceneStop();
     }
 
-    public void SetCollider(bool value)
+    public void ToggleCollider(bool value)
     {
-        IsColliderEnabled = value;
-        if (SceneManager.Instance.IsRuning)
-        {
-            Collider.enabled = IsColliderEnabled;
-        }
+        Collider.enabled = value;
     }
 
-    public void SetGravity(bool value)
+    public void ToggleGravity(bool value)
     {
-        if (value)
-        {
-            Rigidbody.bodyType = RigidbodyType2D.Dynamic;
-        }
-        else
-        {
-            Rigidbody.bodyType = RigidbodyType2D.Static;
-        }
+        Rigidbody.bodyType = value ? RigidbodyType2D.Dynamic : RigidbodyType2D.Static;
     }
 
     public void SetColor(Color color)

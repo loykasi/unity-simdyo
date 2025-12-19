@@ -9202,6 +9202,9 @@ MonoBehaviour:
   isNotDestroyOnLoad: 0
   SceneEntities: []
   _holder: {fileID: 1382982711}
+  _interactionLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!4 &669105088
 Transform:
   m_ObjectHideFlags: 0

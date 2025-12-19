@@ -12,6 +12,8 @@ public class CircleEntity : SceneEntity
     public int TotalVert;
     public float Radius;
 
+    [SerializeField] private CircleCollider2D _interactionCircle;
+
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
     public void SetRadius(float radius, int totalVert = 10)
@@ -33,6 +35,8 @@ public class CircleEntity : SceneEntity
 
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
+
+        _interactionCircle.radius = ((CircleCollider2D)Collider).radius;
     }
 
     public void UpdateCircle(Vector3 from, Vector3 to)
@@ -59,6 +63,7 @@ public class CircleEntity : SceneEntity
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
 
+        _interactionCircle.radius = ((CircleCollider2D)Collider).radius;
         Border.SetRadius(Radius);
     }
 
@@ -96,8 +101,8 @@ public class CircleEntity : SceneEntity
         entity.Rotation = Rotation;
         entity.CurrentColor = CurrentColor;
 
-        entity.SetCollider(IsColliderEnabled);
-        entity.SetGravity(IsGravityEnabled);
+        entity.ToggleCollider(IsColliderEnabled);
+        entity.ToggleGravity(IsGravityEnabled);
         entity.SetLayer(Layer);
         
         if (TextureSlot > 0)

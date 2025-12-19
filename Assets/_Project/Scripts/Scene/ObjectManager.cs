@@ -15,6 +15,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public int SaveLoadOrder { get; set; } = 0;
 
     [SerializeField] private Transform _holder;
+    [SerializeField] private LayerMask _interactionLayer;
 
     private int _indexForId = 1;
 
@@ -81,7 +82,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     private bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
     {
         Ray ray = camera.ScreenPointToRay(screenPoint);
-        RaycastHit2D hit = Physics2D.GetRayIntersection(ray);
+        RaycastHit2D hit = Physics2D.GetRayIntersection(ray, 20f, _interactionLayer);
 
         Debug.DrawRay(ray.origin, Vector3.up * 3f, Color.red, 10f);
 
@@ -91,7 +92,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             return false;
         }
 
-        entity = hit.collider.GetComponent<SceneEntity>();
+        entity = hit.collider.GetComponent<Interactable>().Get();
         return true;
     }
 
@@ -396,8 +397,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entity.Rotation = entityData.Rotation;
             entity.CurrentColor = entityData.Color;
 
-            entity.SetCollider(entityData.ColliderEnabled);
-            entity.SetGravity(entityData.GravityEnabled);
+            entity.ToggleCollider(entityData.ColliderEnabled);
+            entity.ToggleGravity(entityData.GravityEnabled);
             entity.SetLayer(entityData.Layer);
             
             if (entityData.TextureSlot > 0)

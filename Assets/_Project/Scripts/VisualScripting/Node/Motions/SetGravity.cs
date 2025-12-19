@@ -39,7 +39,7 @@ namespace Loykas.Scripting
             }
 
             bool enable = (bool)Value.GetValue();
-            entity.SetGravity(enable);
+            entity.ToggleGravity(enable);
             return Exit;
         }
     }
