@@ -7,10 +7,10 @@ public class GlobalLocalization : Singleton<GlobalLocalization>
 {
     public StringTable VisualScriptingTable;
 
-    IEnumerator Start()
-    {
-        yield return LocalizationSettings.InitializationOperation;
-    }
+    // IEnumerator Start()
+    // {
+    //     yield return LocalizationSettings.InitializationOperation;
+    // }
 
     public void SetLanguage(int id)
     {

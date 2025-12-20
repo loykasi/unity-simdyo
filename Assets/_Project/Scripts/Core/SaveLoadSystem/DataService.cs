@@ -43,6 +43,10 @@ public class DataService : MonoBehaviour, IDataService
 #else
 
             string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -56,7 +60,7 @@ public class DataService : MonoBehaviour, IDataService
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
+            // Debug.Log(ex.Message);
             throw new IOException("Error in saving data");
         }
     }
@@ -66,7 +70,6 @@ public class DataService : MonoBehaviour, IDataService
         using MemoryStream memoryStream = new();
         using (ZipArchive archive = new(memoryStream, ZipArchiveMode.Create, true))
         {
-            // main data
             var entry = archive.CreateEntry("scene.json", System.IO.Compression.CompressionLevel.NoCompression);
             using (Stream stream = entry.Open())
             {
@@ -129,14 +132,14 @@ public class DataService : MonoBehaviour, IDataService
             var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
             if (paths.Length == 0)
             {
-                throw new ArgumentException($"No save data");
+                return;
             }
 
             string path = paths[0];
 
             if (!File.Exists(path))
             {
-                throw new ArgumentException($"No save data");
+                throw new ArgumentException($"Path not exits");
             }
             
             using ZipArchive archive = ZipFile.OpenRead(path);
@@ -146,6 +149,8 @@ public class DataService : MonoBehaviour, IDataService
 
     private void LoadToGameData(ZipArchive archive, GameData data)
     {
+        LoadingScreen.Instance.Toggle(true);
+
         try
         {
             if (data.Textures != null)
@@ -191,7 +196,6 @@ public class DataService : MonoBehaviour, IDataService
         }
         catch (Exception ex)
         {
-            Debug.Log(ex.Message);
             throw new IOException("Error in loading data");
         }
     }

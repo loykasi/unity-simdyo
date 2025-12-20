@@ -36,6 +36,7 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
 
     public void LoadFromUrl(string url)
     {
+        LoadingScreen.Instance.Toggle(true);
         _dataService.LoadFromUrl(url, _gameData, OnSaveDataLoaded);
     }
 
@@ -45,5 +46,7 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
         {
             item.LoadData(_gameData);
         }
+
+        LoadingScreen.Instance.Toggle(false);
     }
 }

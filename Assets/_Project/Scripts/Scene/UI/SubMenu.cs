@@ -23,4 +23,9 @@ public class SubMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         _isHover = false;
     }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
 }
