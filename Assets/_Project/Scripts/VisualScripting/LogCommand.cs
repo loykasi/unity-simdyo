@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -9,6 +10,28 @@ namespace Loykas.Scripting
         [SerializeField] private GameObject _console;
         [SerializeField] private TMP_Text _textBox;
         private string _log = string.Empty;
+
+        private void OnEnable()
+        {
+            if (SceneManager.Instance != null)
+            {
+                SceneManager.Instance.OnSceneStart += OnSceneStart;
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (SceneManager.Instance != null)
+            {
+                SceneManager.Instance.OnSceneStart -= OnSceneStart;
+            }
+        }
+
+        private void OnSceneStart()
+        {
+            _log = string.Empty;
+            _textBox.SetText(_log);
+        }
 
         public void Toggle()
         {

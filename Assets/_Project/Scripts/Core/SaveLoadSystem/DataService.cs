@@ -149,7 +149,7 @@ public class DataService : MonoBehaviour, IDataService
 
     private void LoadToGameData(ZipArchive archive, GameData data)
     {
-        LoadingScreen.Instance.Toggle(true);
+        // LoadingScreen.Instance.Toggle(true);
 
         try
         {

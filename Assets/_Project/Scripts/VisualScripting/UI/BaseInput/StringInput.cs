@@ -30,12 +30,7 @@ namespace Loykas.Scripting
 
         private void OnValueChanged(string value)
         {
-            if (AutoRezise)
-            {
-                Vector2 size = InputField.textComponent.GetPreferredValues(value);
-                float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-                Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);   
-            }
+            UpdateSize();
             OnValueUpdated?.Invoke();
         }
 
@@ -53,6 +48,7 @@ namespace Loykas.Scripting
         public override void SetValue(object value)
         {
             InputField.SetTextWithoutNotify((string)value);
+            UpdateSize();
         }
 
         public override void SetWidth(float width)
@@ -60,6 +56,16 @@ namespace Loykas.Scripting
             MinWidth = width;
             MaxWidth = width;
             Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
+        }
+
+        private void UpdateSize()
+        {
+            if (AutoRezise)
+            {
+                Vector2 size = InputField.textComponent.GetPreferredValues();
+                float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
+                Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
+            }
         }
     }
 }

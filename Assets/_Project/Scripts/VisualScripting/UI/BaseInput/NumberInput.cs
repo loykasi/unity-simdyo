@@ -6,6 +6,7 @@ namespace Loykas.Scripting
     public class NumberInput : BaseInput
     {
         public TMP_InputField InputField;
+        public bool AutoRezise = true;
         public float MinWidth = 50f;
         public float MaxWidth = 200f;
 
@@ -23,9 +24,7 @@ namespace Loykas.Scripting
 
         private void OnValueChanged(string value)
         {
-            Vector2 size = InputField.textComponent.GetPreferredValues(value);
-            float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
-            Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
+            UpdateSize();
             OnValueUpdated?.Invoke();
         }
 
@@ -59,6 +58,7 @@ namespace Loykas.Scripting
         {
             _value = (float)value;
             InputField.SetTextWithoutNotify(_value.ToString());
+            UpdateSize();
         }
 
         public override void SetWidth(float width)
@@ -66,6 +66,16 @@ namespace Loykas.Scripting
             MinWidth = width;
             MaxWidth = width;
             Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
+        }
+
+        private void UpdateSize()
+        {
+            if (AutoRezise)
+            {
+                Vector2 size = InputField.textComponent.GetPreferredValues();
+                float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
+                Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
+            }
         }
     }
 }

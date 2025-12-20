@@ -47,6 +47,6 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
             item.LoadData(_gameData);
         }
 
-        LoadingScreen.Instance.Toggle(false);
+        // LoadingScreen.Instance.Toggle(false);
     }
 }
