@@ -5,11 +5,18 @@ public class RotateController : Singleton<RotateController>
 {
     [SerializeField] private float _snapRadius;
     [SerializeField] private RectTransform _visualization;
-    
-    [SerializeField] private RectTransform _mouseRotateRect;
-    [SerializeField] private Image _mouseRotateImage;
+
+    [SerializeField] private Material _rotationMaterial;
+    [SerializeField] private RawImage _mouseRotateIndicator;
 
     private Vector3 _startMouseDirection;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        
+        _mouseRotateIndicator.material = Instantiate(_rotationMaterial);
+    }
 
     public float GetSnapRadiusWorld()
     {
@@ -29,7 +36,7 @@ public class RotateController : Singleton<RotateController>
     {
         _startMouseDirection = mousePosition - entityPosition;
         float angle = Mathf.Atan2(_startMouseDirection.y, _startMouseDirection.x) * Mathf.Rad2Deg + 90f;
-        _mouseRotateRect.rotation = Quaternion.Euler(0f, 0f, angle);
+        _mouseRotateIndicator.rectTransform.rotation = Quaternion.Euler(0f, 0f, angle);
         Debug.Log(angle);
 
         _visualization.gameObject.SetActive(true);
@@ -61,13 +68,17 @@ public class RotateController : Singleton<RotateController>
             angle = Mathf.Round(angle / 15f) * 15f;
         }
 
-        _mouseRotateImage.fillClockwise = angle < 0;
-        _mouseRotateImage.fillAmount = Mathf.Abs(angle / 360f);
+        // _mouseRotateImage.fillClockwise = angle < 0;
+        // _mouseRotateImage.fillAmount = Mathf.Abs(angle / 360f);
+
+        _mouseRotateIndicator.material.SetFloat("_Percentage", Mathf.Abs(angle / 360f));
+        _mouseRotateIndicator.material.SetFloat("_Flip", angle < 0 ? 1 : -1);
 
         Camera camera = EngineManager.Instance.EditorCamera;
         Vector3 screenPoint = camera.WorldToScreenPoint(worldPosition);
         Vector3 mouseScreenPoint = camera.WorldToScreenPoint(mousePosition);
         float size = Vector3.Distance(mouseScreenPoint, screenPoint) * 2f / EngineManager.Instance.CanvasScale;
-        _mouseRotateRect.sizeDelta = new Vector2(size, size);
+
+        _mouseRotateIndicator.rectTransform.sizeDelta = new Vector2(size, size);
     }
 }
