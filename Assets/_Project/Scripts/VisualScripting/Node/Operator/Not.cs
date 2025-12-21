@@ -6,7 +6,7 @@ namespace Loykas.Scripting
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
 
-        public InputValue A;
+        public InputValue Value;
 
         public OutputValue Output;
 
@@ -17,11 +17,13 @@ namespace Loykas.Scripting
 
         public NotNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean))
+                    .UseInput()
+                    .UseGlobalLocalized();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
         }
         
-        private object Get() => !A.GetValue<bool>();
+        private object Get() => !Value.GetValue<bool>();
     }
 }

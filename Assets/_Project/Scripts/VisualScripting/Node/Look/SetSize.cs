@@ -23,12 +23,18 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Width = InputValue(nameof(Width), ScriptDataType.Single(DataType.Number)).UseInput();
-            Height = InputValue(nameof(Height), ScriptDataType.Single(DataType.Number)).UseInput();
+            Width = InputValue(nameof(Width), ScriptDataType.Single(DataType.Number))
+                    .UseInput()
+                    .UseGlobalLocalized();
+                    
+            Height = InputValue(nameof(Height), ScriptDataType.Single(DataType.Number))
+                    .UseInput()
+                    .UseGlobalLocalized();
+            
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
         }
 
         public OutputTrigger Set()

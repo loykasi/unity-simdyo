@@ -48,9 +48,7 @@ namespace Loykas.Scripting
                     string key = Port.Key;
                     if (Port.ShouldLocalized)
                     {
-                        string name = Port.Node.GetNameKey();
-                        key = name + "." + Port.Key;
-                        key = GlobalLocalization.Instance.GetValue(key);   
+                        key = GlobalLocalization.Instance.GetValue(Port.GetLocalizedKey());   
                     }
                     _label.text = key;
                 }

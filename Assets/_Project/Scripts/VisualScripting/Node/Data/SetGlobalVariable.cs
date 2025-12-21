@@ -26,11 +26,12 @@ namespace Loykas.Scripting
             Exit = OutputTrigger(nameof(Exit));
 
             Variable = InputValue(nameof(Variable), ScriptDataType.Single(DataType.String))
-                            .UseGlobalVariableInput()
-                            .DisableConnection()
-                            .HideLabel();
+                        .UseGlobalVariableInput()
+                        .DisableConnection()
+                        .HideLabel();
                             
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any));
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
+                    .UseGlobalLocalized();
 
             Variable.OnValueChanged += OnInputValueChanged;
         }

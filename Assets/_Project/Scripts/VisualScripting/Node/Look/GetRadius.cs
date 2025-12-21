@@ -17,11 +17,12 @@ namespace Loykas.Scripting
         public GetRadiusNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
+                    .UseGlobalLocalized();
         }
 
         public object Get()

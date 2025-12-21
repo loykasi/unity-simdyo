@@ -23,7 +23,8 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Clear);
             Exit = OutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
+                        .UseGlobalLocalized();
         }
 
         private OutputTrigger Clear()

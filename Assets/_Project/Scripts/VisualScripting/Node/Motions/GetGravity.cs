@@ -16,7 +16,8 @@ namespace Loykas.Scripting
                         .UseInput()
                         .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get)
+                    .UseGlobalLocalized();
         }
 
         public override ScriptNode Create()

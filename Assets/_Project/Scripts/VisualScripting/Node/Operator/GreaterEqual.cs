@@ -18,8 +18,13 @@ namespace Loykas.Scripting
 
         public GreaterEqualNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
+                .UseInput()
+                .NoLocalize();
+            
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
+                .UseInput()
+                .NoLocalize();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
         }

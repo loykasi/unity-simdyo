@@ -10,7 +10,7 @@ namespace Loykas.Scripting
         public override bool CanUseGlobal => false;
 
         public InputValue Input;
-        public OutputValue Output;
+        public OutputValue Value;
 
         private Variable _variable;
 
@@ -26,7 +26,8 @@ namespace Loykas.Scripting
                             .DisableConnection()
                             .HideLabel();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get).HideLabel();
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Any), Get)
+                    .UseGlobalLocalized();
 
             Input.OnValueChanged += OnInputValueChanged;
         }
@@ -85,9 +86,9 @@ namespace Loykas.Scripting
         {
             ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
 
-            Output.SetType(type);
+            Value.SetType(type);
 
-            IEnumerable<NodeConnection> connections = Flow.GetConnections(Output);
+            IEnumerable<NodeConnection> connections = Flow.GetConnections(Value);
             foreach (var item in connections)
             {
                 item.Validate();

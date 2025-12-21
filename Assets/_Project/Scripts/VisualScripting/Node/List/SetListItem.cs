@@ -12,7 +12,7 @@ namespace Loykas.Scripting
         public OutputTrigger Exit;
 
         public InputValue ListInput;
-        public InputValue Item;
+        public InputValue Value;
         public InputValue Index;
 
         public override ScriptNode Create()
@@ -25,9 +25,15 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any));
-            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
+                        .UseGlobalLocalized();
+            
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
+                    .UseGlobalLocalized();
+            
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number))
+                    .UseInput()
+                    .UseGlobalLocalized();
 
             ListInput.OnConnected += OnListInputConnected;
         }
@@ -35,7 +41,7 @@ namespace Loykas.Scripting
         private OutputTrigger Set()
         {
             IList list = (IList)ListInput.GetValue();
-            object item = Item.GetValue();
+            object item = Value.GetValue();
             int index = (int)(float)Index.GetValue();
 
             if (index >= 0 && index < list.Count)
@@ -57,11 +63,11 @@ namespace Loykas.Scripting
             {
                 DataType type = ListInput.Source.Type.Type;
                 
-                Item.SetType(ScriptDataType.Single(type));
+                Value.SetType(ScriptDataType.Single(type));
             }
             else
             {
-                Item.SetType(ScriptDataType.Single(DataType.Any));
+                Value.SetType(ScriptDataType.Single(DataType.Any));
             }
 
             OnNodeUpdated?.Invoke();

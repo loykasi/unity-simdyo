@@ -61,7 +61,7 @@ namespace Loykas.Scripting
                 new SetColliderNode(),
                 new SetGravityNode(),
                 new SetVelocityNode(),
-                new SetCollisionLayer(),
+                new SetCollisionLayerNode(),
                 
                 new GetPositionNode(),
                 new GetAngleNode(),
@@ -85,6 +85,7 @@ namespace Loykas.Scripting
                 new SubtractNode(),
                 new MultiplyNode(),
                 new DivideNode(),
+                new ModuloNode(),
 
                 new JoinNode(),
 
@@ -97,8 +98,8 @@ namespace Loykas.Scripting
                 new RandomNumberNode(),
                 new RandomBooleanNode(),
 
-                new ConvertToString(),
-                new ConvertToNumber(),
+                new ConvertToStringNode(),
+                new ConvertToNumberNode(),
 
                 // Data,
                 new SetVariableNode(),

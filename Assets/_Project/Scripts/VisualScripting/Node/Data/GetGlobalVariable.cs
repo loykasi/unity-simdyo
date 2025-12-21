@@ -9,7 +9,7 @@ namespace Loykas.Scripting
         public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
 
         public InputValue Input;
-        public OutputValue Output;
+        public OutputValue Value;
 
         private Variable _variable;
 
@@ -21,11 +21,12 @@ namespace Loykas.Scripting
         public GetGlobalVariableNode() : base()
         {
             Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.String))
-                            .UseGlobalVariableInput()
-                            .DisableConnection()
-                            .HideLabel();
+                    .UseGlobalVariableInput()
+                    .DisableConnection()
+                    .HideLabel();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Any), Get).HideLabel();
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Any), Get)
+                    .UseGlobalLocalized();
 
             Input.OnValueChanged += OnInputValueChanged;
         }
@@ -84,9 +85,9 @@ namespace Loykas.Scripting
         {
             ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
 
-            Output.SetType(type);
+            Value.SetType(type);
 
-            IEnumerable<NodeConnection> connections = Flow.GetConnections(Output);
+            IEnumerable<NodeConnection> connections = Flow.GetConnections(Value);
             foreach (var item in connections)
             {
                 item.Validate();

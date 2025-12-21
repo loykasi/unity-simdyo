@@ -18,8 +18,13 @@ namespace Loykas.Scripting
 
         public AndNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Boolean)).UseInput();
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Boolean))
+                .UseInput()
+                .NoLocalize();
+
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Boolean))
+                .UseInput()
+                .NoLocalize();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
         }

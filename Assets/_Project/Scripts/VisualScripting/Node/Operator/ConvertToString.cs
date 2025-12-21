@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class ConvertToString : ScriptNode
+    class ConvertToStringNode : ScriptNode
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
 
@@ -11,10 +11,10 @@ namespace Loykas.Scripting
 
         public override ScriptNode Create()
         {
-            return new ConvertToString();
+            return new ConvertToStringNode();
         }
 
-        public ConvertToString()
+        public ConvertToStringNode()
         {
             Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
 

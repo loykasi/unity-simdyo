@@ -15,5 +15,6 @@ namespace Loykas.Scripting
         bool CanConnect(IPort port);
         bool ConnectToPort(IPort port);
         void Disconnect(IPort other);
+        string GetLocalizedKey();
     }
 }

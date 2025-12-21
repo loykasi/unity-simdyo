@@ -12,11 +12,12 @@ namespace Loykas.Scripting
         public GetColliderNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get)
+                    .UseGlobalLocalized();
         }
 
         public override ScriptNode Create()

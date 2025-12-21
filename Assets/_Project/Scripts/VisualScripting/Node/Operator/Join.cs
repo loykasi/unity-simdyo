@@ -18,8 +18,11 @@ namespace Loykas.Scripting
 
         public JoinNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any)).UseInput();
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any))
+                .NoLocalize();
+
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any))
+                .NoLocalize();
 
             Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.String), Get);
         }

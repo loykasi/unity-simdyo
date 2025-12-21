@@ -6,8 +6,8 @@ namespace Loykas.Scripting
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Operator;
 
-        public InputValue A;
-        public InputValue B;
+        public InputValue Min;
+        public InputValue Max;
 
         public OutputValue Value;
 
@@ -18,16 +18,21 @@ namespace Loykas.Scripting
 
         public RandomNumberNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number)).UseInput();
+            Min = InputValue(nameof(Min), ScriptDataType.Single(DataType.Number))
+                .UseInput()
+                .NoLocalize();
+            
+            Max = InputValue(nameof(Max), ScriptDataType.Single(DataType.Number))
+                .UseInput()
+                .NoLocalize();
 
             Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), GetRandom).HideLabel();
         }
 
         private object GetRandom()
         {
-            float a = (float)A.GetValue();
-            float b = (float)B.GetValue();
+            float a = (float)Min.GetValue();
+            float b = (float)Max.GetValue();
             return Random.Range(a, b);
         }
     }

@@ -24,8 +24,12 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number)).UseInput();
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
+                        .UseGlobalLocalized();
+
+            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number))
+                    .UseInput()
+                    .UseGlobalLocalized();
         }
 
         private OutputTrigger Set()

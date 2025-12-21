@@ -61,5 +61,11 @@ namespace Loykas.Scripting
             ShouldLocalized = false;
             return this;
         }
+
+        public OutputValue UseGlobalLocalized()
+        {
+            ShouldLocalizedPerNode = false;
+            return this;
+        }
     }
 }

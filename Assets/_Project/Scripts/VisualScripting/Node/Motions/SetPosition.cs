@@ -23,8 +23,8 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput();
+            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
+            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()

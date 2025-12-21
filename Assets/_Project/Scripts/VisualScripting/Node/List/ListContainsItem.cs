@@ -9,7 +9,7 @@ namespace Loykas.Scripting
         public override ScriptNodeCategory Category => ScriptNodeCategory.List;
 
         public InputValue ListInput;
-        public InputValue Item;
+        public InputValue Value;
         public OutputValue Output;
 
         public override ScriptNode Create()
@@ -19,9 +19,14 @@ namespace Loykas.Scripting
 
         public ListContainsItemNode()
         {
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Item = InputValue(nameof(Item), ScriptDataType.Single(DataType.Any));
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get);
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
+                        .UseGlobalLocalized();
+                        
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
+                    .UseGlobalLocalized();
+            
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get)
+                    .HideLabel();
 
             ListInput.OnConnected += OnListInputConnected;
         }
@@ -29,7 +34,7 @@ namespace Loykas.Scripting
         private object Get()
         {
             IList list = (IList)ListInput.GetValue();
-            object item = Item.GetValue();
+            object item = Value.GetValue();
             return list.Contains(item);
         }
         
@@ -44,11 +49,11 @@ namespace Loykas.Scripting
             {
                 DataType type = ListInput.Source.Type.Type;
                 
-                Item.SetType(ScriptDataType.Single(type));
+                Value.SetType(ScriptDataType.Single(type));
             }
             else
             {
-                Item.SetType(ScriptDataType.Single(DataType.Any));
+                Value.SetType(ScriptDataType.Single(DataType.Any));
             }
 
             OnNodeUpdated?.Invoke();

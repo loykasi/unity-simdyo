@@ -58,6 +58,12 @@ public enum InputValueTypes
             return this;
         }
 
+        public InputValue UseGlobalLocalized()
+        {
+            ShouldLocalizedPerNode = false;
+            return this;
+        }
+
         public void UpdateDefaultValue()
         {
             if (InputType != InputValueTypes.None)

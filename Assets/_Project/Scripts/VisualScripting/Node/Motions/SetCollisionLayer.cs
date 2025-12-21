@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    class SetCollisionLayer : ScriptNode
+    class SetCollisionLayerNode : ScriptNode
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Motion;
 
@@ -14,19 +14,21 @@ namespace Loykas.Scripting
 
         public override ScriptNode Create()
         {
-            return new SetCollisionLayer();
+            return new SetCollisionLayerNode();
         }
 
-        public SetCollisionLayer()
+        public SetCollisionLayerNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseCollisionLayerInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
+                    .UseCollisionLayerInput();
+
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
         }
 
         public OutputTrigger Set()

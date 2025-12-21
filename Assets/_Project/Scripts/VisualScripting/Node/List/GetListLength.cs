@@ -8,7 +8,7 @@ namespace Loykas.Scripting
         public override ScriptNodeCategory Category => ScriptNodeCategory.List;
 
         public InputValue ListInput;
-        public OutputValue Output;
+        public OutputValue Value;
 
         public override ScriptNode Create()
         {
@@ -17,8 +17,11 @@ namespace Loykas.Scripting
 
         public GetListLengthNode()
         {
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any));
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get);
+            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
+                        .UseGlobalLocalized();
+
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
+                    .HideLabel();
         }
 
         private object Get()

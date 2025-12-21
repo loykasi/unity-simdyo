@@ -21,8 +21,8 @@ namespace Loykas.Scripting
         public ForNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Loop);
-            Completed = OutputTrigger(nameof(Completed));
-            LoopBody = OutputTrigger(nameof(LoopBody));
+            Completed = OutputTrigger(nameof(Completed)).ShowLabel();
+            LoopBody = OutputTrigger(nameof(LoopBody)).ShowLabel();
 
             FirstIndex = InputValue(nameof(FirstIndex), ScriptDataType.Single(DataType.Number)).UseInput();
             LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number)).UseInput();

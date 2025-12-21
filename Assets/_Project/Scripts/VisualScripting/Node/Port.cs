@@ -11,8 +11,9 @@ namespace Loykas.Scripting
         public string Key { get; set; }
 
         public bool IsDisableConnection { get; set; } = false;
-        public bool ShouldLocalized { get; set; } = true;
         public virtual bool ShouldShowLabel { get; set; } = true;
+        public bool ShouldLocalized { get; set; } = true;
+        public bool ShouldLocalizedPerNode { get; set; } = true;
 
         public Port(string key)
         {
@@ -50,5 +51,16 @@ namespace Loykas.Scripting
         }
 
         protected abstract void DisconnectPort(TOtherPort port);
+
+        public string GetLocalizedKey()
+        {
+            if (ShouldLocalizedPerNode)
+            {
+                string name = Node.GetNameKey();
+                return name + "." + Key;
+            }
+
+            return Key;
+        }
     }
 }

@@ -20,7 +20,8 @@ namespace Loykas.Scripting
         {
             Enter = CreateInputTrigger(nameof(Enter), Log);
             Exit = OutputTrigger(nameof(Exit));
-            Value = InputValue(nameof(Value));
+            
+            Value = InputValue(nameof(Value)).UseGlobalLocalized();
         }
 
         private OutputTrigger Log()

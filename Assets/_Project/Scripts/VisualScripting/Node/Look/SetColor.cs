@@ -22,11 +22,14 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color))
+                    .UseInput()
+                    .UseGlobalLocalized();
+                    
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
         }
 
         public OutputTrigger Set()

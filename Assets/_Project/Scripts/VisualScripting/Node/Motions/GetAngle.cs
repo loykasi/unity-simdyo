@@ -12,11 +12,12 @@ namespace Loykas.Scripting
         public GetAngleNode()
         {
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+                    .HideLabel()
+                    .UseInput()
+                    .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
+                    .UseGlobalLocalized();
         }
 
         public override ScriptNode Create()

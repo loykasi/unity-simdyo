@@ -19,8 +19,11 @@ namespace Loykas.Scripting
 
         public EqualNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any)).UseInput();
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any)).UseInput();
+            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any))
+                .NoLocalize();
+
+            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any))
+                .NoLocalize();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
 

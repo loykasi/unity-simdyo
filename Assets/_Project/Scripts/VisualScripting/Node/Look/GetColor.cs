@@ -21,7 +21,8 @@ namespace Loykas.Scripting
                         .UseInput()
                         .NullMeanSelf();
                         
-            Color = OutputValue(nameof(Color), ScriptDataType.Single(DataType.Color), Get);
+            Color = OutputValue(nameof(Color), ScriptDataType.Single(DataType.Color), Get)
+                    .UseGlobalLocalized();
         }
 
         public object Get()
