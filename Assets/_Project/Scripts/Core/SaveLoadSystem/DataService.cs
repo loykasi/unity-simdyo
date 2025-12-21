@@ -141,16 +141,23 @@ public class DataService : MonoBehaviour, IDataService
             {
                 throw new ArgumentException($"Path not exits");
             }
-            
-            using ZipArchive archive = ZipFile.OpenRead(path);
-            LoadToGameData(archive, data);
+
+            try
+            {
+                using ZipArchive archive = ZipFile.OpenRead(path);
+                LoadToGameData(archive, data);   
+            }
+            catch (System.Exception)
+            {
+                ToastSystem.Instance.Show($"Load project failed");
+
+                throw;
+            }
         #endif
     }
 
     private void LoadToGameData(ZipArchive archive, GameData data)
     {
-        // LoadingScreen.Instance.Toggle(true);
-
         try
         {
             if (data.Textures != null)
@@ -220,9 +227,19 @@ public class DataService : MonoBehaviour, IDataService
     
     private void OnFileLoaded(byte[] bytes)
     {
-        using MemoryStream memoryStream = new(bytes);
-        using ZipArchive archive = new(memoryStream, ZipArchiveMode.Read);
-        LoadToGameData(archive, _data);
+        try
+        {
+            using MemoryStream memoryStream = new(bytes);
+            using ZipArchive archive = new(memoryStream, ZipArchiveMode.Read);
+            LoadToGameData(archive, _data);
+        }
+        catch (System.Exception)
+        {
+            ToastSystem.Instance.Show($"Load project failed");
+
+            throw;
+        }
+        
     }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
