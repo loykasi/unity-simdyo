@@ -64,8 +64,7 @@ public class EngineManager : Singleton<EngineManager>
 
     public void LoadScene()
     {
-        ResetState();
-        SaveLoadSystem.Instance.Load();
+        SaveLoadSystem.Instance.Load(ResetState);
     }
 
     public void SaveScene()

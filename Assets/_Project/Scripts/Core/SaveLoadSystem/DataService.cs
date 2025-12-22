@@ -15,7 +15,9 @@ public class DataService : MonoBehaviour, IDataService
     private readonly string _debugPath = "C:\\Users\\Admin\\Desktop\\_\\playground\\unity";
     private string _path;
     private GameData _data;
-    private UnityAction _callback;
+
+    private UnityAction _onSuccess;
+    private UnityAction _onFailure;
 
     private readonly string _defaultName = "SceneProject";
     private readonly string _dataExtension = ".zip";
@@ -58,7 +60,7 @@ public class DataService : MonoBehaviour, IDataService
 
 #endif
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Debug.Log(ex.Message);
             throw new IOException("Error in saving data");
@@ -102,58 +104,111 @@ public class DataService : MonoBehaviour, IDataService
         return memoryStream.ToArray();
     }
 
-    public void LoadFromUrl(string url, GameData data, UnityAction callback)
+    public void Load(GameData data, UnityAction onSuccess, UnityAction onFailure)
     {
-        // window.location.pathname.replace(/^\/|\/$/g, '').split("/").pop()
-        _callback = callback;
-        _data = data;
-        StartCoroutine(LoadFromUrl(url, OnFileLoaded));
-    }
-
-    public void LoadPath(string path, GameData data, UnityAction callback)
-    {
-        _callback = callback;
-        if (!File.Exists(path))
-        {
-            throw new ArgumentException($"No save data");
-        }
+        _onSuccess = onSuccess;
+        _onFailure = onFailure;
         
-        using ZipArchive archive = ZipFile.OpenRead(path);
-        LoadToGameData(archive, data);
-    }
-
-    public void Load(GameData data, UnityAction callback)
-    {
-        _callback = callback;
         #if UNITY_WEBGL && !UNITY_EDITOR
             _data = data;
-            LoadFile(gameObject.name, nameof(OnFileUpload), ".zip", false);
+            LoadFile(gameObject.name, nameof(OnFileUploadFromBrowser), ".zip", false);
         #else
-            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
-            if (paths.Length == 0)
-            {
-                return;
-            }
-
-            string path = paths[0];
-
-            if (!File.Exists(path))
-            {
-                throw new ArgumentException($"Path not exits");
-            }
-
-            try
-            {
-                using ZipArchive archive = ZipFile.OpenRead(path);
-                LoadToGameData(archive, data);   
-            }
-            catch (System.Exception)
-            {
-                ToastSystem.Instance.Show($"Load project failed");
-
-                throw;
-            }
+            LoadFileFromDesktop(data);
         #endif
+    }
+
+    private void LoadFileFromDesktop(GameData data)
+    {
+        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+        if (paths.Length == 0)
+        {
+            return;
+        }
+
+        string path = paths[0];
+        if (!File.Exists(path))
+        {
+            _onFailure?.Invoke();
+            
+            throw new ArgumentException($"Path not exits");
+        }
+
+        try
+        {
+            using ZipArchive archive = ZipFile.OpenRead(path);
+            LoadProject(archive, data);
+        }
+        catch (Exception exception)
+        {
+            OnLoadFailed(exception.Message);
+        }
+    }
+
+    public void OnFileUploadFromBrowser(string json)
+    {
+        string[] urls = JsonUtils.FromJson<string>(json);
+        StartCoroutine(LoadFromUrl(urls[0]));
+    }
+
+    public void LoadFromUrl(string url, GameData data, UnityAction onSuccess, UnityAction onFailure)
+    {
+        _onSuccess = onSuccess;
+        _onFailure = onFailure;
+
+        // window.location.pathname.replace(/^\/|\/$/g, '').split("/").pop()
+        _data = data;
+        StartCoroutine(LoadFromUrl(url));
+    }
+
+    private IEnumerator LoadFromUrl(string url)
+    {
+        using UnityWebRequest www = UnityWebRequest.Get(url);
+        yield return www.SendWebRequest();
+        HandleDownloadData(www);
+    }
+
+    private void HandleDownloadData(UnityWebRequest www)
+    {
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            OnLoadFailed(www.error);
+            return;
+        }
+
+        try
+        {
+            // byte[] data = new byte[www.downloadHandler.data.Length];
+            // Array.Copy(www.downloadHandler.data, 0, data, 0, www.downloadHandler.data.Length);
+            
+            using MemoryStream memoryStream = new(www.downloadHandler.data);
+            using ZipArchive archive = new(memoryStream, ZipArchiveMode.Read);
+            LoadProject(archive, _data);
+        }
+        catch (Exception exception)
+        {
+            OnLoadFailed(exception.Message);
+        }
+    }
+
+    private void OnLoadFailed(string exception = null)
+    {
+        Debug.LogError($"Failed to load with error: {exception}");
+
+        ToastSystem.Instance.Show($"Load project failed");
+        _onFailure?.Invoke();
+    }
+
+    private void LoadProject(ZipArchive archive, GameData data)
+    {
+        try
+        {
+            LoadToGameData(archive, data);
+            _onSuccess?.Invoke();
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     private void LoadToGameData(ZipArchive archive, GameData data)
@@ -198,73 +253,37 @@ public class DataService : MonoBehaviour, IDataService
                     }
                 }
             }
-
-            _callback();
         }
         catch (Exception ex)
         {
-            throw new IOException("Error in loading data");
+            throw ex;
         }
     }
 
-    private IEnumerator LoadFromUrl(string url, UnityAction<byte[]> callback = null)
-    {
-        using UnityWebRequest www = UnityWebRequest.Get(url);
-        yield return www.SendWebRequest();
 
-        if (www.result == UnityWebRequest.Result.Success)
-        {
-            byte[] data = new byte[www.downloadHandler.data.Length];
-            Array.Copy(www.downloadHandler.data, 0, data, 0, www.downloadHandler.data.Length);
+// #if UNITY_WEBGL && !UNITY_EDITOR
+//     public void OnFileUpload(string json)
+//     {
+//         string[] urls = JsonUtils.FromJson<string>(json);
+//         StartCoroutine(LoadFromUrl(urls[0], OnFileLoaded));
+//     }
+// #else
+//     private ZipArchive LoadSaveData()
+//     {
+//         var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+//         if (paths.Length == 0)
+//         {
+//             throw new ArgumentException($"No save data");
+//         }
 
-            callback?.Invoke(data);
-        }
-        else
-        {
-            Debug.Log($"Failed to load {url}: {www.error}");
-        }
-    }
-    
-    private void OnFileLoaded(byte[] bytes)
-    {
-        try
-        {
-            using MemoryStream memoryStream = new(bytes);
-            using ZipArchive archive = new(memoryStream, ZipArchiveMode.Read);
-            LoadToGameData(archive, _data);
-        }
-        catch (System.Exception)
-        {
-            ToastSystem.Instance.Show($"Load project failed");
+//         string path = paths[0];
 
-            throw;
-        }
-        
-    }
+//         if (!File.Exists(path))
+//         {
+//             throw new ArgumentException($"No save data");
+//         }
 
-#if UNITY_WEBGL && !UNITY_EDITOR
-    public void OnFileUpload(string json)
-    {
-        string[] urls = JsonUtils.FromJson<string>(json);
-        StartCoroutine(LoadFromUrl(urls[0], OnFileLoaded));
-    }
-#else
-    private ZipArchive LoadSaveData()
-    {
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
-        if (paths.Length == 0)
-        {
-            throw new ArgumentException($"No save data");
-        }
-
-        string path = paths[0];
-
-        if (!File.Exists(path))
-        {
-            throw new ArgumentException($"No save data");
-        }
-
-        return ZipFile.OpenRead(path);
-    }
-#endif
+//         return ZipFile.OpenRead(path);
+//     }
+// #endif
 }

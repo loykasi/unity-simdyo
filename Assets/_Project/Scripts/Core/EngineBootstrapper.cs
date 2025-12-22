@@ -9,13 +9,13 @@ public class EngineBootstrapper : MonoBehaviour
 
     IEnumerator Start()
     {
-        DateTime a = DateTime.Now;
+        // DateTime a = DateTime.Now;
 
         yield return LocalizationSettings.InitializationOperation;
         
-        DateTime b = DateTime.Now;
-        double diffInSeconds = (b - a).TotalSeconds;
-        Debug.Log($"Initialization time: {diffInSeconds}");
+        // DateTime b = DateTime.Now;
+        // double diffInSeconds = (b - a).TotalSeconds;
+        // Debug.Log($"Initialization time: {diffInSeconds}");
 
         SceneLoader.Instance.LoadScene(_engineSceneIndex);
     }

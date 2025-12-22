@@ -5,5 +5,5 @@ using UnityEngine.Events;
 public interface IDataService
 {
     void Save(GameData data);
-    void Load(GameData data, UnityAction callback);
+    void Load(GameData data, UnityAction onSuccess, UnityAction onFailure);
 }

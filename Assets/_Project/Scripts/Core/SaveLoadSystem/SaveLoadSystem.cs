@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class SaveLoadSystem : Singleton<SaveLoadSystem>
 {
@@ -8,6 +9,10 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
     [SerializeField] private DataService _dataService;
     private GameData _gameData = new();
     private List<ISaveable> _saveables;
+
+    private UnityAction _onSuccess;
+    private UnityAction _onFailure;
+    private UnityAction _onBeforeLoad;
 
     protected override void Awake()
     {
@@ -29,24 +34,35 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
         _dataService.Save(_gameData);
     }
 
-    public void Load()
+    public void Load(UnityAction onBeforeLoad = null)
     {
-        _dataService.Load(_gameData, OnSaveDataLoaded);
+        _onBeforeLoad = onBeforeLoad;
+        _dataService.Load(_gameData, OnLoadSucessful, OnLoadFailed);
     }
 
-    public void LoadFromUrl(string url)
+    public void LoadFromUrl(string url, UnityAction onSuccess = null, UnityAction onFailure = null)
     {
+        _onSuccess = onSuccess;
+        _onFailure = onFailure;
+
         LoadingScreen.Instance.Toggle(true);
-        _dataService.LoadFromUrl(url, _gameData, OnSaveDataLoaded);
+        _dataService.LoadFromUrl(url, _gameData, OnLoadSucessful, OnLoadFailed);
     }
 
-    private void OnSaveDataLoaded()
+    private void OnLoadSucessful()
     {
+        _onBeforeLoad?.Invoke();
+
         foreach (var item in _saveables)
         {
             item.LoadData(_gameData);
         }
 
-        // LoadingScreen.Instance.Toggle(false);
+        _onSuccess?.Invoke();
+    }
+
+    private void OnLoadFailed()
+    {
+        _onFailure?.Invoke();
     }
 }
