@@ -9,10 +9,12 @@ public class CursorSystem : Singleton<CursorSystem>
     private int _priority = 0;
     private bool _shouldSetCursor;
 
+    private Vector2 _hotspot = new(8f, 8f);
+
     private void Start()
     {
         Texture2D cursor = _cursorData.Get(CursorType.Default);
-        Cursor.SetCursor(cursor, new Vector2(8f, 8f), CursorMode.Auto);
+        Cursor.SetCursor(cursor, _hotspot, CursorMode.Auto);
     }
 
     private void LateUpdate()
@@ -25,7 +27,7 @@ public class CursorSystem : Singleton<CursorSystem>
 
         _currentType = _targetType;
         Texture2D cursor = _cursorData.Get(_currentType);
-        Cursor.SetCursor(cursor, new Vector2(8f, 8f), CursorMode.Auto);
+        Cursor.SetCursor(cursor, _hotspot, CursorMode.Auto);
         _priority = 0;
         _shouldSetCursor = false;
     }
