@@ -21,7 +21,7 @@ public class SceneEntity : MonoBehaviour
     public ScriptFlow Script;
     public CollisionLayer Layer;
     public SortingGroup SortingGroup;
-    public int TextureSlot = 0;
+    public string TextureSlotKey;
     
     public string Name
     {
@@ -249,12 +249,13 @@ public class SceneEntity : MonoBehaviour
 
     }
 
-    public virtual void SetTexture(int slot)
+    public virtual void SetTexture(string key)
     {
-        TextureSlot = slot;
-        Texture2D texture = TextureController.Instance.GetTexture(slot);
-        Renderer.material.SetTexture(_textureProperty, texture);
-        Debug.Log(TextureSlot);
+        TextureSlotKey = key;
+        if (TextureController.Instance.TryGetTexture(key, out Texture2D texture))
+        {
+            Renderer.material.SetTexture(_textureProperty, texture);   
+        }
     }
 
     // trigger hook

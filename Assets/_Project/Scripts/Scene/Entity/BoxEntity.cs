@@ -175,11 +175,7 @@ public class BoxEntity : SceneEntity
         entity.ToggleCollider(IsColliderEnabled);
         entity.ToggleGravity(IsGravityEnabled);
         entity.SetLayer(Layer);
-        
-        if (TextureSlot > 0)
-        {
-            entity.SetTexture(TextureSlot);
-        }
+        entity.SetTexture(TextureSlotKey);
         
         ScriptFlowClone.CloneScript(Script, entity.Script);
 

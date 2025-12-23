@@ -93,10 +93,10 @@ public class DataService : MonoBehaviour, IDataService
             for (int i = 0; i < data.Textures.Count; i++)
             {
                 var texture = data.Textures[i];
-                var textureEntry = archive.CreateEntry($"textures/{i + 1}.png", System.IO.Compression.CompressionLevel.NoCompression);
+                var textureEntry = archive.CreateEntry($"textures/{texture.Key}.png", System.IO.Compression.CompressionLevel.NoCompression);
                 using Stream texturestream = textureEntry.Open();
                 using BinaryWriter binaryWriter = new(texturestream);
-                binaryWriter.Write(texture.EncodeToPNG());
+                binaryWriter.Write(texture.Texture.EncodeToPNG());
             }
         }
 
@@ -238,19 +238,17 @@ public class DataService : MonoBehaviour, IDataService
                 }
                 else if (entry.Name.EndsWith(_textureExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    string fileName = Path.GetFileNameWithoutExtension(entry.Name);
-                    if (int.TryParse(fileName, out int index))
-                    {
-                        using Stream stream = entry.Open();
-                        using MemoryStream memory = new();
-                        stream.CopyTo(memory);
-                        byte[] textureData = memory.ToArray();
+                    string key = Path.GetFileNameWithoutExtension(entry.Name);
 
-                        Texture2D texture = new(2, 2);
-                        texture.LoadImage(textureData);
+                    using Stream stream = entry.Open();
+                    using MemoryStream memory = new();
+                    stream.CopyTo(memory);
+                    byte[] textureData = memory.ToArray();
 
-                        data.Textures.Add(texture);
-                    }
+                    Texture2D texture = new(2, 2);
+                    texture.LoadImage(textureData);
+
+                    data.Textures.Add(new TextureData(key, texture));
                 }
             }
         }

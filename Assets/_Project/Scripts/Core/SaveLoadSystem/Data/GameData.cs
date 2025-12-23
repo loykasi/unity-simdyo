@@ -7,7 +7,7 @@ public class GameData
     public SceneData Scene = new();
 
     [JsonIgnore]
-    public List<Texture2D> Textures;
+    public List<TextureData> Textures = new();
 
     public void Clear()
     {

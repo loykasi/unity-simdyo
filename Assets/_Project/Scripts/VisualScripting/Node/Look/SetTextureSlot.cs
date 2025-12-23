@@ -22,7 +22,7 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.String))
                     .UseInput()
                     .UseGlobalLocalized();
             
@@ -41,8 +41,8 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            int slot = (int)Value.GetValue();
-            entity.SetTexture(slot);
+            string key = (string)Value.GetValue();
+            entity.SetTexture(key);
             return Exit;
         }
     }

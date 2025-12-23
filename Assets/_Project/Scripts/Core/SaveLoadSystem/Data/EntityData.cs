@@ -11,6 +11,6 @@ public class EntityData
     public bool GravityEnabled;
     public CollisionLayer Layer;
     public ColorHSV Color;
-    public int TextureSlot;
+    public string TextureSlotKey;
     public ScriptFlowData Script = new();
 }

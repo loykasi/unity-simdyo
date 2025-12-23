@@ -11,16 +11,25 @@ using System.Runtime.InteropServices;
 public class TextureController : Singleton<TextureController>, ISaveable
 {
     public int SaveLoadOrder { get; set; } = -1;
-    public List<Texture2D> Textures => _textures;
+ 
+    // public List<Texture2D> Textures => _textures;
+    // private List<Texture2D> _textures = new();
 
-    private List<Texture2D> _textures = new();
-    private int _currentIndex = 1;
+    // private int _currentIndex = 1;
+
+    public Dictionary<string, Texture2D> Textures = new();
+    public SceneEntity Entity;
+
+    [SerializeField] private TextureMenu _textureMenu;
+
+    private string _currentKey;
+
+    private List<string> _textureKeys = new();
 
     private readonly ExtensionFilter[] _extensions = new [] {
         new ExtensionFilter("Image Files", "png", "jpg", "jpeg" ),
     };
-
-    private UnityAction<int, Texture2D> _addTextureCallback;
+    private readonly string _defaultName = "Texture";
 
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
@@ -32,44 +41,85 @@ public class TextureController : Singleton<TextureController>, ISaveable
         base.Awake();
     }
 
-    public void SelectSlot(int index)
+    public void OpenMenu(SceneEntity entity)
     {
-        _currentIndex = index;
+        Entity = entity;
+        _textureMenu.Open();
+    }
+
+    public void OpenMenu()
+    {
+        Entity = null;
+        _textureMenu.Open();
+    }
+
+    public void SelectSlot(string key)
+    {
+        _currentKey = key;
     }
 
     public void ChangeTexture()
     {
-        if (_currentIndex == -1)
+        if (string.IsNullOrWhiteSpace(_currentKey))
         {
             return;
         }
 
-        Texture2D selectedTexture = _textures[_currentIndex];
+        Texture2D selectedTexture = Textures[_currentKey];
 
         selectedTexture.LoadImage(ReadFile());
     }
 
-    
-    public bool Apply(out int index)
+    public bool RemoveTexture()
     {
-        index = -1;
-        if (_currentIndex == -1)
+        if (string.IsNullOrWhiteSpace(_currentKey))
         {
             return false;
         }
 
-        index = _currentIndex + 1;
+        Textures.Remove(_currentKey);
+        _currentKey = string.Empty;
         return true;
     }
 
-    public Texture2D GetTexture(int slot)
+    public void Apply()
     {
-        return _textures[slot - 1];
+        if (string.IsNullOrWhiteSpace(_currentKey))
+        {
+            return;
+        }
+
+        Entity.SetTexture(_currentKey);
     }
 
-    public void AddTextureSlot(UnityAction<int, Texture2D> callback)
+    public string UpdateKey(string currentKey, string newKey)
     {
-        _addTextureCallback = callback;
+        string key = GetUniqueKey(newKey);
+        
+        Texture2D texture = Textures[currentKey];
+        Textures.Remove(currentKey);
+        Textures.Add(key, texture);
+
+        return key;
+    }
+
+    public bool TryGetTexture(string key, out Texture2D texture)
+    {
+        texture = null;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            return false;
+        }
+
+        if (Textures.TryGetValue(key, out texture))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void AddTextureSlot()
+    {
         TryChooseFromFile();
     }
 
@@ -121,15 +171,23 @@ public class TextureController : Singleton<TextureController>, ISaveable
         texture.LoadImage(bytes);
         texture.wrapMode = TextureWrapMode.Clamp;
 
-        int index = _textures.Count;
-        _textures.Add(texture);
+        string key = GetUniqueKey(_defaultName);
 
-        _addTextureCallback?.Invoke(index, texture);
+        Textures.Add(key, texture);
+        _textureMenu.AddTextureSlotUI(key, texture);
+    }
+
+    private string GetUniqueKey(string baseName)
+    {
+        _textureKeys.Clear();
+        _textureKeys.AddRange(Textures.Keys);
+
+        return Utils.GenerateUniqueName(baseName, _textureKeys);
     }
 
     private byte[] ReadFile()
     {
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", _extensions, false);
         if (paths.Length == 0)
         {
             return Array.Empty<byte>();
@@ -143,11 +201,20 @@ public class TextureController : Singleton<TextureController>, ISaveable
 
     public void SaveData(GameData data)
     {
-        data.Textures = Textures;
+        data.Textures.Clear();
+        foreach (var item in Textures)
+        {
+            data.Textures.Add(new TextureData(item.Key, item.Value));
+        }
     }
 
     public void LoadData(GameData data)
     {
-        _textures = data.Textures;
+        Textures.Clear();
+        for (int i = 0; i < data.Textures.Count; i++)
+        {
+            TextureData textureData = data.Textures[i];
+            Textures.Add(textureData.Key, textureData.Texture);
+        }
     }
 }

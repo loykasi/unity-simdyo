@@ -9,7 +9,7 @@ public class CursorSystem : Singleton<CursorSystem>
     private int _priority = 0;
     private bool _shouldSetCursor;
 
-    private Vector2 _hotspot = new(8f, 8f);
+    private Vector2 _hotspot = new(4f, 4f);
 
     private void Start()
     {

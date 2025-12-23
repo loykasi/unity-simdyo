@@ -105,7 +105,7 @@ public class EntityMenuController : MonoBehaviour
 
     public void ChooseTexture()
     {
-        TextureMenu.Instance.OpenTextureMenu(_entity);
+        TextureController.Instance.OpenMenu(_entity);
     }
 
     public void UpdateSize(float width, float height)

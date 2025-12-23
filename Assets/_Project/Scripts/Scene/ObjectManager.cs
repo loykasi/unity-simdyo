@@ -359,7 +359,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entityData.ColliderEnabled = entity.IsColliderEnabled;
             entityData.Layer = entity.Layer;
             entityData.Color = entity.CurrentColor;
-            entityData.TextureSlot = entity.TextureSlot;
+            entityData.TextureSlotKey = entity.TextureSlotKey;
 
             ScriptSaveHandler.Save(entityData.Script, entity.Script);
 
@@ -375,7 +375,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         SceneEntities.Clear();
 
-        Debug.Log($"Load {data.Scene.Entities.Count} objects");
+        Debug.Log($"Load {data.Scene.Entities.Count} entities");
 
         foreach (var entityData in data.Scene.Entities)
         {
@@ -400,11 +400,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entity.ToggleCollider(entityData.ColliderEnabled);
             entity.ToggleGravity(entityData.GravityEnabled);
             entity.SetLayer(entityData.Layer);
-            
-            if (entityData.TextureSlot > 0)
-            {
-                entity.SetTexture(entityData.TextureSlot);
-            }
+            entity.SetTexture(entityData.TextureSlotKey);
             
             ScriptSaveHandler.Load(entityData.Script, entity.Script);
         }

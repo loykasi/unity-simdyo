@@ -36,6 +36,8 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
 
     public void Load(UnityAction onBeforeLoad = null)
     {
+        _onSuccess = null;
+        _onFailure = null;
         _onBeforeLoad = onBeforeLoad;
         _dataService.Load(_gameData, OnLoadSucessful, OnLoadFailed);
     }

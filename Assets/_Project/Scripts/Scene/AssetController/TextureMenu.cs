@@ -4,21 +4,22 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointerExitHandler
+public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private GameObject _textureMenu;
     [SerializeField] private UITextureSlot _textureSlotPrefab;
     [SerializeField] private Transform _slotContainer;
     [SerializeField] private Button _applyButton;
     [SerializeField] private Button _changeButton;
+    [SerializeField] private Button _removeButton;
 
     private List<UITextureSlot> _textureSlots = new();
+    private int _selectedIndex;
 
-    private SceneEntity _entity;
     private bool _isMouseOver = false;
     private bool _isLoaded = false;
 
-    protected override void Awake()
+    private void Awake()
     {
         _changeButton.interactable = false;
         _applyButton.interactable = false;
@@ -32,6 +33,14 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         }
     }
 
+    public void Open()
+    {
+        Load();
+
+        _applyButton.gameObject.SetActive(TextureController.Instance.Entity != null);
+        _textureMenu.SetActive(true);
+    }
+
     private void Load()
     {
         if (_isLoaded)
@@ -43,7 +52,7 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         Load(TextureController.Instance.Textures);
     }
 
-    private void Load(List<Texture2D> textures)
+    private void Load(Dictionary<string, Texture2D> textures)
     {
         foreach (var slot in _textureSlots)
         {
@@ -51,52 +60,39 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         }
         _textureSlots.Clear();
 
-        for (int i = 0; i < textures.Count; i++)
+        foreach (var slot in textures)
         {
-            AddTextureSlotUI(i, textures[i]);
+            AddTextureSlotUI(slot.Key, slot.Value);
         }
     }
-    
-    public void OnPointerEnter(PointerEventData eventData)
+
+    public void AddTextureSlotUI(string key, Texture2D texture)
     {
-        _isMouseOver = true;
+        var textureSlot = Instantiate(_textureSlotPrefab, _slotContainer);
+        textureSlot.Init(this, key, texture);
+        _textureSlots.Add(textureSlot);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public void AddTextureSlot()
     {
-        _isMouseOver = false;
-    }
-
-    public void OpenTextureMenu(SceneEntity entity)
-    {
-        Load();
-
-        _entity = entity;
-        _textureMenu.SetActive(true);
+        TextureController.Instance.AddTextureSlot();
     }
 
     public void CloseTextureMenu()
     {
-        _entity = null;
         _textureMenu.SetActive(false);
     }
 
-    public void AddTextureSlotUI(int index, Texture2D texture)
+    public void SelectSlot(string key)
     {
-        var textureSlot = Instantiate(_textureSlotPrefab, _slotContainer);
-        textureSlot.Init(index, texture);
-        _textureSlots.Add(textureSlot);
-    }
-
-    public void SelectSlot(int index)
-    {
-        TextureController.Instance.SelectSlot(index);
+        TextureController.Instance.SelectSlot(key);
 
         for (int i = 0; i < _textureSlots.Count; i++)
         {
-            if (_textureSlots[i].Index == index)
+            if (_textureSlots[i].Key == key)
             {
                 _textureSlots[i].Select();
+                _selectedIndex = i;
             }
             else
             {
@@ -105,12 +101,8 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         }
 
         _changeButton.interactable = true;
+        _removeButton.interactable = true;
         _applyButton.interactable = true;
-    }
-
-    public void AddTextureSlot()
-    {
-        TextureController.Instance.AddTextureSlot(AddTextureSlotUI);
     }
 
     public void ChangeTexture()
@@ -118,15 +110,40 @@ public class TextureMenu : Singleton<TextureMenu>, IPointerEnterHandler, IPointe
         TextureController.Instance.ChangeTexture();
     }
 
+    public void RemoveSlot()
+    {
+        if (TextureController.Instance.RemoveTexture())
+        {
+            UITextureSlot slot = _textureSlots[_selectedIndex];
+            _textureSlots.RemoveAt(_selectedIndex);
+            Destroy(slot.gameObject);
+
+            _selectedIndex = -1;
+            _changeButton.interactable = false;
+            _removeButton.interactable = false;
+            _applyButton.interactable = false;
+        }
+    }
+
     
     public void Apply()
     {
-        if (!TextureController.Instance.Apply(out int index))
-        {
-            return;
-        }
-        
-        _entity.SetTexture(index);
+        TextureController.Instance.Apply();
         CloseTextureMenu();
+    }
+
+    public string UpdateKey(string currentKey, string newKey)
+    {
+        return TextureController.Instance.UpdateKey(currentKey, newKey);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _isMouseOver = true;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _isMouseOver = false;
     }
 }

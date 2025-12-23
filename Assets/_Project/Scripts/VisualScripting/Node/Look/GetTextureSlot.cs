@@ -21,7 +21,7 @@ namespace Loykas.Scripting
                     .UseInput()
                     .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.String), Get)
                     .UseGlobalLocalized();
         }
 
@@ -34,7 +34,7 @@ namespace Loykas.Scripting
                 return default(float);
             }
 
-            return entity.TextureSlot;
+            return entity.TextureSlotKey;
         }
     }
 }

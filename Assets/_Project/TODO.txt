@@ -17,6 +17,12 @@
 [X] Fix and test list related nodes
 [X] Fix clone issues of script
 
+[X] Fix texture slot: 
+    [X] ObjectManager save load function
+    [X] Get|Set texture node
+    [X] TextureController save load function
+[] Texture Input
+
 == Scene entity
 [X] Z depth
 [X] Menu: Entity ID
@@ -35,7 +41,7 @@
 [X] color
 [X] collider
 [X] texture
-[] layer
+[x] layer
 
 == Fix node
 [X] branch
