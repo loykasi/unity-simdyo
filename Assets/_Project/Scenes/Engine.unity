@@ -22308,10 +22308,10 @@ MonoBehaviour:
       - m_Target: {fileID: 1287692165}
         m_TargetAssemblyTypeName: TextureController, Assembly-CSharp
         m_MethodName: OpenMenu
-        m_Mode: 2
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: SceneEntity, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -23997,7 +23997,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2145495906}
         m_TargetAssemblyTypeName: TextureMenu, Assembly-CSharp
-        m_MethodName: CloseTextureMenu
+        m_MethodName: RemoveSlot
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
