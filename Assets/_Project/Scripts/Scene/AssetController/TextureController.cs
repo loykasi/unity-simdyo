@@ -103,19 +103,18 @@ public class TextureController : Singleton<TextureController>, ISaveable
         return key;
     }
 
-    public bool TryGetTexture(string key, out Texture2D texture)
+    public Texture2D GetTexture(string key)
     {
-        texture = null;
         if (string.IsNullOrWhiteSpace(key))
         {
-            return false;
+            return null;
         }
 
-        if (Textures.TryGetValue(key, out texture))
+        if (Textures.TryGetValue(key, out Texture2D texture))
         {
-            return true;
+            return texture;
         }
-        return false;
+        return null;
     }
 
     public void AddTextureSlot()

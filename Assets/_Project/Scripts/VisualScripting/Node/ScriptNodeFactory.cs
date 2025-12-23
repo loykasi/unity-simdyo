@@ -94,6 +94,7 @@ namespace Loykas.Scripting
                 new GreaterEqualNode(),
                 new LessNode(),
                 new LessEqualNode(),
+                new NotNode(),
 
                 new RandomNumberNode(),
                 new RandomBooleanNode(),

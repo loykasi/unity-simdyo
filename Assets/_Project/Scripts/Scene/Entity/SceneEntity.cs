@@ -186,6 +186,7 @@ public class SceneEntity : MonoBehaviour
         _defaultState.GravityEnabled = IsGravityEnabled;
         _defaultState.Velocity = Velocity;
         _defaultState.AngularVelocity = Rigidbody.angularVelocity;
+        _defaultState.TextureSlotKey = TextureSlotKey;
 
         if (Rigidbody.bodyType != RigidbodyType2D.Static)
         {
@@ -205,6 +206,8 @@ public class SceneEntity : MonoBehaviour
             Velocity = _defaultState.Velocity;
             Rigidbody.angularVelocity = _defaultState.AngularVelocity;
         }
+
+        SetTexture(_defaultState.TextureSlotKey);
 
         // Script.OnSceneStop();
     }
@@ -252,10 +255,8 @@ public class SceneEntity : MonoBehaviour
     public virtual void SetTexture(string key)
     {
         TextureSlotKey = key;
-        if (TextureController.Instance.TryGetTexture(key, out Texture2D texture))
-        {
-            Renderer.material.SetTexture(_textureProperty, texture);   
-        }
+        Texture2D texture = TextureController.Instance.GetTexture(key);
+        Renderer.material.SetTexture(_textureProperty, texture);
     }
 
     // trigger hook
