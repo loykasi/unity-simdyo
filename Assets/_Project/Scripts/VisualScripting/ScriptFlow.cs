@@ -486,7 +486,7 @@ namespace Loykas.Scripting
         public Variable AddVariable()
         {
             string baseName = "NewVariable";
-            string variableName = getVariableName(baseName);
+            string variableName = GetVariableName(baseName);
 
             Variable variable = new()
             {
@@ -504,7 +504,7 @@ namespace Loykas.Scripting
             VariableList.Add(variable);
         }
 
-        private string getVariableName(string baseName)
+        private string GetVariableName(string baseName)
         {
             _variableNames.Clear();
             _variableNames.AddRange(Variables.Keys);
