@@ -180,10 +180,7 @@ public static class ScriptSaveHandler
             }
             
             foreach (var item in saveData.DefaultValues)
-            {
-                Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
-                // object value = ConvertValue(item.Type, item.Value);
-                
+            {                
                 if (!node.DefaultValues.ContainsKey(item.Key))
                 {
                     node.DefaultValues.Add(item.Key, item.Value);
@@ -211,25 +208,5 @@ public static class ScriptSaveHandler
         }
 
         flow.Load();
-    }
-
-    private static object ConvertValue(DataType type, object value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        if (type == DataType.Number)
-        {
-            return (float)(double)value;
-        }
-
-        if (type == DataType.Key)
-        {
-            return new Key((string)value);
-        }
-
-        return value;
     }
 }
