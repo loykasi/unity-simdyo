@@ -14,7 +14,7 @@ namespace Loykas.Scripting
 
         public OnKeyPressedNode()
         {
-            KeyCode = InputValue(nameof(KeyCode)).UseKeyCodeInput().DisableConnection();
+            KeyCode = InputValue(nameof(KeyCode), ScriptDataType.Single(DataType.Key)).UseKeyCodeInput().DisableConnection();
         }
 
         public override EventHook Hook => EventHook.Update;

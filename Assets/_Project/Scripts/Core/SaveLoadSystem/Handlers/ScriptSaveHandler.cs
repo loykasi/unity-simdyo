@@ -42,9 +42,16 @@ public static class ScriptSaveHandler
 
             foreach (var item in node.DefaultValues)
             {
-                // nodeData.DefaultValues.Add(item.Key, item.Value);
                 InputValue input = node.ValueInputs.Find(n => n.Key == item.Key);
-                nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, item.Value, input.Type.Type));
+
+                if (item.Value is Key key)
+                {
+                    nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, key.Value.ToString(), input.Type.Type));
+                }
+                else
+                {
+                    nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, item.Value, input.Type.Type));
+                }
             }
 
             flowData.Nodes.Add(nodeData);
@@ -174,15 +181,16 @@ public static class ScriptSaveHandler
             
             foreach (var item in saveData.DefaultValues)
             {
-                // Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
-                object value = ConvertValue(item.Value);
+                Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
+                // object value = ConvertValue(item.Type, item.Value);
+                Debug.Log(item.Value.GetType());
                 
                 if (!node.DefaultValues.ContainsKey(item.Key))
                 {
-                    node.DefaultValues.Add(item.Key, value);
+                    node.DefaultValues.Add(item.Key, item.Value);
                     continue;
                 }
-                node.DefaultValues[item.Key] = value;
+                node.DefaultValues[item.Key] = item.Value;
             }
 
 
@@ -206,16 +214,21 @@ public static class ScriptSaveHandler
         flow.Load();
     }
 
-    private static object ConvertValue(object value)
+    private static object ConvertValue(DataType type, object value)
     {
         if (value == null)
         {
             return null;
         }
 
-        if (value.GetType() == typeof(double))
+        if (type == DataType.Number)
         {
             return (float)(double)value;
+        }
+
+        if (type == DataType.Key)
+        {
+            return new Key((string)value);
         }
 
         return value;

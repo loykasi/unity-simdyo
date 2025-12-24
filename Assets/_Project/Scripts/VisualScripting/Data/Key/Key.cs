@@ -1,3 +1,5 @@
+using System;
+
 namespace Loykas.Scripting
 {
     public struct Key
@@ -7,6 +9,18 @@ namespace Loykas.Scripting
         public Key(KeyCode key)
         {
             Value = key;
+        }
+
+        public Key(string key)
+        {
+            if (Enum.TryParse(key, out KeyCode result))
+            {
+                Value = result;
+            }
+            else
+            {
+                Value = KeyCode.Any;
+            }
         }
 
         public readonly bool IsAny => Value == KeyCode.Any;

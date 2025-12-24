@@ -47,6 +47,9 @@ public class ScriptNodeValueConverter : JsonConverter<ScriptNodeValueData>
             case DataType.Color:
                 value.Value = obj["Value"].ToObject<ColorHSV>(serializer);
                 break;
+            case DataType.Key:
+                value.Value = new Key(obj["Value"].ToObject<string>(serializer));
+                break;
         }
 
         return value;

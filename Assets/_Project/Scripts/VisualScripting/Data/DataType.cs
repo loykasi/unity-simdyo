@@ -7,6 +7,7 @@ namespace Loykas.Scripting
         Number,
         Boolean,
         Color,
-        Entity
+        Entity,
+        Key
     }   
 }
