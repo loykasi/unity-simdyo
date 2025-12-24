@@ -175,8 +175,6 @@ namespace Loykas.Scripting
 
             UpdateLineVisual(lineRenderer, source, destination);
 
-            Debug.Log("connect");
-
             return lineConnection;
         }
 

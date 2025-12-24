@@ -35,8 +35,6 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            Debug.Log("Move " + entity.Id);
-
             if (entity == null)
             {
                 return Exit;

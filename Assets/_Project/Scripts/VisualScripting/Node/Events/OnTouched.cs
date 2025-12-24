@@ -14,7 +14,7 @@ namespace Loykas.Scripting
         // public OutputValue NormalXOutput;
         // public OutputValue NormalYOutput;
 
-        private SceneEntity _otherEntity;
+        private int _otherEntityId;
         //private Vector3 _normal;
         private Vector3 _position;
 
@@ -36,16 +36,17 @@ namespace Loykas.Scripting
 
         public override EventHook Hook => EventHook.OnTouched;
 
-        public object GetOtherEntity() => _otherEntity;
+        public object GetOtherEntity() => _otherEntityId;
         public object GetPositionX() => _position.x;
         public object GetPositionY() => _position.y;
 
         public override void AssignArgument(object args)
         {
+            Debug.Log($"Collide");
             var collision = (Collision2D)args;
             ContactPoint2D point = collision.GetContact(0);
 
-            _otherEntity = collision.collider.GetComponent<SceneEntity>();
+            _otherEntityId = collision.collider.GetComponent<SceneEntity>().Id;
             _position = point.point;
             // _normal = point.normal;
         }

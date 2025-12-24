@@ -60,6 +60,11 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         _isRunning = false;
         Physics2D.SyncTransforms();
     }
+
+    public void Restart()
+    {
+        OnSceneStop?.Invoke();
+    }
     
     private void UpdateGame()
     {
