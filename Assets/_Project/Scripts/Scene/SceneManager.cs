@@ -63,7 +63,18 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Restart()
     {
+        Time.timeScale = 1;
         OnSceneStop?.Invoke();
+    }
+
+    public void Pause()
+    {
+        Time.timeScale = 0;
+    }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
     }
     
     private void UpdateGame()
