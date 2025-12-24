@@ -318,6 +318,12 @@ namespace Loykas.Scripting
 
         private void OnSceneStop()
         {
+            foreach (var task in _tasks)
+            {
+                task.Stop();
+            }
+            _tasks.Clear();
+
             foreach (var item in Variables.Values)
             {
                 item.OnSceneStop();

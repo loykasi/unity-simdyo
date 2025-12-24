@@ -183,7 +183,6 @@ public static class ScriptSaveHandler
             {
                 Debug.Log($"Load value: {item.Value} | Null: {item.Value == null}");
                 // object value = ConvertValue(item.Type, item.Value);
-                Debug.Log(item.Value.GetType());
                 
                 if (!node.DefaultValues.ContainsKey(item.Key))
                 {

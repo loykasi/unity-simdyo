@@ -42,7 +42,6 @@ namespace Loykas.Scripting
 
         public override void AssignArgument(object args)
         {
-            Debug.Log($"Collide");
             var collision = (Collision2D)args;
             ContactPoint2D point = collision.GetContact(0);
 

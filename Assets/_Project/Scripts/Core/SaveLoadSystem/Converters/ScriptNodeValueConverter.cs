@@ -36,7 +36,7 @@ public class ScriptNodeValueConverter : JsonConverter<ScriptNodeValueData>
         {
             case DataType.String:
             case DataType.Entity:
-                value.Value = obj["Value"].ToObject<string>(serializer);
+                value.Value = obj["Value"]?.ToObject<string>(serializer);
                 break;
             case DataType.Number:
                 value.Value = obj["Value"].ToObject<float>(serializer);

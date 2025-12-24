@@ -289,6 +289,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     private void OnSceneStart()
     {
+        _snapshotEntities.Clear();
         _snapshotEntities.AddRange(SceneEntities);
     }
 
@@ -313,6 +314,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entity.gameObject.SetActive(true);
         }
         _snapshotEntities.Clear();
+        _snapshotEntities.AddRange(SceneEntities);
     }
 
     public void ResetState()

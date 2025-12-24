@@ -21,6 +21,11 @@ namespace Loykas.Scripting
             return this;
         }
 
+        public void Stop()
+        {
+            Trigger = null;
+        }
+
         public void Invoke(ScriptFlow flow)
         {
             try
@@ -58,7 +63,7 @@ namespace Loykas.Scripting
             }
             catch (System.Exception)
             {
-                throw;
+                flow.RemoveTask(this);
             }
         }
 
