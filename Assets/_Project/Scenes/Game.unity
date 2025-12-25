@@ -2330,8 +2330,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17f77aa5a3d2678448e339a2bb97824e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectUrl: 
-  _shouldLoadOnStart: 0
+  _projectUrl: https://pub-62f76c9d48c649c5b8c5449d73c47ea5.r2.dev/M3Au7.zip
+  _shouldLoadOnStart: 1
 --- !u!4 &1622442360
 Transform:
   m_ObjectHideFlags: 0

@@ -26,9 +26,7 @@ public class EngineManager : Singleton<EngineManager>
     }
 
     public void Play()
-    {
-        Time.timeScale = 1;
-        
+    {        
         _editorCanvas.SetActive(false);
         _sceneCameraArea.SetActive(false);
         
@@ -47,8 +45,6 @@ public class EngineManager : Singleton<EngineManager>
 
     public void Stop()
     {
-        Time.timeScale = 0;
-
         _editorCanvas.SetActive(true);
         _sceneCameraArea.SetActive(true);
 

@@ -36,6 +36,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Play()
     {
+        Time.timeScale = 1;
         SceneCamera.gameObject.SetActive(true);
 
         OnSceneStart?.Invoke();
@@ -53,6 +54,8 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Stop()
     {
+        Time.timeScale = 0;
+
         SceneCamera.gameObject.SetActive(false);
 
         OnSceneStop?.Invoke();

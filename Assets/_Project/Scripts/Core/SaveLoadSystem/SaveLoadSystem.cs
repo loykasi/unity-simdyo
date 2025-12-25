@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Runtime.InteropServices;
 
 public class SaveLoadSystem : Singleton<SaveLoadSystem>
 {
@@ -13,7 +14,7 @@ public class SaveLoadSystem : Singleton<SaveLoadSystem>
     private UnityAction _onSuccess;
     private UnityAction _onFailure;
     private UnityAction _onBeforeLoad;
-
+    
     protected override void Awake()
     {
         base.Awake();
