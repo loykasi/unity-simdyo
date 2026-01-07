@@ -25,4 +25,13 @@ public class GlobalLocalization : Singleton<GlobalLocalization>
 
         // return LocalizationSettings.StringDatabase.GetLocalizedString("VisualScripting", key);
     }
+
+    public string GetValue(string table, string key)
+    {
+        VisualScriptingTable = LocalizationSettings.StringDatabase.GetTable(table);
+        StringTableEntry entry = VisualScriptingTable.GetEntry(key);
+        return entry != null ? entry.LocalizedValue : key;
+
+        // return LocalizationSettings.StringDatabase.GetLocalizedString("VisualScripting", key);
+    }
 }

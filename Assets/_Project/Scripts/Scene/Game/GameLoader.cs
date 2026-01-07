@@ -1,4 +1,3 @@
-using TMPro;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -11,7 +10,6 @@ public class GameLoader : MonoBehaviour
     [DllImport("__Internal")]
     private static extern void OnGameLoaded();
 #endif
-
 
     private void Start()
     {

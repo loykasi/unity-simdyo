@@ -1,6 +1,7 @@
 using Loykas.Scripting;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Runtime.InteropServices;
 
 public class SceneManager : Singleton<SceneManager>, ISaveable
 {
@@ -19,6 +20,17 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public bool IsRuning => _isRunning;
     private bool _isRunning = false;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+    [DllImport("__Internal")]
+    private static extern void OnGameRestarted();
+
+    [DllImport("__Internal")]
+    private static extern void OnGamePaused();
+
+    [DllImport("__Internal")]
+    private static extern void OnGameResumed();
+#endif
 
     protected override void Awake()
     {
@@ -68,16 +80,28 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         Time.timeScale = 1;
         OnSceneStop?.Invoke();
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        OnGameRestarted();
+#endif
     }
 
     public void Pause()
     {
         Time.timeScale = 0;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        OnGamePaused();
+#endif
     }
 
     public void Resume()
     {
         Time.timeScale = 1;
+
+#if UNITY_WEBGL && !UNITY_EDITOR
+        OnGameResumed();
+#endif
     }
     
     private void UpdateGame()

@@ -1,0 +1,204 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: MainTable Shared Data
+  m_EditorClassIdentifier: 
+  m_TableCollectionName: MainTable
+  m_TableCollectionNameGuidString: e80f6c67ef71c1244b70317e3d62c96f
+  m_Entries:
+  - m_Id: 11863818633216
+    m_Key: file
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863847993344
+    m_Key: language
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863847993345
+    m_Key: background
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863847993346
+    m_Key: size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187648
+    m_Key: id
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187649
+    m_Key: name
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187650
+    m_Key: position
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187651
+    m_Key: camera
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187652
+    m_Key: angle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187653
+    m_Key: gravity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187654
+    m_Key: velocity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187655
+    m_Key: collider
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187656
+    m_Key: color
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187657
+    m_Key: collision_layer
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187658
+    m_Key: z_depth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187659
+    m_Key: width
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187660
+    m_Key: height
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187661
+    m_Key: radius
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187662
+    m_Key: action
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187663
+    m_Key: delete
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187664
+    m_Key: script_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187665
+    m_Key: texture_menu
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187666
+    m_Key: move_to_back
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187667
+    m_Key: move_to_front
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187668
+    m_Key: texture
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187669
+    m_Key: add
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187670
+    m_Key: change
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187671
+    m_Key: remove
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187672
+    m_Key: select
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187673
+    m_Key: functions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187674
+    m_Key: variables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 11863852187675
+    m_Key: no_functions
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17530948288512
+    m_Key: no_variables
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1208378281033728
+    m_Key: inputs
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1208378352336896
+    m_Key: type
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1208378352336897
+    m_Key: value
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287515451392
+    m_Key: event
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669120
+    m_Key: control
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669121
+    m_Key: motion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669122
+    m_Key: look
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669123
+    m_Key: operator
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669124
+    m_Key: debug
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669125
+    m_Key: data
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1830287649669126
+    m_Key: list
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 5638670611241500672
+  references:
+    version: 2
+    RefIds:
+    - rid: 5638670611241500672
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1767331999055

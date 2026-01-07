@@ -6,18 +6,11 @@ using Loykas.Scripting;
 public class MenuVectorInput : MonoBehaviour
 {
     public event UnityAction<Vector3> OnSubmit;
-
+    
     private Vector3 _value;
 
-    [SerializeField] private string _name;
-    [SerializeField] private TextMeshProUGUI _label;
     [SerializeField] private NumberInput _xInput;
     [SerializeField] private NumberInput _yInput;
-
-    private void OnValidate()
-    {
-        _label.text = _name;
-    }
 
     private void Awake()
     {

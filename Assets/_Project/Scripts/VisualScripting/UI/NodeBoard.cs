@@ -574,6 +574,11 @@ namespace Loykas.Scripting
                 Vector3 position = GetMouseBoardPosition();
                 Flow.AddFunctionCallNode(functionItem.Function, position);
             }
+
+            if (eventData.pointerDrag.TryGetComponent(out NodeListItem nodeListItem))
+            {
+                Flow.AddNode(nodeListItem.NodeData, GetMouseBoardPosition());
+            }
         }
 
         private Vector3 GetMouseBoardPosition()
