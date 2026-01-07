@@ -9200,6 +9200,8 @@ MonoBehaviour:
   isNotDestroyOnLoad: 0
   _previewObject: {fileID: 1303878422}
   _previewText: {fileID: 1179691396}
+  _image: {fileID: 1303878423}
+  _defaultColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!4 &597320377
 Transform:
   m_ObjectHideFlags: 0
