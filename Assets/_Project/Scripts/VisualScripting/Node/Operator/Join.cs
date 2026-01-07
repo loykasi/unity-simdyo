@@ -24,7 +24,7 @@ namespace Loykas.Scripting
             B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any))
                 .NoLocalize();
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.String), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.String), Get).HideLabel();
         }
 
         private object Get() => A.GetValue().ToString() + B.GetValue().ToString();

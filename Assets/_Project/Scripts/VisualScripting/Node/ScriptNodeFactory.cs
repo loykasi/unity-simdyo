@@ -54,9 +54,9 @@ namespace Loykas.Scripting
                 new BreakNode(),
                 new CreateCloneNode(),
                 new DeleteSelfNode(),
-                new RestartNode(),
-                new PauseNode(),
-                new ResumeNode(),
+                // new RestartNode(),
+                // new PauseNode(),
+                // new ResumeNode(),
 
                 // Motion,
                 new SetPositionNode(),

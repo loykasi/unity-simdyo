@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RectTransform: {fileID: 5791828399076868413}
+  _background: {fileID: 1867789855781427574}
   _textField: {fileID: 6438993388240502277}
 --- !u!1 &9008443786447446625
 GameObject:

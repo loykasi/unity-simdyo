@@ -35,7 +35,7 @@ public class NodeList : MonoBehaviour
             if (!_categories.TryGetValue(category, out NodeListCategoryItem item))
             {
                 item = Instantiate(_categoryPrefab, _contentRect);
-                item.Init(category.ToString());
+                item.Init(category);
                 _categories.Add(category, item);
             }
 

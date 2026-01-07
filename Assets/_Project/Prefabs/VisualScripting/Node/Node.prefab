@@ -210,9 +210,11 @@ MonoBehaviour:
   _nodeTitle: {fileID: 3930395652367057755}
   _selectedBorder: {fileID: 7229879760432287941}
   _borderSize: 5
+  _colorData: {fileID: 11400000, guid: 6a32b93ed25657341b8d28376a8c3253, type: 2}
   _inputHolder: {fileID: 8949905866491219355}
   _outputHolder: {fileID: 3173162504769695371}
   _head: {fileID: 3226770466982995808}
+  _headImage: {fileID: 6963107658179963904}
   _body: {fileID: 8646177879591071623}
   _inputTriggerPrefab: {fileID: 6495299535904794035, guid: 4f79b906eb3516b489b77e309aecdb91, type: 3}
   _inputValuePrefab: {fileID: -3993354798832430575, guid: 4a740cc127caf994d8e8226b0a492db7, type: 3}
@@ -382,13 +384,13 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: -1183493901
+  m_TextStyleHashCode: -620974005
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 18
+  m_fontSizeBase: 18
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

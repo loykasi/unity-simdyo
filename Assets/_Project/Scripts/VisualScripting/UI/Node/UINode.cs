@@ -18,7 +18,6 @@ namespace Loykas.Scripting
                 SetNode(value);
             }
         }
-
         private ScriptNode _node;
 
         public UINodePort EnterPort;
@@ -31,6 +30,7 @@ namespace Loykas.Scripting
         [SerializeField] private TMP_Text _nodeTitle;
         [SerializeField] private RectTransform _selectedBorder;
         [SerializeField] private float _borderSize;
+        [SerializeField] private UINodeColorData _colorData;
 
         [Header("Node Holders")]
         [SerializeField] private RectTransform _inputHolder;
@@ -38,6 +38,7 @@ namespace Loykas.Scripting
 
         [Header("Head and body")]
         [SerializeField] private RectTransform _head;
+        [SerializeField] private Image _headImage;
         [SerializeField] private RectTransform _body;
 
         [Header("Prefabs")]
@@ -81,6 +82,8 @@ namespace Loykas.Scripting
             if (Node == null) return;
             
             transform.localPosition = Node.Position;
+
+            _headImage.color = _colorData.Get(Node.Category);
 
             // title
             string title = Node.GetNameKey();

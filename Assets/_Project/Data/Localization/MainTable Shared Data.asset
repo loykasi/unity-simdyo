@@ -191,6 +191,10 @@ MonoBehaviour:
     m_Key: list
     m_Metadata:
       m_Items: []
+  - m_Id: 1878460015443968
+    m_Key: nodes
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
