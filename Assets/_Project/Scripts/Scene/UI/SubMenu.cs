@@ -4,13 +4,17 @@ using UnityEngine.InputSystem;
 
 public class SubMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [SerializeField] private bool _shouldCloseOnClickOutside;
+    [SerializeField] private MenuToggle _menuToggle;
     private bool _isHover;
 
     private void Update()
     {
-        if (Mouse.current.leftButton.wasPressedThisFrame && !_isHover)
+        if (_shouldCloseOnClickOutside && 
+            Mouse.current.leftButton.wasPressedThisFrame &&
+            !_isHover)
         {
-            gameObject.SetActive(false);
+            _menuToggle.ToggleMenu();
         }
     }
 
@@ -22,10 +26,5 @@ public class SubMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         _isHover = false;
-    }
-
-    public void Close()
-    {
-        gameObject.SetActive(false);
     }
 }

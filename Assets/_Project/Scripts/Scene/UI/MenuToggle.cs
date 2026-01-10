@@ -1,9 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class MenuToggle : MonoBehaviour
 {
+    public UnityEvent OnOpened;
+    public UnityEvent OnClosed;
+
     [SerializeField] private GameObject _menu;
     [SerializeField] private Button _button;
 
@@ -12,8 +16,17 @@ public class MenuToggle : MonoBehaviour
         _button.onClick.AddListener(ToggleMenu);
     }
 
-    private void ToggleMenu()
+    public void ToggleMenu()
     {
         _menu.SetActive(!_menu.activeSelf);
+
+        if (_menu.activeSelf)
+        {
+            OnOpened?.Invoke();
+        }
+        else
+        {
+            OnClosed?.Invoke();
+        }
     }
 }

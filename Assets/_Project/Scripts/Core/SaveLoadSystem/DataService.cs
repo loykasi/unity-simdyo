@@ -19,8 +19,8 @@ public class DataService : MonoBehaviour, IDataService
     private UnityAction _onSuccess;
     private UnityAction _onFailure;
 
-    private readonly string _defaultName = "SceneProject";
-    private readonly string _dataExtension = ".zip";
+    private readonly string _defaultName = "project";
+    private readonly string _dataExtension = "simdyo";
     private readonly string _sceneExtension = ".json";
     private readonly string _textureExtension = ".png";
 
@@ -40,11 +40,11 @@ public class DataService : MonoBehaviour, IDataService
 
 #if UNITY_WEBGL && !UNITY_EDITOR
             
-            SaveFile(_defaultName, bytes, bytes.Length);
+            SaveFile($"{_defaultName}.{_dataExtension}", bytes, bytes.Length);
 
 #else
 
-            string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", "", "zip");
+            string path = StandaloneFileBrowser.SaveFilePanel("Save File", "", _defaultName, _dataExtension);
             if (string.IsNullOrEmpty(path))
             {
                 return;
@@ -72,6 +72,7 @@ public class DataService : MonoBehaviour, IDataService
         using MemoryStream memoryStream = new();
         using (ZipArchive archive = new(memoryStream, ZipArchiveMode.Create, true))
         {
+            // main data
             var entry = archive.CreateEntry("scene.json", System.IO.Compression.CompressionLevel.NoCompression);
             using (Stream stream = entry.Open())
             {
@@ -87,9 +88,8 @@ public class DataService : MonoBehaviour, IDataService
                 // );
             }
 
-            var textureFolder = archive.CreateEntry("textures/");
-
             // textures
+            var textureFolder = archive.CreateEntry("textures/");
             for (int i = 0; i < data.Textures.Count; i++)
             {
                 var texture = data.Textures[i];
@@ -97,6 +97,15 @@ public class DataService : MonoBehaviour, IDataService
                 using Stream texturestream = textureEntry.Open();
                 using BinaryWriter binaryWriter = new(texturestream);
                 binaryWriter.Write(texture.Texture.EncodeToPNG());
+            }
+
+            // thumbnails
+            {
+                var thumbnailEntry = archive.CreateEntry("thumbnail.png", System.IO.Compression.CompressionLevel.NoCompression);
+                using Stream texturestream = thumbnailEntry.Open();
+                using BinaryWriter binaryWriter = new(texturestream);
+                byte[] bytes = ThumbnailRender.Instance.GetThumbnail();
+                binaryWriter.Write(bytes);
             }
         }
 
@@ -111,7 +120,7 @@ public class DataService : MonoBehaviour, IDataService
         
         #if UNITY_WEBGL && !UNITY_EDITOR
             _data = data;
-            LoadFile(gameObject.name, nameof(OnFileUploadFromBrowser), ".zip", false);
+            LoadFile(gameObject.name, nameof(OnFileUploadFromBrowser), $".{_dataExtension}", false);
         #else
             LoadFileFromDesktop(data);
         #endif
@@ -119,7 +128,7 @@ public class DataService : MonoBehaviour, IDataService
 
     private void LoadFileFromDesktop(GameData data)
     {
-        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", "", false);
+        var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", _dataExtension, false);
         if (paths.Length == 0)
         {
             return;
@@ -236,7 +245,8 @@ public class DataService : MonoBehaviour, IDataService
                 {
                     continue;
                 }
-                else if (entry.Name.EndsWith(_textureExtension, StringComparison.OrdinalIgnoreCase))
+                else if (entry.Name.EndsWith(_textureExtension, StringComparison.OrdinalIgnoreCase) &&
+                        entry.Name.Contains("textures/"))
                 {
                     string key = Path.GetFileNameWithoutExtension(entry.Name);
 
