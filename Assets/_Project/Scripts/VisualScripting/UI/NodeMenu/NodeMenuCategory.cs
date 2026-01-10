@@ -29,7 +29,8 @@ namespace Loykas.Scripting
 
         public void Init(string title, RectTransform parentRect, NodeMenu nodeMenu)
         {
-            _titleField.SetText(title);
+            string localizedTitle = GlobalLocalization.Instance.GetValue("MainTable", title.ToLower());
+            _titleField.SetText(localizedTitle);
             _parentRect = parentRect;
             _nodeMenu = nodeMenu;
         }

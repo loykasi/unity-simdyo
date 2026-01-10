@@ -22,7 +22,7 @@ namespace Loykas.Scripting
                 ValueHandler.SetValue(ValueInstance, entity);
             }
 
-            OnSubmit?.Invoke(entity.Id);
+            OnSubmit?.Invoke(entity ? entity.Id : null);
         }
 
         public void Init(List<string> options)

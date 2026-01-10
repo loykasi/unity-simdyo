@@ -31,24 +31,30 @@ public class ScriptNodeValueConverter : JsonConverter<ScriptNodeValueData>
             Key = key,
             Type = type,
         };
+
+        JToken token = obj["Value"];
         
         switch (type)
         {
             case DataType.String:
-            case DataType.Entity:
-                value.Value = obj["Value"]?.ToObject<string>(serializer);
+                value.Value = token?.ToObject<string>(serializer);
                 break;
             case DataType.Number:
-                value.Value = obj["Value"].ToObject<float>(serializer);
+                value.Value = token.ToObject<float>(serializer);
                 break;
             case DataType.Boolean:
-                value.Value = obj["Value"].ToObject<bool>(serializer);
+                value.Value = token.ToObject<bool>(serializer);
                 break;
             case DataType.Color:
-                value.Value = obj["Value"].ToObject<ColorHSV>(serializer);
+                value.Value = token.ToObject<ColorHSV>(serializer);
                 break;
             case DataType.Key:
-                value.Value = new Key(obj["Value"].ToObject<string>(serializer));
+                value.Value = new Key(token.ToObject<string>(serializer));
+                break;
+            case DataType.Entity:
+                value.Value = token.Type == JTokenType.Null ? null : token.ToObject<int>(serializer);
+                Debug.Log(value.GetType());
+                Debug.Log(value.Value);
                 break;
         }
 

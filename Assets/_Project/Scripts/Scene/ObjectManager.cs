@@ -396,6 +396,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                     continue;
             }
 
+            entity.Id = entityData.Id;
             entity.Rotation = entityData.Rotation;
             entity.CurrentColor = entityData.Color;
 
