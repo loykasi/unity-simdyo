@@ -91,6 +91,11 @@ public class TextureController : Singleton<TextureController>, ISaveable
 
         Entity.SetTexture(_currentKey);
     }
+    
+    public void Clear()
+    {
+        Entity.SetTexture(string.Empty);        
+    }
 
     public string UpdateKey(string currentKey, string newKey)
     {

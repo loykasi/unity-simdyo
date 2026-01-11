@@ -132,6 +132,12 @@ public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         CloseTextureMenu();
     }
 
+    public void Clear()
+    {
+        TextureController.Instance.Clear();
+        CloseTextureMenu();
+    }
+
     public string UpdateKey(string currentKey, string newKey)
     {
         return TextureController.Instance.UpdateKey(currentKey, newKey);
