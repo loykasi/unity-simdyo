@@ -12,6 +12,8 @@ public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private Button _applyButton;
     [SerializeField] private Button _changeButton;
     [SerializeField] private Button _removeButton;
+    [SerializeField] private Button _clearButton;
+
 
     private List<UITextureSlot> _textureSlots = new();
     private int _selectedIndex;
@@ -37,7 +39,9 @@ public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         Load();
 
-        _applyButton.gameObject.SetActive(TextureController.Instance.Entity != null);
+        bool hasTarget = TextureController.Instance.Entity != null;
+        _applyButton.gameObject.SetActive(hasTarget);
+        _clearButton.gameObject.SetActive(hasTarget);
         _textureMenu.SetActive(true);
     }
 

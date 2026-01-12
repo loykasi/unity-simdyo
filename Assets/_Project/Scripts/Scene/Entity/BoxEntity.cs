@@ -139,6 +139,13 @@ public class BoxEntity : SceneEntity
         Height = Vector3.Distance(yTop, yBottom);
     }
 
+    public void ResizeByTexture()
+    {
+        if (Texture == null) return;
+        float height = Width * Texture.height / Texture.width;
+        SetSize(Width, height);
+    }
+
     public override void Select()
     {
         Border.Enable();

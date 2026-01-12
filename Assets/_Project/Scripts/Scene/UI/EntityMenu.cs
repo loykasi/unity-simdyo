@@ -189,6 +189,11 @@ public class EntityMenu : MonoBehaviour
         _controller.UpdateHeight(value);
     }
 
+    public void ResizeByTexture()
+    {
+        _controller.ResizeByTexture();
+    }
+
     public void OpenGraph()
     {
         SceneEntity selected = ObjectManager.Instance.SelectedObject;

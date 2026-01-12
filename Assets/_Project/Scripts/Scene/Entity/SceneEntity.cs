@@ -22,6 +22,7 @@ public class SceneEntity : MonoBehaviour
     public CollisionLayer Layer;
     public SortingGroup SortingGroup;
     public string TextureSlotKey;
+    public Texture2D Texture;
     
     public string Name
     {
@@ -255,8 +256,8 @@ public class SceneEntity : MonoBehaviour
     public virtual void SetTexture(string key)
     {
         TextureSlotKey = key;
-        Texture2D texture = TextureController.Instance.GetTexture(key);
-        Renderer.material.SetTexture(_textureProperty, texture);
+        Texture = TextureController.Instance.GetTexture(key);
+        Renderer.material.SetTexture(_textureProperty, Texture);
     }
 
     // trigger hook

@@ -148,6 +148,19 @@ public class EntityMenuController : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
+    public void ResizeByTexture()
+    {
+        if (_entity.EntityType != EntityType.Box)
+        {
+            return;
+        }
+
+        var boxEntity = (BoxEntity)_entity;
+        boxEntity.ResizeByTexture();
+
+        Physics2D.SyncTransforms();
+    }
+
     public void MoveToBack()
     {
         ObjectManager.Instance.MoveToBack(_entity);
