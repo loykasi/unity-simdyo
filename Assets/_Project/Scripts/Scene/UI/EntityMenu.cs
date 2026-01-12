@@ -50,6 +50,11 @@ public class EntityMenu : MonoBehaviour
         _angleInput.OnSubmit += OnAngleSubmit;
         _velocityInput.OnSubmit += OnVelocitySubmit;
 
+        _radiusInput.OnSubmit += OnRadiusSubmit;
+
+        _widthInput.OnSubmit += OnWidthSubmit;
+        _heightInput.OnSubmit += OnHeightSubmit;
+
         _moveToBackButton.onClick.AddListener(MoveToBack);
         _moveToFrontButton.onClick.AddListener(MoveToFront);
     }
@@ -167,6 +172,21 @@ public class EntityMenu : MonoBehaviour
     public void OpenColorEdit()
     {
         _controller.OpenColorEdit();
+    }
+
+    public void OnRadiusSubmit(float value)
+    {
+        _controller.UpdateRadius(value);
+    }
+
+    public void OnWidthSubmit(float value)
+    {
+        _controller.UpdateWidth(value);
+    }
+
+    public void OnHeightSubmit(float value)
+    {
+        _controller.UpdateHeight(value);
     }
 
     public void OpenGraph()

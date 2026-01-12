@@ -108,15 +108,28 @@ public class EntityMenuController : MonoBehaviour
         TextureController.Instance.OpenMenu(_entity);
     }
 
-    public void UpdateSize(float width, float height)
+    public void UpdateWidth(float width)
     {
         if (_entity.EntityType != EntityType.Box)
         {
             return;
         }
 
-        ((BoxEntity)_entity).Width = width;
-        ((BoxEntity)_entity).Height = height;
+        var boxEntity = (BoxEntity)_entity;
+        boxEntity.SetSize(width, boxEntity.Height);
+
+        Physics2D.SyncTransforms();
+    }
+
+    public void UpdateHeight(float height)
+    {
+        if (_entity.EntityType != EntityType.Box)
+        {
+            return;
+        }
+
+        var boxEntity = (BoxEntity)_entity;
+        boxEntity.SetSize(boxEntity.Width, height);
 
         Physics2D.SyncTransforms();
     }
@@ -128,7 +141,9 @@ public class EntityMenuController : MonoBehaviour
             return;
         }
 
-        ((CircleEntity)_entity).Radius = radius;
+        Debug.Log("Set radius");
+
+        ((CircleEntity)_entity).SetRadius(radius);
 
         Physics2D.SyncTransforms();
     }

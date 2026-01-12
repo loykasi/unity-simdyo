@@ -14,6 +14,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     public Camera SceneCamera;
     [SerializeField] private Color _backgroundColor;
     public CameraSettings CameraSettings = new();
+    public CameraSettings CameraState = new();
 
     [Header("References")]
     public ScriptFlow GlobalScript;
@@ -51,6 +52,9 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
         Time.timeScale = 1;
         SceneCamera.gameObject.SetActive(true);
 
+        CameraState.Color = new ColorHSV(SceneCamera.backgroundColor);
+        CameraState.Position = SceneCamera.transform.position;
+        CameraState.Size = SceneCamera.orthographicSize;
         OnSceneStart?.Invoke();
 
         GlobalScript.StartVS();
@@ -70,6 +74,9 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
         SceneCamera.gameObject.SetActive(false);
 
+        SceneCamera.backgroundColor = CameraState.Color.ToUnityColor();
+        SceneCamera.transform.position = CameraState.Position;
+        SceneCamera.orthographicSize = CameraState.Size;
         OnSceneStop?.Invoke();
 
         _isRunning = false;

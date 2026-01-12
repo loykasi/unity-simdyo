@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GridOverlay : MonoBehaviour
@@ -11,6 +12,8 @@ public class GridOverlay : MonoBehaviour
 
     private readonly int _sizeProperty = Shader.PropertyToID("_Size");
     private readonly int _subSizeProperty = Shader.PropertyToID("_SubSize");
+    private readonly int _colorProperty = Shader.PropertyToID("_Color");
+    private readonly int _secondaryColorProperty = Shader.PropertyToID("_SecondaryColor");
 
     private void Start()
     {
@@ -52,5 +55,11 @@ public class GridOverlay : MonoBehaviour
     {
         _renderer.material.SetFloat(_sizeProperty, size);
         _renderer.material.SetFloat(_subSizeProperty, subSize);
+    }
+
+    public void SetColor(Color color, Color secondaryColor)
+    {
+        _renderer.material.SetColor(_colorProperty, color);
+        _renderer.material.SetColor(_secondaryColorProperty, secondaryColor);
     }
 }

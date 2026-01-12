@@ -37,6 +37,7 @@ public class CircleEntity : SceneEntity
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
 
         _interactionCircle.radius = ((CircleCollider2D)Collider).radius;
+        Border.SetRadius(Radius);
     }
 
     public void UpdateCircle(Vector3 from, Vector3 to)

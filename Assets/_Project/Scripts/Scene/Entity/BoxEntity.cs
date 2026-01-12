@@ -100,6 +100,7 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.vertices = _vertices;
 
         _interactionBox.size = ((BoxCollider2D)Collider).size;
+        Border.SetBorder(Width, Height);
     }
 
     public void UpdateBox(Vector3 from, Vector3 to)
