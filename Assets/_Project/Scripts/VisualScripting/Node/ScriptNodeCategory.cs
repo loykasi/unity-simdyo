@@ -9,6 +9,7 @@ namespace Loykas.Scripting
         Operator,
         Debug,
         Data,
-        List
+        List,
+        Camera
     }
 }

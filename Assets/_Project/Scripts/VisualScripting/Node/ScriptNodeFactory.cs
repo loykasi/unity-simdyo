@@ -125,8 +125,14 @@ namespace Loykas.Scripting
                 new GetListLengthNode(),
                 new ListContainsItemNode(),
 
-                // Debug,
+                // Debug
                 new LogNode(),
+
+                // Camera
+                new SetCameraSizeNode(),
+                new SetCameraPositionNode(),
+                new GetCameraSizeNode(),
+                new GetCameraPositionNode(),
 
                 // Hidden
                 new FunctionCallNode(),

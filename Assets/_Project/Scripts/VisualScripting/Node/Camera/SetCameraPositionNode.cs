@@ -1,0 +1,39 @@
+using UnityEngine;
+
+namespace Loykas.Scripting
+{
+    class SetCameraPositionNode : ScriptNode
+    {
+        public override ScriptNodeCategory Category => ScriptNodeCategory.Camera;
+
+        public InputTrigger Enter;
+        public OutputTrigger Exit;
+
+        public InputValue X;
+        public InputValue Y;
+
+        public override ScriptNode Create()
+        {
+            return new SetCameraPositionNode();
+        }
+
+        public SetCameraPositionNode()
+        {
+            Enter = CreateInputTrigger(nameof(Enter), Set);
+            Exit = OutputTrigger(nameof(Exit));
+
+            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput();
+            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput();
+        }
+
+        public OutputTrigger Set()
+        {
+            Camera camera = SceneManager.Instance.SceneCamera;
+
+            float x = X.GetValue<float>();
+            float y = Y.GetValue<float>();
+            camera.transform.position = new Vector3(x, y, camera.transform.position.z);
+            return Exit;
+        }
+    }
+}

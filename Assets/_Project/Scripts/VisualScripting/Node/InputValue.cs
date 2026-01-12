@@ -194,7 +194,7 @@ public enum InputValueTypes
                 return Value;
             }
 
-            return null;
+            return default;
         }
 
         public void SetValue(object value)
