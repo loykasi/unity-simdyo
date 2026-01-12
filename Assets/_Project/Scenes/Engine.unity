@@ -17729,6 +17729,10 @@ MonoBehaviour:
   _gridOverlay: {fileID: 1460215597}
   _gridBase: 4
   _maxSize: 7
+  _mainColor: {r: 1, g: 1, b: 1, a: 0.14901961}
+  _secondaryColor: {r: 1, g: 1, b: 1, a: 0.050980393}
+  _mainDarkColor: {r: 0, g: 0, b: 0, a: 0.14901961}
+  _secondaryDarkColor: {r: 0, g: 0, b: 0, a: 0.050980393}
 --- !u!156049354 &1043383223
 Grid:
   m_ObjectHideFlags: 0
@@ -26957,7 +26961,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -750}
+  m_AnchoredPosition: {x: 10, y: -790}
   m_SizeDelta: {x: 280, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1591003338
@@ -31320,7 +31324,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -790}
+  m_AnchoredPosition: {x: 10, y: -750}
   m_SizeDelta: {x: 280, y: 30}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1888476583

@@ -1,7 +1,10 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BackgroundColor : Singleton<BackgroundColor>
 {
+    public event UnityAction<Color> OnColorChanged;
+    
     [SerializeField] private Camera _editorCamera;
     [SerializeField] private Camera _gameCamera;
 
@@ -15,5 +18,7 @@ public class BackgroundColor : Singleton<BackgroundColor>
         {
             _gameCamera.backgroundColor = color;
         }
+
+        OnColorChanged?.Invoke(color);
     }
 }

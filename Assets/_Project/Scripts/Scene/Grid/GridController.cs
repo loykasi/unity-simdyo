@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class GridController : Singleton<GridController>
@@ -10,6 +11,13 @@ public class GridController : Singleton<GridController>
     [SerializeField] private int _gridBase;
     [SerializeField] private float _maxSize;
 
+    [Header("Light")]
+    [SerializeField] private Color _mainColor;
+    [SerializeField] private Color _secondaryColor;
+    [Header("Dark")]
+    [SerializeField] private Color _mainDarkColor;
+    [SerializeField] private Color _secondaryDarkColor;
+
     private float _size = 1.0f;
     private float _subSize = 0.25f;
     private Vector2 _sizeRange;
@@ -20,6 +28,25 @@ public class GridController : Singleton<GridController>
     {
         _camera = EngineManager.Instance.EditorCamera;
         _subSize = _size / _gridBase;
+
+        BackgroundColor.Instance.OnColorChanged += OnColorChanged;
+    }
+
+    private void OnColorChanged(Color color)
+    {
+        ColorHSV colorHSV = new(color);
+
+        float x = Mathf.Max(colorHSV.V - 0.75f, 0) / 0.25f;
+        float threshold = Mathf.Lerp(0f, 0.35f, x);
+
+        if (colorHSV.S < threshold)
+        {
+            _gridOverlay.SetColor(_mainDarkColor, _secondaryDarkColor);
+        }
+        else
+        {
+            _gridOverlay.SetColor(_mainColor, _secondaryColor);
+        }
     }
 
     private void CalculateRange()
