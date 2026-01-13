@@ -77,11 +77,13 @@ namespace Loykas.Scripting
                 new SetTextureSlotNode(),
                 new SetSizeNode(),
                 new SetRadiusNode(),
+                new SetTextNode(),
 
                 new GetColorNode(),
                 new GetTextureSlotNode(),
                 new GetSizeNode(),
                 new GetRadiusNode(),
+                new GetTextNode(),
 
                 // Operator,
                 new AddNode(),

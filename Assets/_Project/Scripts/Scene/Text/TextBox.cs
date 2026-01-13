@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -44,6 +45,39 @@ public class TextBox : MonoBehaviour
     {
         get => TextField.verticalAlignment;
         set => TextField.verticalAlignment = value;
+    }
+
+    private string _defaultText;
+    private Color _defaultColor;
+
+    private void OnEnable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart += OnSceneStart;
+            SceneManager.Instance.OnSceneStop += OnSceneStop;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (SceneManager.Instance != null)
+        {
+            SceneManager.Instance.OnSceneStart -= OnSceneStart;
+            SceneManager.Instance.OnSceneStop -= OnSceneStop;
+        }
+    }
+
+    private void OnSceneStart()
+    {
+        _defaultText = Text;
+        _defaultColor = Color;
+    }
+
+    private void OnSceneStop()
+    {
+        Text = _defaultText;
+        Color = _defaultColor;
     }
 
     public void Resize(float width, float height)
