@@ -224,4 +224,9 @@ public class EntityMenu : MonoBehaviour
     {
         _controller.MoveToFront();
     }
+
+    public void OpenTextEditor()
+    {
+        _controller.OpenTextEditor();
+    }
 }

@@ -1,4 +1,5 @@
 using Loykas.Scripting;
+using TMPro;
 using UnityEngine;
 
 public class BoxEntity : SceneEntity
@@ -8,6 +9,7 @@ public class BoxEntity : SceneEntity
     public BoxBorder Border;
     public float Width;
     public float Height;
+    public TextBox TextBox;
 
     public Vector3 TopLeft
     {
@@ -100,7 +102,8 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.vertices = _vertices;
 
         _interactionBox.size = ((BoxCollider2D)Collider).size;
-        Border.SetBorder(Width, Height);
+        Border.SetBorder(Width, Width);
+        TextBox.Resize(Width, Height);
     }
 
     public void UpdateBox(Vector3 from, Vector3 to)
@@ -124,6 +127,7 @@ public class BoxEntity : SceneEntity
 
         _interactionBox.size = ((BoxCollider2D)Collider).size;
         Border.SetBorder(Width, Height);
+        TextBox.Resize(Width, Height);
     }
 
     private void UpdateSize(Vector3 from, Vector3 to)

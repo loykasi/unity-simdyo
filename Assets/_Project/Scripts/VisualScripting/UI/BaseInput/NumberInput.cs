@@ -18,8 +18,6 @@ namespace Loykas.Scripting
         {
             InputField.onValueChanged.AddListener(OnValueChanged);
             InputField.onEndEdit.AddListener(OnEndEdit);
-
-            SetValue(0f);
         }
 
         private void OnValueChanged(string value)

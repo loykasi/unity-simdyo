@@ -161,6 +161,17 @@ public class EntityMenuController : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
+    public void OpenTextEditor()
+    {
+        if (_entity.EntityType != EntityType.Box)
+        {
+            return;
+        }
+
+        var boxEntity = (BoxEntity)_entity;
+        TextBoxMenu.Instance.Open(boxEntity.TextBox);
+    }
+
     public void MoveToBack()
     {
         ObjectManager.Instance.MoveToBack(_entity);
