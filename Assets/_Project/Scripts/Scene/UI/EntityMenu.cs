@@ -55,6 +55,8 @@ public class EntityMenu : MonoBehaviour
         _widthInput.OnSubmit += OnWidthSubmit;
         _heightInput.OnSubmit += OnHeightSubmit;
 
+        _depthInput.OnSubmit += OnDepthSubmit;
+
         _moveToBackButton.onClick.AddListener(MoveToBack);
         _moveToFrontButton.onClick.AddListener(MoveToFront);
     }
@@ -187,6 +189,11 @@ public class EntityMenu : MonoBehaviour
     public void OnHeightSubmit(float value)
     {
         _controller.UpdateHeight(value);
+    }
+
+    public void OnDepthSubmit(float value)
+    {
+        _controller.UpdateZDepth(value);
     }
 
     public void ResizeByTexture()

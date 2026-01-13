@@ -112,7 +112,7 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public bool IsColliderEnabled => Collider.enabled;
+    public bool IsColliderEnabled => !Collider.isTrigger;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
     public virtual Bounds Bounds => Renderer.bounds;
 
@@ -215,7 +215,7 @@ public class SceneEntity : MonoBehaviour
 
     public void ToggleCollider(bool value)
     {
-        Collider.enabled = value;
+        Collider.isTrigger = !value;
     }
 
     public void ToggleGravity(bool value)
@@ -275,6 +275,11 @@ public class SceneEntity : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         Script.TriggerEvent(EventHook.OnTouched, collision);   
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        Script.TriggerEvent(EventHook.OnTouched, collision);
     }
 
     public virtual SceneEntity CloneEntity()

@@ -54,7 +54,7 @@ namespace Loykas.Scripting
                 new BreakNode(),
                 new CreateCloneNode(),
                 new DeleteSelfNode(),
-                // new RestartNode(),
+                new RestartNode(),
                 // new PauseNode(),
                 // new ResumeNode(),
 
@@ -78,6 +78,8 @@ namespace Loykas.Scripting
                 new SetSizeNode(),
                 new SetRadiusNode(),
                 new SetTextNode(),
+
+                new SetZDepthNode(),
 
                 new GetColorNode(),
                 new GetTextureSlotNode(),

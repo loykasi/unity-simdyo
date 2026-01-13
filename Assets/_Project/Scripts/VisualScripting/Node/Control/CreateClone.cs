@@ -6,7 +6,6 @@ namespace Loykas.Scripting
     class CreateCloneNode : ScriptNode
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Control;
-        public override bool CanUseGlobal => false;
 
         public InputTrigger Enter;
         public OutputTrigger Exit;
@@ -36,7 +35,8 @@ namespace Loykas.Scripting
 
         private OutputTrigger Clone()
         {
-            _entity = Flow.Entity.CloneEntity();
+            SceneEntity entity = Flow.GetEntity(Entity);
+            _entity = entity.CloneEntity();
             if (_entity == null)
             {
                 return Exit;
@@ -44,8 +44,6 @@ namespace Loykas.Scripting
 
             _entity.Script.TriggerEvent(EventHook.StartAsClone);
             _entity.OnStart();
-
-            Debug.Log("Create " + _entity.Id);
 
             return Exit;
         }

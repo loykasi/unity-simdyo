@@ -174,6 +174,7 @@ public class TextureController : Singleton<TextureController>, ISaveable
         Texture2D texture = new(1, 1);
         texture.LoadImage(bytes);
         texture.wrapMode = TextureWrapMode.Clamp;
+        texture.filterMode = FilterMode.Point;
 
         string key = GetUniqueKey(_defaultName);
 

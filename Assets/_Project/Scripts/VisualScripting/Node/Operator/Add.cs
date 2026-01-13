@@ -26,8 +26,7 @@ namespace Loykas.Scripting
                 .UseInput()
                 .NoLocalize();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get)
-                    .HideLabel();
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
         }
 
         private object Get() => OperatorUtility.Add(A.GetValue(), B.GetValue());

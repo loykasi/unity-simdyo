@@ -99,7 +99,8 @@ public class BoxEntity : SceneEntity
         _vertices[1] = new Vector3(- halfWidth, halfHeight);
         _vertices[2] = new Vector3(- halfWidth, - halfHeight);
         _vertices[3] = new Vector3(halfWidth, - halfHeight);
-        MeshFilter.mesh.vertices = _vertices;
+        MeshFilter.mesh.SetVertices(_vertices);
+        MeshFilter.mesh.RecalculateBounds();
 
         _interactionBox.size = ((BoxCollider2D)Collider).size;
         Border.SetBorder(Width, Width);

@@ -11,7 +11,7 @@ namespace Loykas.Scripting
 
         public InputValue WaitTime;
 
-        private bool _isStart;
+        private bool _isFirstFrame = true;
         private float _time;
 
         public override ScriptNode Create()
@@ -29,18 +29,18 @@ namespace Loykas.Scripting
 
         private OutputTrigger Wait()
         {
-            if (!_isStart)
+            if (_isFirstFrame)
             {
                 _time = (float)WaitTime.GetValue();
-                _isStart = true;
+                _isFirstFrame = false;
             }
 
-            if (_isStart && _time > 0)
+            if (_time > 0)
             {
                 _time -= Time.deltaTime;
                 return null;
             }
-            _isStart = false;
+            _isFirstFrame = true;
 
             return Exit;
         }

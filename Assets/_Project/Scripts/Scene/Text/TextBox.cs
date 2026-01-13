@@ -15,7 +15,7 @@ public class TextBox : MonoBehaviour
         {
             TextField.text = value;
 
-            bool active = value.Length > 0;
+            bool active = !string.IsNullOrEmpty(value);
             if (TextFieldBox.activeSelf != active)
             {
                 RectTransform.gameObject.SetActive(active);   

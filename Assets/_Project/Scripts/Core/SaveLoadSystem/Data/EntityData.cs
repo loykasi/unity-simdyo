@@ -4,6 +4,7 @@ using UnityEngine;
 public class EntityData
 {
     public int Id;
+    public string Name;
     public EntityType Type;
     public Vector3 Position;
     public Quaternion Rotation;
@@ -12,5 +13,6 @@ public class EntityData
     public CollisionLayer Layer;
     public ColorHSV Color;
     public string TextureSlotKey;
+    public int ZDepth;
     public ScriptFlowData Script = new();
 }

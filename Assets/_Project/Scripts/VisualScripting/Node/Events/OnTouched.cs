@@ -40,14 +40,21 @@ namespace Loykas.Scripting
         public object GetPositionX() => _position.x;
         public object GetPositionY() => _position.y;
 
-        public override void AssignArgument(object args)
+        public override void AssignArgument(object value)
         {
-            var collision = (Collision2D)args;
-            ContactPoint2D point = collision.GetContact(0);
+            if (value is Collision2D collision2D)
+            {
+                ContactPoint2D point = collision2D.GetContact(0);
 
-            _otherEntityId = collision.collider.GetComponent<SceneEntity>().Id;
-            _position = point.point;
-            // _normal = point.normal;
+                _otherEntityId = collision2D.collider.GetComponent<SceneEntity>().Id;
+                _position = point.point;
+                // _normal = point.normal;
+            }
+            else if (value is Collider2D collider2D)
+            {
+                _otherEntityId = collider2D.GetComponent<SceneEntity>().Id;
+                _position = Vector3.zero;
+            }
         }
     }
 }

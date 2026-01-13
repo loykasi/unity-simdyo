@@ -345,6 +345,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 {
                     Width = ((BoxEntity)entity).Width,
                     Height = ((BoxEntity)entity).Height,
+                    Text = ((BoxEntity)entity).TextBox.Text,
+                    TextColor = new ColorHSV(((BoxEntity)entity).TextBox.Color),
+                    TextSize = ((BoxEntity)entity).TextBox.Size,
+                    TextHorizontalAlignment = ((BoxEntity)entity).TextBox.HorizontalAlignment,
+                    TextVerticalAlignment = ((BoxEntity)entity).TextBox.VerticalAlignment,
                 },
                 EntityType.Circle => new CircleEntityData
                 {
@@ -354,6 +359,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             };
 
             entityData.Id = entity.Id;
+            entityData.Name = entity.Name;
             entityData.Type = entity.EntityType;
             entityData.Position = entity.transform.position;
             entityData.Rotation = entity.transform.rotation;
@@ -362,6 +368,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entityData.Layer = entity.Layer;
             entityData.Color = entity.CurrentColor;
             entityData.TextureSlotKey = entity.TextureSlotKey;
+            entityData.ZDepth = entity.ZDepth;
 
             ScriptSaveHandler.Save(entityData.Script, entity.Script);
 
@@ -387,6 +394,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 case EntityType.Box:
                     BoxEntityData boxData = (BoxEntityData)entityData;
                     entity = AddBox(boxData.Position, boxData.Width, boxData.Height);
+                    var box = (BoxEntity)entity;
+                    
+                    box.TextBox.Text = boxData.Text;
+                    box.TextBox.Color = boxData.TextColor.ToUnityColor();
+                    box.TextBox.Size = boxData.TextSize;
+                    box.TextBox.HorizontalAlignment = boxData.TextHorizontalAlignment;
+                    box.TextBox.VerticalAlignment = boxData.TextVerticalAlignment;
                     break;
                 case EntityType.Circle:
                     CircleEntityData circleData = (CircleEntityData)entityData;
@@ -397,6 +411,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             }
 
             entity.Id = entityData.Id;
+            entity.Name = entityData.Name;
             entity.Rotation = entityData.Rotation;
             entity.CurrentColor = entityData.Color;
 
@@ -404,6 +419,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             entity.ToggleGravity(entityData.GravityEnabled);
             entity.SetLayer(entityData.Layer);
             entity.SetTexture(entityData.TextureSlotKey);
+            entity.ZDepth = entityData.ZDepth;
             
             ScriptSaveHandler.Load(entityData.Script, entity.Script);
         }

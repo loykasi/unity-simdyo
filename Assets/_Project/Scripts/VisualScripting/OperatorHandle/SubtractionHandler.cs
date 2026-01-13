@@ -4,7 +4,7 @@ namespace Loykas.Scripting
     {
         public SubtractionHandler()
         {
-            Operator<double, double>((a, b) => a - b);
+            Operator<float, float>((a, b) => a - b);
         }
     }
 }

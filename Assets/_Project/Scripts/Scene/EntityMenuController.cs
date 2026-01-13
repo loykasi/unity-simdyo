@@ -148,6 +148,11 @@ public class EntityMenuController : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
+    public void UpdateZDepth(float value)
+    {
+        _entity.ZDepth = (int)value;
+    }
+
     public void ResizeByTexture()
     {
         if (_entity.EntityType != EntityType.Box)

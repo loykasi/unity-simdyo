@@ -45,7 +45,7 @@ namespace Loykas.Scripting
         {
             string name = Variable.GetValue().ToString();
             object value = Value.GetValue();
-            Flow.UpdateVariable(name, value);
+            SceneManager.Instance.GlobalScript.UpdateVariable(name, value);
             return Exit;
         }
 

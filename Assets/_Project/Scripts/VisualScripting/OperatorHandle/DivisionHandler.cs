@@ -4,7 +4,7 @@ namespace Loykas.Scripting
     {
         public DivisionHandler()
         {
-            Operator<double, double>((a, b) => a / b);
+            Operator<float, float>((a, b) => a / b);
         }
     }
 }

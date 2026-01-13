@@ -246,7 +246,7 @@ public class DataService : MonoBehaviour, IDataService
                     continue;
                 }
                 else if (entry.Name.EndsWith(_textureExtension, StringComparison.OrdinalIgnoreCase) &&
-                        entry.Name.Contains("textures/"))
+                        entry.FullName.Contains("textures/"))
                 {
                     string key = Path.GetFileNameWithoutExtension(entry.Name);
 
@@ -255,7 +255,11 @@ public class DataService : MonoBehaviour, IDataService
                     stream.CopyTo(memory);
                     byte[] textureData = memory.ToArray();
 
-                    Texture2D texture = new(2, 2);
+                    Texture2D texture = new(2, 2)
+                    {
+                        wrapMode = TextureWrapMode.Clamp,
+                        filterMode = FilterMode.Point
+                    };
                     texture.LoadImage(textureData);
 
                     data.Textures.Add(new TextureData(key, texture));

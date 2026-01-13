@@ -2689,8 +2689,20 @@ PrefabInstance:
       value: ZDepth
       objectReference: {fileID: 0}
     - target: {fileID: 233167932769712000, guid: 4541626fa8e165144975702b29bd00b8, type: 3}
+      propertyPath: m_ContentType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 233167932769712000, guid: 4541626fa8e165144975702b29bd00b8, type: 3}
       propertyPath: m_Interactable
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 233167932769712000, guid: 4541626fa8e165144975702b29bd00b8, type: 3}
+      propertyPath: m_KeyboardType
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 233167932769712000, guid: 4541626fa8e165144975702b29bd00b8, type: 3}
+      propertyPath: m_CharacterValidation
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2877722797915127403, guid: 4541626fa8e165144975702b29bd00b8, type: 3}
       propertyPath: m_Pivot.x

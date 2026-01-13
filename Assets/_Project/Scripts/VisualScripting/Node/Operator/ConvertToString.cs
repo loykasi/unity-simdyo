@@ -18,7 +18,7 @@ namespace Loykas.Scripting
         {
             Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.String), Get).HideLabel();
         }
 
         private object Get() => Value.GetValue().ToString();

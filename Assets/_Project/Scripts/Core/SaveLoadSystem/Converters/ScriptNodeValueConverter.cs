@@ -53,8 +53,6 @@ public class ScriptNodeValueConverter : JsonConverter<ScriptNodeValueData>
                 break;
             case DataType.Entity:
                 value.Value = token.Type == JTokenType.Null ? null : token.ToObject<int>(serializer);
-                Debug.Log(value.GetType());
-                Debug.Log(value.Value);
                 break;
         }
 
