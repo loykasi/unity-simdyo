@@ -62,8 +62,6 @@ namespace Loykas.Scripting
                 _functionsItems.RemoveAt(index);
                 CheckForNoData();
 
-                float bodyHeight = GetBodyHeight();
-                _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
                 FlowGraph.RebuildSideBarUI();
             }
         }
@@ -84,9 +82,6 @@ namespace Loykas.Scripting
 
             _functionsItems.Add(functionItem);
 
-            float bodyHeight = GetBodyHeight();
-            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
-
             FlowGraph.RebuildSideBarUI();
 
             return functionItem;
@@ -104,6 +99,8 @@ namespace Loykas.Scripting
         private void CheckForNoData()
         {
             _noDataText.SetActive(_functionsItems.Count == 0);
+            float bodyHeight = GetBodyHeight();
+            _rect.sizeDelta = new Vector2(_rect.sizeDelta.x, _headerHeight + bodyHeight);
         }
 
         public void Select(FunctionBoardItem item)

@@ -33,7 +33,7 @@ namespace Loykas.Scripting
             EntityOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Entity), Get);
         }
 
-        private OutputTrigger Clone()
+        private OutputTrigger Clone(NodeTask task)
         {
             SceneEntity entity = Flow.GetEntity(Entity);
             _entity = entity.CloneEntity();

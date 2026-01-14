@@ -27,7 +27,7 @@ namespace Loykas.Scripting
                         .UseGlobalLocalized();
         }
 
-        private OutputTrigger Clear()
+        private OutputTrigger Clear(NodeTask task)
         {
             IList list = (IList)ListInput.GetValue();
             list.Clear();

@@ -8,6 +8,7 @@ namespace Loykas.Scripting
 
         public InputValue Min;
         public InputValue Max;
+        public InputValue IntegersOnly;
 
         public OutputValue Value;
 
@@ -26,6 +27,11 @@ namespace Loykas.Scripting
                 .UseInput()
                 .NoLocalize();
 
+            IntegersOnly = InputValue(nameof(IntegersOnly), ScriptDataType.Single(DataType.Boolean))
+                .UseInput()
+                .DisableConnection()
+                .NoLocalize();
+
             Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), GetRandom).HideLabel();
         }
 
@@ -33,6 +39,12 @@ namespace Loykas.Scripting
         {
             float a = (float)Min.GetValue();
             float b = (float)Max.GetValue();
+            
+            bool isInteger = (bool)IntegersOnly.GetValue();
+            if (isInteger)
+            {
+                return (float)Random.Range((int)a, (int)b + 1);
+            }
             return Random.Range(a, b);
         }
     }

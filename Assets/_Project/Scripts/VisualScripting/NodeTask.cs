@@ -33,7 +33,7 @@ namespace Loykas.Scripting
                 IsDone = false;
                 while (Trigger != null)
                 {
-                    bool isDone = Trigger.Invoke(flow);
+                    bool isDone = Trigger.Invoke(this);
 
                     if (!isDone)
                     {
@@ -61,9 +61,10 @@ namespace Loykas.Scripting
                     }
                 }   
             }
-            catch (System.Exception)
+            catch (System.Exception exception)
             {
                 flow.RemoveTask(this);
+                Debug.LogError(exception);
             }
         }
 

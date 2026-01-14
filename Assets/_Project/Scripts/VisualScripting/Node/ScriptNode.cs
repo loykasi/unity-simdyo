@@ -78,7 +78,7 @@ namespace Loykas.Scripting
             return GetType().Name;
         }
 
-        protected InputTrigger CreateInputTrigger(string key, Func<OutputTrigger> action)
+        protected InputTrigger CreateInputTrigger(string key, Func<NodeTask, OutputTrigger> action)
         {
             InputTrigger inputTrigger = new(key, action)
             {

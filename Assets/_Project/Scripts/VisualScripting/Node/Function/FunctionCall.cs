@@ -40,7 +40,7 @@ namespace Loykas.Scripting
             OnFunctionUpdated();
         }
 
-        public OutputTrigger TriggerFunction()
+        public OutputTrigger TriggerFunction(NodeTask task)
         {
             if (_firstRun)
             {

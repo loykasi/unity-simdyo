@@ -32,7 +32,7 @@ namespace Loykas.Scripting
                     .UseGlobalLocalized();
         }
 
-        private OutputTrigger Set()
+        private OutputTrigger Set(NodeTask task)
         {
             IList list = (IList)ListInput.GetValue();
             int index = (int)(float)Index.GetValue();

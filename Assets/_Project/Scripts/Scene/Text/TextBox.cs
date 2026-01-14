@@ -84,4 +84,13 @@ public class TextBox : MonoBehaviour
     {
         RectTransform.sizeDelta = new Vector2(width, height);
     }
+
+    public void CopyFrom(TextBox textBox)
+    {
+        Text = textBox.Text;
+        Color = textBox.Color;
+        Size = textBox.Size;
+        HorizontalAlignment = textBox.HorizontalAlignment;
+        VerticalAlignment = textBox.VerticalAlignment;
+    }
 }

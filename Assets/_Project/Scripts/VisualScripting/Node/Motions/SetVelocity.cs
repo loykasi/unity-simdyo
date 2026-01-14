@@ -37,7 +37,7 @@ namespace Loykas.Scripting
                     .NullMeanSelf();
         }
 
-        public OutputTrigger Set()
+        public OutputTrigger Set(NodeTask task)
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 

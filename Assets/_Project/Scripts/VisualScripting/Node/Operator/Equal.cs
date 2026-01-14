@@ -35,13 +35,8 @@ namespace Loykas.Scripting
         {
             object a = A.GetValue();
             object b = B.GetValue();
-            
-            if (a.GetType() == b.GetType())
-            {
-                return a == b;
-            }
 
-            return false;
+            return OperatorUtility.Equal(a, b);
         }
 
         private void OnAConnected()

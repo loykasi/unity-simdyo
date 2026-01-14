@@ -34,7 +34,7 @@ namespace Loykas.Scripting
             ListInput.OnDisconnected += OnListInputDisconnected;
         }
 
-        private OutputTrigger Set()
+        private OutputTrigger Set(NodeTask task)
         {
             IList list = (IList)ListInput.GetValue();
             object item = Value.GetValue();

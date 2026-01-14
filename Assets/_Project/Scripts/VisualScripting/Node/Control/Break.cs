@@ -18,9 +18,8 @@ namespace Loykas.Scripting
             return new BreakNode();
         }
 
-        private OutputTrigger BreakLoop()
+        private OutputTrigger BreakLoop(NodeTask task)
         {
-            NodeTask task = Flow.GetNodeTask(Enter);
             task.BreakLoop();
             
             return null;

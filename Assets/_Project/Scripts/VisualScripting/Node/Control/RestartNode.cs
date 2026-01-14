@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new RestartNode();
         }
 
-        private OutputTrigger Restart()
+        private OutputTrigger Restart(NodeTask task)
         {
             SceneManager.Instance.Restart();
             

@@ -108,6 +108,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return list;
     }
 
+    public List<string> GetSignalEntityOptions()
+    {
+        var list = SceneEntities.Select(e => e.Name).ToList();
+        list.Insert(0, "All");
+        return list;
+    }
+
     // public int GetIndexByEntity(SceneEntity entity)
     // {
     //     return SceneEntities.FindIndex(e => e == entity) + 1;

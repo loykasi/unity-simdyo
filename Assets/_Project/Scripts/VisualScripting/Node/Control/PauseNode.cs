@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new PauseNode();
         }
 
-        private OutputTrigger Pause()
+        private OutputTrigger Pause(NodeTask task)
         {
             SceneManager.Instance.Pause();
             

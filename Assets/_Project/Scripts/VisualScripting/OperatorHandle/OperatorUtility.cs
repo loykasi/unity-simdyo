@@ -7,6 +7,7 @@ namespace Loykas.Scripting
         private static readonly MultiplicationHandler _multiplicationHandler = new();
         private static readonly DivisionHandler _divisionHandler = new();
         private static readonly ModuloHandler _moduloHandler = new();
+        private static readonly EqualHandler _equalHandler = new();
 
         public static object Add(object a, object b)
         {
@@ -31,6 +32,11 @@ namespace Loykas.Scripting
         public static object Modulo(object a, object b)
         {
             return _moduloHandler.Operate(a, b);
+        }
+
+        public static object Equal(object a, object b)
+        {
+            return _equalHandler.Operate(a, b);
         }
     }
 }

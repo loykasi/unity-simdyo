@@ -237,6 +237,10 @@ namespace Loykas.Scripting
 
         public NodeTask GetNodeTask(InputTrigger trigger)
         {
+            foreach (var item in _tasks)
+            {
+                Debug.Log(item.Trigger.Node);
+            }
             return _tasks.Find(t => t.Trigger == trigger);
         }
 
@@ -274,7 +278,13 @@ namespace Loykas.Scripting
 
         public SceneEntity GetEntity(InputValue inputValue)
         {
-            int id = (int)inputValue.GetValue();
+            object value = inputValue.GetValue();
+            if (value == null)
+            {
+                return inputValue.IsNullMeanSelf ? Entity : null;
+            }
+
+            int id = (int)value;
             SceneEntity entity = ObjectManager.Instance.GetEntityById(id);
 
             if (entity == null

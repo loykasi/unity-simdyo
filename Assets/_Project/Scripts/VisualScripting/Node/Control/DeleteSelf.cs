@@ -21,7 +21,7 @@ namespace Loykas.Scripting
             Exit = OutputTrigger(nameof(Exit));
         }
 
-        private OutputTrigger Delete()
+        private OutputTrigger Delete(NodeTask task)
         {
             ObjectManager.Instance.DeleteEntity(Flow.Entity);
             return Exit;

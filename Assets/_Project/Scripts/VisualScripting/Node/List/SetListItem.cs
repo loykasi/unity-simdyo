@@ -38,11 +38,21 @@ namespace Loykas.Scripting
             ListInput.OnConnected += OnListInputConnected;
         }
 
-        private OutputTrigger Set()
+        private OutputTrigger Set(NodeTask task)
         {
             IList list = (IList)ListInput.GetValue();
             object item = Value.GetValue();
-            int index = (int)(float)Index.GetValue();
+            
+            object value = Index.GetValue();
+            int index;
+            if (value is float floatValue)
+            {
+                index = (int)floatValue;
+            }
+            else
+            {
+                index = (int)value;
+            }
 
             if (index >= 0 && index < list.Count)
             {

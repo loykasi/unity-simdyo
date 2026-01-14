@@ -44,7 +44,8 @@ namespace Loykas.Scripting
         public override object GetValue()
         {
             var entity = ObjectManager.Instance.GetEntityByIndex(Dropdown.value);
-            return entity.Id;
+            Debug.Log(entity);
+            return entity == null ? null : entity.Id;
         }
 
         public override void SetWidth(float width)

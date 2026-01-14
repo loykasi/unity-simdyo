@@ -24,7 +24,7 @@ namespace Loykas.Scripting
             Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseInput();
         }
 
-        public OutputTrigger Set()
+        public OutputTrigger Set(NodeTask task)
         {
             Camera camera = SceneManager.Instance.SceneCamera;
 

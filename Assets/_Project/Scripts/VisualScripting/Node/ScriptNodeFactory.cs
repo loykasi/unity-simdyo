@@ -59,6 +59,7 @@ namespace Loykas.Scripting
                 // new ResumeNode(),
 
                 // Motion,
+                new MoveNode(),
                 new SetPositionNode(),
                 new SetAngleNode(),
                 new SetColliderNode(),

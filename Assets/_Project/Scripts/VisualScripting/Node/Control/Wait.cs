@@ -27,7 +27,7 @@ namespace Loykas.Scripting
             WaitTime = InputValue(nameof(WaitTime), ScriptDataType.Single(DataType.Number)).UseInput();
         }
 
-        private OutputTrigger Wait()
+        private OutputTrigger Wait(NodeTask task)
         {
             if (_isFirstFrame)
             {

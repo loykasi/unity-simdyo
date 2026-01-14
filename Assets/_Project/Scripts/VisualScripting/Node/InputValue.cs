@@ -14,7 +14,8 @@ public enum InputValueTypes
     Variable,
     GlobalVariable,
     Key,
-    CollisionLayer
+    CollisionLayer,
+    SignalEntity
 }
 
     public class InputValue : Port<OutputValue>
@@ -145,6 +146,14 @@ public enum InputValueTypes
             return this;
         }
 
+        public InputValue UseSignalEntityInput()
+        {
+            InputType = InputValueTypes.SignalEntity;
+            UpdateDefaultValue();
+
+            return this;
+        }
+
         public InputValue DisableConnection()
         {
             IsDisableConnection = true;
@@ -187,10 +196,10 @@ public enum InputValueTypes
 
             if (HasValue)
             {
-                if (Type.Type == DataType.Entity && Value == null)
-                {
-                    return Node.Flow.Entity.Id;
-                }
+                // if (Type.Type == DataType.Entity && Value == null)
+                // {
+                //     return Node.Flow.Entity.Id;
+                // }
                 return Value;
             }
 

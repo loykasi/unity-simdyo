@@ -41,13 +41,11 @@ namespace Loykas.Scripting
             return _index;
         }
 
-        private OutputTrigger Loop()
+        private OutputTrigger Loop(NodeTask task)
         {
             int firstIndex = (int)(float)FirstIndex.GetValue();
             int lastIndex = (int)(float)LastIndex.GetValue();
             int step = (int)(float)Step.GetValue();
-
-            NodeTask task = Flow.GetNodeTask(Enter);
 
             if (task.ShouldBreak)
             {

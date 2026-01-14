@@ -189,6 +189,8 @@ public class BoxEntity : SceneEntity
         entity.ToggleGravity(IsGravityEnabled);
         entity.SetLayer(Layer);
         entity.SetTexture(TextureSlotKey);
+
+        entity.TextBox.CopyFrom(TextBox);
         
         ScriptFlowClone.CloneScript(Script, entity.Script);
 

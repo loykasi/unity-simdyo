@@ -26,7 +26,7 @@ namespace Loykas.Scripting
             return new BranchNode();
         }
 
-        private OutputTrigger Branching()
+        private OutputTrigger Branching(NodeTask task)
         {
             if ((bool)Condition.GetValue())
             {

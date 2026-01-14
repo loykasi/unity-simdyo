@@ -42,7 +42,7 @@ namespace Loykas.Scripting
             Flow.OnVariableDeleted += OnVariableDeleted;
         }
 
-        private OutputTrigger Set()
+        private OutputTrigger Set(NodeTask task)
         {
             string name = Variable.GetValue().ToString();
             object value = Value.GetValue();

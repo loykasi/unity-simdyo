@@ -34,8 +34,18 @@ namespace Loykas.Scripting
         private object Get()
         {
             IList list = (IList)ListInput.GetValue();
-            Debug.Log(Index.GetValue());
-            int index = (int)(float)Index.GetValue();
+
+            object value = Index.GetValue();
+            int index;
+            if (value is float floatValue)
+            {
+                index = (int)floatValue;
+            }
+            else
+            {
+                index = (int)value;
+            }
+            
             return list[index];
         }
 

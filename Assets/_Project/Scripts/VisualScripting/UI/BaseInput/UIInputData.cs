@@ -136,6 +136,21 @@ namespace Loykas.Scripting
                 return input;
             }
 
+            if (inputType == InputValueTypes.SignalEntity)
+            {
+                BaseInput inputPrefab = GetPrefab(DataType.Entity);
+                if (inputPrefab == null)
+                {
+                    return null;
+                }
+
+                BaseInput inputObject = Instantiate(inputPrefab);
+                var options = ObjectManager.Instance.GetSignalEntityOptions();
+                var entityInput = (EntityInput)inputObject;
+                entityInput.Init(options);
+                return entityInput;
+            }
+
             DataType type = inputType switch
             {
                 InputValueTypes.String => DataType.String,

@@ -41,7 +41,7 @@ namespace Loykas.Scripting
             SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
         }
 
-        private OutputTrigger Set()
+        private OutputTrigger Set(NodeTask task)
         {
             string name = Variable.GetValue().ToString();
             object value = Value.GetValue();

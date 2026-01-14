@@ -24,7 +24,7 @@ namespace Loykas.Scripting
             Value = InputValue(nameof(Value)).UseGlobalLocalized();
         }
 
-        private OutputTrigger Log()
+        private OutputTrigger Log(NodeTask task)
         {
             var value = Value.GetValue();
             LogCommand.Instance.Log(value);

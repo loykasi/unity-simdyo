@@ -5,13 +5,13 @@ namespace Loykas.Scripting
 {
     public class InputTrigger : Port<OutputTrigger>
     {
-        public Func<OutputTrigger> Action;
+        public Func<NodeTask, OutputTrigger> Action;
         public List<OutputTrigger> Sources = new();
 
         public OutputTrigger TargetOutputTrigger;
         public bool IsDone = true;
 
-        public InputTrigger(string key, Func<OutputTrigger> action) : base(key)
+        public InputTrigger(string key, Func<NodeTask,OutputTrigger> action) : base(key)
         {
             Action = action;
         }
@@ -26,9 +26,9 @@ namespace Loykas.Scripting
             Sources.Add(port);
         }
 
-        public bool Invoke(ScriptFlow vs)
+        public bool Invoke(NodeTask task)
         {
-            TargetOutputTrigger = Action?.Invoke();
+            TargetOutputTrigger = Action?.Invoke(task);
             return !(Node.HasOutputTriggers && TargetOutputTrigger == null);
         }
 

@@ -23,15 +23,16 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .HideLabel()
                         .UseInput()
                         .NullMeanSelf();
+
+            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
+            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
         }
 
-        public OutputTrigger Set()
+        public OutputTrigger Set(NodeTask task)
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 

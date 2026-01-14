@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new ResumeNode();
         }
 
-        private OutputTrigger Resume()
+        private OutputTrigger Resume(NodeTask task)
         {
             SceneManager.Instance.Resume();
             
