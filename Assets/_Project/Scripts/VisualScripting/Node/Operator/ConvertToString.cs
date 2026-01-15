@@ -16,7 +16,7 @@ namespace Loykas.Scripting
 
         public ConvertToStringNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput().NoLocalize();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.String), Get).HideLabel();
         }

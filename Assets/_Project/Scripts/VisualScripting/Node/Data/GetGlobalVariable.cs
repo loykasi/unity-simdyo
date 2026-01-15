@@ -36,6 +36,11 @@ namespace Loykas.Scripting
             SceneManager.Instance.GlobalScript.OnVariableDeleted += OnVariableDeleted;
         }
 
+        public override void Init()
+        {
+            OnInputValueChanged();
+        }
+
         private object Get()
         {
             string name = Input.GetValue().ToString();

@@ -402,6 +402,82 @@ MonoBehaviour:
     m_Localized: Index
     m_Metadata:
       m_Items: []
+  - m_Id: 33648679855456256
+    m_Localized: Get Camera size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479680
+    m_Localized: Set Camera size
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479681
+    m_Localized: Get Camera position
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479682
+    m_Localized: Set Camera position
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479683
+    m_Localized: For Each Loop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479684
+    m_Localized: Index
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479685
+    m_Localized: Completed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479686
+    m_Localized: Loop
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479687
+    m_Localized: List
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479688
+    m_Localized: Element
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479689
+    m_Localized: Entity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479690
+    m_Localized: Restart
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673984
+    m_Localized: Move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673985
+    m_Localized: Duration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673986
+    m_Localized: Set display text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673987
+    m_Localized: Get display text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673988
+    m_Localized: Set Z depth
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673989
+    m_Localized: Swap values
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673990
+    m_Localized: List
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

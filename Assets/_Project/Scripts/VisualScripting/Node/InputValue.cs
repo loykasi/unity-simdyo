@@ -208,6 +208,7 @@ public enum InputValueTypes
 
         public void SetValue(object value)
         {
+            Debug.Log("set value");
             Value = value;
             OnValueChanged?.Invoke();
         }

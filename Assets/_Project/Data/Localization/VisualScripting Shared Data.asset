@@ -399,6 +399,82 @@ MonoBehaviour:
     m_Key: Index
     m_Metadata:
       m_Items: []
+  - m_Id: 33648679855456256
+    m_Key: GetCameraSizeNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479680
+    m_Key: SetCameraSizeNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479681
+    m_Key: GetCameraPositionNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479682
+    m_Key: SetCameraPositionNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479683
+    m_Key: ForEachNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479684
+    m_Key: ForEachNode.Index
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479685
+    m_Key: ForEachNode.Completed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479686
+    m_Key: ForEachNode.LoopBody
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479687
+    m_Key: ForEachNode.List
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479688
+    m_Key: ForEachNode.Element
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479689
+    m_Key: Entity
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679985479690
+    m_Key: RestartNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673984
+    m_Key: MoveNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673985
+    m_Key: MoveNode.Duration
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673986
+    m_Key: SetTextNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673987
+    m_Key: GetTextNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673988
+    m_Key: SetZDepthNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673989
+    m_Key: SwapValuesNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33648679989673990
+    m_Key: SwapValuesNode.List
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

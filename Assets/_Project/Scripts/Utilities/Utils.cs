@@ -41,4 +41,16 @@ public static class Utils
         }
         return string.Concat(baseName, i);
     }
+
+    public static int ObjectToIndex(object value)
+    {
+        if (value is float floatValue)
+        {
+            return (int)floatValue;
+        }
+        else
+        {
+            return (int)value;
+        }
+    }
 }

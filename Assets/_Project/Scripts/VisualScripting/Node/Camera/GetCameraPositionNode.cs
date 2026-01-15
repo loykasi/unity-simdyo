@@ -16,8 +16,8 @@ namespace Loykas.Scripting
 
         public GetCameraPositionNode()
         {
-            X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX);
-            Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY);
+            X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX).NoLocalize();
+            Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY).NoLocalize();
         }
 
         public object GetX()

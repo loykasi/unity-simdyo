@@ -31,6 +31,11 @@ namespace Loykas.Scripting
             ListInput.OnConnected += OnListInputConnected;
         }
 
+        public override void Init()
+        {
+            UpdateNode();
+        }
+
         private object Get()
         {
             IList list = (IList)ListInput.GetValue();

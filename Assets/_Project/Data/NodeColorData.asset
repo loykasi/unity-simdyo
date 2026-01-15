@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a85ce8760bc7a642ab6adee00f081a0, type: 3}
   m_Name: NodeColorData
   m_EditorClassIdentifier: 
+  Default: {r: 0.2509804, g: 0.2509804, b: 0.2509804, a: 1}
   TypeColor:
   - Type: 0
     Color: {r: 0.5471698, g: 0.080010675, b: 0.080010675, a: 1}

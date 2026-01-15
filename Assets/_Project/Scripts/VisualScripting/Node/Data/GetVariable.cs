@@ -37,6 +37,11 @@ namespace Loykas.Scripting
             Flow.OnVariableDeleted += OnVariableDeleted;
         }
 
+        public override void Init()
+        {
+            OnInputValueChanged();
+        }
+
         private object Get()
         {
             string name = Input.GetValue().ToString();

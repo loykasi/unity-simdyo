@@ -189,7 +189,6 @@ public static class ScriptSaveHandler
                 node.DefaultValues[item.Key] = item.Value;
             }
 
-
             flow.Nodes.Add(node);
         }
 

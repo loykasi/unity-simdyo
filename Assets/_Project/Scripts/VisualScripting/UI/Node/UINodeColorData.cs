@@ -12,6 +12,7 @@ namespace Loykas.Scripting
             public Color Color;
         }
 
+        public Color Default;
         public UINodeColor[] TypeColor;
 
         public Color Get(ScriptNodeCategory type)
@@ -24,7 +25,7 @@ namespace Loykas.Scripting
                 }
             }
 
-            return default;
+            return Default;
         }
     }
 }

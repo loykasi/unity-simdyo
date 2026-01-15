@@ -83,16 +83,17 @@ namespace Loykas.Scripting
 
         public void Load()
         {
+            foreach (var connection in Connections)
+            {
+                connection.Load(this);
+            }
             foreach (var node in Nodes)
             {
                 if (node is EventNode eventNode)
                 {
                     eventNode.Register(this);
                 }
-            }
-            foreach (var connection in Connections)
-            {
-                connection.Load(this);
+                node.Init();
             }
         }
 

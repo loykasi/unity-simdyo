@@ -51,6 +51,7 @@ namespace Loykas.Scripting
                 new WaitNode(),
                 new BranchNode(),
                 new ForNode(),
+                new ForEachNode(),
                 new BreakNode(),
                 new CreateCloneNode(),
                 new DeleteSelfNode(),
@@ -119,6 +120,7 @@ namespace Loykas.Scripting
                 new MakeNumberNode(),
                 new MakeBooleanNode(),
                 new MakeColorNode(),
+                new SwapValuesNode(),
 
                 // List
                 new AddListItemNode(),

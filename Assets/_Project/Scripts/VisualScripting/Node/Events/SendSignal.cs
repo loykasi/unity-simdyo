@@ -18,7 +18,8 @@ namespace Loykas.Scripting
                 .HideLabel()
                 .DisableConnection();
             Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                .UseSignalEntityInput();
+                .UseSignalEntityInput()
+                .UseGlobalLocalized();
         }
 
         public override ScriptNode Create()

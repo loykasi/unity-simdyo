@@ -21,7 +21,8 @@ namespace Loykas.Scripting
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = OutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseInput()
+                .UseGlobalLocalized();;
         }
 
         public OutputTrigger Set(NodeTask task)

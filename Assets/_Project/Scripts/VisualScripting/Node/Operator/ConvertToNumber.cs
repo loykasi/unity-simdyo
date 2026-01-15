@@ -16,7 +16,7 @@ namespace Loykas.Scripting
 
         public ConvertToNumberNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
+            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput().NoLocalize();
 
             Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
         }

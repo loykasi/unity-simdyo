@@ -15,7 +15,8 @@ namespace Loykas.Scripting
 
         public GetCameraSizeNode()
         {
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get);
+            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
+                .UseGlobalLocalized();
         }
 
         public object Get()
