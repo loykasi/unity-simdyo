@@ -195,6 +195,18 @@ MonoBehaviour:
     m_Key: nodes
     m_Metadata:
       m_Items: []
+  - m_Id: 4734925143146496
+    m_Key: new
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4734925394804736
+    m_Key: save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4734925394804737
+    m_Key: open
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -83,6 +83,7 @@ namespace Loykas.Scripting
 
             _nodes.Clear();
             _lines.Clear();
+            _fromUIPort = null;
         }
 
         private void LoadBoard()

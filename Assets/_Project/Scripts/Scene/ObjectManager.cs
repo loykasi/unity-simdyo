@@ -12,7 +12,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public List<SceneEntity> SceneEntities = new();
     public SceneEntity SelectedObject { get; set; }
-    public int SaveLoadOrder { get; set; } = 0;
+    public int SaveLoadOrder { get; set; } = 1;
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;

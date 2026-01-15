@@ -478,6 +478,18 @@ MonoBehaviour:
     m_Localized: List
     m_Metadata:
       m_Items: []
+  - m_Id: 33716264500330496
+    m_Localized: Translate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33716264600993792
+    m_Localized: Clamp
+    m_Metadata:
+      m_Items: []
+  - m_Id: 33716264600993793
+    m_Localized: Lerp
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

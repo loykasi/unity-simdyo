@@ -40,6 +40,11 @@ namespace Loykas.Scripting
                         return;
                     }
 
+                    if (Trigger == null)
+                    {
+                        flow.RemoveTask(this);
+                        return;
+                    }
                     Trigger = Trigger.TargetOutputTrigger?.Destination;
                     if (Trigger == null)
                     {
@@ -64,7 +69,7 @@ namespace Loykas.Scripting
             catch (System.Exception exception)
             {
                 flow.RemoveTask(this);
-                Debug.LogError(exception);
+                Debug.LogWarning(exception);
             }
         }
 

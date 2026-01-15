@@ -103,7 +103,7 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.RecalculateBounds();
 
         _interactionBox.size = ((BoxCollider2D)Collider).size;
-        Border.SetBorder(Width, Width);
+        Border.SetBorder(Width, Height);
         TextBox.Resize(Width, Height);
     }
 

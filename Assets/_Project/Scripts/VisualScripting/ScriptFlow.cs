@@ -264,6 +264,7 @@ namespace Loykas.Scripting
 
         public void UpdateTask()
         {
+            Debug.Log($"Total tasks: {_tasks.Count}");
             for (int i = 0; i < _tasks.Count; i++)
             {
                 _tasks[i].Invoke(this);
