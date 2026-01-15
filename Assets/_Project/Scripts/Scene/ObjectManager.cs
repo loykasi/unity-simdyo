@@ -71,7 +71,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         SceneManager.Instance.GlobalScript.TriggerEvent(EventHook.Clicked);
 
-        if (!TryGetSceneEntity(EngineManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
+        if (!TryGetSceneEntity(SceneManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
         {
             return;
         }
