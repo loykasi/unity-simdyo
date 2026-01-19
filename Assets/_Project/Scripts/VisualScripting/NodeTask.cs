@@ -46,7 +46,7 @@ namespace Loykas.Scripting
 
                     if (Trigger == null)
                     {
-                        flow.RemoveTask(this);
+                        Remove();
                         return;
                     }
                     Trigger = Trigger.TargetOutputTrigger?.Destination;
