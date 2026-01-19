@@ -231,20 +231,6 @@ namespace Loykas.Scripting
 
         // handle node task
 
-        public NodeTask GetNodeTask(OutputTrigger from)
-        {
-            return _tasks.Find(t => t.From == from);
-        }
-
-        public NodeTask GetNodeTask(InputTrigger trigger)
-        {
-            foreach (var item in _tasks)
-            {
-                Debug.Log(item.Trigger.Node);
-            }
-            return _tasks.Find(t => t.Trigger == trigger);
-        }
-
         public void Invoke(OutputTrigger outputTrigger)
         {
             bool exist = _tasks.Find(t => t.From == outputTrigger) != null;
@@ -259,6 +245,13 @@ namespace Loykas.Scripting
                 Trigger = outputTrigger.Invoke()
             };
             task.SetRemoveOnDone();
+            task.Invoke(this);
+            // _tasks.Add(task);
+        }
+
+        public void ExecuteNextFrame(NodeTask task)
+        {
+            task.ShouldExecuteNextFrame = true;
             _tasks.Add(task);
         }
 
@@ -266,14 +259,22 @@ namespace Loykas.Scripting
         {
             for (int i = 0; i < _tasks.Count; i++)
             {
+                NodeTask task = _tasks[i];
+                if (task.ShouldExecuteNextFrame || task.ShouldRemove)
+                {
+                    task.ShouldExecuteNextFrame = false;
+                    continue;
+                }
                 _tasks[i].Invoke(this);
             }
+
+            _tasks.RemoveAll(t => t.ShouldRemove);
         }
 
-        public void RemoveTask(NodeTask task)
-        {
-            _tasks.Remove(task);
-        }
+        // public void RemoveTask(NodeTask task)
+        // {
+        //     _tasks.Remove(task);
+        // }
 
         //
 

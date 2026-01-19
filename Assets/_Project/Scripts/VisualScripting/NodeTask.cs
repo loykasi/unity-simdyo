@@ -7,6 +7,9 @@ namespace Loykas.Scripting
     public class NodeTask
     {
         public bool IsDone;
+        public bool ShouldExecuteNextFrame;
+        public bool ShouldRemove;
+
         public OutputTrigger From;
         public InputTrigger Trigger;
 
@@ -37,6 +40,7 @@ namespace Loykas.Scripting
 
                     if (!isDone)
                     {
+                        flow.ExecuteNextFrame(this);
                         return;
                     }
 
@@ -52,7 +56,7 @@ namespace Loykas.Scripting
                         {
                             if (_shouldRemoveOnDone)
                             {
-                                flow.RemoveTask(this);
+                                Remove();
                             }
 
                             IsDone = true;
@@ -63,7 +67,7 @@ namespace Loykas.Scripting
             }
             catch (System.Exception exception)
             {
-                flow.RemoveTask(this);
+                Remove();
                 Debug.LogError(exception);
             }
         }
@@ -86,6 +90,11 @@ namespace Loykas.Scripting
         private bool IsInLoop()
         {
             return _loops.Count > 0;
+        }
+
+        private void Remove()
+        {
+            _shouldRemoveOnDone = true;
         }
     }
 }
