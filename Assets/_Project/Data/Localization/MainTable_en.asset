@@ -198,6 +198,18 @@ MonoBehaviour:
     m_Localized: Nodes
     m_Metadata:
       m_Items: []
+  - m_Id: 4734925143146496
+    m_Localized: New
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4734925394804736
+    m_Localized: Save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4734925394804737
+    m_Localized: Open
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

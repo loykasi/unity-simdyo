@@ -29,17 +29,32 @@ namespace Loykas.Scripting
 
         private void OnSceneStart()
         {
+            if (_console == null)
+            {
+                return;
+            }
+            
             _log = string.Empty;
             _textBox.SetText(_log);
         }
 
         public void Toggle()
         {
+            if (_console == null)
+            {
+                return;
+            }
+
             _console.SetActive(!_console.activeSelf);
         }
 
         public void Log(object value)
         {
+            if (_console == null)
+            {
+                return;
+            }
+
             string message;
             if (value is IList list)
             {

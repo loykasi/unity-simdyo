@@ -61,6 +61,7 @@ namespace Loykas.Scripting
 
                 // Motion,
                 new MoveNode(),
+                new TranslateNode(),
                 new SetPositionNode(),
                 new SetAngleNode(),
                 new SetColliderNode(),
@@ -110,6 +111,9 @@ namespace Loykas.Scripting
 
                 new ConvertToStringNode(),
                 new ConvertToNumberNode(),
+
+                new LerpNode(),
+                new ClampNode(),
 
                 // Data,
                 new SetVariableNode(),

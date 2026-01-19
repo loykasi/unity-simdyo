@@ -83,10 +83,12 @@ namespace Loykas.Scripting
 
             _nodes.Clear();
             _lines.Clear();
+            _fromUIPort = null;
         }
 
         private void LoadBoard()
         {
+            _holder.localScale = Vector3.one;
             _holder.localPosition = Flow.Pan;
 
             List<ScriptNode> nodes = Flow.Nodes;
@@ -205,9 +207,6 @@ namespace Loykas.Scripting
                     continue;
                 }
 
-                _fromUIPort = sourcePort;
-                _toUIPort = destinationPort;
-
                 AddConnectionToBoard(sourcePort, destinationPort);
             }
         }
@@ -319,6 +318,16 @@ namespace Loykas.Scripting
 
             HandleDelete();
             HandleMenu();
+            HandleResetPan();
+        }
+
+        private void HandleResetPan()
+        {
+            if (Keyboard.current.tabKey.isPressed)
+            {
+                _holder.localScale = Vector3.one;
+                _holder.localPosition = Vector3.zero;
+            }
         }
 
         private void HandleZoom(PointerEventData eventData)
