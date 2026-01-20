@@ -246,12 +246,6 @@ namespace Loykas.Scripting
             };
             task.SetRemoveOnDone();
             task.Invoke(this);
-            // _tasks.Add(task);
-        }
-
-        public void ExecuteNextFrame(NodeTask task)
-        {
-            task.ShouldExecuteNextFrame = true;
             _tasks.Add(task);
         }
 

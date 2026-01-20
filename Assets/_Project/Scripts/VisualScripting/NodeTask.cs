@@ -40,7 +40,7 @@ namespace Loykas.Scripting
 
                     if (!isDone)
                     {
-                        flow.ExecuteNextFrame(this);
+                        ShouldExecuteNextFrame = true;
                         return;
                     }
 
@@ -99,7 +99,7 @@ namespace Loykas.Scripting
 
         private void Remove()
         {
-            _shouldRemoveOnDone = true;
+            ShouldRemove = true;
         }
     }
 }

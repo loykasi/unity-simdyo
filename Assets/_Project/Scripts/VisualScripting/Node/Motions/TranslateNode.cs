@@ -43,7 +43,7 @@ namespace Loykas.Scripting
             float x = (float)X.GetValue();
             float y = (float)Y.GetValue();
 
-            entity.Position += new Vector3(x, y, 0);
+            entity.Position += new Vector3(x, y, 0) * Time.deltaTime;
 
             return Exit;
         }
