@@ -19,6 +19,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     private int _indexForId = 1;
 
+    private List<RaycastHit2D> _selectionResults = new();
+
     private List<SceneEntity> _snapshotEntities = new();    // use on running scene
     private List<string> _entityNames = new();    // For generate unique name
     private readonly string _baseEntityName = "Entity";
@@ -82,17 +84,25 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     private bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
     {
         Ray ray = camera.ScreenPointToRay(screenPoint);
-        RaycastHit2D hit = Physics2D.GetRayIntersection(ray, 20f, _interactionLayer);
+        int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
 
-        Debug.DrawRay(ray.origin, Vector3.up * 3f, Color.red, 10f);
+        // Debug.DrawRay(ray.origin, Vector3.up * 3f, Color.red, 10f);
 
-        if (hit.collider == null)
+        if (count == 0)
         {
             entity = null;
             return false;
         }
 
-        entity = hit.collider.GetComponent<Interactable>().Get();
+        _selectionResults.Sort((a, b) =>
+        {
+           var entityA = a.collider.GetComponent<Interactable>().Get();
+           var entityB = b.collider.GetComponent<Interactable>().Get();
+
+           return entityB.ZDepth.CompareTo(entityA.ZDepth);
+        });
+
+        entity = _selectionResults[0].collider.GetComponent<Interactable>().Get();
         return true;
     }
 
