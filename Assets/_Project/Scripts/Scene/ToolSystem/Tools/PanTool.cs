@@ -15,6 +15,8 @@ public class PanTool : ITool
         set => EngineManager.Instance.EditorCameraHeight = value;
     }
 
+    private Vector3 _startMousePosition;
+
     public virtual void Disable()
     {
 
@@ -30,6 +32,36 @@ public class PanTool : ITool
         Zoom();
         HandlePanLeftMouse();
         HandlePanRightMouse();
+        HandleSelection();
+    }
+
+    protected virtual void HandleSelection()
+    {
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (ScreenInteractionUtils.IsOverUI())
+            {
+                return;
+            }
+
+            _startMousePosition = Mouse.current.position.ReadValue();
+        }
+        
+        if (Mouse.current.leftButton.wasReleasedThisFrame)
+        {
+            if (ScreenInteractionUtils.IsOverUI())
+            {
+                return;
+            }
+            
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            if (_startMousePosition != mousePosition)
+            {
+                return;
+            }
+
+            ObjectManager.Instance.Select(mousePosition);
+        }
     }
 
     protected virtual void HandlePanLeftMouse()

@@ -17,6 +17,7 @@ public class MoveTool : PanTool
     {
         base.Zoom();
         base.HandlePanRightMouse();
+        base.HandleSelection();
         Move();
     }
 
@@ -31,6 +32,18 @@ public class MoveTool : PanTool
             {
                 return;
             }
+
+            ObjectManager.Instance.TryGetSceneEntity
+            (
+                EngineManager.Instance.EditorCamera,
+                Mouse.current.position.ReadValue(),
+                out SceneEntity onMouseEntity
+            );
+            if (onMouseEntity != selected)
+            {
+                return;
+            }
+
             // _offsetFromMouse = selected.transform.position - Vector3Utils.GetGridPosition(mousePosition);
             _onMovingObject = true;
             _mouseStartPosition = mousePosition;

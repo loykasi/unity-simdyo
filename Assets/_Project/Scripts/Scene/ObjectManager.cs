@@ -81,7 +81,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.Script.TriggerEvent(EventHook.Clicked);
     }
 
-    private bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
+    public bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
     {
         Ray ray = camera.ScreenPointToRay(screenPoint);
         int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);

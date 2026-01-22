@@ -16,6 +16,7 @@ public class RotateTool : PanTool
         Zoom();
         HandlePanRightMouse();
         HandleRotate();
+        HandleSelection();
     }
 
     private void HandleRotate()
