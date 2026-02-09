@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
+using System;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
@@ -191,6 +192,17 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         AddEntity(entity);
         return entity;
+    }
+
+    public void AddPolygon(List<Vector3> points)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddPolygon(points);
+        if (entity == null)
+        {
+            return;
+        }
+
+        AddEntity(entity);
     }
 
     public void AddEntity(SceneEntity entity)

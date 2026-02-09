@@ -6,7 +6,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 {
     [SerializeField] private BoxEntity _boxEntityPrefab;
     [SerializeField] private CircleEntity _circleEntityPrefab;
-    [SerializeField] private SceneEntity _sceneEntityPrefab;
+    [SerializeField] private PolygonEntity _polygonEntityPrefab;
     [SerializeField] private Material _material;
     [SerializeField] private Material _circleMaterial;
     [SerializeField] private int _totalVert;
@@ -20,6 +20,9 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
     private List<Vector3> _circlePoints = new List<Vector3>();
     private List<int> _circleTriangles = new List<int>();
     private List<Vector2> _circleUV = new List<Vector2>();
+
+
+    // ==== ADD BOX ====
 
     public BoxEntity AddBox(Vector3 from, Vector3 to)
     {
@@ -117,6 +120,7 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
 
 
     // ==== CIRCLE ====
+
     public CircleEntity AddCircle(Vector3 from, Vector3 to)
     {
         if (from == to)
@@ -208,9 +212,111 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             float y = 1f * Mathf.Cos(angle);
             x = x.MapRange(-1f, 1, 0f, 1f);
             y = y.MapRange(-1f, 1, 0f, 1f);
-            circleUV.Add(new Vector3(x, y, 0f));
+            circleUV.Add(new Vector2(x, y));
         }
     }
+
+    // ==== ADD POLYGON ====
+
+    public PolygonEntity AddPolygon(List<Vector3> points)
+    {
+        if (points.Count <= 2) return null;
+
+        Vector3 center = Vector3.zero;
+        foreach (var point in points)
+        {
+            center += point;
+        }
+        center /= points.Count;
+
+        List<Vector3> vertices = new();
+        for (int i = 0; i < points.Count; i++)
+        {
+            vertices.Add(points[i] - center);
+        }
+
+        var genrator = new PolygonGenerator();
+        Mesh mesh = genrator.AddPolygon(vertices);
+
+        PolygonEntity sceneEntity = Instantiate(_polygonEntityPrefab);
+        sceneEntity.name = "Polygon";
+        sceneEntity.transform.position = center;
+        sceneEntity.MeshFilter.sharedMesh = mesh;
+        sceneEntity.Renderer.material = _material;
+        sceneEntity.CurrentColor = GetRandomColor();
+        sceneEntity.SetVertices(vertices);
+
+        Physics2D.SyncTransforms();
+        
+
+        return sceneEntity;
+    }
+
+    private bool IsClockwise(List<Vector3> points)
+    {
+        float sum = 0f;
+        Vector3 a = points[^1];
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector3 b = points[i];
+            sum += (b.x - a.x) * (b.y + a.y);
+            a = b;
+        }
+        return sum > 0.0;
+    }
+
+    private int GetVerticesIndex(Vector3 point, List<Vector3> vertices)
+    {
+        return vertices.FindIndex(x => x == point);
+    }
+
+    private bool IsEar(Vector3 previous, Vector3 current, Vector3 next, List<Vector3> vertices)
+    {
+        if (!IsConvex(previous, current, next))
+        {
+            Debug.Log($"CONVEX: BAD");
+            return false;
+        }
+
+        foreach (Vector3 point in vertices)
+        {
+            if (point == previous || point == current || point == next)
+            {
+                continue;
+            }
+
+            if (IsPointInTriangle(point, previous, current, next))
+            {
+                Debug.Log($"POINT: BAD");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool IsConvex(Vector3 previous, Vector3 current, Vector3 next)
+    {
+        Vector3 a = current - previous;
+        Vector3 b = next - current;
+
+        return (a.x * b.y) - (a.y * b.x) > 0;
+    }
+
+    private bool IsPointInTriangle(Vector3 p, Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        float s = (p0.x - p2.x) * (p.y - p2.y) - (p0.y - p2.y) * (p.x - p2.x);
+        float t = (p1.x - p0.x) * (p.y - p0.y) - (p1.y - p0.y) * (p.x - p0.x);
+
+        if ((s < 0) != (t < 0) && s != 0 && t != 0)
+        {
+            return false;   
+        }
+
+        float d = (p2.x - p1.x) * (p.y - p1.y) - (p2.y - p1.y) * (p.x - p1.x);
+        return d == 0 || (d < 0) == (s + t <= 0);
+    }
+
 
     private ColorHSV GetRandomColor()
     {

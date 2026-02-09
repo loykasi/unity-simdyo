@@ -41,26 +41,26 @@ public class ResizeCircle : IResize
 
     public void Resize(BoundsHandleDirection direction, Vector3 mousePosition)
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Vector3 position = GetMouseWorldPosition(mousePosition);
+        Vector3 point = Vector3Utils.ProjectOnVector(position, _from, _direction);
+        Vector3 to = GetToPoint(direction, point);
 
-        Vector3 position = camera.ScreenToWorldPoint(mousePosition);
-        position.z = 0;
-
-        position = Vector3Utils.GetGridPosition(position);
-
-        Vector3 to;
-
-        Vector3 dragVector = position - _from;
-        float dot = Vector3.Dot(_direction, dragVector);
-        to = GetToPoint(direction, _from + dot * _direction);
-        // to = _from + dot * _direction;
+        _entity.UpdateCircle(_from, to);
         
         Debug.DrawRay(to, Vector3.up, Color.black);
         Debug.DrawRay(to, Vector3.down, Color.black);
         Debug.DrawRay(to, Vector3.right, Color.black);
         Debug.DrawRay(to, Vector3.left, Color.black);
+    }
 
-        _entity.UpdateCircle(_from, to);
+    private Vector3 GetMouseWorldPosition(Vector3 mousePosition)
+    {
+        Camera camera = EngineManager.Instance.EditorCamera;
+        
+        Vector3 position = camera.ScreenToWorldPoint(mousePosition);
+        position.z = 0;
+
+        return Vector3Utils.GetGridPosition(position);
     }
 
     private Vector3 GetDirection(BoundsHandleDirection direction)

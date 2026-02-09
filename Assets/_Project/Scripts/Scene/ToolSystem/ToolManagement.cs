@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,10 +20,11 @@ public class ToolManagement : Singleton<ToolManagement>
     {
         new MoveTool(),
         new RotateTool(),
+        new PanTool(),
+        new ResizeTool(),
         new BoxTool(),
         new CircleTool(),
-        new PanTool(),
-        new ResizeTool()
+        new PolygonTool()
     };
     private Dictionary<ToolType, ITool> _toolTable = new();
 
@@ -33,8 +35,9 @@ public class ToolManagement : Singleton<ToolManagement>
         CreateToolTable();
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        yield return new WaitForEndOfFrame();
         SwitchTool(_defaultTool);
     }
 
@@ -51,7 +54,7 @@ public class ToolManagement : Singleton<ToolManagement>
 
     private void Update()
     {
-        _tool.OnUpdate();
+        _tool?.OnUpdate();
     }
 
     public void SwitchTool(ToolType type)

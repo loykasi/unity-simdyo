@@ -1,5 +1,4 @@
 using Loykas.Scripting;
-using TMPro;
 using UnityEngine;
 
 public class BoxEntity : SceneEntity

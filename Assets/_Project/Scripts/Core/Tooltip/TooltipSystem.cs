@@ -7,11 +7,11 @@ public class TooltipSystem : Singleton<TooltipSystem>
     public void Show(string content)
     {
         _tooltip.SetContent(content);
-        _tooltip.gameObject.SetActive(true);
+        _tooltip.Toggle(true);
     }
 
     public void Hide()
     {
-        _tooltip.gameObject.SetActive(false);
+        _tooltip.Toggle(false);
     }
 }

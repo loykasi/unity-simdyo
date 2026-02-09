@@ -7,6 +7,7 @@ public class ResizeController : Singleton<ResizeController>
 
     private ResizeBox _resizeBox = new();
     private ResizeCircle _circleHandler = new();
+    private ResizePolygon _polygonHandler = new();
 
     private IResize _handler;
 
@@ -30,11 +31,6 @@ public class ResizeController : Singleton<ResizeController>
         ObjectManager.Instance.OnObjectSelected += OnObjectSelected;
         ObjectManager.Instance.OnObjectDeselected += OnObjectDeselected;
         // ObjectManager.Instance.OnObjectDeleted += OnObjectDeleted;
-    }
-
-    private void OnObjectDeleted()
-    {
-        
     }
 
     private void OnObjectDeselected()
@@ -65,6 +61,15 @@ public class ResizeController : Singleton<ResizeController>
 
             _handler = _circleHandler;
             _handler.Init(circleEntity, _bound);
+            return;
+        }
+
+        if (entity is PolygonEntity polygonEntity)
+        {
+            _bound.gameObject.SetActive(true);
+
+            _handler = _polygonHandler;
+            _handler.Init(polygonEntity, _bound);
             return;
         }
     }

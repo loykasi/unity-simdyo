@@ -4,6 +4,8 @@ using UnityEngine.Events;
 public class BackgroundColor : Singleton<BackgroundColor>
 {
     public event UnityAction<Color> OnColorChanged;
+
+    public Color Color => _editorCamera.backgroundColor;
     
     [SerializeField] private Camera _editorCamera;
     [SerializeField] private Camera _gameCamera;

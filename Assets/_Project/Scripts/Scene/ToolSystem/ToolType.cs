@@ -5,5 +5,6 @@ public enum ToolType
     Resize,
     Rotate,
     Box,
-    Circle
+    Circle,
+    Polygon
 }

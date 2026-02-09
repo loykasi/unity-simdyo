@@ -6,6 +6,8 @@ public class GridController : Singleton<GridController>
     public bool GridEnabled { get; set; } = false;
     public bool SnapEnabled { get; set; } = true;
 
+    public bool ShouldSnap => GridEnabled && SnapEnabled;
+
     [SerializeField] private GridOverlay _gridOverlay;
 
     [SerializeField] private int _gridBase;
@@ -100,6 +102,7 @@ public class GridController : Singleton<GridController>
         {
             CalculateRange();
             UpdateGridSize();
+            OnColorChanged(BackgroundColor.Instance.Color);
         }
     }
 

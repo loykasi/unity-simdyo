@@ -11,9 +11,25 @@ public class Tooltip : MonoBehaviour
 
     private void Update()
     {
-        // Vector2 position = Mouse.current.position.ReadValue();
-        // transform.position = position + _offsetFromMouse;
+        UpdatePosition();
+    }
 
+    public void Toggle(bool value)
+    {
+        if (value)
+        {
+            UpdatePosition();
+        }
+        gameObject.SetActive(value);
+    }
+
+    public void SetContent(string value)
+    {
+        _content.text = value;
+    }
+
+    private void UpdatePosition()
+    {
         Vector3 worldPosition = Mouse.current.position.ReadValue();
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_canvas, worldPosition, null, out Vector2 point);
         Vector2 position = point + _offsetFromMouse + new Vector2(_canvas.sizeDelta.x * 0.5f, _canvas.sizeDelta.y * 0.5f);
@@ -32,10 +48,5 @@ public class Tooltip : MonoBehaviour
         }
 
         _rect.anchoredPosition = position;
-    }
-
-    public void SetContent(string value)
-    {
-        _content.text = value;
     }
 }
