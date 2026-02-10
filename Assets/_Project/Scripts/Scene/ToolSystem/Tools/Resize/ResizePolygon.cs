@@ -18,14 +18,13 @@ public class ResizePolygon: IResize
 
     public void UpdateBound()
     {
-        _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
+        // _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
         Vector2 size = new(_entity.Width, _entity.Height);
 
         Camera camera = EngineManager.Instance.EditorCamera;
         float scale = Screen.height / (camera.orthographicSize * 2);
 
-        _bound.position = camera.WorldToScreenPoint(_entity.BoundPosition);
-        _bound.rotation = rotation;
+        _bound.position = camera.WorldToScreenPoint(_entity.Bounds.center);
         _bound.sizeDelta = scale * size / EngineManager.Instance.CanvasScale;
     }
 

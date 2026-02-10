@@ -9,7 +9,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(-Width / 2f, Height / 2f, 0f);
+            return Bounds.center + new Vector3(-Width / 2f, Height / 2f, 0f);
         }
     }
 
@@ -17,7 +17,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(Width / 2f, Height / 2f, 0f);
+            return Bounds.center + new Vector3(Width / 2f, Height / 2f, 0f);
         }
     }
 
@@ -25,7 +25,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(Width / 2f, -Height / 2f, 0f);
+            return Bounds.center + new Vector3(Width / 2f, -Height / 2f, 0f);
         }
     }
 
@@ -33,7 +33,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(-Width / 2f, -Height / 2f, 0f);
+            return Bounds.center + new Vector3(-Width / 2f, -Height / 2f, 0f);
         }
     }
 
@@ -41,7 +41,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(-Width / 2f, 0f, 0f);
+            return Bounds.center + new Vector3(-Width / 2f, 0f, 0f);
         }
     }
 
@@ -49,7 +49,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(Width / 2f, 0f, 0f);
+            return Bounds.center + new Vector3(Width / 2f, 0f, 0f);
         }
     }
 
@@ -57,7 +57,7 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(0f, Height / 2f, 0f);
+            return Bounds.center + new Vector3(0f, Height / 2f, 0f);
         }
     }
 
@@ -65,7 +65,21 @@ public class PolygonEntity : SceneEntity
     {
         get
         {
-            return BoundPosition + new Vector3(0f, -Height / 2f, 0f);
+            return Bounds.center + new Vector3(0f, -Height / 2f, 0f);
+        }
+    }
+
+    public override Bounds Bounds => _bounds;
+    private Bounds _bounds = new();
+
+    public override Quaternion Rotation
+    {
+        get => transform.rotation;
+        set
+        {
+            transform.rotation = value;
+            UpdateBounds();
+            OnUpdateProperty();
         }
     }
 
@@ -76,9 +90,35 @@ public class PolygonEntity : SceneEntity
     private Vector2[] _collisionPoints;
 
     // Bounds
-    public Vector3 BoundPosition => MeshFilter.sharedMesh.bounds.center + transform.position;
-    public float Width => MeshFilter.sharedMesh.bounds.size.x;
-    public float Height => MeshFilter.sharedMesh.bounds.size.y;
+    
+    public float Width => Bounds.size.x;
+    public float Height => Bounds.size.y;
+
+    private void UpdateBounds()
+    {
+        Vector3[] points = new Vector3[_vertices.Count];
+        for (int i = 0; i < _vertices.Count; i++)
+        {
+            points[i] = _vertices[i];
+        }
+
+        transform.TransformPoints(points);
+
+        float maxX = Mathf.NegativeInfinity;
+        float maxY = Mathf.NegativeInfinity;
+        float minX = Mathf.Infinity;
+        float minY = Mathf.Infinity;
+        for (int i = 0; i < points.Length; i++)
+        {
+            maxX = Mathf.Max(maxX, points[i].x);
+            maxY = Mathf.Max(maxY, points[i].y);
+            minX = Mathf.Min(minX, points[i].x);
+            minY = Mathf.Min(minY, points[i].y);
+        }
+
+        _bounds.size = new Vector3(maxX - minX, maxY - minY);
+        _bounds.center = new Vector3((maxX + minX) * 0.5f, (maxY + minY) * 0.5f);
+    }
 
     public void SetVertices(List<Vector3> points)
     {
@@ -101,10 +141,35 @@ public class PolygonEntity : SceneEntity
         _border.SetMesh(MeshFilter.sharedMesh, points);
 
         MeshFilter.sharedMesh.GetVertices(_vertices);
+
+        UpdateBounds();
     }
 
     public void UpdateSize(Vector3 from, Vector3 to)
-    {        
+    {
+        // apply rotation to vertices and reset entity rotation
+        if (Angle != 0)
+        {
+            for (int i = 0; i < _vertices.Count; i++)
+            {
+                _vertices[i] = Vector3Utils.RotatePointAroundPoint(_vertices[i], Vector3.zero, Rotation);
+            }
+            for (int i = 0; i < _collisionPoints.Length; i++)
+            {
+                _collisionPoints[i] = Vector3Utils.RotatePointAroundPoint(_collisionPoints[i], Vector3.zero, Rotation);
+            }
+            Angle = 0f;
+            MeshFilter.sharedMesh.SetVertices(_vertices);
+            MeshFilter.sharedMesh.RecalculateBounds();
+            UpdateBounds();
+
+            PolygonCollider2D polygonCollider = (PolygonCollider2D)Collider;
+            polygonCollider.points = _collisionPoints;
+            _interactionArea.points = _collisionPoints;
+        }
+
+        Vector2 xOldRange = new(Left.x, Right.x);
+        Vector2 yOldRange = new(Bottom.y, Top.y);
         Vector2 xNewRange = new(Mathf.Min(from.x, to.x), Mathf.Max(from.x, to.x));
         Vector2 yNewRange = new(Mathf.Min(from.y, to.y), Mathf.Max(from.y, to.y));
 
@@ -117,22 +182,17 @@ public class PolygonEntity : SceneEntity
             return;
         }
 
-        transform.position = new Vector3
+        Position = new Vector3
         (
-            transform.position.x * xScale,
-            transform.position.y * yScale,
+            Position.x.MapRange(xOldRange.x, xOldRange.y, xNewRange.x, xNewRange.y),
+            Position.y.MapRange(yOldRange.x, yOldRange.y, yNewRange.x, yNewRange.y),
             0f
         );
 
-        xNewRange.x -= transform.position.x;
-        xNewRange.y -= transform.position.x;
-        yNewRange.x -= transform.position.y;
-        yNewRange.y -= transform.position.y;
-
         for (int i = 0; i < _vertices.Count; i++)
         {
-            float x = _vertices[i].x.MapRange(Left.x - transform.position.x, Right.x - transform.position.x, xNewRange.x, xNewRange.y);
-            float y = _vertices[i].y.MapRange(Bottom.y - transform.position.y, Top.y - transform.position.y, yNewRange.x, yNewRange.y);
+            float x = _vertices[i].x * xScale;
+            float y = _vertices[i].y * yScale;
 
             _vertices[i] = new Vector3(x, y);
         }
@@ -140,8 +200,8 @@ public class PolygonEntity : SceneEntity
         PolygonCollider2D collider = (PolygonCollider2D)Collider;
         for (int i = 0; i < _collisionPoints.Length; i++)
         {
-            float x = _collisionPoints[i].x.MapRange(Left.x - transform.position.x, Right.x - transform.position.x, xNewRange.x, xNewRange.y);
-            float y = _collisionPoints[i].y.MapRange(Bottom.y - transform.position.y, Top.y - transform.position.y, yNewRange.x, yNewRange.y);
+            float x = _collisionPoints[i].x * xScale;
+            float y = _collisionPoints[i].y * yScale;
 
             _collisionPoints[i] = new Vector2(x, y);
         }
@@ -150,6 +210,7 @@ public class PolygonEntity : SceneEntity
 
         MeshFilter.sharedMesh.SetVertices(_vertices);
         MeshFilter.sharedMesh.RecalculateBounds();
+        UpdateBounds();
     }
 
     public override void Select()

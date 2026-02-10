@@ -54,7 +54,7 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public Quaternion Rotation
+    public virtual Quaternion Rotation
     {
         get => transform.rotation;
         set
