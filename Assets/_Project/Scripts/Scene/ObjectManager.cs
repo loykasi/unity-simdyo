@@ -205,6 +205,18 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         AddEntity(entity);
     }
 
+    public SceneEntity AddPolygon(Vector3 position, Vector2[] points)
+    {
+        SceneEntity entity = ShapeGenerator.Instance.AddPolygon(position, points);
+        if (entity == null)
+        {
+            return null;
+        }
+
+        AddEntity(entity);
+        return entity;
+    }
+
     public void AddEntity(SceneEntity entity)
     {
         // use for both ID and Name now, will sperate in futures
@@ -384,6 +396,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 {
                     Radius = ((CircleEntity)entity).Radius
                 },
+                EntityType.Polygon => new PolygonEntityData
+                {
+                    PolygonPoints = ((PolygonEntity)entity).PolygonPoints.ToArray()
+                },
                 _ => new(),
             };
 
@@ -434,6 +450,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 case EntityType.Circle:
                     CircleEntityData circleData = (CircleEntityData)entityData;
                     entity = AddCircle(circleData.Position, circleData.Radius);
+                    break;
+                case EntityType.Polygon:
+                    PolygonEntityData polygonData = (PolygonEntityData)entityData;
+                    entity = AddPolygon(polygonData.Position, polygonData.PolygonPoints);
                     break;
                 default:
                     continue;

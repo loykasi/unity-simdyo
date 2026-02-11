@@ -34,7 +34,7 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public Vector3 Position
+    public virtual Vector3 Position
     {
         get => transform.position;
         set

@@ -47,11 +47,9 @@ public class PolygonBorder : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void SetMesh(Mesh mesh, List<Vector3> points)
+    public void SetMesh(Mesh mesh)
     {
         mesh.GetVertices(_vertices);
-        // _vertices.AddRange(points);
-        // CreateOutlineVector(mesh);
         _meshFilter.sharedMesh = mesh;
     }
 

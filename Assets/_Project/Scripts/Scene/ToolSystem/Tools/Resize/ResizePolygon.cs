@@ -30,6 +30,7 @@ public class ResizePolygon: IResize
 
     public void BeginResize(BoundsHandleDirection direction)
     {
+        _entity.ApplyRotation();
         _pivotPoint = GetPivotPoint(direction);
         _fromPoint = GetFromPoint(direction);
     }

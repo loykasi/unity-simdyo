@@ -8,18 +8,18 @@ class PolygonGenerator
 {
     private Tess _tess = new();
 
-    public UnityEngine.Mesh AddPolygon(List<Vector3> points)
+    public UnityEngine.Mesh AddPolygon(Vector2[] points)
     {
         // triangulate and create mesh with libtessdotnet
-        var contour = new ContourVertex[points.Count];
+        var contour = new ContourVertex[points.Length];
 
         float maxX = Mathf.NegativeInfinity;
         float maxY = Mathf.NegativeInfinity;
         float minX = Mathf.Infinity;
         float minY = Mathf.Infinity;
-        for (int i = 0; i < points.Count; i++)
+        for (int i = 0; i < points.Length; i++)
         {
-            contour[i].Position = new Vec3(points[i].x, points[i].y, points[i].z);
+            contour[i].Position = new Vec3(points[i].x, points[i].y, 0f);
             contour[i].Data = i;
 
             maxX = Mathf.Max(maxX, points[i].x);

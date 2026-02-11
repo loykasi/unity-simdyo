@@ -16,6 +16,7 @@ public class SceneEntityConverter : JsonConverter<EntityData>
         {
             EntityType.Box => new BoxEntityData(),
             EntityType.Circle => new CircleEntityData(),
+            EntityType.Polygon => new PolygonEntityData(),
             _ => new EntityData(),
         };
         serializer.Populate(obj.CreateReader(), entityData);
