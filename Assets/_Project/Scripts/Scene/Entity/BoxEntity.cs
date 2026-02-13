@@ -1,3 +1,4 @@
+using Clipper2Lib;
 using Loykas.Scripting;
 using UnityEngine;
 
@@ -180,21 +181,40 @@ public class BoxEntity : SceneEntity
     public override SceneEntity CloneEntity()
     {
         BoxEntity entity = ShapeGenerator.Instance.AddBox(Position, Width, Height);
-
-        entity.Rotation = Rotation;
-        entity.CurrentColor = CurrentColor;
-
-        entity.ToggleCollider(IsColliderEnabled);
-        entity.ToggleGravity(IsGravityEnabled);
-        entity.SetLayer(Layer);
-        entity.SetTexture(TextureSlotKey);
-
-        entity.TextBox.CopyFrom(TextBox);
-        
-        ScriptFlowClone.CloneScript(Script, entity.Script);
-
+        CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 
         return entity;
+    }
+
+    public override void CopyPropertyTo(SceneEntity entity)
+    {
+        base.CopyPropertyTo(entity);
+        if (entity is BoxEntity boxEntity)
+        {
+            boxEntity.TextBox.CopyFrom(TextBox);   
+        }
+    }
+
+    public override PathsD ToPaths()
+    {
+        int count = 4;
+        double[] dpoints = new double[count * 2];
+
+        dpoints[0] = TopRight.x;
+        dpoints[1] = TopRight.y;
+        dpoints[2] = TopLeft.x;
+        dpoints[3] = TopLeft.y;
+        dpoints[4] = BottomLeft.x;
+        dpoints[5] = BottomLeft.y;
+        dpoints[6] = BottomRight.x;
+        dpoints[7] = BottomRight.y;
+        
+        PathsD paths = new()
+        {
+            Clipper.MakePath(dpoints)
+        };
+
+        return paths;
     }
 }

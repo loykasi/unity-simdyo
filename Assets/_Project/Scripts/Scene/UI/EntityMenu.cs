@@ -133,6 +133,10 @@ public class EntityMenu : MonoBehaviour
                 CircleEntity circleEntity = (CircleEntity)entity;
                 _radiusInput.SetValue(circleEntity.Radius);
                 break;
+            case EntityType.Polygon:
+                _boxMenu.SetActive(false);
+                _circleMenu.SetActive(false);
+                break;
         }
     }
 

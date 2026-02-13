@@ -11,6 +11,8 @@ public class BoxTool : PanTool
     public override void OnUpdate()
     {
         Zoom();
+        HandleSelection();
+        HandleContextMenu();
         HandlePanRightMouse();
         Create();
     }

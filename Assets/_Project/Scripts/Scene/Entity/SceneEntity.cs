@@ -3,6 +3,8 @@ using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
 using UnityEngine.EventSystems;
+using Clipper2Lib;
+using System;
 
 public class SceneEntity : MonoBehaviour
 {
@@ -274,7 +276,7 @@ public class SceneEntity : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Script.TriggerEvent(EventHook.OnTouched, collision);   
+        Script.TriggerEvent(EventHook.OnTouched, collision);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -285,5 +287,23 @@ public class SceneEntity : MonoBehaviour
     public virtual SceneEntity CloneEntity()
     {
         return null;
+    }
+
+    public virtual void CopyPropertyTo(SceneEntity entity)
+    {
+        entity.Rotation = Rotation;
+        entity.CurrentColor = CurrentColor;
+
+        entity.ToggleCollider(IsColliderEnabled);
+        entity.ToggleGravity(IsGravityEnabled);
+        entity.SetLayer(Layer);
+        entity.SetTexture(TextureSlotKey);
+
+        ScriptFlowClone.CloneScript(Script, entity.Script);
+    }
+
+    public virtual PathsD ToPaths()
+    {
+        throw new NotImplementedException();
     }
 }

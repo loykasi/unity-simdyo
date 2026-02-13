@@ -12,12 +12,21 @@ public class UIToolSelection : MonoBehaviour
 
     private void Awake()
     {
+        InitToolButton();
         CreateToolElementTable();
     }
 
     private void OnEnable()
     {
         ToolManagement.Instance.OnToolChanged += OnToolChanged;
+    }
+
+    private void InitToolButton()
+    {
+        foreach (UIToolButton button in _toolElements)
+        {
+            button.Init(this);
+        }
     }
 
     private void CreateToolElementTable()

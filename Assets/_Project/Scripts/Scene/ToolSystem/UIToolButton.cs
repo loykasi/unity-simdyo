@@ -4,8 +4,13 @@ public class UIToolButton : MonoBehaviour
 {
     public ToolType Type => _type;
     
-    [SerializeField] private UIToolSelection _toolSelection;
     [SerializeField] private ToolType _type;
+    private UIToolSelection _toolSelection;
+
+    public void Init(UIToolSelection toolSelection)
+    {
+        _toolSelection = toolSelection;
+    }
 
     public void OnClick()
     {

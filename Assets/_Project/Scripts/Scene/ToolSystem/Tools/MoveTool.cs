@@ -18,6 +18,7 @@ public class MoveTool : PanTool
         base.Zoom();
         base.HandlePanRightMouse();
         base.HandleSelection();
+        base.HandleContextMenu();
         Move();
     }
 

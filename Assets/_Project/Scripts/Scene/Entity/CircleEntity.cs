@@ -1,3 +1,4 @@
+using Clipper2Lib;
 using Loykas.Scripting;
 using UnityEngine;
 
@@ -98,19 +99,33 @@ public class CircleEntity : SceneEntity
     public override SceneEntity CloneEntity()
     {
         CircleEntity entity = ShapeGenerator.Instance.AddCircle(Position, Radius);
-
-        entity.Rotation = Rotation;
-        entity.CurrentColor = CurrentColor;
-
-        entity.ToggleCollider(IsColliderEnabled);
-        entity.ToggleGravity(IsGravityEnabled);
-        entity.SetLayer(Layer);
-        entity.SetTexture(TextureSlotKey);
-        
-        ScriptFlowClone.CloneScript(Script, entity.Script);
-        
+        CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 
         return entity;
+    }
+
+    public override PathsD ToPaths()
+    {
+        float distancePerVertices = 0.05f;
+        float angle = 2 * Mathf.Asin(distancePerVertices * 0.5f / Radius);
+
+        int iterationCount = (int)(2 * Mathf.PI / angle);
+        double[] dpoints = new double[iterationCount * 2];
+
+        for (int i = 0; i < iterationCount; i++)
+        {
+            float x = Radius * Mathf.Sin(i * angle) + Position.x;
+            float y = Radius * Mathf.Cos(i * angle) + Position.y;
+            dpoints[i * 2] = x;
+            dpoints[i * 2 + 1] = y;
+        }
+        
+        PathsD paths = new()
+        {
+            Clipper.MakePath(dpoints)
+        };
+
+        return paths;
     }
 }

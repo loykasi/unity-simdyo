@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using System;
+using UnityEngine.InputSystem;
+using Clipper2Lib;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
@@ -42,6 +44,96 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             SceneManager.Instance.OnSceneStart -= OnSceneStart;
             SceneManager.Instance.OnSceneStop -= OnSceneStop;
         }
+    }
+
+    public void DoIntersection()
+    {
+        if (SelectedObject == null)
+        {
+            return;
+        }
+
+        List<Collider2D> result = new();
+        SelectedObject.Collider.Overlap(result);
+        foreach (var collider in result)
+        {
+            Intersect(collider.GetComponent<SceneEntity>(), SelectedObject);
+        }
+    }
+
+    private void Intersect(SceneEntity targetEntity, SceneEntity clipEntity)
+    {
+        PathsD targetPaths = targetEntity.ToPaths();
+        PathsD clipPaths = clipEntity.ToPaths();
+
+        PathsD solution = Clipper.Intersect(targetPaths, clipPaths, FillRule.EvenOdd, 8);
+
+        List<Vector3> points = new();
+        foreach (var path in solution)
+        {
+            points.Clear();
+            foreach (var point in path)
+            {
+                points.Add(new Vector3((float)point.x, (float)point.y));
+            }
+            SceneEntity entity = AddPolygon(points);
+            if (entity != null)
+            {
+                entity.CurrentColor = targetEntity.CurrentColor;
+                entity.ToggleCollider(targetEntity.IsColliderEnabled);
+                entity.ToggleGravity(targetEntity.IsGravityEnabled);
+                entity.SetLayer(targetEntity.Layer);
+                entity.SetTexture(targetEntity.TextureSlotKey);
+                ScriptFlowClone.CloneScript(targetEntity.Script, entity.Script);
+            }
+        }
+
+        DeleteEntity(targetEntity);
+    }
+
+    public void DoSubtract()
+    {
+        if (SelectedObject == null)
+        {
+            return;
+        }
+
+        List<Collider2D> result = new();
+        SelectedObject.Collider.Overlap(result);
+        foreach (var collider in result)
+        {
+            Subtract(collider.GetComponent<SceneEntity>(), SelectedObject);
+        }
+    }
+
+    private void Subtract(SceneEntity targetEntity, SceneEntity clipEntity)
+    {
+        PathsD targetPaths = targetEntity.ToPaths();
+        PathsD clipPaths = clipEntity.ToPaths();
+
+        PathsD solution = Clipper.Difference(targetPaths, clipPaths, FillRule.EvenOdd, 8);
+
+        List<Vector3> points = new();
+        foreach (var path in solution)
+        {
+            points.Clear();
+            foreach (var point in path)
+            {
+                points.Add(new Vector3((float)point.x, (float)point.y));
+            }
+            SceneEntity entity = AddPolygon(points);
+            if (entity != null)
+            {
+                entity.CurrentColor = targetEntity.CurrentColor;
+                entity.ToggleCollider(targetEntity.IsColliderEnabled);
+                entity.ToggleGravity(targetEntity.IsGravityEnabled);
+                entity.SetLayer(targetEntity.Layer);
+                entity.SetTexture(targetEntity.TextureSlotKey);
+                ScriptFlowClone.CloneScript(targetEntity.Script, entity.Script);
+            }
+        }
+
+        DeleteEntity(targetEntity);
     }
 
     public void Deselect()
@@ -194,15 +286,16 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return entity;
     }
 
-    public void AddPolygon(List<Vector3> points)
+    public SceneEntity AddPolygon(List<Vector3> points)
     {
         SceneEntity entity = ShapeGenerator.Instance.AddPolygon(points);
         if (entity == null)
         {
-            return;
+            return null;
         }
 
         AddEntity(entity);
+        return entity;
     }
 
     public SceneEntity AddPolygon(Vector3 position, Vector2[] points)
@@ -263,6 +356,14 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         int index = SceneEntities.FindIndex(e => e.Name == name);
         entity.Name = index == -1 ? name : GetEntityName(_baseEntityName);
+    }
+
+    public void DeleteCurrent()
+    {
+        if (SelectedObject != null)
+        {
+            DeleteEntity(SelectedObject);
+        }
     }
 
     public void DeleteEntity(SceneEntity entity)

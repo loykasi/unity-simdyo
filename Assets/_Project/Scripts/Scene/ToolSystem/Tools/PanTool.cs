@@ -33,6 +33,7 @@ public class PanTool : ITool
         HandlePanLeftMouse();
         HandlePanRightMouse();
         HandleSelection();
+        HandleContextMenu();
     }
 
     protected virtual void HandleSelection()
@@ -61,6 +62,36 @@ public class PanTool : ITool
             }
 
             ObjectManager.Instance.Select(mousePosition);
+        }
+    }
+
+    protected virtual void HandleContextMenu()
+    {
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            if (ScreenInteractionUtils.IsOverUI())
+            {
+                return;
+            }
+
+            _startMousePosition = Mouse.current.position.ReadValue();
+        }
+        
+        if (Mouse.current.rightButton.wasReleasedThisFrame)
+        {
+            if (ScreenInteractionUtils.IsOverUI())
+            {
+                return;
+            }
+            
+            Vector3 mousePosition = Mouse.current.position.ReadValue();
+            if (_startMousePosition != mousePosition)
+            {
+                return;
+            }
+
+            ObjectManager.Instance.Select(mousePosition);
+            EntityContextMenuController.Instance.Open();
         }
     }
 

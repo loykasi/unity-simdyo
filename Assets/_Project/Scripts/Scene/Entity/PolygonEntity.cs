@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Clipper2Lib;
 using GameCore.Extensions;
 using Loykas.Scripting;
 using UnityEngine;
@@ -170,4 +171,22 @@ public class PolygonEntity : SceneEntity
         _border.Disable();
     }
 
+    public override PathsD ToPaths()
+    {
+        int count = PolygonPoints.Length;
+        double[] dpoints = new double[count * 2];
+
+        for (int i = 0; i < count; i++)
+        {
+            dpoints[i * 2] = PolygonPoints[i].x + Position.x;
+            dpoints[i * 2 + 1] = PolygonPoints[i].y + Position.y;
+        }
+        
+        PathsD paths = new()
+        {
+            Clipper.MakePath(dpoints)
+        };
+
+        return paths;
+    }
 }
