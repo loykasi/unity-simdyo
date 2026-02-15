@@ -1,24 +1,24 @@
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
-public class GameCanvas : Singleton<GameCanvas>
+public class GameCanvas : MonoBehaviour
 {
-    public event UnityAction OnResized;
-    
-    public Vector2 CanvasSize => new(Screen.width, Screen.height);
-    private Vector2 _previousSize;
-
-    private void Start()
-    {
-        _previousSize = CanvasSize;
-    }
+    [SerializeField] private GameObject[] _uiElements;
 
     private void Update()
     {
-        if (_previousSize.x != Screen.width || _previousSize.y != Screen.height)
+        if (Keyboard.current.tabKey.wasPressedThisFrame)
         {
-            _previousSize = CanvasSize;
-            OnResized?.Invoke();
+            ToggleHideUI();
+        }
+    }
+
+    public void ToggleHideUI()
+    {
+        for (int i = 0; i < _uiElements.Length; i++)
+        {
+            GameObject element = _uiElements[i];
+            element.SetActive(!element.activeSelf);
         }
     }
 }
