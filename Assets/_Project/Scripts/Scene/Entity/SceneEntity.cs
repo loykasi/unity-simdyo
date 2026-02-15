@@ -2,23 +2,23 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
-using UnityEngine.EventSystems;
 using Clipper2Lib;
 using System;
 
-public class SceneEntity : MonoBehaviour
+public abstract class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;
 
-    public virtual EntityType EntityType => EntityType.Polygon;
+    public abstract EntityType EntityType { get; }
 
     // Marked as true if added during running scene
-    public bool IsDirty { get; set; } = false;
+    public bool IsAddOnRuntime { get; set; } = false;
 
     public int Id;
     public MeshFilter MeshFilter;
     public MeshRenderer Renderer;
-    public Collider2D Collider;
+    // public Collider2D Collider;
+    public abstract Collider Collider { get; }
     public Rigidbody2D Rigidbody;
     public ScriptFlow Script;
     public CollisionLayer Layer;
@@ -114,7 +114,7 @@ public class SceneEntity : MonoBehaviour
         }
     }
 
-    public bool IsColliderEnabled => !Collider.isTrigger;
+    public bool IsColliderEnabled => !Collider.IsTrigger;
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
     public virtual Bounds Bounds => Renderer.bounds;
 
@@ -124,6 +124,10 @@ public class SceneEntity : MonoBehaviour
     private void Awake()
     {
         CollisionLayerController.Instance.UpdateObjectLayer(this);
+        PhysicsMaterial2D physicsMaterial = new();
+        physicsMaterial.bounciness = 0f;
+        physicsMaterial.friction = 0f;
+        Rigidbody.sharedMaterial = physicsMaterial;
     }
 
     private void OnEnable()
@@ -142,11 +146,6 @@ public class SceneEntity : MonoBehaviour
             SceneManager.Instance.OnSceneStart -= OnSceneStart;
             SceneManager.Instance.OnSceneStop -= OnSceneStop;
         }
-    }
-
-    public void AssignCollider(Collider2D collider)
-    {
-        Collider = collider;
     }
 
     public void SetLayer(CollisionLayer layer)
@@ -217,7 +216,7 @@ public class SceneEntity : MonoBehaviour
 
     public void ToggleCollider(bool value)
     {
-        Collider.isTrigger = !value;
+        Collider.ToggleCollider(value);
     }
 
     public void ToggleGravity(bool value)

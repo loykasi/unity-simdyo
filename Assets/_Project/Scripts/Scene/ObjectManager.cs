@@ -53,9 +53,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             return;
         }
 
-        List<Collider2D> result = new();
-        SelectedObject.Collider.Overlap(result);
-        foreach (var collider in result)
+        List<Collider2D> results = new();
+        SelectedObject.Collider.Overlap(results);
+        foreach (var collider in results)
         {
             Intersect(collider.GetComponent<SceneEntity>(), SelectedObject);
         }
@@ -334,7 +334,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         if (SceneManager.Instance.IsRuning)
         {
-            entity.IsDirty = true;
+            entity.IsAddOnRuntime = true;
         }
 
         entity.transform.SetParent(_holder);
@@ -378,7 +378,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         if (SceneManager.Instance.IsRuning)
         {
-            if (entity.IsDirty)
+            if (entity.IsAddOnRuntime)
             {
                 Destroy(entity.gameObject);
             }
@@ -440,7 +440,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         for (int i = SceneEntities.Count - 1; i >= 0; i--)
         {
             SceneEntity entity = SceneEntities[i];
-            if (entity.IsDirty)
+            if (entity.IsAddOnRuntime)
             {
                 Destroy(entity.gameObject);
                 SceneEntities.RemoveAt(i);

@@ -22,7 +22,8 @@ public class CollisionLayerController : Singleton<CollisionLayerController>
 
             bool shouldCollide = (a.Layer & b.Layer) != 0;
 
-            Physics2D.IgnoreCollision(a.Collider, b.Collider, !shouldCollide);
+            // Physics2D.IgnoreCollision(a.Collider, b.Collider, !shouldCollide);
+            IgnoreCollision(a.Collider, b.Collider, isIgnore: !shouldCollide);
         }
     }
 
@@ -39,7 +40,19 @@ public class CollisionLayerController : Singleton<CollisionLayerController>
 
                 bool shouldCollide = (a.Layer & b.Layer) != 0;
 
-                Physics2D.IgnoreCollision(a.Collider, b.Collider, shouldCollide);
+                // Physics2D.IgnoreCollision(a.Collider, b.Collider, shouldCollide);
+                IgnoreCollision(a.Collider, b.Collider, isIgnore: !shouldCollide);
+            }
+        }
+    }
+
+    private void IgnoreCollision(Collider colliderA, Collider colliderB, bool isIgnore)
+    {
+        foreach (Collider2D a in colliderA.Colliders)
+        {
+            foreach (Collider2D b in colliderB.Colliders)
+            {
+                Physics2D.IgnoreCollision(a, b, isIgnore);
             }
         }
     }

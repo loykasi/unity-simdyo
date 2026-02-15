@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 6200347384814489336}
   - component: {fileID: 5987322468340314905}
   - component: {fileID: -4965821092403916477}
+  - component: {fileID: 4272118382621847602}
   m_Layer: 0
   m_Name: PolygonEntity
   m_TagString: Untagged
@@ -174,13 +175,16 @@ MonoBehaviour:
   Id: 0
   MeshFilter: {fileID: 7041058589520857695}
   Renderer: {fileID: 3200159185015626168}
-  Collider: {fileID: -4965821092403916477}
   Rigidbody: {fileID: 6200347384814489336}
   Script: {fileID: 37466095803576586}
   Layer: 1
   SortingGroup: {fileID: 5987322468340314905}
   TextureSlotKey: 
   Texture: {fileID: 0}
+  _collider:
+    EdgeCollider: {fileID: 4272118382621847602}
+    AreaCollider: {fileID: -4965821092403916477}
+  PolygonPoints: []
   _interactionArea: {fileID: 4503219996012745218}
   _border: {fileID: 5556752606153423703}
 --- !u!33 &7041058589520857695
@@ -252,7 +256,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c01c51c643ac243acb034664d14695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Entity: {fileID: 0}
+  Entity: {fileID: 5797110663384770057}
 --- !u!50 &6200347384814489336
 Rigidbody2D:
   serializedVersion: 5
@@ -323,7 +327,7 @@ PolygonCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -341,6 +345,49 @@ PolygonCollider2D:
     m_Paths:
     - []
   m_UseDelaunayMesh: 1
+--- !u!68 &4272118382621847602
+EdgeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4115176231818847525}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_EdgeRadius: 0
+  m_Points:
+  - {x: -0.5, y: 0}
+  - {x: 0.5, y: 0}
+  m_AdjacentStartPoint: {x: 0, y: 0}
+  m_AdjacentEndPoint: {x: 0, y: 0}
+  m_UseAdjacentStartPoint: 0
+  m_UseAdjacentEndPoint: 0
 --- !u!1 &7548536371151030863
 GameObject:
   m_ObjectHideFlags: 0

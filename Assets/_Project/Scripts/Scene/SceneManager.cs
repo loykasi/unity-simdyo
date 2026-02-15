@@ -10,6 +10,8 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public int SaveLoadOrder { get; set; } = 0;
 
+    public float TimeScale = 1f;
+
     [Header("Camera")]
     public Camera SceneCamera;
     [SerializeField] private Color _backgroundColor;
@@ -49,7 +51,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Play()
     {
-        Time.timeScale = 1;
+        Time.timeScale = TimeScale;
         SceneCamera.gameObject.SetActive(true);
 
         CameraState.Color = new ColorHSV(SceneCamera.backgroundColor);
@@ -85,7 +87,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Restart()
     {
-        Time.timeScale = 1;
+        Time.timeScale = TimeScale;
         OnSceneStop?.Invoke();
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -104,7 +106,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Resume()
     {
-        Time.timeScale = 1;
+        Time.timeScale = TimeScale;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         OnGameResumed();

@@ -1,10 +1,11 @@
 using Clipper2Lib;
-using Loykas.Scripting;
 using UnityEngine;
 
 public class BoxEntity : SceneEntity
 {
     public override EntityType EntityType => EntityType.Box;
+    public override Collider Collider => _collider;
+    [SerializeField] private BoxCollider _collider;
 
     public BoxBorder Border;
     public float Width;
@@ -90,7 +91,8 @@ public class BoxEntity : SceneEntity
     {
         Width = width;
         Height = height;
-        ((BoxCollider2D)Collider).size = new Vector2(width, height);
+        Vector2 size = new Vector2(width, height);
+        _collider.SetSize(size);
 
         float halfWidth = width / 2f;
         float halfHeight = height / 2f;
@@ -102,7 +104,7 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.SetVertices(_vertices);
         MeshFilter.mesh.RecalculateBounds();
 
-        _interactionBox.size = ((BoxCollider2D)Collider).size;
+        _interactionBox.size = size;
         Border.SetBorder(Width, Height);
         TextBox.Resize(Width, Height);
     }
@@ -124,9 +126,10 @@ public class BoxEntity : SceneEntity
         MeshFilter.mesh.SetVertices(_vertices);
         MeshFilter.mesh.RecalculateBounds();
 
-        ((BoxCollider2D)Collider).size = new Vector2(Width, Height);
+        Vector2 size = new Vector2(Width, Height);
+        _collider.SetSize(size);
 
-        _interactionBox.size = ((BoxCollider2D)Collider).size;
+        _interactionBox.size = size;
         Border.SetBorder(Width, Height);
         TextBox.Resize(Width, Height);
     }
@@ -170,7 +173,7 @@ public class BoxEntity : SceneEntity
 
     public override void OnSceneStop()
     {
-        if (IsDirty)
+        if (IsAddOnRuntime)
         {
             return;
         }

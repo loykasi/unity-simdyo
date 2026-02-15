@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+[System.Serializable]
+public class PolygonCollider : Collider
+{
+    public override IEnumerable<Collider2D> Colliders => new Collider2D[]
+    {
+        EdgeCollider,
+        AreaCollider
+    };
+
+    public override bool IsTrigger => !EdgeCollider.enabled;
+
+    public EdgeCollider2D EdgeCollider;
+    public PolygonCollider2D AreaCollider;
+
+    public void SetPoints(Vector2[] points)
+    {
+        EdgeCollider.points = points;
+        AreaCollider.points = points;
+    }
+
+    public Vector2 ClosestPoint(Vector2 point)
+    {
+        return EdgeCollider.ClosestPoint(point);
+    }
+
+    public override void Overlap(List<Collider2D> results)
+    {
+        AreaCollider.Overlap(results);
+    }
+
+    public override void ToggleCollider(bool value)
+    {
+        EdgeCollider.enabled = value;
+    }
+
+    public override bool OverlapPoint(Vector2 point)
+    {
+        return AreaCollider.OverlapPoint(point);
+    }
+
+    public override void IgnoreCollision(Collider collider)
+    {
+        
+    }
+}

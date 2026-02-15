@@ -5,6 +5,10 @@ using UnityEngine;
 public class CircleEntity : SceneEntity
 {
     public override EntityType EntityType => EntityType.Circle;
+
+    public override Collider Collider => _collider;
+    [SerializeField] private CircleCollider _collider;
+
     public override Bounds Bounds => _bounds;
     private Bounds _bounds = new();
 
@@ -21,7 +25,7 @@ public class CircleEntity : SceneEntity
     {
         Radius = radius;
         TotalVert = totalVert;
-        ((CircleCollider2D)Collider).radius = radius;
+        _collider.SetRadius(radius);
 
         float vertRadius = radius / Mathf.Cos(Mathf.PI / TotalVert);
         Vector3[] vertices = new Vector3[TotalVert];
@@ -37,7 +41,7 @@ public class CircleEntity : SceneEntity
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
 
-        _interactionCircle.radius = ((CircleCollider2D)Collider).radius;
+        _interactionCircle.radius = radius;
         Border.SetRadius(Radius);
     }
 
@@ -60,12 +64,12 @@ public class CircleEntity : SceneEntity
         MeshFilter.mesh.RecalculateBounds();
         Renderer.material.SetFloat(_radiusProperty, Radius);
 
-        ((CircleCollider2D)Collider).radius = Radius;
+        _collider.SetRadius(Radius);
 
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
 
-        _interactionCircle.radius = ((CircleCollider2D)Collider).radius;
+        _interactionCircle.radius = Radius;
         Border.SetRadius(Radius);
     }
 
@@ -88,7 +92,7 @@ public class CircleEntity : SceneEntity
 
     public override void OnSceneStop()
     {
-        if (IsDirty)
+        if (IsAddOnRuntime)
         {
             return;
         }

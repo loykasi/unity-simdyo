@@ -1,11 +1,15 @@
 using System.Collections.Generic;
 using Clipper2Lib;
 using GameCore.Extensions;
-using Loykas.Scripting;
 using UnityEngine;
 
 public class PolygonEntity : SceneEntity
 {
+    public override EntityType EntityType => EntityType.Polygon;
+
+    public override Collider Collider => _collider;
+    [SerializeField] private PolygonCollider _collider;
+
     public override Vector3 Position
     {
         get => transform.position;
@@ -42,7 +46,7 @@ public class PolygonEntity : SceneEntity
     public float Width => Bounds.size.x;
     public float Height => Bounds.size.y;
 
-    public Vector2[] PolygonPoints;
+    [HideInInspector] public Vector2[] PolygonPoints;
 
     [SerializeField] private PolygonCollider2D _interactionArea;
     [SerializeField] private PolygonBorder _border;
@@ -80,8 +84,7 @@ public class PolygonEntity : SceneEntity
         PolygonPoints = new Vector2[points.Length];
         points.CopyTo(PolygonPoints, 0);
         
-        PolygonCollider2D collider = (PolygonCollider2D)Collider;
-        collider.points = PolygonPoints;
+        _collider.SetPoints(PolygonPoints);
         _interactionArea.points = PolygonPoints;
 
         _border.SetMesh(MeshFilter.sharedMesh);
@@ -108,8 +111,7 @@ public class PolygonEntity : SceneEntity
             MeshFilter.sharedMesh.RecalculateBounds();
             UpdateBounds();
 
-            PolygonCollider2D polygonCollider = (PolygonCollider2D)Collider;
-            polygonCollider.points = PolygonPoints;
+            _collider.SetPoints(PolygonPoints);
             _interactionArea.points = PolygonPoints;
         }
     }
@@ -145,7 +147,6 @@ public class PolygonEntity : SceneEntity
             _vertices[i] = new Vector3(x, y);
         }
 
-        PolygonCollider2D collider = (PolygonCollider2D)Collider;
         for (int i = 0; i < PolygonPoints.Length; i++)
         {
             float x = PolygonPoints[i].x * xScale;
@@ -153,7 +154,7 @@ public class PolygonEntity : SceneEntity
 
             PolygonPoints[i] = new Vector2(x, y);
         }
-        collider.points = PolygonPoints;
+        _collider.SetPoints(PolygonPoints);
         _interactionArea.points = PolygonPoints;
 
         MeshFilter.sharedMesh.SetVertices(_vertices);
@@ -188,5 +189,29 @@ public class PolygonEntity : SceneEntity
         };
 
         return paths;
+    }
+
+    void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!IsColliderEnabled)
+        {
+            return;
+        }
+
+        Rigidbody2D rigidbody = collision.attachedRigidbody;
+        Vector2 entityPosition = rigidbody.position;
+
+        if (_collider.OverlapPoint(entityPosition))
+        {
+            Vector2 closestPoint = _collider.ClosestPoint(entityPosition);
+            Vector2 direction = closestPoint - entityPosition;
+            Vector2 normal = direction.normalized;
+
+            Vector2 b = entityPosition - normal * 10000;
+            float h = 10000 - Vector2.Distance(rigidbody.ClosestPoint(b) , b);
+
+            float pushStrength = 20f;
+            rigidbody.position += (direction.magnitude + h) * pushStrength * Time.fixedDeltaTime * normal;
+        }
     }
 }
