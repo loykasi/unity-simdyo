@@ -148,6 +148,16 @@ public class EntityMenuController : MonoBehaviour
         Physics2D.SyncTransforms();
     }
 
+    public void UpdateFriction(float friction)
+    {
+        _entity.Friction = friction;
+    }
+
+    public void UpdateBounciness(float bounciness)
+    {
+        _entity.Bounciness = bounciness;
+    }
+
     public void UpdateZDepth(float value)
     {
         _entity.ZDepth = (int)value;

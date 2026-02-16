@@ -8,11 +8,13 @@ public class EntityContextMenu : MonoBehaviour, IPointerEnterHandler, IPointerEx
     [SerializeField] private RectTransform _canvas;
     private bool _isHover = false;
 
+    private SceneEntity _entity;
+
     private void Update()
     {
         if (Mouse.current.leftButton.wasPressedThisFrame && !_isHover)
         {
-            gameObject.SetActive(false);
+            Close();
         }
     }
 
@@ -26,8 +28,9 @@ public class EntityContextMenu : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _isHover = false;
     }
 
-    public void Open()
+    public void Open(SceneEntity entity)
     {
+        _entity = entity;
         gameObject.SetActive(true);
         
         Vector3 worldPosition = Mouse.current.position.ReadValue();
@@ -50,21 +53,39 @@ public class EntityContextMenu : MonoBehaviour, IPointerEnterHandler, IPointerEx
         _rect.anchoredPosition = position;
     }
 
+    private void Close()
+    {
+        _entity = null;
+        gameObject.SetActive(false);
+    }
+
     public void Delete()
     {
-        ObjectManager.Instance.DeleteCurrent();
-        gameObject.SetActive(false);
+        ObjectManager.Instance.DeleteEntity(_entity);
+        Close();
     }
 
     public void Intersect()
     {
-        ObjectManager.Instance.DoIntersection();
-        gameObject.SetActive(false);
+        ObjectManager.Instance.DoIntersection(_entity);
+        Close();
     }
 
     public void Subtract()
     {
-        ObjectManager.Instance.DoSubtract();
-        gameObject.SetActive(false);
+        ObjectManager.Instance.DoSubtract(_entity);
+        Close();
+    }
+
+    public void MoveToBack()
+    {
+        ObjectManager.Instance.MoveToBack(_entity);
+        Close();
+    }
+
+    public void MoveToFront()
+    {
+        ObjectManager.Instance.MoveToFront(_entity);
+        Close();
     }
 }

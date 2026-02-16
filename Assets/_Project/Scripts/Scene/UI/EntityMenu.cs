@@ -17,6 +17,8 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private MenuVectorInput _velocityInput;
     [SerializeField] private Toggle _colliderToggle;
     [SerializeField] private Image _buttonColor;
+    [SerializeField] private MenuNumberInput _frictionInput;
+    [SerializeField] private MenuNumberInput _bouncinessInput;
 
     [Header("Box")]
     [SerializeField] private GameObject _boxMenu;
@@ -37,8 +39,6 @@ public class EntityMenu : MonoBehaviour
 
     [Header("Selection")]
     [SerializeField] private MenuNumberInput _depthInput;
-    [SerializeField] private Button _moveToBackButton;
-    [SerializeField] private Button _moveToFrontButton;
 
     private void Awake()
     {
@@ -57,8 +57,8 @@ public class EntityMenu : MonoBehaviour
 
         _depthInput.OnSubmit += OnDepthSubmit;
 
-        _moveToBackButton.onClick.AddListener(MoveToBack);
-        _moveToFrontButton.onClick.AddListener(MoveToFront);
+        _frictionInput.OnSubmit += OnFrictionSubmit;
+        _bouncinessInput.OnSubmit += OnBouncinessSubmit;
     }
 
     private void CreateCollisionLayerMenu()
@@ -102,6 +102,8 @@ public class EntityMenu : MonoBehaviour
         _positionInput.SetValue(entity.Position);
         _angleInput.SetValue(entity.Angle);
         _velocityInput.SetValue(entity.Velocity);
+        _frictionInput.SetValue(entity.Friction);
+        _bouncinessInput.SetValue(entity.Bounciness);
 
         _gravityToggle.isOn = entity.IsGravityEnabled;
         _colliderToggle.isOn = entity.IsColliderEnabled;
@@ -205,6 +207,16 @@ public class EntityMenu : MonoBehaviour
         _controller.ResizeByTexture();
     }
 
+    private void OnBouncinessSubmit(float value)
+    {
+        _controller.UpdateBounciness(value);
+    }
+
+    private void OnFrictionSubmit(float value)
+    {
+        _controller.UpdateFriction(value);
+    }
+
     public void OpenGraph()
     {
         SceneEntity selected = ObjectManager.Instance.SelectedObject;
@@ -224,16 +236,6 @@ public class EntityMenu : MonoBehaviour
     public void ChooseTexture()
     {
         _controller.ChooseTexture();
-    }
-
-    public void MoveToBack()
-    {
-        _controller.MoveToBack();
-    }
-
-    public void MoveToFront()
-    {
-        _controller.MoveToFront();
     }
 
     public void OpenTextEditor()

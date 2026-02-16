@@ -19,6 +19,8 @@ public class EngineManager : Singleton<EngineManager>
     [SerializeField] private RectTransform _referenceCanvas;
     public float CanvasScale => _referenceCanvas.localScale.x;
 
+    private bool _isGridEnabled;
+
     protected override void Awake()
     {
         Time.timeScale = 0;
@@ -32,6 +34,7 @@ public class EngineManager : Singleton<EngineManager>
         
         if (GridController.Instance != null)
         {
+            _isGridEnabled = GridController.Instance.GridEnabled;
             GridController.Instance.ToggleGrid(false);
         }
         
@@ -51,6 +54,8 @@ public class EngineManager : Singleton<EngineManager>
         _playModeCanvas.SetActive(false);
         EditorCamera.gameObject.SetActive(true);
         SceneManager.Instance.Stop();
+
+        GridController.Instance.ToggleGrid(_isGridEnabled);
     }
 
     public void NewScene()

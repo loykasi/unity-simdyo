@@ -46,18 +46,18 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
     }
 
-    public void DoIntersection()
+    public void DoIntersection(SceneEntity entity)
     {
-        if (SelectedObject == null)
+        if (entity == null)
         {
             return;
         }
 
         List<Collider2D> results = new();
-        SelectedObject.Collider.Overlap(results);
+        entity.Collider.Overlap(results);
         foreach (var collider in results)
         {
-            Intersect(collider.GetComponent<SceneEntity>(), SelectedObject);
+            Intersect(collider.GetComponent<SceneEntity>(), entity);
         }
     }
 
@@ -91,18 +91,18 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         DeleteEntity(targetEntity);
     }
 
-    public void DoSubtract()
+    public void DoSubtract(SceneEntity entity)
     {
-        if (SelectedObject == null)
+        if (entity == null)
         {
             return;
         }
 
         List<Collider2D> result = new();
-        SelectedObject.Collider.Overlap(result);
+        entity.Collider.Overlap(result);
         foreach (var collider in result)
         {
-            Subtract(collider.GetComponent<SceneEntity>(), SelectedObject);
+            Subtract(collider.GetComponent<SceneEntity>(), entity);
         }
     }
 
@@ -356,14 +356,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         int index = SceneEntities.FindIndex(e => e.Name == name);
         entity.Name = index == -1 ? name : GetEntityName(_baseEntityName);
-    }
-
-    public void DeleteCurrent()
-    {
-        if (SelectedObject != null)
-        {
-            DeleteEntity(SelectedObject);
-        }
     }
 
     public void DeleteEntity(SceneEntity entity)

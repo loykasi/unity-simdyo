@@ -8,7 +8,7 @@ public class EntityContextMenuController : Singleton<EntityContextMenuController
     {
         if (ObjectManager.Instance.SelectedObject != null)
         {
-            _contextMenu.Open();
+            _contextMenu.Open(ObjectManager.Instance.SelectedObject);
         }
     }
 }

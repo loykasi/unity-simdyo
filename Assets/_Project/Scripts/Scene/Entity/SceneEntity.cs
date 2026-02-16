@@ -3,7 +3,6 @@ using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
 using Clipper2Lib;
-using System;
 
 public abstract class SceneEntity : MonoBehaviour
 {
@@ -90,6 +89,28 @@ public abstract class SceneEntity : MonoBehaviour
         }
     }
 
+    public float Friction
+    {
+        get => _physicsMaterial.friction;
+        set
+        {
+            _physicsMaterial.friction = value;
+            Rigidbody.sharedMaterial = _physicsMaterial;
+            OnUpdateProperty();
+        }
+    }
+
+    public float Bounciness
+    {
+        get => _physicsMaterial.bounciness;
+        set
+        {
+            _physicsMaterial.bounciness = value;
+            Rigidbody.sharedMaterial = _physicsMaterial;
+            OnUpdateProperty();
+        }
+    }
+
     public ColorHSV CurrentColor
     {
         get
@@ -118,16 +139,22 @@ public abstract class SceneEntity : MonoBehaviour
     public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
     public virtual Bounds Bounds => Renderer.bounds;
 
+    private PhysicsMaterial2D _physicsMaterial;
+
     protected SceneEntityState _defaultState = new();
     private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
 
     private void Awake()
     {
         CollisionLayerController.Instance.UpdateObjectLayer(this);
-        PhysicsMaterial2D physicsMaterial = new();
-        physicsMaterial.bounciness = 0f;
-        physicsMaterial.friction = 0f;
-        Rigidbody.sharedMaterial = physicsMaterial;
+
+        _physicsMaterial = new("PhysicsMaterial")
+        {
+            friction = 0.5f,
+            bounciness = 0.5f
+        };
+        Rigidbody.sharedMaterial = _physicsMaterial;
+        // Collider.SetPhysicsMaterial(_physicsMaterial);
     }
 
     private void OnEnable()
@@ -244,15 +271,8 @@ public abstract class SceneEntity : MonoBehaviour
         OnPropertyUpdated?.Invoke();
     }
 
-    public virtual void Select()
-    {
-
-    }
-
-    public virtual void Deselect()
-    {
-
-    }
+    public abstract void Select();
+    public abstract void Deselect();
 
     public virtual void SetTexture(string key)
     {
@@ -283,10 +303,7 @@ public abstract class SceneEntity : MonoBehaviour
         Script.TriggerEvent(EventHook.OnTouched, collision);
     }
 
-    public virtual SceneEntity CloneEntity()
-    {
-        return null;
-    }
+    public abstract SceneEntity CloneEntity();
 
     public virtual void CopyPropertyTo(SceneEntity entity)
     {
@@ -301,8 +318,5 @@ public abstract class SceneEntity : MonoBehaviour
         ScriptFlowClone.CloneScript(Script, entity.Script);
     }
 
-    public virtual PathsD ToPaths()
-    {
-        throw new NotImplementedException();
-    }
+    public abstract PathsD ToPaths();
 }

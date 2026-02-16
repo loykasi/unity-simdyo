@@ -26,6 +26,12 @@ public class PolygonCollider : Collider
         return EdgeCollider.ClosestPoint(point);
     }
 
+    public override void SetPhysicsMaterial(PhysicsMaterial2D physicsMaterial)
+    {
+        EdgeCollider.sharedMaterial = physicsMaterial;
+        AreaCollider.sharedMaterial = physicsMaterial;
+    }
+
     public override void Overlap(List<Collider2D> results)
     {
         AreaCollider.Overlap(results);
@@ -39,10 +45,5 @@ public class PolygonCollider : Collider
     public override bool OverlapPoint(Vector2 point)
     {
         return AreaCollider.OverlapPoint(point);
-    }
-
-    public override void IgnoreCollision(Collider collider)
-    {
-        
     }
 }

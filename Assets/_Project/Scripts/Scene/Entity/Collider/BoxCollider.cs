@@ -18,6 +18,11 @@ public class BoxCollider : Collider
         Collider.size = size;
     }
 
+    public override void SetPhysicsMaterial(PhysicsMaterial2D physicsMaterial)
+    {
+        Collider.sharedMaterial = physicsMaterial;
+    }
+
     public override void ToggleCollider(bool value)
     {
         Collider.isTrigger = !value;
@@ -31,10 +36,5 @@ public class BoxCollider : Collider
     public override bool OverlapPoint(Vector2 point)
     {
         return Collider.OverlapPoint(point);
-    }
-
-    public override void IgnoreCollision(Collider collider)
-    {
-        
     }
 }

@@ -172,6 +172,15 @@ public class PolygonEntity : SceneEntity
         _border.Disable();
     }
 
+    public override SceneEntity CloneEntity()
+    {
+        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(Position, PolygonPoints);
+        CopyPropertyTo(entity);
+        ObjectManager.Instance.AddEntity(entity);
+
+        return entity;
+    }
+
     public override PathsD ToPaths()
     {
         int count = PolygonPoints.Length;
