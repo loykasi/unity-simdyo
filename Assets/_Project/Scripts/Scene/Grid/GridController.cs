@@ -90,7 +90,7 @@ public class GridController : Singleton<GridController>
 
     private void UpdateGridSize()
     {
-        _gridOverlay.SetGridSize(_size, _subSize);
+        _gridOverlay.SetGridSize(1f / _size, 1f / _subSize);
     }
 
     public void ToggleGrid(bool value)
