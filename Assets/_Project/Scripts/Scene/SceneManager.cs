@@ -89,6 +89,15 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         Time.timeScale = TimeScale;
         OnSceneStop?.Invoke();
+        OnSceneStart?.Invoke();
+
+        GlobalScript.StartVS();
+
+        var entities = ObjectManager.Instance.SceneEntities;
+        for (int i = 0; i < entities.Count; i++)
+        {
+            entities[i].OnStart();
+        }
 
 #if UNITY_WEBGL && !UNITY_EDITOR
         OnGameRestarted();
@@ -122,7 +131,9 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
         var entities = ObjectManager.Instance.SceneEntities;
         GlobalScript.UpdateVS();
-        for (int i = 0; i < entities.Count; i++)
+
+        // for (int i = 0; i < entities.Count; i++)
+        for (int i = entities.Count - 1; i >= 0; i--)
         {
             entities[i].OnUpdate();
         }
