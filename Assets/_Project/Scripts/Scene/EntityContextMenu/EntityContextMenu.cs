@@ -59,6 +59,16 @@ public class EntityContextMenu : MonoBehaviour, IPointerEnterHandler, IPointerEx
         gameObject.SetActive(false);
     }
 
+    public void Clone()
+    {
+        SceneEntity entity = _entity.CloneEntity();
+
+        Vector3 position = entity.Position + new Vector3(entity.Bounds.size.x, 0f, 0f);
+        entity.Position = position;
+
+        Physics2D.SyncTransforms();
+    }
+
     public void Delete()
     {
         ObjectManager.Instance.DeleteEntity(_entity);
@@ -87,5 +97,18 @@ public class EntityContextMenu : MonoBehaviour, IPointerEnterHandler, IPointerEx
     {
         ObjectManager.Instance.MoveToFront(_entity);
         Close();
+    }
+
+    public void ResizeByTexture()
+    {
+        if (_entity.EntityType != EntityType.Box)
+        {
+            return;
+        }
+
+        var boxEntity = (BoxEntity)_entity;
+        boxEntity.ResizeByTexture();
+
+        Physics2D.SyncTransforms();
     }
 }
