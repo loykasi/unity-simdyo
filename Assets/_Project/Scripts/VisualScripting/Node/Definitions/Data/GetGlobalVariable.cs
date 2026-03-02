@@ -38,7 +38,8 @@ namespace Loykas.Scripting
 
         public override void Init()
         {
-            OnInputValueChanged();
+            UpdateOutputType();
+            OnNodeUpdated?.Invoke();
         }
 
         private object Get()
@@ -72,33 +73,39 @@ namespace Loykas.Scripting
             
             if (_variable != null)
             {
-                _variable.OnTypeUpdated -= UpdateOutputType;
+                _variable.OnTypeUpdated -= OnTypeUpdated;
             }
 
-            string name = Input.GetValue().ToString();
-            _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
-
-            UpdateOutputType();
+            OnTypeUpdated();
 
             if (_variable != null)
             {
-                _variable.OnTypeUpdated += UpdateOutputType;
+                _variable.OnTypeUpdated += OnTypeUpdated;
             }
+        }
+
+        private void OnTypeUpdated()
+        {
+            UpdateOutputType();
+            ValidateConnections();
+            OnNodeUpdated?.Invoke();
         }
 
         private void UpdateOutputType()
         {
+            string name = Input.GetValue().ToString();
+            _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
             ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
-
             Value.SetType(type);
+        }
 
+        private void ValidateConnections()
+        {
             IEnumerable<NodeConnection> connections = Flow.GetConnections(Value);
             foreach (var item in connections)
             {
                 item.Validate();
             }
-
-            OnNodeUpdated?.Invoke();
         }
     }
 }

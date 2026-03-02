@@ -65,6 +65,7 @@ namespace Loykas.Scripting
 
 
                 b.Nodes.Add(node);
+                node.Init();
             }
 
             foreach (var item in a.Connections)
@@ -74,7 +75,8 @@ namespace Loykas.Scripting
                     SourceID = item.SourceID,
                     SourceKey = item.SourceKey,
                     DestinationID = item.DestinationID,
-                    DestinationKey = item.DestinationKey
+                    DestinationKey = item.DestinationKey,
+                    Flow = b
                 };
 
                 b.Connections.Add(connection);

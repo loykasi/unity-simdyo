@@ -190,6 +190,7 @@ public static class ScriptSaveHandler
             }
 
             flow.Nodes.Add(node);
+            node.Init();
         }
 
         flow.Connections.Clear();
@@ -202,6 +203,7 @@ public static class ScriptSaveHandler
             connection.SourceKey = saveData.SourceKey;
             connection.DestinationID = saveData.DestinationID;
             connection.DestinationKey = saveData.DestinationKey;
+            connection.Flow = flow;
 
             flow.Connections.Add(connection);
         }

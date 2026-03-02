@@ -93,7 +93,7 @@ namespace Loykas.Scripting
                 {
                     eventNode.Register(this);
                 }
-                node.Init();
+                // node.Init();
             }
         }
 
