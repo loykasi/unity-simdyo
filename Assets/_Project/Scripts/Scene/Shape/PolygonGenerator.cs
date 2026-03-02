@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Clipper2Lib;
 using GameCore.Extensions;
 using LibTessDotNet;
 using UnityEngine;

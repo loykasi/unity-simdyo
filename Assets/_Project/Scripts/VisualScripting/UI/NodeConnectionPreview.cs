@@ -45,7 +45,7 @@ namespace Loykas.Scripting
             float delta = dist / (_maxDistance * _maxDistance);
             float radius = Mathf.Lerp(_cornerRadiusMinMax.x, _cornerRadiusMinMax.y, delta);
 
-            _previewLine.CornerRadius = radius;
+            // _previewLine.CornerRadius = radius;
 
             switch (_edge)
             {
