@@ -35,7 +35,7 @@ namespace Loykas.Scripting
 
         public BaseInput GetInputInstance(DataType type)
         {
-            BaseInput inputPrefab = GetPrefab(type);
+            BaseInput inputPrefab = GetUIInput(type).InputPrefab;
             if (inputPrefab == null)
             {
                 return null;
@@ -138,7 +138,7 @@ namespace Loykas.Scripting
 
             if (inputType == InputValueTypes.SignalEntity)
             {
-                BaseInput inputPrefab = GetPrefab(DataType.Entity);
+                BaseInput inputPrefab = GetUIInput(DataType.Entity).InputPrefab;
                 if (inputPrefab == null)
                 {
                     return null;
