@@ -211,6 +211,7 @@ public abstract class SceneEntity : MonoBehaviour
 
         _defaultState.Position = position;
         _defaultState.Rotation = rotation;
+        _defaultState.ColorHSV = CurrentColor;
         _defaultState.ColliderEnabled = IsColliderEnabled;
         _defaultState.GravityEnabled = IsGravityEnabled;
         _defaultState.Velocity = Velocity;
@@ -228,6 +229,7 @@ public abstract class SceneEntity : MonoBehaviour
     public virtual void OnSceneStop()
     {
         transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
+        CurrentColor = _defaultState.ColorHSV;
         ToggleCollider(_defaultState.ColliderEnabled);
         ToggleGravity(_defaultState.GravityEnabled);
         if (_defaultState.GravityEnabled)

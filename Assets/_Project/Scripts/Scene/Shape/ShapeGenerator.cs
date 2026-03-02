@@ -235,8 +235,8 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
             vertices[i] = points[i] - center;
         }
 
-        var genrator = new PolygonGenerator();
-        Mesh mesh = genrator.AddPolygon(vertices);
+        var generator = new PolygonGenerator();
+        Mesh mesh = generator.AddPolygon(vertices);
 
         PolygonEntity sceneEntity = Instantiate(_polygonEntityPrefab);
         sceneEntity.name = "Polygon";
@@ -265,6 +265,23 @@ public class ShapeGenerator : Singleton<ShapeGenerator>
         sceneEntity.Renderer.material = _material;
         sceneEntity.CurrentColor = GetRandomColor();
         sceneEntity.SetPoints(points);
+
+        Physics2D.SyncTransforms();
+        
+        return sceneEntity;
+    }
+
+    public PolygonEntity AddPolygon(Vector3 position, PolygonEntity originalEntity)
+    {
+        Mesh mesh = Instantiate(originalEntity.MeshFilter.sharedMesh);
+
+        PolygonEntity sceneEntity = Instantiate(_polygonEntityPrefab);
+        sceneEntity.name = "Polygon";
+        sceneEntity.transform.position = position;
+        sceneEntity.MeshFilter.sharedMesh = mesh;
+        sceneEntity.Renderer.material = _material;
+        sceneEntity.CurrentColor = GetRandomColor();
+        sceneEntity.SetPoints(originalEntity.PolygonPoints);
 
         Physics2D.SyncTransforms();
         

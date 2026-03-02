@@ -174,7 +174,7 @@ public class PolygonEntity : SceneEntity
 
     public override SceneEntity CloneEntity()
     {
-        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(Position, PolygonPoints);
+        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(Position, this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 
@@ -208,8 +208,17 @@ public class PolygonEntity : SceneEntity
         }
 
         Rigidbody2D rigidbody = collision.attachedRigidbody;
-        Vector2 entityPosition = rigidbody.position;
+        if (rigidbody.bodyType == RigidbodyType2D.Static)
+        {
+            return;
+        }
 
+        if (collision.TryGetComponent(out SceneEntity entity) && entity.EntityType == EntityType.Polygon)
+        {
+            return;
+        }
+        
+        Vector2 entityPosition = rigidbody.position;
         if (_collider.OverlapPoint(entityPosition))
         {
             Vector2 closestPoint = _collider.ClosestPoint(entityPosition);
@@ -219,8 +228,9 @@ public class PolygonEntity : SceneEntity
             Vector2 b = entityPosition - normal * 10000;
             float h = 10000 - Vector2.Distance(rigidbody.ClosestPoint(b) , b);
 
-            float pushStrength = 20f;
-            rigidbody.position += (direction.magnitude + h) * pushStrength * Time.fixedDeltaTime * normal;
+            float pushStrength = 5f;
+            // rigidbody.position += (direction.magnitude + h) * pushStrength * Time.fixedDeltaTime * normal;
+            rigidbody.linearVelocity += pushStrength * normal;
         }
     }
 }

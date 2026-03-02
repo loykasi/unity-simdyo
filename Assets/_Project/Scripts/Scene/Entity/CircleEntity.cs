@@ -86,18 +86,18 @@ public class CircleEntity : SceneEntity
 
     public override void OnSceneStart()
     {
-        _defaultState.Radius = Radius;
         base.OnSceneStart();
+        _defaultState.Radius = Radius;
     }
 
     public override void OnSceneStop()
     {
+        base.OnSceneStop();
         if (IsAddOnRuntime)
         {
             return;
         }
         SetRadius(_defaultState.Radius);
-        base.OnSceneStop();
     }
 
     public override SceneEntity CloneEntity()
