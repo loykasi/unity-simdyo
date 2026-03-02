@@ -288,6 +288,12 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public SceneEntity AddPolygon(List<Vector3> points)
     {
+        if (points.Count == 0)
+        {
+            return null;
+        }
+
+        points.Add(points[0]);
         SceneEntity entity = ShapeGenerator.Instance.AddPolygon(points);
         if (entity == null)
         {
