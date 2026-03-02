@@ -14,11 +14,13 @@ public class PolygonCollider : Collider
 
     public EdgeCollider2D EdgeCollider;
     public PolygonCollider2D AreaCollider;
+    public PolygonCollider2D SolidAreaCollider;
 
     public void SetPoints(Vector2[] points)
     {
         EdgeCollider.points = points;
         AreaCollider.points = points;
+        SolidAreaCollider.points = points;
     }
 
     public Vector2 ClosestPoint(Vector2 point)
@@ -30,6 +32,7 @@ public class PolygonCollider : Collider
     {
         EdgeCollider.sharedMaterial = physicsMaterial;
         AreaCollider.sharedMaterial = physicsMaterial;
+        SolidAreaCollider.sharedMaterial = physicsMaterial;
     }
 
     public override void Overlap(List<Collider2D> results)
@@ -40,6 +43,7 @@ public class PolygonCollider : Collider
     public override void ToggleCollider(bool value)
     {
         EdgeCollider.enabled = value;
+        SolidAreaCollider.enabled = value;
     }
 
     public override bool OverlapPoint(Vector2 point)
