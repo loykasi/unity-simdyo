@@ -210,6 +210,34 @@ MonoBehaviour:
     m_Localized: Open
     m_Metadata:
       m_Items: []
+  - m_Id: 21489402931830784
+    m_Localized: Pan tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133952
+    m_Localized: Move tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133953
+    m_Localized: Resize tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133954
+    m_Localized: Rotate tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133955
+    m_Localized: Box tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133956
+    m_Localized: Circle tool
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133957
+    m_Localized: Polygon tool
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

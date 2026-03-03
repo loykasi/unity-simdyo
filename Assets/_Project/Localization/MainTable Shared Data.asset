@@ -207,6 +207,34 @@ MonoBehaviour:
     m_Key: open
     m_Metadata:
       m_Items: []
+  - m_Id: 21489402931830784
+    m_Key: tool_pan
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133952
+    m_Key: tool_move
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133953
+    m_Key: tool_resize
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133954
+    m_Key: tool_rotate
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133955
+    m_Key: tool_box
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133956
+    m_Key: tool_circle
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133957
+    m_Key: tool_polygon
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
