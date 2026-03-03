@@ -317,6 +317,9 @@ public abstract class SceneEntity : MonoBehaviour
         entity.SetLayer(Layer);
         entity.SetTexture(TextureSlotKey);
 
+        entity.Friction = Friction;
+        entity.Bounciness = Bounciness;
+
         ScriptFlowClone.CloneScript(Script, entity.Script);
     }
 
