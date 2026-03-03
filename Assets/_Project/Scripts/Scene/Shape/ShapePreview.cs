@@ -3,6 +3,7 @@ using UnityEngine;
 public class ShapePreview : Singleton<ShapePreview>
 {
     [SerializeField] private MeshFilter _boxPreview;
+    private Vector3[] _boxVertices = new Vector3[4];
     private Mesh _boxMesh;
 
     [SerializeField] private MeshFilter _circlePreview;
@@ -13,10 +14,15 @@ public class ShapePreview : Singleton<ShapePreview>
 
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
+    private void Start()
+    {
+        _boxMesh = _boxPreview.mesh;
+        _circleMesh = _circlePreview.mesh;
+    }
+
     public void StartBoxPreview()
     {
         _boxPreview.gameObject.SetActive(true);
-        _boxMesh = _boxPreview.mesh;
     }
 
     public void PreviewBox(Vector3 from, Vector3 to)
@@ -26,14 +32,14 @@ public class ShapePreview : Singleton<ShapePreview>
         float halfHeight = Mathf.Abs(from.y - to.y) / 2f;
 
         _boxPreview.transform.position = center;
-        Vector3[] vertices = new Vector3[4]
-        {
-            new Vector3(- halfWidth, halfHeight),
-            new Vector3(halfWidth, halfHeight),
-            new Vector3(- halfWidth, - halfHeight),
-            new Vector3(halfWidth, - halfHeight),
-        };
-        _boxMesh.vertices = vertices;
+        
+        _boxVertices[0] = new Vector3(- halfWidth, halfHeight);
+        _boxVertices[1] = new Vector3(halfWidth, halfHeight);
+        _boxVertices[2] = new Vector3(- halfWidth, - halfHeight);
+        _boxVertices[3] = new Vector3(halfWidth, - halfHeight);
+
+        _boxMesh.SetVertices(_boxVertices);
+        _boxMesh.RecalculateBounds();
     }
 
     public void StopBoxPreview()
@@ -44,7 +50,6 @@ public class ShapePreview : Singleton<ShapePreview>
     public void StartCirclePreview()
     {
         _circlePreview.gameObject.SetActive(true);
-        _circleMesh = _circlePreview.mesh;
     }
 
     public void PreviewCircle(Vector3 from, Vector3 to)
@@ -64,6 +69,7 @@ public class ShapePreview : Singleton<ShapePreview>
         }
         _circleMesh.vertices = vertices;
         _circleRenderer.material.SetFloat(_radiusProperty, radius);
+        _circleMesh.RecalculateBounds();
     }
 
     public void StopCirclePreview()
