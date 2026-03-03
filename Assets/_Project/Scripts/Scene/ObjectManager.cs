@@ -57,6 +57,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.Collider.Overlap(results);
         foreach (var collider in results)
         {
+            if (collider is EdgeCollider2D)
+            {
+                continue;
+            }
             Intersect(collider.GetComponent<SceneEntity>(), entity);
         }
     }
@@ -102,6 +106,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.Collider.Overlap(result);
         foreach (var collider in result)
         {
+            // polygon has edge and polygon collider, we skip edge collider
+            if (collider is EdgeCollider2D)
+            {
+                continue;
+            }
             Subtract(collider.GetComponent<SceneEntity>(), entity);
         }
     }
@@ -129,6 +138,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
                 entity.ToggleGravity(targetEntity.IsGravityEnabled);
                 entity.SetLayer(targetEntity.Layer);
                 entity.SetTexture(targetEntity.TextureSlotKey);
+                entity.Friction = targetEntity.Friction;
+                entity.Bounciness = targetEntity.Bounciness;
                 ScriptFlowClone.CloneScript(targetEntity.Script, entity.Script);
             }
         }
