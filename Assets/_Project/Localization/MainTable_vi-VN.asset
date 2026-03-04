@@ -210,6 +210,34 @@ MonoBehaviour:
     m_Localized: "M\u1EDF"
     m_Metadata:
       m_Items: []
+  - m_Id: 21489402931830784
+    m_Localized: "Di chuy\u1EC3n khung h\xECnh"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133952
+    m_Localized: "Di chuy\u1EC3n v\u1EADt th\u1EC3"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133953
+    m_Localized: "Thay \u0111\u1ED5i k\xEDch th\u01B0\u1EDBc"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133954
+    m_Localized: Xoay
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133955
+    m_Localized: "H\xECnh ch\u1EEF nh\u1EADt"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133956
+    m_Localized: "H\xECnh tr\xF2n"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 21489403003133957
+    m_Localized: "\u0110a gi\xE1c"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

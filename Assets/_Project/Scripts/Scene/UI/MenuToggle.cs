@@ -10,6 +10,7 @@ public class MenuToggle : MonoBehaviour
 
     [SerializeField] private GameObject _menu;
     [SerializeField] private Button _button;
+    [SerializeField] private bool _shouldMatchX;
 
     private void Awake()
     {
@@ -18,6 +19,10 @@ public class MenuToggle : MonoBehaviour
 
     public void ToggleMenu()
     {
+        if (_shouldMatchX)
+        {
+            _menu.transform.position = new Vector2(transform.position.x, _menu.transform.position.y);
+        }
         _menu.SetActive(!_menu.activeSelf);
 
         if (_menu.activeSelf)
