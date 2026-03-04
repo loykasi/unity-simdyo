@@ -80,7 +80,7 @@
         // matchWebGLToCanvasSize: false, // Uncomment this to separately control WebGL canvas render size and DOM element size.
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then((unityInstance) => {
-        window.parent.postMessage({ type: "unityLoaded" }, "http://localhost:3000/create");
+        window.parent.postMessage({ type: "unityLoaded" });
 #if SHOW_DIAGNOSTICS
         document.getElementById("diagnostics-icon").onclick = () => {
             unityDiagnostics.openDiagnosticsDiv(unityInstance.GetMetricsInfo);

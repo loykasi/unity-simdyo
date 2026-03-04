@@ -83,7 +83,7 @@
         // devicePixelRatio: 1, // Uncomment this to override low DPI rendering on high DPI displays.
       }).then((unityInstance) => {
         myUnityInstance = unityInstance;
-        window.parent.postMessage({ type: "unityLoaded" }, "*");
+        window.parent.postMessage({ type: "unityLoaded" });
 #if SHOW_DIAGNOSTICS
         document.getElementById("diagnostics-icon").onclick = () => {
             unityDiagnostics.openDiagnosticsDiv(unityInstance.GetMetricsInfo);
