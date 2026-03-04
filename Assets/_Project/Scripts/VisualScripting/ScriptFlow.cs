@@ -68,6 +68,7 @@ namespace Loykas.Scripting
             Connections.Clear();
             Functions.Clear();
             Variables.Clear();
+            VariableList.Clear();
 
             _eventNodes.Clear();
         }
@@ -333,6 +334,11 @@ namespace Loykas.Scripting
             foreach (var item in Variables.Values)
             {
                 item.OnSceneStop();
+            }
+
+            foreach (ScriptNode node in Nodes)
+            {
+                node.Reset();
             }
         }
 

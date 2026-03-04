@@ -31,6 +31,12 @@ namespace Loykas.Scripting
             return Function.Name;
         }
 
+        public override void Reset()
+        {
+            _task.Stop();
+            _firstRun = true;
+        }
+
         public void Init(ScriptFunction function)
         {
             Function = function;

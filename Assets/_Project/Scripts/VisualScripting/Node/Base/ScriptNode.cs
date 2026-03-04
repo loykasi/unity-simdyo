@@ -78,6 +78,11 @@ namespace Loykas.Scripting
             
         }
 
+        public virtual void Reset()
+        {
+            
+        }
+
         public virtual string GetNameKey()
         {
             return GetType().Name;

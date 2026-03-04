@@ -36,6 +36,12 @@ namespace Loykas.Scripting
             return new ForNode();
         }
 
+        public override void Reset()
+        {
+            Debug.Log("reset");
+            _firstRun = true;
+        }
+
         private object GetIndex()
         {
             return _index;
@@ -56,7 +62,7 @@ namespace Loykas.Scripting
 
             if (_firstRun)
             {
-                // Debug.Log($"first run: step {step}");
+                Debug.Log($"first run: step {step}");
                 task.EnterLoop(Enter);
                 _index = firstIndex;
 
@@ -75,37 +81,5 @@ namespace Loykas.Scripting
             task.EnterLoop(Enter);
             return LoopBody;
         }
-
-        // private OutputTrigger Loop(ScriptFlow vs)
-        // {
-        //     int firstIndex = (int)(float)FirstIndex.GetValue(vs);
-        //     int lastIndex = (int)(float)LastIndex.GetValue(vs);
-        //     int step = (int)(float)Step.GetValue(vs);
-
-        //     int loop = vs.StartLoop();
-
-        //     bool isAscending = firstIndex <= lastIndex;
-
-
-        //     // vs.Invoke(LoopBody, OnBodyFinish);
-
-        //     int index = firstIndex;
-
-        //     while (vs.IsLoopNotBroken(loop) && CanMoveNext(index, lastIndex, isAscending))
-        //     {
-        //         _index = index;
-        //         LoopBody.Invoke(vs);
-        //         index += step;
-        //     }
-
-        //     vs.ExitLoop(loop);
-
-        //     return Completed;
-        // }
-
-        // private bool CanMoveNext(int index, int lastIndex, bool isAscending)
-        // {
-        //     return isAscending ? (index <= lastIndex) : (index >= lastIndex);
-        // }
     }
 }

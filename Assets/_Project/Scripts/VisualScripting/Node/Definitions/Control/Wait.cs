@@ -19,6 +19,11 @@ namespace Loykas.Scripting
             return new WaitNode();
         }
 
+        public override void Reset()
+        {
+            _isFirstFrame = true;
+        }
+
         public WaitNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Wait);
