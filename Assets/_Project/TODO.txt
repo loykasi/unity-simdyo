@@ -1,7 +1,10 @@
 // ISSUES
 [X] Polyon entities do not collide with each other
-[] Texture slots image are not in correct size
+[X] Texture slots image are not in correct size
 [] Entity texture is still persist when texture is deleted from texture menu
 
 // OPTIMIZATION
 [] Update mesh create GC
+
+// OPTIONAL
+[] Select multiple entities

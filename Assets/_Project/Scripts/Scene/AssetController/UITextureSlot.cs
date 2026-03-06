@@ -10,6 +10,7 @@ public class UITextureSlot : MonoBehaviour, IPointerClickHandler
 
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private RawImage _image;
+    [SerializeField] private AspectRatioFitter _aspectRatioFitter;
     [SerializeField] private TMP_InputField _input;
 
     [SerializeField] private Color _selectColor;
@@ -26,8 +27,8 @@ public class UITextureSlot : MonoBehaviour, IPointerClickHandler
     {
         Key = key;
         _image.texture = texture;
+        _aspectRatioFitter.aspectRatio = texture.width * 1.0f / texture.height;
         _input.text = key;
-
         _textureMenu = menu;
     }
 
