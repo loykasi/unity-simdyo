@@ -149,8 +149,8 @@ public class BoxEntity : SceneEntity
 
     public void ResizeByTexture()
     {
-        if (Texture == null) return;
-        float height = Width * Texture.height / Texture.width;
+        if (TextureSlot == null) return;
+        float height = Width * TextureSlot.Texture.height / TextureSlot.Texture.width;
         SetSize(Width, height);
     }
 

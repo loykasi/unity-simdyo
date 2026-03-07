@@ -56,7 +56,7 @@ public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         Load(TextureController.Instance.Textures);
     }
 
-    private void Load(Dictionary<string, Texture2D> textures)
+    private void Load(Dictionary<string, TextureSlot> textures)
     {
         foreach (var slot in _textureSlots)
         {
@@ -66,7 +66,7 @@ public class TextureMenu : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         foreach (var slot in textures)
         {
-            AddTextureSlotUI(slot.Key, slot.Value);
+            AddTextureSlotUI(slot.Key, slot.Value.Texture);
         }
     }
 

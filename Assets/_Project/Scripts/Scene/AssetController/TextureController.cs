@@ -11,13 +11,8 @@ using System.Runtime.InteropServices;
 public class TextureController : Singleton<TextureController>, ISaveable
 {
     public int SaveLoadOrder { get; set; } = -1;
- 
-    // public List<Texture2D> Textures => _textures;
-    // private List<Texture2D> _textures = new();
 
-    // private int _currentIndex = 1;
-
-    public Dictionary<string, Texture2D> Textures = new();
+    public Dictionary<string, TextureSlot> Textures = new();
     public SceneEntity Entity;
 
     [SerializeField] private TextureMenu _textureMenu;
@@ -65,9 +60,9 @@ public class TextureController : Singleton<TextureController>, ISaveable
             return;
         }
 
-        Texture2D selectedTexture = Textures[_currentKey];
+        TextureSlot selectedTexture = Textures[_currentKey];
 
-        selectedTexture.LoadImage(ReadFile());
+        selectedTexture.Texture.LoadImage(ReadFile());
     }
 
     public bool RemoveTexture()
@@ -77,7 +72,9 @@ public class TextureController : Singleton<TextureController>, ISaveable
             return false;
         }
 
+        TextureSlot slot = Textures[_currentKey];
         Textures.Remove(_currentKey);
+        slot.Remove();
         _currentKey = string.Empty;
         return true;
     }
@@ -101,21 +98,21 @@ public class TextureController : Singleton<TextureController>, ISaveable
     {
         string key = GetUniqueKey(newKey);
         
-        Texture2D texture = Textures[currentKey];
+        TextureSlot texture = Textures[currentKey];
         Textures.Remove(currentKey);
         Textures.Add(key, texture);
 
         return key;
     }
 
-    public Texture2D GetTexture(string key)
+    public TextureSlot GetTexture(string key)
     {
         if (string.IsNullOrWhiteSpace(key))
         {
             return null;
         }
 
-        if (Textures.TryGetValue(key, out Texture2D texture))
+        if (Textures.TryGetValue(key, out TextureSlot texture))
         {
             return texture;
         }
@@ -178,7 +175,12 @@ public class TextureController : Singleton<TextureController>, ISaveable
 
         string key = GetUniqueKey(_defaultName);
 
-        Textures.Add(key, texture);
+        TextureSlot slot = new()
+        {
+            Texture = texture
+        };
+
+        Textures.Add(key, slot);
         _textureMenu.AddTextureSlotUI(key, texture);
     }
 
@@ -209,7 +211,7 @@ public class TextureController : Singleton<TextureController>, ISaveable
         data.Textures.Clear();
         foreach (var item in Textures)
         {
-            data.Textures.Add(new TextureData(item.Key, item.Value));
+            data.Textures.Add(new TextureData(item.Key, item.Value.Texture));
         }
     }
 
@@ -219,7 +221,7 @@ public class TextureController : Singleton<TextureController>, ISaveable
         for (int i = 0; i < data.Textures.Count; i++)
         {
             TextureData textureData = data.Textures[i];
-            Textures.Add(textureData.Key, textureData.Texture);
+            Textures.Add(textureData.Key, new TextureSlot() { Texture = textureData.Texture });
         }
     }
 }

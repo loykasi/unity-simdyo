@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
 using Clipper2Lib;
+using System;
 
 public abstract class SceneEntity : MonoBehaviour
 {
@@ -22,8 +23,10 @@ public abstract class SceneEntity : MonoBehaviour
     public ScriptFlow Script;
     public CollisionLayer Layer;
     public SortingGroup SortingGroup;
+
     public string TextureSlotKey;
-    public Texture2D Texture;
+    public TextureSlot TextureSlot;
+    // public Texture2D Texture;
     
     public string Name
     {
@@ -278,9 +281,25 @@ public abstract class SceneEntity : MonoBehaviour
 
     public virtual void SetTexture(string key)
     {
+        if (TextureSlot != null)
+        {
+            TextureSlot.OnRemoved -= OnTextureSlotRemoved;
+        }
+
         TextureSlotKey = key;
-        Texture = TextureController.Instance.GetTexture(key);
-        Renderer.material.SetTexture(_textureProperty, Texture);
+        TextureSlot = TextureController.Instance.GetTexture(key);
+        if (TextureSlot != null)
+        {
+            Renderer.material.SetTexture(_textureProperty, TextureSlot.Texture);
+            TextureSlot.OnRemoved += OnTextureSlotRemoved;
+        }
+    }
+
+    private void OnTextureSlotRemoved()
+    {
+        TextureSlot.OnRemoved -= OnTextureSlotRemoved;
+        Renderer.material.SetTexture(_textureProperty, null);
+        TextureSlot = null;
     }
 
     // trigger hook
