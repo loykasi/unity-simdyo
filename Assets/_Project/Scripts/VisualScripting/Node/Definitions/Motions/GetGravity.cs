@@ -29,12 +29,12 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            if (entity == null)
+            if (entity == null || entity is not MeshEntity meshEntity)
             {
                 return default(float);
             }
 
-            return entity.IsGravityEnabled;
+            return meshEntity.IsGravityEnabled;
         }
     }
 }

@@ -2,31 +2,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
-using Clipper2Lib;
-using System;
 
 public abstract class SceneEntity : MonoBehaviour
 {
     public UnityAction OnPropertyUpdated;
 
     public abstract EntityType EntityType { get; }
-
-    // Marked as true if added during running scene
     public bool IsAddOnRuntime { get; set; } = false;
 
     public int Id;
-    public MeshFilter MeshFilter;
-    public MeshRenderer Renderer;
-    // public Collider2D Collider;
-    public abstract Collider Collider { get; }
-    public Rigidbody2D Rigidbody;
     public ScriptFlow Script;
-    public CollisionLayer Layer;
     public SortingGroup SortingGroup;
-
-    public string TextureSlotKey;
-    public TextureSlot TextureSlot;
-    // public Texture2D Texture;
     
     public string Name
     {
@@ -34,7 +20,7 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             gameObject.name = value;
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
@@ -44,7 +30,7 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.position = value;
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
@@ -54,7 +40,7 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.rotation = Quaternion.Euler(0f, 0f, value);
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
@@ -64,23 +50,9 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.rotation = value;
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
-
-    public Vector2 Velocity
-    {
-        get
-        {
-            return _velocity;
-        }
-        set
-        {
-            _velocity = value;
-            Rigidbody.linearVelocity = value;
-        }
-    }
-    private Vector2 _velocity;
 
     public int ZDepth
     {
@@ -88,76 +60,16 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             SortingGroup.sortingOrder = value;
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
-    public float Friction
+    public abstract Bounds Bounds { get; }
+
+    protected TransformState _transformState;
+
+    protected virtual void Awake()
     {
-        get => _physicsMaterial.friction;
-        set
-        {
-            _physicsMaterial.friction = value;
-            Rigidbody.sharedMaterial = _physicsMaterial;
-            OnUpdateProperty();
-        }
-    }
-
-    public float Bounciness
-    {
-        get => _physicsMaterial.bounciness;
-        set
-        {
-            _physicsMaterial.bounciness = value;
-            Rigidbody.sharedMaterial = _physicsMaterial;
-            OnUpdateProperty();
-        }
-    }
-
-    public ColorHSV CurrentColor
-    {
-        get
-        {
-            return _currentColor;
-        }
-        set
-        {
-            _currentColor = value;
-            UpdateColor();
-        }
-    }
-    private ColorHSV _currentColor = new();
-
-    public Color UnityColor
-    {
-        get
-        {
-            Color color = Color.HSVToRGB(_currentColor.H, _currentColor.S, _currentColor.V);
-            color.a = _currentColor.A;
-            return color;
-        }
-    }
-
-    public bool IsColliderEnabled => !Collider.IsTrigger;
-    public bool IsGravityEnabled => Rigidbody.bodyType == RigidbodyType2D.Dynamic;
-    public virtual Bounds Bounds => Renderer.bounds;
-
-    private PhysicsMaterial2D _physicsMaterial;
-
-    protected SceneEntityState _defaultState = new();
-    private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
-
-    private void Awake()
-    {
-        CollisionLayerController.Instance.UpdateObjectLayer(this);
-
-        _physicsMaterial = new("PhysicsMaterial")
-        {
-            friction = 0.5f,
-            bounciness = 0.5f
-        };
-        Rigidbody.sharedMaterial = _physicsMaterial;
-        // Collider.SetPhysicsMaterial(_physicsMaterial);
     }
 
     private void OnEnable()
@@ -178,129 +90,26 @@ public abstract class SceneEntity : MonoBehaviour
         }
     }
 
-    public void SetLayer(CollisionLayer layer)
-    {
-        Layer = layer;
-        CollisionLayerController.Instance.UpdateObjectLayer(this);
-    }
-
-    [ContextMenu("Update Layer")]
-    public void UpdateLayer()
-    {
-        CollisionLayerController.Instance.UpdateObjectLayer(this);
-    }
-
-    public void SetLayer(CollisionLayer layer, bool isActive)
-    {
-        if (isActive)
-        {
-            Layer |= layer;
-        }
-        else
-        {
-            Layer &= ~layer;
-        }
-        UpdateLayer();
-    }
-
-    public void SetLayer(int layer)
-    {
-        SetLayer((CollisionLayer)layer);
-    }
-
     public virtual void OnSceneStart()
     {
         transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
 
-        _defaultState.Position = position;
-        _defaultState.Rotation = rotation;
-        _defaultState.ColorHSV = CurrentColor;
-        _defaultState.ColliderEnabled = IsColliderEnabled;
-        _defaultState.GravityEnabled = IsGravityEnabled;
-        _defaultState.Velocity = Velocity;
-        _defaultState.AngularVelocity = Rigidbody.angularVelocity;
-        _defaultState.TextureSlotKey = TextureSlotKey;
+        _transformState = new(position, rotation, ZDepth);
 
-        if (Rigidbody.bodyType != RigidbodyType2D.Static)
-        {
-            Rigidbody.linearVelocity = Velocity;   
-        }
-
-        // Script.OnSceneStart();
+        // if (Rigidbody.bodyType != RigidbodyType2D.Static)
+        // {
+        //     Rigidbody.linearVelocity = Velocity;   
+        // }
     }
 
     public virtual void OnSceneStop()
     {
-        transform.SetPositionAndRotation(_defaultState.Position, _defaultState.Rotation);
-        CurrentColor = _defaultState.ColorHSV;
-        ToggleCollider(_defaultState.ColliderEnabled);
-        ToggleGravity(_defaultState.GravityEnabled);
-        if (_defaultState.GravityEnabled)
-        {
-            Velocity = _defaultState.Velocity;
-            Rigidbody.angularVelocity = _defaultState.AngularVelocity;
-        }
-
-        SetTexture(_defaultState.TextureSlotKey);
-
-        // Script.OnSceneStop();
-    }
-
-    public void ToggleCollider(bool value)
-    {
-        Collider.ToggleCollider(value);
-    }
-
-    public void ToggleGravity(bool value)
-    {
-        Rigidbody.bodyType = value ? RigidbodyType2D.Dynamic : RigidbodyType2D.Static;
-    }
-
-    public void SetColor(Color color)
-    {
-        Color.RGBToHSV(color, out float h, out float s, out float v);
-        float a = color.a;
-
-        CurrentColor = new ColorHSV(h, s, v, a);
-    }
-
-    private void UpdateColor()
-    {
-        Color color = Color.HSVToRGB(CurrentColor.H, CurrentColor.S, CurrentColor.V);
-        color.a = CurrentColor.A;
-        Renderer.material.color = color;
-    }
-
-    public void OnUpdateProperty()
-    {
-        OnPropertyUpdated?.Invoke();
+        transform.SetPositionAndRotation(_transformState.Position, _transformState.Rotation);
+        ZDepth = _transformState.ZDepth;
     }
 
     public abstract void Select();
     public abstract void Deselect();
-
-    public virtual void SetTexture(string key)
-    {
-        if (TextureSlot != null)
-        {
-            TextureSlot.OnRemoved -= OnTextureSlotRemoved;
-        }
-
-        TextureSlotKey = key;
-        TextureSlot = TextureController.Instance.GetTexture(key);
-        if (TextureSlot != null)
-        {
-            Renderer.material.SetTexture(_textureProperty, TextureSlot.Texture);
-            TextureSlot.OnRemoved += OnTextureSlotRemoved;
-        }
-    }
-
-    private void OnTextureSlotRemoved()
-    {
-        TextureSlot.OnRemoved -= OnTextureSlotRemoved;
-        Renderer.material.SetTexture(_textureProperty, null);
-        TextureSlot = null;
-    }
 
     // trigger hook
     public void OnStart()
@@ -310,7 +119,6 @@ public abstract class SceneEntity : MonoBehaviour
 
     public void OnUpdate()
     {
-        _velocity = Rigidbody.linearVelocity;
         Script.UpdateVS();
     }
 
@@ -329,18 +137,8 @@ public abstract class SceneEntity : MonoBehaviour
     public virtual void CopyPropertyTo(SceneEntity entity)
     {
         entity.Rotation = Rotation;
-        entity.CurrentColor = CurrentColor;
-
-        entity.ToggleCollider(IsColliderEnabled);
-        entity.ToggleGravity(IsGravityEnabled);
-        entity.SetLayer(Layer);
-        entity.SetTexture(TextureSlotKey);
-
-        entity.Friction = Friction;
-        entity.Bounciness = Bounciness;
-
         ScriptFlowClone.CloneScript(Script, entity.Script);
     }
 
-    public abstract PathsD ToPaths();
+    public abstract EntityData CreateSaveData();
 }

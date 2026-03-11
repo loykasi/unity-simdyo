@@ -1,7 +1,7 @@
 using Clipper2Lib;
 using UnityEngine;
 
-public class BoxEntity : SceneEntity
+public class BoxEntity : MeshEntity
 {
     public override EntityType EntityType => EntityType.Box;
     public override Collider Collider => _collider;
@@ -11,6 +11,8 @@ public class BoxEntity : SceneEntity
     public float Width;
     public float Height;
     public TextBox TextBox;
+
+    public override Bounds Bounds => Renderer.bounds;
 
     public Vector3 TopLeft
     {
@@ -86,6 +88,7 @@ public class BoxEntity : SceneEntity
 
     [SerializeField] private BoxCollider2D _interactionBox;
     private Vector3[] _vertices = new Vector3[4];
+    private BoxState _boxState;
 
     public void SetSize(float width, float height)
     {
@@ -167,7 +170,10 @@ public class BoxEntity : SceneEntity
 
     public override void OnSceneStart()
     {
-        _defaultState.Size = new Vector2(Width, Height);
+        _boxState = new()
+        {
+            Size = new Vector2(Width, Height)
+        };
         base.OnSceneStart();
     }
 
@@ -177,7 +183,7 @@ public class BoxEntity : SceneEntity
         {
             return;
         }
-        SetSize(_defaultState.Size.x, _defaultState.Size.y);
+        SetSize(_boxState.Size.x, _boxState.Size.y);
         base.OnSceneStop();
     }
 
@@ -219,5 +225,31 @@ public class BoxEntity : SceneEntity
         };
 
         return paths;
+    }
+
+    public override EntityData CreateSaveData()
+    {
+        Debug.Log("Create box entity save data");
+        return new BoxEntityData
+        {
+            Id = Id,
+            Name = Name,
+            Type = EntityType,
+            Position = transform.position,
+            Rotation = transform.rotation,
+            ZDepth = ZDepth,
+            Width = Width,
+            Height = Height,
+            Text = TextBox.Text,
+            TextColor = new ColorHSV(TextBox.Color),
+            TextSize = TextBox.Size,
+            TextHorizontalAlignment = TextBox.HorizontalAlignment,
+            TextVerticalAlignment = TextBox.VerticalAlignment,
+            ColliderEnabled = IsColliderEnabled,
+            GravityEnabled = IsGravityEnabled,
+            Layer = Layer,
+            Color = CurrentColor,
+            TextureSlotKey = TextureSlotKey
+        };
     }
 }

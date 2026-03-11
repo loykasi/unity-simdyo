@@ -36,13 +36,13 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            if (entity == null)
+            if (entity == null || entity is not MeshEntity meshEntity)
             {
                 return Exit;
             }
 
             ColorHSV color = (ColorHSV)Value.GetValue();
-            entity.SetColor(color.ToUnityColor());
+            meshEntity.SetColor(color.ToUnityColor());
             return Exit;
         }
     }

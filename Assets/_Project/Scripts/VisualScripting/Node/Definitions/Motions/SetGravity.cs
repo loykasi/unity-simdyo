@@ -33,13 +33,13 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            if (entity == null)
+            if (entity == null || entity is not MeshEntity meshEntity)
             {
                 return Exit;
             }
 
             bool enable = (bool)Value.GetValue();
-            entity.ToggleGravity(enable);
+            meshEntity.IsGravityEnabled = enable;
             return Exit;
         }
     }

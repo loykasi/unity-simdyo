@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using Clipper2Lib;
 using GameCore.Extensions;
 using UnityEngine;
 
-public class PolygonEntity : SceneEntity
+public class PolygonEntity : MeshEntity
 {
     public override EntityType EntityType => EntityType.Polygon;
 
@@ -17,7 +18,7 @@ public class PolygonEntity : SceneEntity
         {
             transform.position = value;
             UpdateBounds();
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
@@ -28,7 +29,7 @@ public class PolygonEntity : SceneEntity
         {
             transform.rotation = value;
             UpdateBounds();
-            OnUpdateProperty();
+            OnPropertyUpdated?.Invoke();
         }
     }
 
@@ -232,5 +233,24 @@ public class PolygonEntity : SceneEntity
             // rigidbody.position += (direction.magnitude + h) * pushStrength * Time.fixedDeltaTime * normal;
             rigidbody.linearVelocity += pushStrength * normal;
         }
+    }
+
+    public override EntityData CreateSaveData()
+    {
+        return new PolygonEntityData
+        {
+            Id = Id,
+            Name = Name,
+            Type = EntityType,
+            Position = transform.position,
+            Rotation = transform.rotation,
+            ZDepth = ZDepth,
+            PolygonPoints = PolygonPoints,
+            ColliderEnabled = IsColliderEnabled,
+            GravityEnabled = IsGravityEnabled,
+            Layer = Layer,
+            Color = CurrentColor,
+            TextureSlotKey = TextureSlotKey
+        };
     }
 }

@@ -22,6 +22,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     private int _indexForId = 1;
 
+    private ShapeCombineAction _shapeCombineAction = new();
+
     private List<RaycastHit2D> _selectionResults = new();
 
     private List<SceneEntity> _snapshotEntities = new();    // use on running scene
@@ -48,104 +50,20 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void DoIntersection(SceneEntity entity)
     {
-        if (entity == null)
+        if (entity is MeshEntity meshEntity)
         {
-            return;
+            _shapeCombineAction.DoIntersection(meshEntity);
         }
-
-        List<Collider2D> results = new();
-        entity.Collider.Overlap(results);
-        foreach (var collider in results)
-        {
-            if (collider is EdgeCollider2D)
-            {
-                continue;
-            }
-            Intersect(collider.GetComponent<SceneEntity>(), entity);
-        }
-    }
-
-    private void Intersect(SceneEntity targetEntity, SceneEntity clipEntity)
-    {
-        PathsD targetPaths = targetEntity.ToPaths();
-        PathsD clipPaths = clipEntity.ToPaths();
-
-        PathsD solution = Clipper.Intersect(targetPaths, clipPaths, FillRule.EvenOdd, 8);
-
-        List<Vector3> points = new();
-        foreach (var path in solution)
-        {
-            points.Clear();
-            foreach (var point in path)
-            {
-                points.Add(new Vector3((float)point.x, (float)point.y));
-            }
-            SceneEntity entity = AddPolygon(points);
-            if (entity != null)
-            {
-                entity.CurrentColor = targetEntity.CurrentColor;
-                entity.ToggleCollider(targetEntity.IsColliderEnabled);
-                entity.ToggleGravity(targetEntity.IsGravityEnabled);
-                entity.SetLayer(targetEntity.Layer);
-                entity.SetTexture(targetEntity.TextureSlotKey);
-                ScriptFlowClone.CloneScript(targetEntity.Script, entity.Script);
-            }
-        }
-
-        DeleteEntity(targetEntity);
     }
 
     public void DoSubtract(SceneEntity entity)
     {
-        if (entity == null)
+        if (entity is MeshEntity meshEntity)
         {
-            return;
-        }
-
-        List<Collider2D> result = new();
-        entity.Collider.Overlap(result);
-        foreach (var collider in result)
-        {
-            // polygon has edge and polygon collider, we skip edge collider
-            if (collider is EdgeCollider2D)
-            {
-                continue;
-            }
-            Subtract(collider.GetComponent<SceneEntity>(), entity);
+            _shapeCombineAction.DoSubtract(meshEntity);
         }
     }
 
-    private void Subtract(SceneEntity targetEntity, SceneEntity clipEntity)
-    {
-        PathsD targetPaths = targetEntity.ToPaths();
-        PathsD clipPaths = clipEntity.ToPaths();
-
-        PathsD solution = Clipper.Difference(targetPaths, clipPaths, FillRule.EvenOdd, 8);
-
-        List<Vector3> points = new();
-        foreach (var path in solution)
-        {
-            points.Clear();
-            foreach (var point in path)
-            {
-                points.Add(new Vector3((float)point.x, (float)point.y));
-            }
-            SceneEntity entity = AddPolygon(points);
-            if (entity != null)
-            {
-                entity.CurrentColor = targetEntity.CurrentColor;
-                entity.ToggleCollider(targetEntity.IsColliderEnabled);
-                entity.ToggleGravity(targetEntity.IsGravityEnabled);
-                entity.SetLayer(targetEntity.Layer);
-                entity.SetTexture(targetEntity.TextureSlotKey);
-                entity.Friction = targetEntity.Friction;
-                entity.Bounciness = targetEntity.Bounciness;
-                ScriptFlowClone.CloneScript(targetEntity.Script, entity.Script);
-            }
-        }
-
-        DeleteEntity(targetEntity);
-    }
 
     public void Deselect()
     {
@@ -253,7 +171,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     
     public void AddBox(Vector3 from, Vector3 to)
     {
-        SceneEntity entity = ShapeGenerator.Instance.AddBox(from, to);
+        MeshEntity entity = ShapeGenerator.Instance.AddBox(from, to);
         if (entity == null)
         {
             return;
@@ -262,9 +180,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         AddEntity(entity);
     }
 
-    public SceneEntity AddBox(Vector3 center, float width, float height)
+    public BoxEntity AddBox(Vector3 center, float width, float height)
     {
-        SceneEntity entity = ShapeGenerator.Instance.AddBox(center, width, height);
+        BoxEntity entity = ShapeGenerator.Instance.AddBox(center, width, height);
         if (entity == null)
         {
             return null;
@@ -276,7 +194,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void AddCircle(Vector3 from, Vector3 to)
     {
-        SceneEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
+        CircleEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
         if (entity == null)
         {
             return;
@@ -285,9 +203,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         AddEntity(entity);
     }
 
-    public SceneEntity AddCircle(Vector3 center, float radius)
+    public CircleEntity AddCircle(Vector3 center, float radius)
     {
-        SceneEntity entity = ShapeGenerator.Instance.AddCircle(center, radius);
+        CircleEntity entity = ShapeGenerator.Instance.AddCircle(center, radius);
         if (entity == null)
         {
             return null;
@@ -297,7 +215,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return entity;
     }
 
-    public SceneEntity AddPolygon(List<Vector3> points)
+    public PolygonEntity AddPolygon(List<Vector3> points)
     {
         if (points.Count == 0)
         {
@@ -305,7 +223,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         points.Add(points[0]);
-        SceneEntity entity = ShapeGenerator.Instance.AddPolygon(points);
+        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(points);
         if (entity == null)
         {
             return null;
@@ -315,9 +233,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return entity;
     }
 
-    public SceneEntity AddPolygon(Vector3 position, Vector2[] points)
+    public PolygonEntity AddPolygon(Vector3 position, Vector2[] points)
     {
-        SceneEntity entity = ShapeGenerator.Instance.AddPolygon(position, points);
+        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(position, points);
         if (entity == null)
         {
             return null;
@@ -490,41 +408,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         data.Scene.Entities.Clear();
         foreach (var entity in SceneEntities)
         {
-            EntityData entityData = entity.EntityType switch
-            {
-                EntityType.Box => new BoxEntityData
-                {
-                    Width = ((BoxEntity)entity).Width,
-                    Height = ((BoxEntity)entity).Height,
-                    Text = ((BoxEntity)entity).TextBox.Text,
-                    TextColor = new ColorHSV(((BoxEntity)entity).TextBox.Color),
-                    TextSize = ((BoxEntity)entity).TextBox.Size,
-                    TextHorizontalAlignment = ((BoxEntity)entity).TextBox.HorizontalAlignment,
-                    TextVerticalAlignment = ((BoxEntity)entity).TextBox.VerticalAlignment,
-                },
-                EntityType.Circle => new CircleEntityData
-                {
-                    Radius = ((CircleEntity)entity).Radius
-                },
-                EntityType.Polygon => new PolygonEntityData
-                {
-                    PolygonPoints = ((PolygonEntity)entity).PolygonPoints.ToArray()
-                },
-                _ => new(),
-            };
-
-            entityData.Id = entity.Id;
-            entityData.Name = entity.Name;
-            entityData.Type = entity.EntityType;
-            entityData.Position = entity.transform.position;
-            entityData.Rotation = entity.transform.rotation;
-            entityData.GravityEnabled = entity.IsGravityEnabled;
-            entityData.ColliderEnabled = entity.IsColliderEnabled;
-            entityData.Layer = entity.Layer;
-            entityData.Color = entity.CurrentColor;
-            entityData.TextureSlotKey = entity.TextureSlotKey;
-            entityData.ZDepth = entity.ZDepth;
-
+            EntityData entityData = entity.CreateSaveData();
             ScriptSaveHandler.Save(entityData.Script, entity.Script);
 
             data.Scene.Entities.Add(entityData);
@@ -543,43 +427,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         foreach (var entityData in data.Scene.Entities)
         {
-            SceneEntity entity;
-            switch (entityData.Type)
-            {
-                case EntityType.Box:
-                    BoxEntityData boxData = (BoxEntityData)entityData;
-                    entity = AddBox(boxData.Position, boxData.Width, boxData.Height);
-                    var box = (BoxEntity)entity;
-                    
-                    box.TextBox.Text = boxData.Text;
-                    box.TextBox.Color = boxData.TextColor.ToUnityColor();
-                    box.TextBox.Size = boxData.TextSize;
-                    box.TextBox.HorizontalAlignment = boxData.TextHorizontalAlignment;
-                    box.TextBox.VerticalAlignment = boxData.TextVerticalAlignment;
-                    break;
-                case EntityType.Circle:
-                    CircleEntityData circleData = (CircleEntityData)entityData;
-                    entity = AddCircle(circleData.Position, circleData.Radius);
-                    break;
-                case EntityType.Polygon:
-                    PolygonEntityData polygonData = (PolygonEntityData)entityData;
-                    entity = AddPolygon(polygonData.Position, polygonData.PolygonPoints);
-                    break;
-                default:
-                    continue;
-            }
-
-            entity.Id = entityData.Id;
-            entity.Name = entityData.Name;
-            entity.Rotation = entityData.Rotation;
-            entity.CurrentColor = entityData.Color;
-
-            entity.ToggleCollider(entityData.ColliderEnabled);
-            entity.ToggleGravity(entityData.GravityEnabled);
-            entity.SetLayer(entityData.Layer);
-            entity.SetTexture(entityData.TextureSlotKey);
-            entity.ZDepth = entityData.ZDepth;
-            
+            SceneEntity entity = entityData.CreateEntity();
             ScriptSaveHandler.Load(entityData.Script, entity.Script);
         }
 

@@ -41,7 +41,7 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            if (entity == null)
+            if (entity == null || entity is not MeshEntity meshEntity)
             {
                 return Exit;
             }
@@ -49,7 +49,7 @@ namespace Loykas.Scripting
             float x = (float)X.GetValue();
             float y = (float)Y.GetValue();
 
-            entity.Velocity = new Vector2(x, y);
+            meshEntity.Velocity = new Vector2(x, y);
             return Exit;
         }
     }

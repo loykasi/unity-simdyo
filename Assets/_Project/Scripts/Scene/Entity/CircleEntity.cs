@@ -2,7 +2,7 @@ using Clipper2Lib;
 using Loykas.Scripting;
 using UnityEngine;
 
-public class CircleEntity : SceneEntity
+public class CircleEntity : MeshEntity
 {
     public override EntityType EntityType => EntityType.Circle;
 
@@ -19,6 +19,7 @@ public class CircleEntity : SceneEntity
 
     [SerializeField] private CircleCollider2D _interactionCircle;
 
+    private CircleState _circleState;
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
     public void SetRadius(float radius, int totalVert = 10)
@@ -87,7 +88,10 @@ public class CircleEntity : SceneEntity
     public override void OnSceneStart()
     {
         base.OnSceneStart();
-        _defaultState.Radius = Radius;
+        _circleState = new()
+        {
+            Radius = Radius
+        };
     }
 
     public override void OnSceneStop()
@@ -97,7 +101,7 @@ public class CircleEntity : SceneEntity
         {
             return;
         }
-        SetRadius(_defaultState.Radius);
+        SetRadius(_circleState.Radius);
     }
 
     public override SceneEntity CloneEntity()
@@ -131,5 +135,24 @@ public class CircleEntity : SceneEntity
         };
 
         return paths;
+    }
+
+    public override EntityData CreateSaveData()
+    {
+        return new CircleEntityData
+        {
+            Id = Id,
+            Name = Name,
+            Type = EntityType,
+            Position = transform.position,
+            Rotation = transform.rotation,
+            ZDepth = ZDepth,
+            Radius = Radius,
+            ColliderEnabled = IsColliderEnabled,
+            GravityEnabled = IsGravityEnabled,
+            Layer = Layer,
+            Color = CurrentColor,
+            TextureSlotKey = TextureSlotKey
+        };
     }
 }

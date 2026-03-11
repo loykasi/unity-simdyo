@@ -35,14 +35,14 @@ namespace Loykas.Scripting
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
-            if (entity == null)
+            if (entity == null || entity is not MeshEntity meshEntity)
             {
                 return Exit;
             }
 
             int layer = (int)(float)Value.GetValue();
             
-            entity.SetLayer(layer);
+            meshEntity.SetLayer(layer);
             return Exit;
         }
     }

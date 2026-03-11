@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SceneEntityState
+public struct MeshState
 {
     public ColorHSV ColorHSV;
     public bool ColliderEnabled;
@@ -8,7 +8,4 @@ public class SceneEntityState
     public Vector2 Velocity;
     public float AngularVelocity;
     public string TextureSlotKey;
-
-    public float Radius;
-    public Vector2 Size;
 }

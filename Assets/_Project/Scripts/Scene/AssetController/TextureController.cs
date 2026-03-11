@@ -13,7 +13,7 @@ public class TextureController : Singleton<TextureController>, ISaveable
     public int SaveLoadOrder { get; set; } = -1;
 
     public Dictionary<string, TextureSlot> Textures = new();
-    public SceneEntity Entity;
+    public MeshEntity Entity;
 
     [SerializeField] private TextureMenu _textureMenu;
 
@@ -38,8 +38,11 @@ public class TextureController : Singleton<TextureController>, ISaveable
 
     public void OpenMenu(SceneEntity entity)
     {
-        Entity = entity;
-        _textureMenu.Open();
+        if (entity is MeshEntity meshEntity)
+        {
+            Entity = meshEntity;
+            _textureMenu.Open();   
+        }
     }
 
     public void OpenMenu()

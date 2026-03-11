@@ -8,21 +8,22 @@ public class CollisionLayerController : Singleton<CollisionLayerController>
         return ObjectManager.Instance.SceneEntities;
     }
 
-    public void UpdateObjectLayer(SceneEntity sceneEntity)
+    public void UpdateObjectLayer(MeshEntity meshEntity)
     {
         List<SceneEntity> entities = GetEntityList();
 
-        SceneEntity a = sceneEntity;
+        MeshEntity a = meshEntity;
 
         for (int i = 0; i < entities.Count; i++)
         {
-            SceneEntity b = entities[i];
+            if (entities[i] is not MeshEntity b)
+            {
+                continue;
+            }
 
             if (a == b) continue;
 
             bool shouldCollide = (a.Layer & b.Layer) != 0;
-
-            // Physics2D.IgnoreCollision(a.Collider, b.Collider, !shouldCollide);
             IgnoreCollision(a.Collider, b.Collider, isIgnore: !shouldCollide);
         }
     }
@@ -33,14 +34,18 @@ public class CollisionLayerController : Singleton<CollisionLayerController>
 
         for (int i = 0; i < entities.Count; i++)
         {
+            if (entities[i] is not MeshEntity a)
+            {
+                continue;
+            }
             for (int j = i + 1; j < entities.Count; j++)
             {
-                SceneEntity a = entities[i];
-                SceneEntity b = entities[j];
+                if (entities[j] is not MeshEntity b)
+                {
+                    continue;
+                }
 
                 bool shouldCollide = (a.Layer & b.Layer) != 0;
-
-                // Physics2D.IgnoreCollision(a.Collider, b.Collider, shouldCollide);
                 IgnoreCollision(a.Collider, b.Collider, isIgnore: !shouldCollide);
             }
         }
