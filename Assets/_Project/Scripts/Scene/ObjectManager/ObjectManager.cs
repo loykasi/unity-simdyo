@@ -247,8 +247,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void AddEntity(SceneEntity entity)
     {
-        // use for both ID and Name now, will sperate in futures
-        // entity.Id = string.Concat("Entity" + (_indexForID == 0 ? "" : $" {_indexForID}"));
         entity.Id = _indexForId++;
 
         // name

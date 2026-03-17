@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf182755329b89f48b303ae99144a0e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MeshFilter: {fileID: 6107491744915755768}
-  Renderer: {fileID: 6814204029509351015}
+  _meshFilter: {fileID: 6107491744915755768}
+  _renderer: {fileID: 6814204029509351015}
 --- !u!33 &6107491744915755768
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -172,19 +172,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+  Script: {fileID: 4180602330645767054}
+  SortingGroup: {fileID: 3122655478566186995}
   MeshFilter: {fileID: 3394529686914236234}
   Renderer: {fileID: 7629192785450040781}
   Rigidbody: {fileID: -7824645102635766432}
-  Script: {fileID: 4180602330645767054}
   Layer: 1
-  SortingGroup: {fileID: 3122655478566186995}
   TextureSlotKey: 
-  Texture: {fileID: 0}
+  Material: {fileID: 0}
+  Radius: 0
   _collider:
     Collider: {fileID: 2196807880595799029}
-  Border: {fileID: 8919895637037581771}
-  TotalVert: 0
-  Radius: 0
+  _border: {fileID: 8919895637037581771}
   _interactionCircle: {fileID: 8669409358397252656}
 --- !u!33 &3394529686914236234
 MeshFilter:

@@ -2,5 +2,6 @@ public enum EntityType
 {
     Box,
     Circle,
-    Polygon
+    Polygon,
+    Tracer
 }

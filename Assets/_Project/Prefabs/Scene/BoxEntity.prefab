@@ -328,21 +328,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+  Script: {fileID: 4180602330645767054}
+  SortingGroup: {fileID: 5470259173528960719}
   MeshFilter: {fileID: 3394529686914236234}
   Renderer: {fileID: 7629192785450040781}
   Rigidbody: {fileID: -7824645102635766432}
-  Script: {fileID: 4180602330645767054}
   Layer: 1
-  SortingGroup: {fileID: 5470259173528960719}
   TextureSlotKey: 
-  Texture: {fileID: 0}
+  Material: {fileID: 0}
   _collider:
     Collider: {fileID: 4245882747138995468}
-  Border: {fileID: 2692295455764732596}
   Width: 0
   Height: 0
   TextBox: {fileID: 4953604252876883629}
   _interactionBox: {fileID: 241184852406216126}
+  _border: {fileID: 2692295455764732596}
 --- !u!33 &3394529686914236234
 MeshFilter:
   m_ObjectHideFlags: 0

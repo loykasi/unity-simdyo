@@ -7,9 +7,9 @@ public class BoxEntity : MeshEntity
     public override Collider Collider => _collider;
     [SerializeField] private BoxCollider _collider;
 
-    public BoxBorder Border;
     public float Width;
     public float Height;
+    public Vector2 Size => new(Width, Height);
     public TextBox TextBox;
 
     public override Bounds Bounds => Renderer.bounds;
@@ -87,67 +87,64 @@ public class BoxEntity : MeshEntity
     }
 
     [SerializeField] private BoxCollider2D _interactionBox;
-    private Vector3[] _vertices = new Vector3[4];
+    [SerializeField] private BoxBorder _border;
     private BoxState _boxState;
+
+    public void SetMesh(MeshWrapper meshWrapper, Material material, float width, float height)
+    {
+        Mesh = meshWrapper;
+        Material = Instantiate(material);
+        Width = width;
+        Height = height;
+
+        meshWrapper.AssignTo(MeshFilter);
+        Renderer.material = Material;
+
+        _interactionBox.size = Size;
+        _border.SetMesh(meshWrapper);
+        _border.SetSize(Size);
+        _collider.SetSize(Size);
+        TextBox.Resize(Size);
+    }
 
     public void SetSize(float width, float height)
     {
         Width = width;
         Height = height;
-        Vector2 size = new Vector2(width, height);
-        _collider.SetSize(size);
 
-        float halfWidth = width / 2f;
-        float halfHeight = height / 2f;
+        Vector2 halfSize = Size / 2f;
 
-        _vertices[0] = new Vector3(halfWidth, halfHeight);
-        _vertices[1] = new Vector3(- halfWidth, halfHeight);
-        _vertices[2] = new Vector3(- halfWidth, - halfHeight);
-        _vertices[3] = new Vector3(halfWidth, - halfHeight);
-        MeshFilter.mesh.SetVertices(_vertices);
-        MeshFilter.mesh.RecalculateBounds();
+        Mesh.Vertices[0] = new Vector3(halfSize.x, halfSize.y);
+        Mesh.Vertices[1] = new Vector3(- halfSize.x, halfSize.y);
+        Mesh.Vertices[2] = new Vector3(- halfSize.x, - halfSize.y);
+        Mesh.Vertices[3] = new Vector3(halfSize.x, - halfSize.y);
+        Mesh.Update();
 
-        _interactionBox.size = size;
-        Border.SetBorder(Width, Height);
-        TextBox.Resize(Width, Height);
+        _interactionBox.size = Size;
+        _border.SetSize(Size);
+        _collider.SetSize(Size);
+        TextBox.Resize(Size);
     }
 
-    public void UpdateBox(Vector3 from, Vector3 to)
+    public void SetSize(Vector3 from, Vector3 to)
     {
-        UpdateSize(from, to);
+        UpdateSize(from, to, out float width, out float height);
+        transform.position = (from + to) / 2f;;
 
-        Vector3 center = (from + to) / 2f;
-        float halfWidth = Width / 2f;
-        float halfHeight = Height / 2f;
-
-        transform.position = center;
-
-        _vertices[0] = new Vector3(halfWidth, halfHeight);
-        _vertices[1] = new Vector3(- halfWidth, halfHeight);
-        _vertices[2] = new Vector3(- halfWidth, - halfHeight);
-        _vertices[3] = new Vector3(halfWidth, - halfHeight);
-        MeshFilter.mesh.SetVertices(_vertices);
-        MeshFilter.mesh.RecalculateBounds();
-
-        Vector2 size = new Vector2(Width, Height);
-        _collider.SetSize(size);
-
-        _interactionBox.size = size;
-        Border.SetBorder(Width, Height);
-        TextBox.Resize(Width, Height);
+        SetSize(width, height);
     }
 
-    private void UpdateSize(Vector3 from, Vector3 to)
+    private void UpdateSize(Vector3 from, Vector3 to, out float width, out float height)
     {
         Vector3 right = transform.right;
         Vector3 xRight = Vector3Utils.ProjectOnVector(from, transform.position, right);
         Vector3 xLeft = Vector3Utils.ProjectOnVector(to, transform.position, right);
-        Width = Vector3.Distance(xLeft, xRight);
+        width = Vector3.Distance(xLeft, xRight);
 
         Vector3 up = transform.up;
         Vector3 yTop = Vector3Utils.ProjectOnVector(from, transform.position, up);
         Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
-        Height = Vector3.Distance(yTop, yBottom);
+        height = Vector3.Distance(yTop, yBottom);
     }
 
     public void ResizeByTexture()
@@ -159,13 +156,13 @@ public class BoxEntity : MeshEntity
 
     public override void Select()
     {
-        Border.Enable();
-        Border.SetBorder(Width, Height);
+        _border.Enable();
+        _border.SetSize(Size);
     }
 
     public override void Deselect()
     {
-        Border.Disable();
+        _border.Disable();
     }
 
     public override void OnSceneStart()
@@ -189,7 +186,7 @@ public class BoxEntity : MeshEntity
 
     public override SceneEntity CloneEntity()
     {
-        BoxEntity entity = ShapeGenerator.Instance.AddBox(Position, Width, Height);
+        BoxEntity entity = ShapeGenerator.Instance.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 

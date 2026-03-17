@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Clipper2Lib;
 using GameCore.Extensions;
 using UnityEngine;
@@ -52,15 +51,29 @@ public class PolygonEntity : MeshEntity
     [SerializeField] private PolygonCollider2D _interactionArea;
     [SerializeField] private PolygonBorder _border;
 
-    private List<Vector3> _vertices = new();
     private Vector3[] _temporaryPoints;
+
+    public void SetMesh(MeshWrapper meshWrapper, Material material, Vector2[] points)
+    {
+        Mesh = meshWrapper;
+        Material = Instantiate(material);
+
+        Mesh.AssignTo(MeshFilter);
+        Renderer.material = Material;
+
+        PolygonPoints = points;
+        _collider.SetPoints(PolygonPoints);
+        _interactionArea.points = PolygonPoints;
+        _border.SetMesh(Mesh);
+        UpdateBounds();
+    }
 
     private void UpdateBounds()
     {
-        _temporaryPoints ??= new Vector3[_vertices.Count];
-        for (int i = 0; i < _vertices.Count; i++)
+        _temporaryPoints ??= new Vector3[Mesh.VertexCount];
+        for (int i = 0; i < Mesh.VertexCount; i++)
         {
-            _temporaryPoints[i] = _vertices[i];
+            _temporaryPoints[i] = Mesh.Vertices[i];
         }
         transform.TransformPoints(_temporaryPoints);
 
@@ -80,36 +93,21 @@ public class PolygonEntity : MeshEntity
         _bounds.center = new Vector3((maxX + minX) * 0.5f, (maxY + minY) * 0.5f);
     }
 
-    public void SetPoints(Vector2[] points)
-    {
-        PolygonPoints = new Vector2[points.Length];
-        points.CopyTo(PolygonPoints, 0);
-        
-        _collider.SetPoints(PolygonPoints);
-        _interactionArea.points = PolygonPoints;
-
-        _border.SetMesh(MeshFilter.sharedMesh);
-
-        MeshFilter.sharedMesh.GetVertices(_vertices);
-        UpdateBounds();
-    }
-
     public void ApplyRotation()
     {
         // apply rotation to vertices and reset entity rotation
         if (Angle != 0)
         {
-            for (int i = 0; i < _vertices.Count; i++)
+            for (int i = 0; i < Mesh.VertexCount; i++)
             {
-                _vertices[i] = Vector3Utils.RotatePointAroundPoint(_vertices[i], Vector3.zero, Rotation);
+                Mesh.Vertices[i] = Vector3Utils.RotatePointAroundPoint(Mesh.Vertices[i], Vector3.zero, Rotation);
             }
             for (int i = 0; i < PolygonPoints.Length; i++)
             {
                 PolygonPoints[i] = Vector3Utils.RotatePointAroundPoint(PolygonPoints[i], Vector3.zero, Rotation);
             }
             Angle = 0f;
-            MeshFilter.sharedMesh.SetVertices(_vertices);
-            MeshFilter.sharedMesh.RecalculateBounds();
+            Mesh.Update();
             UpdateBounds();
 
             _collider.SetPoints(PolygonPoints);
@@ -140,12 +138,12 @@ public class PolygonEntity : MeshEntity
             0f
         );
 
-        for (int i = 0; i < _vertices.Count; i++)
+        for (int i = 0; i < Mesh.VertexCount; i++)
         {
-            float x = _vertices[i].x * xScale;
-            float y = _vertices[i].y * yScale;
+            float x = Mesh.Vertices[i].x * xScale;
+            float y = Mesh.Vertices[i].y * yScale;
 
-            _vertices[i] = new Vector3(x, y);
+            Mesh.Vertices[i] = new Vector3(x, y);
         }
 
         for (int i = 0; i < PolygonPoints.Length; i++)
@@ -158,8 +156,7 @@ public class PolygonEntity : MeshEntity
         _collider.SetPoints(PolygonPoints);
         _interactionArea.points = PolygonPoints;
 
-        MeshFilter.sharedMesh.SetVertices(_vertices);
-        MeshFilter.sharedMesh.RecalculateBounds();
+        Mesh.Update();
         UpdateBounds();
     }
 
@@ -175,7 +172,7 @@ public class PolygonEntity : MeshEntity
 
     public override SceneEntity CloneEntity()
     {
-        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(Position, this);
+        PolygonEntity entity = ShapeGenerator.Instance.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 

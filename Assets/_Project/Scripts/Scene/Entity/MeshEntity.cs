@@ -10,6 +10,8 @@ public abstract class MeshEntity : SceneEntity
     public CollisionLayer Layer;
     public string TextureSlotKey;
     public TextureSlot TextureSlot;
+    public MeshWrapper Mesh;
+    public Material Material;
 
     public Vector2 Velocity
     {
@@ -78,16 +80,6 @@ public abstract class MeshEntity : SceneEntity
         }
     }
 
-    // public Color UnityColor
-    // {
-    //     get
-    //     {
-    //         Color color = Color.HSVToRGB(_currentColor.H, _currentColor.S, _currentColor.V);
-    //         color.a = _currentColor.A;
-    //         return color;
-    //     }
-    // }
-
     private ColorHSV _currentColor = new();
     private PhysicsMaterial2D _physicsMaterial;
     private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
@@ -140,7 +132,7 @@ public abstract class MeshEntity : SceneEntity
 
     private void UpdateColor()
     {
-        Renderer.material.color = CurrentColor.ToUnityColor();
+        Material.color = CurrentColor.ToUnityColor();
     }
 
     public virtual void SetTexture(string key)
@@ -154,7 +146,7 @@ public abstract class MeshEntity : SceneEntity
         TextureSlot = TextureController.Instance.GetTexture(key);
         if (TextureSlot != null)
         {
-            Renderer.material.SetTexture(_textureProperty, TextureSlot.Texture);
+            Material.SetTexture(_textureProperty, TextureSlot.Texture);
             TextureSlot.OnRemoved += OnTextureSlotRemoved;
         }
     }
@@ -162,7 +154,7 @@ public abstract class MeshEntity : SceneEntity
     private void OnTextureSlotRemoved()
     {
         TextureSlot.OnRemoved -= OnTextureSlotRemoved;
-        Renderer.material.SetTexture(_textureProperty, null);
+        Material.SetTexture(_textureProperty, null);
         TextureSlot = null;
     }
 

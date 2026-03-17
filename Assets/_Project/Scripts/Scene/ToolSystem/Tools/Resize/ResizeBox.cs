@@ -65,7 +65,7 @@ public class ResizeBox: IResize
         Debug.DrawRay(to, Vector3.right, Color.black);
         Debug.DrawRay(to, Vector3.left, Color.black);
 
-        _entity.UpdateBox(_fromPoint, to);
+        _entity.SetSize(_fromPoint, to);
     }
 
     private Vector3 GetDirection(BoundsHandleDirection direction)

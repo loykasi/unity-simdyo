@@ -80,9 +80,9 @@ public class TextBox : MonoBehaviour
         Color = _defaultColor;
     }
 
-    public void Resize(float width, float height)
+    public void Resize(Vector2 size)
     {
-        RectTransform.sizeDelta = new Vector2(width, height);
+        RectTransform.sizeDelta = size;
     }
 
     public void CopyFrom(TextBox textBox)

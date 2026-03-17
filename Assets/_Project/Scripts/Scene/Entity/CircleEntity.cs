@@ -6,44 +6,65 @@ public class CircleEntity : MeshEntity
 {
     public override EntityType EntityType => EntityType.Circle;
 
+    public float Radius;
+
     public override Collider Collider => _collider;
     [SerializeField] private CircleCollider _collider;
 
     public override Bounds Bounds => _bounds;
     private Bounds _bounds = new();
 
-    public CircleBorder Border;
-
-    public int TotalVert;
-    public float Radius;
-
+    [SerializeField] private CircleBorder _border;
     [SerializeField] private CircleCollider2D _interactionCircle;
 
     private CircleState _circleState;
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
-    public void SetRadius(float radius, int totalVert = 10)
+    public void SetMesh(MeshWrapper meshWrapper, Material material, float radius)
     {
         Radius = radius;
-        TotalVert = totalVert;
-        _collider.SetRadius(radius);
+        Mesh = meshWrapper;
+        Material = Instantiate(material);
 
-        float vertRadius = radius / Mathf.Cos(Mathf.PI / TotalVert);
-        Vector3[] vertices = new Vector3[TotalVert];
-        for (int i = 0; i < TotalVert; i++)
-        {
-            float x = vertRadius * Mathf.Sin(i * 2 * Mathf.PI / TotalVert);
-            float y = vertRadius * Mathf.Cos(i * 2 * Mathf.PI / TotalVert);
-            vertices[i] = new Vector3(x, y, 0f);
-        }
-        MeshFilter.mesh.vertices = vertices;
-        Renderer.material.SetFloat(_radiusProperty, radius);
+        Renderer.material = Material;
+        meshWrapper.AssignTo(MeshFilter);
+
+        Material.SetFloat(_radiusProperty, Radius);
+        _interactionCircle.radius = Radius;
+        _border.SetMesh(meshWrapper);
+        _border.SetRadius(Radius);
+        _collider.SetRadius(Radius);
 
         _bounds.center = Position;
         _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
+    }
 
-        _interactionCircle.radius = radius;
-        Border.SetRadius(Radius);
+    public void SetRadius(float radius)
+    {
+        Radius = radius;
+
+        int length = ShapeGenerator.TotalVert;
+        float angleStep = 2 * Mathf.PI / length;
+        float vertRadius = Radius / Mathf.Cos(Mathf.PI / length);
+        for (int i = 0; i < length; i++)
+        {
+            float angle = i * angleStep;
+            Mesh.Vertices[i] = new Vector3
+            (
+                vertRadius * Mathf.Sin(angle),
+                vertRadius * Mathf.Cos(angle),
+                0f
+            );
+        }
+        Mesh.Update();
+
+        Material.SetFloat(_radiusProperty, Radius);
+        _interactionCircle.radius = Radius;
+        _border.SetRadius(Radius);
+        _collider.SetRadius(Radius);
+
+        _bounds.center = Position;
+        _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
     }
 
     public void UpdateCircle(Vector3 from, Vector3 to)
@@ -53,36 +74,18 @@ public class CircleEntity : MeshEntity
 
         transform.position = center;
 
-        float vertRadius = Radius / Mathf.Cos(Mathf.PI / TotalVert);
-        Vector3[] vertices = new Vector3[TotalVert];
-        for (int i = 0; i < TotalVert; i++)
-        {
-            float x = vertRadius * Mathf.Sin(i * 2 * Mathf.PI / TotalVert);
-            float y = vertRadius * Mathf.Cos(i * 2 * Mathf.PI / TotalVert);
-            vertices[i] = new Vector3(x, y, 0f);
-        }
-        MeshFilter.mesh.vertices = vertices;
-        MeshFilter.mesh.RecalculateBounds();
-        Renderer.material.SetFloat(_radiusProperty, Radius);
-
-        _collider.SetRadius(Radius);
-
-        _bounds.center = Position;
-        _bounds.size = new Vector3(Radius * 2f, Radius * 2f);
-
-        _interactionCircle.radius = Radius;
-        Border.SetRadius(Radius);
+        SetRadius(Radius);
     }
 
     public override void Select()
     {
-        Border.Enable();
-        Border.SetRadius(Radius);
+        _border.Enable();
+        _border.SetRadius(Radius);
     }
 
     public override void Deselect()
     {
-        Border.Disable();
+        _border.Disable();
     }
 
     public override void OnSceneStart()
@@ -106,7 +109,7 @@ public class CircleEntity : MeshEntity
 
     public override SceneEntity CloneEntity()
     {
-        CircleEntity entity = ShapeGenerator.Instance.AddCircle(Position, Radius);
+        CircleEntity entity = ShapeGenerator.Instance.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 
