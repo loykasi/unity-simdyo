@@ -1,45 +1,38 @@
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Text.RegularExpressions;
+using UnityEngine;
 
 public static class Utils
 {
     public static string GenerateUniqueName(string baseName, List<string> exists)
     {
-        // string pattern = @$"^{baseName}(?: \((\d+)\))?$";
-        string pattern = @$"^{baseName}(?:(\d+))?$";
+        HashSet<int> suffixes = new();
+        int length = baseName.Length;
 
-        Regex regex = new(pattern, RegexOptions.Compiled);
-
-        List<int> ints = new();
-
-        int i = 0;
-
+        int i;
         for (i = 0; i < exists.Count; i++)
         {
-            Match match = regex.Match(exists[i]);
-            if (match.Success)
+            string name = exists[i];
+            if (name.StartsWith(baseName))
             {
-                string value = match.Groups[1].Value;
-                int number = value == string.Empty ? 0 : int.Parse(value);
-                ints.Add(number);
-            }
-        }
-        ints.Sort();
-
-        for (i = 0; i < ints.Count; i++)
-        {
-            if (i != ints[i])
-            {
-                break;
+                if (name.Length == length)
+                {
+                    suffixes.Add(0);
+                }
+                else if (int.TryParse(name.AsSpan(length), out int number))
+                {
+                    suffixes.Add(number);
+                }
             }
         }
 
-        if (i == 0)
+        i = 0;
+        while (suffixes.Contains(i))
         {
-            return baseName;
+            i++;
         }
-        return string.Concat(baseName, i);
+
+        return i == 0 ? baseName : string.Concat(baseName, i);
     }
 
     public static int ObjectToIndex(object value)
