@@ -18,12 +18,12 @@ namespace Loykas.Scripting
 
         public FunctionEnterNode()
         {
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
         }
 
         public override string GetNameKey()
         {
-            return "Function: " + Function.Name;
+            return Function != null ? Function.Name : string.Empty;
         }
 
         public void Init(ScriptFunction function)
@@ -39,12 +39,16 @@ namespace Loykas.Scripting
             for (int i = 0; i < function.Inputs.Count; i++)
             {
                 FunctionInput argument = function.Inputs[i];
-                OutputValue output = OutputValue
+                OutputValue output = CreateOutputValue
                 (
                     argument.Name,
+                    () => ValueTransfer.FromValue(argument.Value),
                     argument.Type,
-                    () => argument.Value
-                ).NoLocalize();
+                    new PortSettings
+                    {
+                        IsLocalizationDisabled = true
+                    }
+                );
             }
 
             OnNodeUpdated?.Invoke();

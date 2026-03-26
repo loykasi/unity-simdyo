@@ -21,15 +21,22 @@ namespace Loykas.Scripting
         public ClearListNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Clear);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
         }
 
         private OutputTrigger Clear(NodeTask task)
         {
-            IList list = (IList)ListInput.GetValue();
+            IList list = ListInput.GetValue().ListValue;
             list.Clear();
             return Exit;
         }

@@ -20,16 +20,29 @@ namespace Loykas.Scripting
         public SetTextureSlotNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.String))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            ).UseInput();
             
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -41,7 +54,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            string key = (string)Value.GetValue();
+            string key = Value.GetValue().StringValue;
             meshEntity.SetTexture(key);
             return Exit;
         }

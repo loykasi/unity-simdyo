@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Loykas.Scripting;
 
 public static class Utils
 {
+    private static HashSet<int> _suffixes = new();
+    
     public static string GenerateUniqueName(string baseName, List<string> exists)
     {
-        HashSet<int> suffixes = new();
+        _suffixes.Clear();
+        
         int length = baseName.Length;
 
         int i;
@@ -17,17 +20,17 @@ public static class Utils
             {
                 if (name.Length == length)
                 {
-                    suffixes.Add(0);
+                    _suffixes.Add(0);
                 }
                 else if (int.TryParse(name.AsSpan(length), out int number))
                 {
-                    suffixes.Add(number);
+                    _suffixes.Add(number);
                 }
             }
         }
 
         i = 0;
-        while (suffixes.Contains(i))
+        while (_suffixes.Contains(i))
         {
             i++;
         }
@@ -45,5 +48,17 @@ public static class Utils
         {
             return (int)value;
         }
+    }
+
+    public static ScriptNode GetNode(this List<ScriptNode> nodes, Guid id)
+    {
+        foreach (ScriptNode node in nodes)
+        {
+            if (node.ID == id)
+            {
+                return node;
+            }
+        }
+        return null;
     }
 }

@@ -40,17 +40,18 @@ public static class ScriptSaveHandler
             nodeData.ID = node.ID;
             nodeData.Position = node.Position;
 
-            foreach (var item in node.DefaultValues)
+            foreach (var (key, value) in node.DefaultValues)
             {
-                InputValue input = node.ValueInputs.Find(n => n.Key == item.Key);
+                InputValue input = node.ValueInputs.Find(n => n.Key == key);
 
-                if (item.Value is Key key)
+                if (value.GetObjectValue() is Key)
                 {
-                    nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, key.Value.ToString(), input.Type.Type));
+                    nodeData.DefaultValues.Add(new ScriptNodeValueData(key, value.GetObjectValue().ToString(), input.Type.Type));
                 }
                 else
                 {
-                    nodeData.DefaultValues.Add(new ScriptNodeValueData(item.Key, item.Value, input.Type.Type));
+                    Debug.Log(value.GetObjectValue());
+                    nodeData.DefaultValues.Add(new ScriptNodeValueData(key, value.GetObjectValue(), input.Type.Type));
                 }
             }
 
@@ -183,10 +184,10 @@ public static class ScriptSaveHandler
             {                
                 if (!node.DefaultValues.ContainsKey(item.Key))
                 {
-                    node.DefaultValues.Add(item.Key, item.Value);
+                    node.DefaultValues.Add(item.Key, ValueTransfer.FromValue(item.Type, item.Value));
                     continue;
                 }
-                node.DefaultValues[item.Key] = item.Value;
+                node.DefaultValues[item.Key] = ValueTransfer.FromValue(item.Type, item.Value);
             }
 
             flow.Nodes.Add(node);

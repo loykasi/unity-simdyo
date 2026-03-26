@@ -4,17 +4,20 @@ using UnityEngine;
 [System.Serializable]
 public class PolygonCollider : Collider
 {
-    public override IEnumerable<Collider2D> Colliders => new Collider2D[]
-    {
-        EdgeCollider,
-        AreaCollider
-    };
-
     public override bool IsTrigger => !EdgeCollider.enabled;
 
     public EdgeCollider2D EdgeCollider;
     public PolygonCollider2D AreaCollider;
     public PolygonCollider2D SolidAreaCollider;
+
+    public override void Init()
+    {
+        Colliders = new Collider2D[]
+        {
+            EdgeCollider,
+            AreaCollider
+        };
+    }
 
     public void SetPoints(Vector2[] points)
     {

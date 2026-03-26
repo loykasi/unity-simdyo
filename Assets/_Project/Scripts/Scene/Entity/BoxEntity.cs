@@ -98,7 +98,7 @@ public class BoxEntity : MeshEntity
         Height = height;
 
         meshWrapper.AssignTo(MeshFilter);
-        Renderer.material = Material;
+        Renderer.sharedMaterial = Material;
 
         _interactionBox.size = Size;
         _border.SetMesh(meshWrapper);

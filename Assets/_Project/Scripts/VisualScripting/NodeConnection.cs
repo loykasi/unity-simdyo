@@ -1,5 +1,4 @@
 using System;
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,9 +17,7 @@ namespace Loykas.Scripting
         public Guid DestinationID;
         public string DestinationKey;
 
-        [JsonIgnore]
         public IPort Source;
-        [JsonIgnore]
         public IPort Destination;
 
         public NodeConnection()
@@ -29,6 +26,19 @@ namespace Loykas.Scripting
 
         public NodeConnection(ScriptFlow flow, IPort source, IPort destination)
         {
+            Flow = flow;
+            Source = source;
+            Destination = destination;
+
+            SourceID = Source.Node.ID;
+            SourceKey = Source.Key;
+            DestinationID = Destination.Node.ID;
+            DestinationKey = Destination.Key;
+        }
+
+        public void Init(ScriptFlow flow, IPort source, IPort destination)
+        {
+            ShouldRemove = false;
             Flow = flow;
             Source = source;
             Destination = destination;
@@ -59,10 +69,10 @@ namespace Loykas.Scripting
 
         private IPort GetPort(ScriptFlow vs, Guid id, string portKey)
         {
-            ScriptNode unit = vs.Nodes.Find(node => node.ID == id);
-            foreach (var item in unit.Ports())
+            ScriptNode unit = vs.Nodes.GetNode(id);
+            foreach (var item in unit.Ports)
             {
-                if (item.Key.Equals(portKey))
+                if (item.Key == portKey)
                 {
                     return item;
                 }

@@ -6,23 +6,40 @@ namespace Loykas.Scripting
 {
     public static class ValueHandler
     {
+        public static ValueTransfer GetDefaultValueWrapper(ScriptDataType type)
+        {
+            switch (type.Kind)
+            {
+                case DataKind.Simple:
+                {
+                    return type.Type switch
+                    {
+                        DataType.String => ValueTransfer.CreateString(default),
+                        DataType.Number => ValueTransfer.CreateNumber(default),
+                        DataType.Boolean => ValueTransfer.CreateBool(default),
+                        DataType.Color => ValueTransfer.CreateColor(new ColorHSV(0f, 0f, 1f, 1f)),
+                        DataType.Key => ValueTransfer.CreateKey(new Key(KeyCode.Any)),
+                        _ => default,
+                    };
+                };
+                case DataKind.List:
+                {
+                    return type.Type switch
+                    {
+                        DataType.String => ValueTransfer.CreateList(new List<string>(), DataType.String),
+                        DataType.Number => ValueTransfer.CreateList(new List<float>(), DataType.Number),
+                        DataType.Boolean => ValueTransfer.CreateList(new List<bool>(), DataType.Boolean),
+                        DataType.Color => ValueTransfer.CreateList(new List<ColorHSV>(), DataType.Color),
+                        _ => default,
+                    };
+                }
+                default:
+                    return default;
+            }
+        }
+
         public static object GetDefaultValue(ScriptDataType type)
         {
-            // if (type.Kind == DataKind.List)
-            // {
-            //     return new List<object>();
-            // }
-
-            // return type.Type switch
-            // {
-            //     DataType.String => default(string),
-            //     DataType.Number => default(float),
-            //     DataType.Boolean => default(bool),
-            //     DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
-            //     DataType.Entity => default,
-            //     DataType.Any => default,
-            //     _ => default,
-            // };
             switch (type.Kind)
             {
                 case DataKind.Simple:
@@ -33,6 +50,7 @@ namespace Loykas.Scripting
                         DataType.Number => default(float),
                         DataType.Boolean => default(bool),
                         DataType.Color => new ColorHSV(0f, 0f, 1f, 1f),
+                        DataType.Key => new Loykas.Scripting.Key(Loykas.Scripting.KeyCode.Any),
                         _ => default,
                     };
                 };

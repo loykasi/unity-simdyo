@@ -57,5 +57,10 @@ namespace Loykas.Scripting
             Color buttonColor = _value.ToUnityColor();
             ButtonImage.color = buttonColor;
         }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateColor(_value);
+        }
     }
 }

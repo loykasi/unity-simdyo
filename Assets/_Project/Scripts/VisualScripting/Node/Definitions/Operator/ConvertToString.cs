@@ -16,11 +16,11 @@ namespace Loykas.Scripting
 
         public ConvertToStringNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput().NoLocalize();
+            Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.String), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.String));
         }
 
-        private object Get() => Value.GetValue().ToString();
+        private ValueTransfer Get() => ValueTransfer.CreateString(Value.GetValue().ToString());
     }
 }

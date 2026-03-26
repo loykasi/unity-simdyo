@@ -17,13 +17,15 @@ namespace Loykas.Scripting
 
         public NotNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Boolean)
+            ).UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Boolean));
         }
         
-        private object Get() => !Value.GetValue<bool>();
+        private ValueTransfer Get() => ValueTransfer.CreateBool(!Value.GetValue().BoolValue);
     }
 }

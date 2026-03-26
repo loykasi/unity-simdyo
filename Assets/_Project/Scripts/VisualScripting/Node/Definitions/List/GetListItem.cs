@@ -18,15 +18,36 @@ namespace Loykas.Scripting
 
         public GetListItemNode()
         {
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
             
-            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Index = CreateInputValue
+            (
+                nameof(Index),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Index)
+                }
+            ).UseInput();
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Any), Get)
-                    .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
 
             ListInput.OnConnected += OnListInputConnected;
         }
@@ -36,9 +57,9 @@ namespace Loykas.Scripting
             UpdateNode();
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            IList list = (IList)ListInput.GetValue();
+            IList list = ListInput.GetValue().ListValue;
 
             object value = Index.GetValue();
             int index;
@@ -51,7 +72,7 @@ namespace Loykas.Scripting
                 index = (int)value;
             }
             
-            return list[index];
+            return ValueTransfer.FromValue(list[index]);
         }
 
         private void OnListInputConnected()

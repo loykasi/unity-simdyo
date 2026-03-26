@@ -3,20 +3,20 @@ using UnityEngine.Events;
 
 namespace Loykas.Scripting
 {
-public enum InputValueTypes
-{
-    None,
-    String,
-    Number,
-    Boolean,
-    Color,
-    Entity,
-    Variable,
-    GlobalVariable,
-    Key,
-    CollisionLayer,
-    SignalEntity
-}
+    public enum InputValueTypes
+    {
+        None,
+        String,
+        Number,
+        Boolean,
+        Color,
+        Entity,
+        Variable,
+        GlobalVariable,
+        Key,
+        CollisionLayer,
+        SignalEntity
+    }
 
     public class InputValue : Port<OutputValue>
     {
@@ -24,14 +24,13 @@ public enum InputValueTypes
 
         public ScriptDataType Type { get; set; }
         public OutputValue Source;
+        public bool HasConnection => Source != null;
 
         public InputValueTypes InputType = InputValueTypes.None;
         public bool IsNullMeanSelf;
 
-        public bool HasConnection => Source != null;
         public bool HasValue => Node.DefaultValues.ContainsKey(Key);
-
-        public object Value
+        public ValueTransfer Value
         {
             get
             {
@@ -43,26 +42,9 @@ public enum InputValueTypes
             }
         }
 
-        public InputValue(string key) : base(key)
-        {
-            Type = ScriptDataType.Any();
-        }
-
-        public InputValue(string key, ScriptDataType type) : base(key)
+        public InputValue(IScriptNode node, string key, ScriptDataType type, PortSettings settings) : base(node, key, settings)
         {
             Type = type;
-        }
-
-        public InputValue NoLocalize()
-        {
-            ShouldLocalized = false;
-            return this;
-        }
-
-        public InputValue UseGlobalLocalized()
-        {
-            ShouldLocalizedPerNode = false;
-            return this;
         }
 
         public void UpdateDefaultValue()
@@ -71,30 +53,11 @@ public enum InputValueTypes
             {
                 if (!HasValue)
                 {
-                    Node.DefaultValues.Add(Key, ValueHandler.GetDefaultValue(Type));
+                    Node.DefaultValues.Add(Key, ValueHandler.GetDefaultValueWrapper(Type));
                     return;
                 }
 
-                Value = ValueHandler.GetDefaultValue(Type);
-            }
-        }
-
-        public void SetDefaultValue(object value)
-        {
-            if (value == null)
-            {
-                return;
-            }
-
-            if (InputType != InputValueTypes.None)
-            {
-                if (!HasValue)
-                {
-                    Node.DefaultValues.Add(Key, value);
-                    return;
-                }
-
-                Value = value;
+                Value = ValueHandler.GetDefaultValueWrapper(Type);
             }
         }
 
@@ -114,55 +77,11 @@ public enum InputValueTypes
             return this;
         }
 
-        public InputValue UseVariableInput()
+        public InputValue UseInput(InputValueTypes inputType)
         {
-            InputType = InputValueTypes.Variable;
+            InputType = inputType;
             UpdateDefaultValue();
 
-            return this;
-        }
-
-        public InputValue UseGlobalVariableInput()
-        {
-            InputType = InputValueTypes.GlobalVariable;
-            UpdateDefaultValue();
-
-            return this;
-        }
-
-        public InputValue UseKeyCodeInput()
-        {
-            InputType = InputValueTypes.Key;
-            SetDefaultValue(new Loykas.Scripting.Key(Loykas.Scripting.KeyCode.Any));
-
-            return this;
-        }
-
-        public InputValue UseCollisionLayerInput()
-        {
-            InputType = InputValueTypes.CollisionLayer;
-            UpdateDefaultValue();
-
-            return this;
-        }
-
-        public InputValue UseSignalEntityInput()
-        {
-            InputType = InputValueTypes.SignalEntity;
-            UpdateDefaultValue();
-
-            return this;
-        }
-
-        public InputValue DisableConnection()
-        {
-            IsDisableConnection = true;
-            return this;
-        }
-
-        public InputValue HideLabel()
-        {
-            ShouldShowLabel = false;
             return this;
         }
 
@@ -172,22 +91,7 @@ public enum InputValueTypes
             return this;
         }
 
-        public T GetValue<T>()
-        {
-            if (Source != null)
-            {
-                return (T)Source.GetValue();
-            }
-
-            if (HasValue)
-            {
-                return (T)Value;
-            }
-
-            return default;
-        }
-
-        public object GetValue()
+        public ValueTransfer GetValue()
         {
             if (Source != null)
             {
@@ -196,19 +100,14 @@ public enum InputValueTypes
 
             if (HasValue)
             {
-                // if (Type.Type == DataType.Entity && Value == null)
-                // {
-                //     return Node.Flow.Entity.Id;
-                // }
                 return Value;
             }
 
             return default;
         }
 
-        public void SetValue(object value)
+        public void SetValue(ValueTransfer value)
         {
-            Debug.Log("set value");
             Value = value;
             OnValueChanged?.Invoke();
         }

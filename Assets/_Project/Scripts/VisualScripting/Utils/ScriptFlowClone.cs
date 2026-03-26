@@ -4,31 +4,24 @@ namespace Loykas.Scripting
     {
         public static void CloneScript(ScriptFlow a, ScriptFlow b)
         {
-            foreach (var item in a.VariableList)
+            foreach (Variable targetVariable in a.VariableList)
             {
-                Variable variable = new
-                (
-                    item.Type,
-                    item.Value
-                );
-                variable.Name = item.Name;
+                Variable variable = ScriptPool.Instance.Variable.Get();
+                variable.Init(targetVariable);
                 b.AddVariable(variable);
             }
 
-            foreach (var item in a.Functions)
+            foreach (ScriptFunction targetFunction in a.Functions)
             {
-                ScriptFunction function = new()
-                {
-                    Name = item.Name
-                };
+                FunctionPool pool = ScriptPool.Instance.Function;
+                ScriptFunction function = pool.GetFunction();
+                function.Name = targetFunction.Name;
 
-                foreach (var input in item.Inputs)
+                foreach (var input in targetFunction.Inputs)
                 {
-                    FunctionInput functionInput = new()
-                    {
-                        Name = input.Name,
-                        Type = input.Type
-                    };
+                    FunctionInput functionInput = pool.GetInput();
+                    functionInput.Name = input.Name;
+                    functionInput.Type = input.Type;
 
                     function.Inputs.Add(functionInput);
                 }
@@ -36,12 +29,12 @@ namespace Loykas.Scripting
                 b.Functions.Add(function);
             }
 
-            foreach (var item in a.Nodes)
+            foreach (ScriptNode targetNode in a.Nodes)
             {
-                ScriptNode node = item.Create();
+                ScriptNode node = ScriptNodeFactory.Instance.CreateNode(targetNode.GetType());
                 node.Flow = b;
-                node.ID = item.ID;
-                node.Position = item.Position;
+                node.ID = targetNode.ID;
+                node.Position = targetNode.Position;
 
                 if (node is FunctionEnterNode functionEnterNode)
                 {
@@ -58,7 +51,7 @@ namespace Loykas.Scripting
                     functionCallNode.Init(function);
                 }
                 
-                foreach (var defaultValue in item.DefaultValues)
+                foreach (var defaultValue in targetNode.DefaultValues)
                 {
                     node.DefaultValues[defaultValue.Key] = defaultValue.Value;
                 }
@@ -68,16 +61,15 @@ namespace Loykas.Scripting
                 node.Init();
             }
 
-            foreach (var item in a.Connections)
+            foreach (NodeConnection targetConnection in a.Connections)
             {
-                NodeConnection connection = new()
-                {
-                    SourceID = item.SourceID,
-                    SourceKey = item.SourceKey,
-                    DestinationID = item.DestinationID,
-                    DestinationKey = item.DestinationKey,
-                    Flow = b
-                };
+                NodeConnection connection = ScriptPool.Instance.Connection.Get();
+                
+                connection.SourceID = targetConnection.SourceID;
+                connection.SourceKey = targetConnection.SourceKey;
+                connection.DestinationID = targetConnection.DestinationID;
+                connection.DestinationKey = targetConnection.DestinationKey;
+                connection.Flow = b;
 
                 b.Connections.Add(connection);
             }

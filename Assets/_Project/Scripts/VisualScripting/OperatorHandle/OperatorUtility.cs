@@ -1,3 +1,5 @@
+using System;
+
 namespace Loykas.Scripting
 {
     public static class OperatorUtility

@@ -18,7 +18,14 @@ namespace Loykas.Scripting
         public DeleteSelfNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Delete);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                new PortSettings
+                {
+                    HideLabel = true,
+                }
+            );
         }
 
         private OutputTrigger Delete(NodeTask task)

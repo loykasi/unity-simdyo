@@ -20,16 +20,26 @@ namespace Loykas.Scripting
         public SetAngleNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            )
+            .UseInput();
             
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity)
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -41,7 +51,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float angle = (float)Value.GetValue();
+            float angle = Value.GetValue().NumberValue;
             entity.Angle = angle;
             return Exit;
         }

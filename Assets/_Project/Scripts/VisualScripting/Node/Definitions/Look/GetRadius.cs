@@ -16,30 +16,41 @@ namespace Loykas.Scripting
 
         public GetRadiusNode()
         {
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity)
+            )
+            .UseInput()
+            .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
-                    .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
         }
 
-        public object Get()
+        public ValueTransfer Get()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null)
             {
-                return default(float);
+                return ValueTransfer.CreateNumber(default);
             }
 
             if (entity is not CircleEntity circleEntity)
             {
-                return default(float);
+                return ValueTransfer.CreateNumber(default);
             }
 
-            return circleEntity.Radius;
+            return ValueTransfer.CreateNumber(circleEntity.Radius);
         }
     }
 }

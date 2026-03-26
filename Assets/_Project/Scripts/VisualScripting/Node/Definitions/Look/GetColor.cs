@@ -16,25 +16,40 @@ namespace Loykas.Scripting
 
         public GetColorNode()
         {
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
                         
-            Color = OutputValue(nameof(Color), ScriptDataType.Single(DataType.Color), Get)
-                    .UseGlobalLocalized();
+            Color = CreateOutputValue
+            (
+                nameof(Color),
+                Get,
+                ScriptDataType.Single(DataType.Color),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Color)
+                }
+            );
         }
 
-        public object Get()
+        public ValueTransfer Get()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null || entity is not MeshEntity meshEntity)
             {
-                return default(float);
+                return ValueTransfer.CreateColor(default);
             }
 
-            return meshEntity.CurrentColor;
+            return ValueTransfer.CreateColor(meshEntity.CurrentColor);
         }
     }
 }

@@ -18,17 +18,23 @@ namespace Loykas.Scripting
 
         public GreaterEqualNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
             
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            B = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Boolean));
         }
 
-        private object Get() => A.GetValue<float>() >= B.GetValue<float>();
+        private ValueTransfer Get() => ValueTransfer.CreateBool(A.GetValue().NumberValue >= B.GetValue().NumberValue);
     }
 }

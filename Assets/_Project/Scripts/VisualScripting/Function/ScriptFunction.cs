@@ -69,5 +69,18 @@ namespace Loykas.Scripting
 
             StartNode.Init(this);
         }
+
+        public void Clear()
+        {
+            foreach (FunctionInput input in Inputs)
+            {
+                ScriptPool.Instance.Function.Release(input);
+            }
+            Inputs.Clear();
+            StartNode = null;
+            ReturnNode = null;
+            HasReturnValue = false;
+            ScriptPool.Instance.Function.Release(this);
+        }
     }
 }

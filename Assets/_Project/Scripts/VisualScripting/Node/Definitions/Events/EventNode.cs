@@ -9,7 +9,7 @@ namespace Loykas.Scripting
 
         public EventNode()
         {
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
         }
 
         public void Register(ScriptFlow vs)

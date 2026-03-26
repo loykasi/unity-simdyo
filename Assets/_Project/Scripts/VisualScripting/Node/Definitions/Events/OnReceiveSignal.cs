@@ -8,7 +8,16 @@ namespace Loykas.Scripting
         
         public OnReceiveSignalNode()
         {
-            Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String)).UseInput().HideLabel().DisableConnection();
+            Name = CreateInputValue
+            (
+                nameof(Name),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    HideLabel = true,
+                    IsConnectionDisabled = true
+                }
+            ).UseInput();
         }
 
         public override ScriptNode Create()

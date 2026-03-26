@@ -10,25 +10,21 @@ namespace Loykas.Scripting
     {
         public event UnityAction<ScriptNode> OnNodeAdded;
         public event UnityAction<ScriptNode> OnNodeDeleted;
-
         public event UnityAction<NodeConnection> OnConnectionDeleted;
-
         public event UnityAction<Variable> OnVariableAdded;
         public event UnityAction<Variable> OnVariableUpdated;
         public event UnityAction<Variable> OnVariableDeleted;
-
         public event UnityAction<ScriptFunction> OnFunctionDeleted;
 
         public Vector2 Pan { get; set; }
+        public float Scale { get; set;}
+
         public SceneEntity Entity;
         public bool IsGlobal => Entity == null;
 
         public List<ScriptNode> Nodes = new();
         public List<NodeConnection> Connections = new();
         public List<ScriptFunction> Functions = new();
-
-        private Stack<int> _loops = new();
-
         private Dictionary<EventHook, List<EventNode>> _eventNodes = new();
 
         private List<NodeTask> _tasks = new();
@@ -37,8 +33,7 @@ namespace Loykas.Scripting
         public List<Variable> VariableList = new();
         private List<string> _variableOptions = new();
 
-
-        public bool ShouldUpdateConnections { get; set; } = false;
+        // public bool ShouldUpdateConnections { get; set; } = false;
 
         private List<string> _functionNames = new();    // For generate unique name
         private List<string> _variableNames = new();    // For generate unique name
@@ -64,6 +59,19 @@ namespace Loykas.Scripting
 
         public void ResetState()
         {
+            foreach (ScriptNode node in Nodes)
+            {
+                node.Clear();
+            }
+            foreach (ScriptFunction function in Functions)
+            {
+                function.Clear();
+            }
+            foreach (Variable variable in VariableList)
+            {
+                variable.Clear();
+            }
+
             Nodes.Clear();
             Connections.Clear();
             Functions.Clear();
@@ -75,12 +83,46 @@ namespace Loykas.Scripting
 
         private void LateUpdate()
         {
-            if (ShouldUpdateConnections)
-            {
-                Connections.RemoveAll(c => c.ShouldRemove);
-                ShouldUpdateConnections = false;
-            }
+            // if (ShouldUpdateConnections)
+            // {
+            //     int lastIndex = Connections.Count - 1;
+            //     for (int i = lastIndex; i >= 0; i--)
+            //     {
+            //         NodeConnection connection = Connections[i];
+            //         if (connection.ShouldRemove)
+            //         {
+            //             Connections.RemoveAt(i);
+            //         }
+            //         ScriptNodeFactory.Instance.ConnectionPool.Release(connection);
+            //     }
+            //     Connections.RemoveAll(c => c.ShouldRemove);
+            //     ShouldUpdateConnections = false;
+            // }
         }
+
+        // public void Release()
+        // {
+        //     foreach (ScriptNode node in Nodes)
+        //     {
+        //         node.Clear();
+        //     }
+        //     foreach (ScriptFunction function in Functions)
+        //     {
+        //         function.Clear();
+        //     }
+        //     foreach (Variable variable in VariableList)
+        //     {
+        //         variable.Clear();
+        //     }
+
+        //     Nodes.Clear();
+        //     Connections.Clear();
+        //     Functions.Clear();
+        //     Variables.Clear();
+        //     VariableList.Clear();
+
+        //     _eventNodes.Clear();
+        // }
 
         public void Load()
         {
@@ -94,18 +136,12 @@ namespace Loykas.Scripting
                 {
                     eventNode.Register(this);
                 }
-                // node.Init();
             }
         }
 
-        public void AddNode(ScriptNode node)
+        public ScriptNode AddNode(ScriptNode nodeContent, Vector3 position)
         {
-            AddNode(node, Vector3.zero);
-        }
-
-        public void AddNode(ScriptNode nodeContent, Vector3 position)
-        {
-            ScriptNode node = nodeContent.Create();
+            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeContent.GetType());
 
             node.Flow = this;
             node.Position = position;
@@ -117,23 +153,20 @@ namespace Loykas.Scripting
             {
                 eventNode.Register(this);
             }
+
+            return node;
         }
 
         public void AddNode(ScriptNode nodeContent, Vector3 position, IPort portToConnect, bool isSourcePort)
         {
-            ScriptNode node = nodeContent.Create();
+            ScriptNode node = ScriptNodeFactory.Instance.CreateNode(nodeContent.GetType());
 
             node.Flow = this;
             node.Position = position;
 
             Nodes.Add(node);
 
-            if (node is EventNode eventNode)
-            {
-                eventNode.Register(this);
-            }
-
-            foreach (IPort port in node.Ports())
+            foreach (IPort port in node.Ports)
             {
                 if (port.CanConnect(portToConnect))
                 {
@@ -151,15 +184,21 @@ namespace Loykas.Scripting
             }
 
             OnNodeAdded?.Invoke(node);
+
+            if (node is EventNode eventNode)
+            {
+                eventNode.Register(this);
+            }
         }
 
         public void DeleteNode(ScriptNode node)
         {
-            foreach (IPort port in node.Ports())
-            {
-                Disconnect(port);
-            }
-
+            // foreach (IPort port in node.Ports)
+            // {
+            //     Disconnect(port);
+            // }
+            
+            node.Clear();
             Nodes.Remove(node);
 
             if (node is FunctionEnterNode functionEnterNode)
@@ -174,7 +213,9 @@ namespace Loykas.Scripting
         {
             if (fromPort.ConnectToPort(toPort) && toPort.ConnectToPort(fromPort))
             {
-                Connections.Add(new NodeConnection(this, fromPort, toPort));
+                NodeConnection connection = ScriptPool.Instance.Connection.Get();
+                connection.Init(this, fromPort, toPort);
+                Connections.Add(connection);
                 return true;
             }
 
@@ -183,34 +224,42 @@ namespace Loykas.Scripting
 
         public void Disconnect(IPort source, IPort destination)
         {
-            for (int i = 0; i < Connections.Count; i++)
+            int lastIndex = Connections.Count - 1;
+            for (int i = lastIndex; i >= 0; i--)
             {
                 NodeConnection connection = Connections[i];
                 if (connection.Source == source && connection.Destination == destination)
                 {
-                    ShouldUpdateConnections = true;
+                    // ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
 
                     source.Disconnect(destination);
                     destination.Disconnect(source);
                     OnConnectionDeleted?.Invoke(connection);
+
+                    Connections.RemoveAt(i);
+                    ScriptPool.Instance.Connection.Release(connection);
                 }
             }
         }
 
         public void Disconnect(IPort port)
         {
-            for (int i = 0; i < Connections.Count; i++)
+            int lastIndex = Connections.Count - 1;
+            for (int i = lastIndex; i >= 0; i--)
             {
                 NodeConnection connection = Connections[i];
                 if (connection.Source == port || connection.Destination == port)
                 {
-                    ShouldUpdateConnections = true;
+                    // ShouldUpdateConnections = true;
                     connection.ShouldRemove = true;
 
                     connection.Source.Disconnect(connection.Destination);
                     connection.Destination.Disconnect(connection.Source);
                     OnConnectionDeleted?.Invoke(connection);
+
+                    Connections.RemoveAt(i);
+                    ScriptPool.Instance.Connection.Release(connection);
                 }
             }
         }
@@ -234,20 +283,21 @@ namespace Loykas.Scripting
 
         public void Invoke(OutputTrigger outputTrigger)
         {
-            bool exist = _tasks.Find(t => t.From == outputTrigger) != null;
-            if (exist)
+            foreach (NodeTask task in _tasks)
             {
-                return;
+                if (task.From == outputTrigger)
+                {
+                    return;
+                }
             }
 
-            NodeTask task = new()
-            {
-                From = outputTrigger,
-                Trigger = outputTrigger.Invoke()
-            };
-            task.SetRemoveOnDone();
-            task.Invoke(this);
-            _tasks.Add(task);
+            NodeTask newTask = ScriptPool.Instance.NodeTask.Get();
+            newTask.From = outputTrigger;
+            newTask.Trigger = outputTrigger.Invoke();
+            newTask.SetRemoveOnDone();
+            newTask.Invoke(this);
+            
+            _tasks.Add(newTask);
         }
 
         public void UpdateTask()
@@ -263,7 +313,16 @@ namespace Loykas.Scripting
                 _tasks[i].Invoke(this);
             }
 
-            _tasks.RemoveAll(t => t.ShouldRemove);
+            int lastIndex = _tasks.Count - 1;
+            for (int i = lastIndex; i >= 0; i--)
+            {
+                NodeTask task = _tasks[i];
+                if (task.ShouldRemove)
+                {
+                    _tasks.RemoveAt(i);
+                    ScriptPool.Instance.NodeTask.Release(task);
+                }
+            }
         }
 
         // public void RemoveTask(NodeTask task)
@@ -275,14 +334,15 @@ namespace Loykas.Scripting
 
         public SceneEntity GetEntity(InputValue inputValue)
         {
-            object value = inputValue.GetValue();
-            if (value == null)
-            {
-                return inputValue.IsNullMeanSelf ? Entity : null;
-            }
+            ValueTransfer value = inputValue.GetValue();
+            // if (value.EnityIdValue == -1)
+            // {
+            //     return inputValue.IsNullMeanSelf ? Entity : null;
+            // }
 
-            int id = (int)value;
-            SceneEntity entity = ObjectManager.Instance.GetEntityById(id);
+            // SceneEntity entity = (SceneEntity)value.RefValue;
+
+            SceneEntity entity = ObjectManager.Instance.GetEntityById(value.EnityIdValue);
 
             if (entity == null
                 && inputValue.IsNullMeanSelf
@@ -292,16 +352,6 @@ namespace Loykas.Scripting
             }
 
             return entity;
-        }
-
-        public int GetCurrentLoop()
-        {
-            if (_loops.Count > 0)
-            {
-                return _loops.Peek();
-            }
-
-            return -1;
         }
 
         public void StartVS()
@@ -351,14 +401,14 @@ namespace Loykas.Scripting
             {
                 GetGlobalVariableNode variableNode = ScriptNodeFactory.Instance.CreateNode<GetGlobalVariableNode>();
                 variableNode.Flow = this;
-                variableNode.Input.SetValue(variable.Name);
+                variableNode.Input.SetValue(ValueTransfer.CreateString(variable.Name));
                 node = variableNode;
             }
             else
             {
                 GetVariableNode variableNode = ScriptNodeFactory.Instance.CreateNode<GetVariableNode>();
                 variableNode.Flow = this;
-                variableNode.Input.SetValue(variable.Name);
+                variableNode.Input.SetValue(ValueTransfer.CreateString(variable.Name));
                 node = variableNode;
             }
             node.Position = position;
@@ -486,17 +536,17 @@ namespace Loykas.Scripting
 
         public void SendSignal(string signalName)
         {
-            if (_eventNodes.TryGetValue(EventHook.Signal, out var nodes))
+        if (_eventNodes.TryGetValue(EventHook.Signal, out var nodes))
+        {
+            for (int i = 0; i < nodes.Count; i++)
             {
-                for (int i = 0; i < nodes.Count; i++)
+                var node = (OnReceiveSignalNode)nodes[i];
+                if (node.DefaultValues["Name"].StringValue == signalName)
                 {
-                    var node = (OnReceiveSignalNode)nodes[i];
-                    if (node.DefaultValues["Name"].Equals(signalName))
-                    {
-                        Invoke(node.Exit);
-                    }
+                    Invoke(node.Exit);
                 }
             }
+        }
         }
 
         // Variables

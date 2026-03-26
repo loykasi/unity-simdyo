@@ -20,16 +20,29 @@ namespace Loykas.Scripting
         public SetTextNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Text = InputValue(nameof(Text), ScriptDataType.Single(DataType.String))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Text = CreateInputValue
+            (
+                nameof(Text),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Text)
+                }
+            ).UseInput();
             
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true,
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -46,7 +59,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            string text = (string)Text.GetValue();
+            string text = Text.GetValue().StringValue;
 
             boxEntity.TextBox.Text = text;
             return Exit;

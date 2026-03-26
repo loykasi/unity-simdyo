@@ -21,14 +21,47 @@ namespace Loykas.Scripting
         public ForNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Loop);
-            Completed = OutputTrigger(nameof(Completed)).ShowLabel();
-            LoopBody = OutputTrigger(nameof(LoopBody)).ShowLabel();
+            
+            Completed = CreateOutputTrigger
+            (
+                nameof(Completed),
+                PortSettings.Default
+            );
+            
+            LoopBody = CreateOutputTrigger
+            (
+                nameof(LoopBody),
+                PortSettings.Default
+            );
 
-            FirstIndex = InputValue(nameof(FirstIndex), ScriptDataType.Single(DataType.Number)).UseInput();
-            LastIndex = InputValue(nameof(LastIndex), ScriptDataType.Single(DataType.Number)).UseInput();
-            Step = InputValue(nameof(Step), ScriptDataType.Single(DataType.Number)).UseInput();
+            FirstIndex = CreateInputValue
+            (
+                nameof(FirstIndex),
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            ).UseInput();
 
-            Index = OutputValue(nameof(Index), ScriptDataType.Single(DataType.Number), GetIndex);
+            LastIndex = CreateInputValue
+            (
+                nameof(LastIndex),
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            ).UseInput();
+
+            Step = CreateInputValue
+            (
+                nameof(Step),
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            ).UseInput();
+
+            Index = CreateOutputValue
+            (
+                nameof(Index),
+                GetIndex,
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            );
         }
 
         public override ScriptNode Create()
@@ -42,16 +75,16 @@ namespace Loykas.Scripting
             _firstRun = true;
         }
 
-        private object GetIndex()
+        private ValueTransfer GetIndex()
         {
-            return _index;
+            return ValueTransfer.CreateNumber(_index);
         }
 
         private OutputTrigger Loop(NodeTask task)
         {
-            int firstIndex = (int)(float)FirstIndex.GetValue();
-            int lastIndex = (int)(float)LastIndex.GetValue();
-            int step = (int)(float)Step.GetValue();
+            int firstIndex = (int)FirstIndex.GetValue().NumberValue;
+            int lastIndex = (int)LastIndex.GetValue().NumberValue;
+            int step = (int)Step.GetValue().NumberValue;
 
             if (task.ShouldBreak)
             {

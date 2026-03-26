@@ -6,7 +6,7 @@ namespace Loykas.Scripting
     public interface IScriptNode
     {
         Guid ID { get; set; }
-        Dictionary<string, object> DefaultValues { get; set; }
+        Dictionary<string, ValueTransfer> DefaultValues { get; set; }
         ScriptFlow Flow { get; set; }
 
         bool HasOutputTriggers { get; }

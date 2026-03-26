@@ -20,13 +20,12 @@ namespace Loykas.Scripting
         public SetCollisionLayerNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
-                    .UseCollisionLayerInput();
+            Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
+                    .UseInput(InputValueTypes.CollisionLayer);
 
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
+            Entity = CreateInputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                     .UseInput()
                     .NullMeanSelf();
         }
@@ -40,7 +39,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            int layer = (int)(float)Value.GetValue();
+            int layer = (int)Value.GetValue().NumberValue;
             
             meshEntity.SetLayer(layer);
             return Exit;

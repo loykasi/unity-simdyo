@@ -19,33 +19,45 @@ namespace Loykas.Scripting
 
         public RandomNumberNode()
         {
-            Min = InputValue(nameof(Min), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            Min = CreateInputValue
+            (
+                nameof(Min),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
             
-            Max = InputValue(nameof(Max), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            Max = CreateInputValue
+            (
+                nameof(Max),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            IntegersOnly = InputValue(nameof(IntegersOnly), ScriptDataType.Single(DataType.Boolean))
-                .UseInput()
-                .DisableConnection()
-                .NoLocalize();
+            IntegersOnly = CreateInputValue
+            (
+                nameof(IntegersOnly),
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    IsConnectionDisabled = true
+                }
+            )
+            .UseInput();
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), GetRandom).HideLabel();
+            Value = CreateOutputValue(nameof(Value), GetRandom, ScriptDataType.Single(DataType.Number));
         }
 
-        private object GetRandom()
+        private ValueTransfer GetRandom()
         {
-            float a = (float)Min.GetValue();
-            float b = (float)Max.GetValue();
+            float a = Min.GetValue().NumberValue;
+            float b = Max.GetValue().NumberValue;
             
-            bool isInteger = (bool)IntegersOnly.GetValue();
+            bool isInteger = IntegersOnly.GetValue().BoolValue;
             if (isInteger)
             {
-                return (float)Random.Range((int)a, (int)b + 1);
+                return ValueTransfer.CreateNumber(Random.Range((int)a, (int)b + 1));
             }
-            return Random.Range(a, b);
+            return ValueTransfer.CreateNumber(Random.Range(a, b));
         }
     }
 }

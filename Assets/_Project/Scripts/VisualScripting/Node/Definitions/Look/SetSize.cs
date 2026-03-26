@@ -21,20 +21,39 @@ namespace Loykas.Scripting
         public SetSizeNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Width = InputValue(nameof(Width), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Width = CreateInputValue
+            (
+                nameof(Width),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Width)
+                }
+            ).UseInput();
                     
-            Height = InputValue(nameof(Height), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Height = CreateInputValue
+            (
+                nameof(Height),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Height)
+                }
+            ).UseInput();
             
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -51,8 +70,8 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float width = (float)Width.GetValue();
-            float height = (float)Height.GetValue();
+            float width = Width.GetValue().NumberValue;
+            float height = Height.GetValue().NumberValue;
 
             boxEntity.SetSize(width, height);
             return Exit;

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class SubtractNode : ScriptNode
@@ -8,7 +6,6 @@ namespace Loykas.Scripting
 
         public InputValue A;
         public InputValue B;
-
         public OutputValue Output;
 
         public override ScriptNode Create()
@@ -18,17 +15,29 @@ namespace Loykas.Scripting
 
         public SubtractNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
-                
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
+            
+            B = CreateInputValue
+            (
+                nameof(B),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get() => OperatorUtility.Subtract(A.GetValue(), B.GetValue());
+        private ValueTransfer Get()
+        {
+            ValueTransfer a = A.GetValue();
+            ValueTransfer b = B.GetValue();
+
+            return ValueTransfer.CreateNumber(a.NumberValue - b.NumberValue);
+        }
     }
 }

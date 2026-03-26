@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
 namespace Loykas.Scripting
@@ -26,6 +25,13 @@ namespace Loykas.Scripting
         {
             Type = type;
             Value = value;
+        }
+
+        public void Init(Variable variable)
+        {
+            Name = variable.Name;
+            Type = variable.Type;
+            Value = variable.Value;
         }
 
         public void OnSceneStart()
@@ -73,6 +79,27 @@ namespace Loykas.Scripting
             {
                 b.Add(item);
             }
+        }
+
+        public void Clear()
+        {
+            _default = null;
+            Value = null;
+            ScriptPool.Instance.Variable.Release(this);
+        }
+
+        public ValueTransfer GetValueTransfer()
+        {
+            return Value switch
+            {
+                string stringValue => ValueTransfer.CreateString(stringValue),
+                float floatValue => ValueTransfer.CreateNumber(floatValue),
+                int intValue => ValueTransfer.CreateNumber(intValue),
+                bool boolValue => ValueTransfer.CreateBool(boolValue),
+                ColorHSV colorValue => ValueTransfer.CreateColor(colorValue),
+                SceneEntity entityValue => ValueTransfer.CreateEntity(entityValue),
+                _ => default,
+            };
         }
     }
 }

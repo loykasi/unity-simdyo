@@ -23,12 +23,12 @@ namespace Loykas.Scripting
         public FunctionCallNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), TriggerFunction);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
         }
 
         public override string GetNameKey()
         {
-            return Function.Name;
+            return Function != null ? Function.Name : string.Empty;
         }
 
         public override void Reset()
@@ -84,11 +84,15 @@ namespace Loykas.Scripting
             for (int i = 0; i < Function.Inputs.Count; i++)
             {
                 FunctionInput argument = Function.Inputs[i];
-                InputValue input = InputValue
+                CreateInputValue
                 (
                     argument.Name,
-                    argument.Type
-                ).NoLocalize();
+                    argument.Type,
+                    new PortSettings
+                    {
+                        IsLocalizationDisabled = true
+                    }
+                );
             }
 
             OnNodeUpdated?.Invoke();

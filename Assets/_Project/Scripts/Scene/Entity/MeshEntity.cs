@@ -83,11 +83,13 @@ public abstract class MeshEntity : SceneEntity
     private ColorHSV _currentColor = new();
     private PhysicsMaterial2D _physicsMaterial;
     private readonly int _textureProperty = Shader.PropertyToID("_BaseMap");
+    private readonly int _colorProperty = Shader.PropertyToID("_BaseColor");
     
     protected MeshState _meshState;
 
     protected override void Awake()
     {
+        Collider.Init();
         CollisionLayerController.Instance.UpdateObjectLayer(this);
 
         _physicsMaterial = new("PhysicsMaterial")
@@ -132,7 +134,7 @@ public abstract class MeshEntity : SceneEntity
 
     private void UpdateColor()
     {
-        Material.color = CurrentColor.ToUnityColor();
+        Material.SetColor(_colorProperty, CurrentColor.ToUnityColor());
     }
 
     public virtual void SetTexture(string key)

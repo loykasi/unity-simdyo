@@ -101,5 +101,17 @@ namespace Loykas.Scripting
         {
             ShouldRemove = true;
         }
+
+        public void Reset()
+        {
+            IsDone = false;
+            ShouldExecuteNextFrame = false;
+            ShouldBreak = false;
+            ShouldRemove = false;
+            _shouldRemoveOnDone = false;
+            From = null;
+            Trigger = null;
+            _loops.Clear();
+        }
     }
 }

@@ -20,16 +20,30 @@ namespace Loykas.Scripting
         public SetZDepthNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            )
+            .UseInput();
 
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -41,7 +55,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float depth = (float)Value.GetValue();
+            float depth = Value.GetValue().NumberValue;
             entity.ZDepth = (int)depth;
             return Exit;
         }

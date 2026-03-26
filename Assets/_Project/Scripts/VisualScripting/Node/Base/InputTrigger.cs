@@ -11,7 +11,12 @@ namespace Loykas.Scripting
         public OutputTrigger TargetOutputTrigger;
         public bool IsDone = true;
 
-        public InputTrigger(string key, Func<NodeTask,OutputTrigger> action) : base(key)
+        public InputTrigger
+        (
+            IScriptNode node,
+            string key,
+            Func<NodeTask,OutputTrigger> action
+        ) : base(node, key)
         {
             Action = action;
         }
@@ -38,12 +43,6 @@ namespace Loykas.Scripting
             {
                 Sources.Remove(port);
             }
-        }
-
-        public InputTrigger NoLocalize()
-        {
-            ShouldLocalized = false;
-            return this;
         }
     }
 }

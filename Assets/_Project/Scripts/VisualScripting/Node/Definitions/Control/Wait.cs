@@ -27,16 +27,21 @@ namespace Loykas.Scripting
         public WaitNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Wait);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
 
-            WaitTime = InputValue(nameof(WaitTime), ScriptDataType.Single(DataType.Number)).UseInput();
+            WaitTime = CreateInputValue
+            (
+                nameof(WaitTime),
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            ).UseInput();
         }
 
         private OutputTrigger Wait(NodeTask task)
         {
             if (_isFirstFrame)
             {
-                _time = (float)WaitTime.GetValue();
+                _time = WaitTime.GetValue().NumberValue;
                 _isFirstFrame = false;
             }
 

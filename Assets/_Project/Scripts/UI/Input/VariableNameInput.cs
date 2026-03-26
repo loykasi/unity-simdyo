@@ -108,8 +108,12 @@ namespace Loykas.Scripting
                 }
                 
                 Dropdown.SetValueWithoutNotify(_selectedIndex);
-            }
-            
+            }   
+        }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.SetValue(ValueTransfer.CreateString(_variableName));
         }
     }
 }

@@ -22,20 +22,33 @@ namespace Loykas.Scripting
         public RemoveListItemNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
 
-            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Index = CreateInputValue
+            (
+                nameof(Index),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Index)
+                }
+            ).UseInput();
         }
 
         private OutputTrigger Set(NodeTask task)
         {
-            IList list = (IList)ListInput.GetValue();
-            int index = (int)(float)Index.GetValue();
+            IList list = ListInput.GetValue().ListValue;
+            int index = (int)Index.GetValue().NumberValue;
             
             if (index >= 0 && index < list.Count)
             {

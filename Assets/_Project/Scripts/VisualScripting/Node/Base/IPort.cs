@@ -7,14 +7,14 @@ namespace Loykas.Scripting
         IScriptNode Node { get; set; }
         string Key { get; set; }
         
-        public bool IsDisableConnection { get; set; }
-
-        bool ShouldShowLabel { get; set; }
-        bool ShouldLocalized { get; set; }
+        bool ShowLabel { get; set; }
+        bool IsConnectionDisabled { get; set; }
+        bool UseLocalization { get; set; }
+        string LocalizationKey { get; set; }
 
         bool CanConnect(IPort port);
         bool ConnectToPort(IPort port);
         void Disconnect(IPort other);
-        string GetLocalizedKey();
+        // string GetLocalizedKey();
     }
 }

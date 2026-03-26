@@ -20,18 +20,35 @@ namespace Loykas.Scripting
         public SetCameraPositionNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
+            X = CreateInputValue
+            (
+                nameof(X),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            ).UseInput();
+            
+            Y = CreateInputValue
+            (
+                nameof(Y),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            ).UseInput();
         }
 
         public OutputTrigger Set(NodeTask task)
         {
             Camera camera = SceneManager.Instance.SceneCamera;
 
-            float x = X.GetValue<float>();
-            float y = Y.GetValue<float>();
+            float x = X.GetValue().NumberValue;
+            float y = Y.GetValue().NumberValue;
             camera.transform.position = new Vector3(x, y, camera.transform.position.z);
             return Exit;
         }

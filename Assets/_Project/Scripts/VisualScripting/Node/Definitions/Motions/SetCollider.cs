@@ -20,13 +20,12 @@ namespace Loykas.Scripting
         public SetColliderNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean)).UseInput();
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean)).UseInput();
+            Entity = CreateInputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
+                .UseInput()
+                .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -38,7 +37,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            bool enable = (bool)Value.GetValue();
+            bool enable = Value.GetValue().BoolValue;
             meshEntity.IsColliderEnabled = enable;
             return Exit;
         }

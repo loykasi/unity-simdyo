@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class SignalSystem : Singleton<SignalSystem>
 {
     public void SendSignal(string signalName, SceneEntity entity)

@@ -16,45 +16,33 @@ namespace Loykas.Scripting
 
         public ConvertToNumberNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput().NoLocalize();
+            Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            if (Value.HasConnection)
-            {
-                return default(float);
-            }
-            
-            object value = Value.GetValue();
+            ValueTransfer value = Value.GetValue();
 
-            if (value is float floatValue)
+            float result = default;
+            switch (value.Type.Type)
             {
-                return floatValue;
-            }
-
-            if (value is string stringValue)
-            {
-                if (float.TryParse(stringValue, out float result))
-                {
-                    return result;
-                }
-                return default(float);
+                case DataType.String:
+                    float.TryParse(value.StringValue, out result);
+                    break;
+                case DataType.Number:
+                    result = value.NumberValue;
+                    break;
+                case DataType.Boolean:
+                    result = value.BoolValue ? 1 : 0;
+                    break;
+                case DataType.Color:
+                    result = value.ColorValue.H + value.ColorValue.S + value.ColorValue.V + value.ColorValue.A;
+                    break;
             }
 
-            if (value is bool boolValue)
-            {
-                return boolValue ? 1 : 0;
-            }
-
-            if (value is ColorHSV colorValue)
-            {
-                return colorValue.H + colorValue.S + colorValue.V + colorValue.A;
-            }
-
-            return default(float);
+            return ValueTransfer.CreateNumber(result);
         }
     }
 }

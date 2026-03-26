@@ -5,6 +5,8 @@ namespace Loykas.Scripting
     public class BooleanInput : BaseInput
     {
         public Toggle Input;
+        
+        private bool _value;
 
         private void Awake()
         {
@@ -13,6 +15,7 @@ namespace Loykas.Scripting
 
         private void OnValueChanged(bool value)
         {
+            _value = value;
             if (ValueInstance != null)
             {
                 ValueHandler.SetValue(ValueInstance, value);
@@ -35,6 +38,11 @@ namespace Loykas.Scripting
         public override void SetValue(object value)
         {
             Input.SetIsOnWithoutNotify((bool)value);
+        }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateBool(_value);
         }
     }
 }

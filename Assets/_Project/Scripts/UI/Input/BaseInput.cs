@@ -38,5 +38,10 @@ namespace Loykas.Scripting
         {
             
         }
+
+        public virtual void SetDefaultValue(InputValue inputValue)
+        {
+            
+        }
     }
 }

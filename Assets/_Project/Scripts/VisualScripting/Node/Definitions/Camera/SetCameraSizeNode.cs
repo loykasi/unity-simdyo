@@ -19,17 +19,25 @@ namespace Loykas.Scripting
         public SetCameraSizeNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                PortSettings.Default
+            );
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number)).UseInput()
-                .UseGlobalLocalized();;
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            ).UseInput();
         }
 
         public OutputTrigger Set(NodeTask task)
         {
             Camera camera = SceneManager.Instance.SceneCamera;
 
-            float size = Value.GetValue<float>();
+            float size = Value.GetValue().NumberValue;
             camera.orthographicSize = size;
             return Exit;
         }

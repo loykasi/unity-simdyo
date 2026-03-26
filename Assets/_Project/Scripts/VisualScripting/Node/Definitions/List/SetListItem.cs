@@ -23,24 +23,44 @@ namespace Loykas.Scripting
         public SetListItemNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
             
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
             
-            Index = InputValue(nameof(Index), ScriptDataType.Single(DataType.Number))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Index = CreateInputValue
+            (
+                nameof(Index),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Index)
+                }
+            ).UseInput();
 
             ListInput.OnConnected += OnListInputConnected;
         }
 
         private OutputTrigger Set(NodeTask task)
         {
-            IList list = (IList)ListInput.GetValue();
+            IList list = ListInput.GetValue().ListValue;
             object item = Value.GetValue();
             
             object value = Index.GetValue();

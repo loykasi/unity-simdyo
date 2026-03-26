@@ -23,15 +23,29 @@ namespace Loykas.Scripting
         public SetGlobalVariableNode() : base()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Variable = InputValue(nameof(Variable), ScriptDataType.Single(DataType.String))
-                        .UseGlobalVariableInput()
-                        .DisableConnection()
-                        .HideLabel();
+            Variable = CreateInputValue
+            (
+                nameof(Variable),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    IsConnectionDisabled = true,
+                    HideLabel = true
+                }
+            )
+            .UseInput(InputValueTypes.GlobalVariable);
                             
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
 
             Variable.OnValueChanged += OnInputValueChanged;
         }
@@ -49,9 +63,9 @@ namespace Loykas.Scripting
 
         private OutputTrigger Set(NodeTask task)
         {
-            string name = Variable.GetValue().ToString();
-            object value = Value.GetValue();
-            SceneManager.Instance.GlobalScript.UpdateVariable(name, value);
+            string name = Variable.GetValue().StringValue;
+            ValueTransfer value = Value.GetValue();
+            SceneManager.Instance.GlobalScript.UpdateVariable(name, value.GetObjectValue());
             return Exit;
         }
 
@@ -70,7 +84,7 @@ namespace Loykas.Scripting
 
             if (name.Equals(variable.Name))
             {
-                Variable.SetValue("");
+                Variable.SetValue(ValueTransfer.CreateString(string.Empty));
             }
         }
 
@@ -100,7 +114,7 @@ namespace Loykas.Scripting
 
         private void UpdateInputType()
         {
-            string name = Variable.GetValue().ToString();
+            string name = Variable.GetValue().StringValue;
             _variable = SceneManager.Instance.GlobalScript.GetVariable(name);
             ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
             Value.SetType(type);

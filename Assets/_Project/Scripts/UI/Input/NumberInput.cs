@@ -75,5 +75,10 @@ namespace Loykas.Scripting
                 Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
             }
         }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateNumber(_value);
+        }
     }
 }

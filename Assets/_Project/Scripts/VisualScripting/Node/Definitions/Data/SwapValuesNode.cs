@@ -22,16 +22,42 @@ namespace Loykas.Scripting
         public SwapValuesNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Swap);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            List = InputValue(nameof(List), ScriptDataType.List(DataType.Any)).NoLocalize();
-            IndexA = InputValue(nameof(IndexA), ScriptDataType.Single(DataType.Number)).NoLocalize();
-            IndexB = InputValue(nameof(IndexB), ScriptDataType.Single(DataType.Number)).NoLocalize();
+            List = CreateInputValue
+            (
+                nameof(List),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
+
+            IndexA = CreateInputValue
+            (
+                nameof(IndexA),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
+
+            IndexB = CreateInputValue
+            (
+                nameof(IndexB),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
         }
 
         public OutputTrigger Swap(NodeTask task)
         {
-            IList list = (IList)List.GetValue();
+            IList list = List.GetValue().ListValue;
 
             int indexA = Utils.ObjectToIndex(IndexA.GetValue());
             int indexB = Utils.ObjectToIndex(IndexB.GetValue());

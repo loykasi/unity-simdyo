@@ -15,10 +15,22 @@ namespace Loykas.Scripting
         public BranchNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Branching);
-            IfTrue = OutputTrigger(nameof(IfTrue)).ShowLabel();
-            IfFalse = OutputTrigger(nameof(IfFalse)).ShowLabel();
+
+            PortSettings outputPortSettings = PortSettings.Default;
+            outputPortSettings.HideLabel = true;
+
+            IfTrue = CreateOutputTrigger(nameof(IfTrue), outputPortSettings);
+            IfFalse = CreateOutputTrigger(nameof(IfFalse), outputPortSettings);
             
-            Condition = InputValue(nameof(Condition), ScriptDataType.Single(DataType.Boolean));
+            Condition = CreateInputValue
+            (
+                nameof(Condition),
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true,
+                }
+            );
         }
 
         public override ScriptNode Create()
@@ -28,7 +40,7 @@ namespace Loykas.Scripting
 
         private OutputTrigger Branching(NodeTask task)
         {
-            if ((bool)Condition.GetValue())
+            if (Condition.GetValue().BoolValue)
             {
                 return IfTrue;
             }

@@ -40,5 +40,10 @@ namespace Loykas.Scripting
             _value = (int)(float)value;
             Dropdown.SetValueWithoutNotify(_value);
         }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateNumber(_value);
+        }
     }
 }

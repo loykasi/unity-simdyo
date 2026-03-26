@@ -11,6 +11,7 @@ namespace Loykas.Scripting
         public float MaxWidth = 200f;
 
         private readonly float _horizontalPadding = 20f;
+        private string _value;
 
         private void Awake()
         {
@@ -20,6 +21,8 @@ namespace Loykas.Scripting
 
         private void OnEndEdit(string value)
         {
+            _value = value;
+            
             if (ValueInstance != null)
             {
                 ValueHandler.SetValue(ValueInstance, value);
@@ -66,6 +69,11 @@ namespace Loykas.Scripting
                 float x = Mathf.Clamp(size.x + _horizontalPadding, MinWidth, MaxWidth);
                 Rect.sizeDelta = new Vector2(x, Rect.sizeDelta.y);
             }
+        }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateString(_value);
         }
     }
 }

@@ -15,21 +15,40 @@ namespace Loykas.Scripting
         }
 
         public GetCameraPositionNode()
-        {
-            X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX).NoLocalize();
-            Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY).NoLocalize();
+        {            
+            X = CreateOutputValue
+            (
+                nameof(X),
+                GetX,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true,
+                }
+            );
+            
+            Y = CreateOutputValue
+            (
+                nameof(Y),
+                GetY,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true,
+                }
+            );
         }
 
-        public object GetX()
+        public ValueTransfer GetX()
         {
             Camera camera = SceneManager.Instance.SceneCamera;
-            return camera.transform.position.x;
+            return ValueTransfer.CreateNumber(camera.transform.position.x);
         }
 
-        public object GetY()
+        public ValueTransfer GetY()
         {
             Camera camera = SceneManager.Instance.SceneCamera;
-            return camera.transform.position.y;
+            return ValueTransfer.CreateNumber(camera.transform.position.y);
         }
     }
 }

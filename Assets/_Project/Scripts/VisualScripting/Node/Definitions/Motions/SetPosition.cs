@@ -21,15 +21,31 @@ namespace Loykas.Scripting
         public SetPositionNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
+            Entity = CreateInputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
                         .UseInput()
                         .NullMeanSelf();
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
+            X = CreateInputValue
+            (
+                nameof(X),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            ).UseInput();
+
+            Y = CreateInputValue
+            (
+                nameof(Y),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            ).UseInput();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -41,8 +57,8 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            float x = (float)X.GetValue();
-            float y = (float)Y.GetValue();
+            float x = X.GetValue().NumberValue;
+            float y = Y.GetValue().NumberValue;
 
             entity.Position = new Vector3(x, y, 0f);
             return Exit;

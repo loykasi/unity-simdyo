@@ -22,13 +22,27 @@ namespace Loykas.Scripting
         public AddListItemNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
             
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
 
             ListInput.OnConnected += OnListInputConnected;
             ListInput.OnDisconnected += OnListInputDisconnected;
@@ -36,7 +50,7 @@ namespace Loykas.Scripting
 
         private OutputTrigger Set(NodeTask task)
         {
-            IList list = (IList)ListInput.GetValue();
+            IList list = ListInput.GetValue().ListValue;
             object item = Value.GetValue();
             list.Add(item);
             return Exit;

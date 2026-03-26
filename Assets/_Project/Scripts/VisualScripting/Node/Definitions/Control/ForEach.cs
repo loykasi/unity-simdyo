@@ -22,12 +22,41 @@ namespace Loykas.Scripting
         public ForEachNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Loop);
-            Completed = OutputTrigger(nameof(Completed)).ShowLabel();
-            LoopBody = OutputTrigger(nameof(LoopBody)).ShowLabel();
 
-            List = InputValue(nameof(List), ScriptDataType.List(DataType.Any));
-            Element = OutputValue(nameof(Element), ScriptDataType.Single(DataType.Entity), GetElement);
-            Index = OutputValue(nameof(Index), ScriptDataType.Single(DataType.Number), GetIndex);
+            Completed = CreateOutputTrigger
+            (
+                nameof(Completed),
+                PortSettings.Default
+            );
+
+            LoopBody = CreateOutputTrigger
+            (
+                nameof(LoopBody),
+                PortSettings.Default
+            );
+
+            List = CreateInputValue
+            (
+                nameof(List),
+                ScriptDataType.List(DataType.Any),
+                PortSettings.Default
+            );
+
+            Element = CreateOutputValue
+            (
+                nameof(Element),
+                GetElement,
+                ScriptDataType.Single(DataType.Entity),
+                PortSettings.Default
+            );
+
+            Index = CreateOutputValue
+            (
+                nameof(Index),
+                GetIndex,
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            );
         }
 
         public override ScriptNode Create()
@@ -35,19 +64,19 @@ namespace Loykas.Scripting
             return new ForEachNode();
         }
 
-        private object GetElement()
+        private ValueTransfer GetElement()
         {
-            return _list[_index];
+            return ValueTransfer.FromValue(_list[_index]);
         }
 
-        private object GetIndex()
+        private ValueTransfer GetIndex()
         {
-            return _index;
+            return ValueTransfer.CreateNumber(_index);
         }
 
         private OutputTrigger Loop(NodeTask task)
         {
-            _list = (IList)List.GetValue();
+            _list = (IList)List.GetValue().RefValue;
             int firstIndex = 0;
             int lastIndex = _list.Count;
             int step = 1;

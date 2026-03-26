@@ -100,7 +100,7 @@ namespace Loykas.Scripting
             {
                 UINodePort port = Instantiate(_inputTriggerPrefab, _inputHolder);
                 port.UINode = this;
-                port.Port = Node.EnterTrigger;
+                port.Port = Node.InputTrigger;
                 port.Init();
                 Ports.Add(port);
                 EnterPort = port;

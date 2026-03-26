@@ -17,17 +17,32 @@ namespace Loykas.Scripting
 
         public GetListLengthNode()
         {
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
-                    .HideLabel();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            IList list = (IList)ListInput.GetValue();
-            return list.Count;
+            IList list = ListInput.GetValue().ListValue;
+            return ValueTransfer.CreateNumber(list.Count);
         }
     }
 }

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class SendSignalNode : ScriptNode
@@ -12,14 +10,30 @@ namespace Loykas.Scripting
         public SendSignalNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), SendSignal);
-            Exit = OutputTrigger(nameof(Exit));
-            Name = InputValue(nameof(Name), ScriptDataType.Single(DataType.String))
-                .UseInput()
-                .HideLabel()
-                .DisableConnection();
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                .UseSignalEntityInput()
-                .UseGlobalLocalized();
+
+            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
+
+            Name = CreateInputValue
+            (
+                nameof(Name),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    HideLabel = true,
+                    IsConnectionDisabled = true
+                }
+            ).UseInput();
+                
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Entity)
+                }
+            )
+            .UseInput(InputValueTypes.SignalEntity);
         }
 
         public override ScriptNode Create()
@@ -30,7 +44,7 @@ namespace Loykas.Scripting
         private OutputTrigger SendSignal(NodeTask task)
         {
             SceneEntity entity = Flow.GetEntity(Entity);
-            string signalName = (string)Name.GetValue();
+            string signalName = Name.GetValue().StringValue;
             SignalSystem.Instance.SendSignal(signalName, entity);
             return Exit;
         }

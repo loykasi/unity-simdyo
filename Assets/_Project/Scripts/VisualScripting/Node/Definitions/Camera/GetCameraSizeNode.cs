@@ -8,21 +8,28 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public override ScriptNode Create()
-        {
-            return new GetCameraSizeNode();
-        }
+        public override ScriptNode Create() => new GetCameraSizeNode();
 
         public GetCameraSizeNode()
         {
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
-                .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsConnectionDisabled = false,
+                    IsLocalizationDisabled = true,
+                    LocalizationKey = nameof(Value)
+                }
+            );
         }
 
-        public object Get()
+        public ValueTransfer Get()
         {
             Camera camera = SceneManager.Instance.SceneCamera;
-            return camera.orthographicSize;
+            return ValueTransfer.CreateNumber(camera.orthographicSize);
         }
     }
 }

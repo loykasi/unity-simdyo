@@ -5,22 +5,8 @@ namespace Loykas.Scripting
         public string Name;
         public InputTrigger Destination;
 
-        public override bool ShouldShowLabel { get; set; } = false;
-
-        public OutputTrigger(string key) : base(key)
+        public OutputTrigger(IScriptNode node, string key, PortSettings settings) : base(node, key, settings)
         {
-        }
-
-        public OutputTrigger NoLocalize()
-        {
-            ShouldLocalized = false;
-            return this;
-        }
-
-        public OutputTrigger ShowLabel()
-        {
-            ShouldShowLabel = true;
-            return this;
         }
 
         public override bool CanConnectTo(InputTrigger port)

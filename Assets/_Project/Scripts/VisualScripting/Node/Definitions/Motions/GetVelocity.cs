@@ -12,13 +12,39 @@ namespace Loykas.Scripting
 
         public GetVelocityNode()
         {
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
 
-            X = OutputValue(nameof(X), ScriptDataType.Single(DataType.Number), GetX).NoLocalize();
-            Y = OutputValue(nameof(Y), ScriptDataType.Single(DataType.Number), GetY).NoLocalize();
+            X = CreateOutputValue
+            (
+                nameof(X),
+                GetX,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
+            
+            Y = CreateOutputValue
+            (
+                nameof(Y),
+                GetY,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
         }
 
         public override ScriptNode Create()
@@ -26,28 +52,28 @@ namespace Loykas.Scripting
             return new GetVelocityNode();
         }
 
-        private object GetX()
+        private ValueTransfer GetX()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null || entity is not MeshEntity meshEntity)
             {
-                return default(float);
+                return ValueTransfer.CreateNumber(default);
             }
 
-            return meshEntity.Velocity.x;
+            return ValueTransfer.CreateNumber(meshEntity.Velocity.x);
         }
 
-        private object GetY()
+        private ValueTransfer GetY()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null || entity is not MeshEntity meshEntity)
             {
-                return default(float);
+                return ValueTransfer.CreateNumber(default);
             }
 
-            return meshEntity.Velocity.y;
+            return ValueTransfer.CreateNumber(meshEntity.Velocity.y);
         }
     }
 }

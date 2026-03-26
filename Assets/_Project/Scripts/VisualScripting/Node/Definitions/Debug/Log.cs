@@ -1,6 +1,3 @@
-using System.Collections;
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class LogNode : ScriptNode
@@ -19,14 +16,22 @@ namespace Loykas.Scripting
         public LogNode() : base()
         {
             Enter = CreateInputTrigger(nameof(Enter), Log);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
             
-            Value = InputValue(nameof(Value)).UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Any(),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
         }
 
         private OutputTrigger Log(NodeTask task)
         {
-            var value = Value.GetValue();
+            var value = Value.GetValue().ToString();
             LogConsole.Instance.Log(value);
 
             return Exit;

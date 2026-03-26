@@ -19,24 +19,32 @@ namespace Loykas.Scripting
 
         public EqualNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Any))
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Any))
-                .NoLocalize();
+            B = CreateInputValue
+            (
+                nameof(B),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Boolean));
 
             A.OnConnected += OnAConnected;
             B.OnConnected += OnBConnected;
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            object a = A.GetValue();
-            object b = B.GetValue();
+            ValueTransfer a = A.GetValue();
+            ValueTransfer b = B.GetValue();
 
-            return OperatorUtility.Equal(a, b);
+            return ValueTransfer.CreateBool(a.GetObjectValue() == b.GetObjectValue());
         }
 
         private void OnAConnected()

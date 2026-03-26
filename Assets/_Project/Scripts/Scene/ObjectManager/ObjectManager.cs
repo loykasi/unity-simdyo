@@ -3,9 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
-using System;
-using UnityEngine.InputSystem;
-using Clipper2Lib;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
@@ -13,6 +10,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public event UnityAction OnObjectDeselected;
     public event UnityAction OnObjectDeleted;
 
+    public Dictionary<int, SceneEntity> SceneEntityDict = new();
     public List<SceneEntity> SceneEntities = new();
     public SceneEntity SelectedObject { get; set; }
     public int SaveLoadOrder { get; set; } = 1;
@@ -64,7 +62,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
     }
 
-
     public void Deselect()
     {
         if (SelectedObject != null)
@@ -108,8 +105,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         Ray ray = camera.ScreenPointToRay(screenPoint);
         int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
 
-        // Debug.DrawRay(ray.origin, Vector3.up * 3f, Color.red, 10f);
-
         if (count == 0)
         {
             entity = null;
@@ -130,7 +125,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public SceneEntity GetEntityById(int id)
     {
-        return SceneEntities.Find(e => e.Id == id);
+        SceneEntityDict.TryGetValue(id, out SceneEntity entity);
+        return entity;
     }
 
     public List<string> GetEntityOptions(SceneEntity entity = null)
@@ -271,7 +267,15 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         entity.transform.SetParent(_holder);
+        
         SceneEntities.Add(entity);
+        SceneEntityDict.Add(entity.Id, entity);
+    }
+
+    public void RenameEntity(SceneEntity entity, string name)
+    {
+        int index = SceneEntities.FindIndex(e => e.Name == name);
+        entity.Name = index == -1 ? name : GetEntityName(name);
     }
 
     private string GetEntityName(string baseName)
@@ -285,12 +289,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return Utils.GenerateUniqueName(baseName, _entityNames);
     }
 
-    public void RenameEntity(SceneEntity entity, string name)
-    {
-        int index = SceneEntities.FindIndex(e => e.Name == name);
-        entity.Name = index == -1 ? name : GetEntityName(_baseEntityName);
-    }
-
     public void DeleteEntity(SceneEntity entity)
     {
         if (SelectedObject == entity)
@@ -300,12 +298,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         SceneEntities.Remove(entity);
+        SceneEntityDict.Remove(entity.Id);
 
         if (SceneManager.Instance.IsRuning)
         {
             if (entity.IsAddOnRuntime)
             {
-                Destroy(entity.gameObject);
+                entity.Delete();
             }
             else
             {
@@ -314,7 +313,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         else
         {
-            Destroy(entity.gameObject);
+            entity.Delete();
         }
     }
 
@@ -349,11 +348,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.ZDepth = depth;
     }
 
-    public SceneEntity GetEntity(int id)
-    {
-        return SceneEntities.Find(entity => entity.Id == id);
-    }
-
     private void OnSceneStart()
     {
         _snapshotEntities.Clear();
@@ -367,7 +361,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             SceneEntity entity = SceneEntities[i];
             if (entity.IsAddOnRuntime)
             {
-                Destroy(entity.gameObject);
+                entity.Delete();
                 SceneEntities.RemoveAt(i);
             }
         }
@@ -394,10 +388,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         for (int i = 0; i < SceneEntities.Count; i++)
         {
-            Destroy(SceneEntities[i].gameObject);
+            SceneEntities[i].Delete();
         }
 
         SceneEntities.Clear();
+        SceneEntityDict.Clear();
         _indexForId = 1;
     }
 

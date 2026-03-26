@@ -59,7 +59,7 @@ public class PolygonEntity : MeshEntity
         Material = Instantiate(material);
 
         Mesh.AssignTo(MeshFilter);
-        Renderer.material = Material;
+        Renderer.sharedMaterial = Material;
 
         PolygonPoints = points;
         _collider.SetPoints(PolygonPoints);

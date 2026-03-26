@@ -14,15 +14,15 @@ public abstract class SceneEntity : MonoBehaviour
     public ScriptFlow Script;
     public SortingGroup SortingGroup;
     
-    public string Name
-    {
-        get => gameObject.name;
-        set
-        {
-            gameObject.name = value;
-            OnPropertyUpdated?.Invoke();
-        }
-    }
+    public string Name;
+    // {
+    //     get => gameObject.name;
+    //     set
+    //     {
+    //         gameObject.name = value;
+    //         OnPropertyUpdated?.Invoke();
+    //     }
+    // }
 
     public virtual Vector3 Position
     {
@@ -88,6 +88,12 @@ public abstract class SceneEntity : MonoBehaviour
             SceneManager.Instance.OnSceneStart -= OnSceneStart;
             SceneManager.Instance.OnSceneStop -= OnSceneStop;
         }
+    }
+
+    public void Delete()
+    {
+        Script.ResetState();
+        Destroy(gameObject);
     }
 
     public virtual void OnSceneStart()

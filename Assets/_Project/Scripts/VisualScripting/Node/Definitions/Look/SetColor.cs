@@ -20,16 +20,29 @@ namespace Loykas.Scripting
         public SetColorNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Color))
-                    .UseInput()
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Color),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            ).UseInput();
                     
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)
@@ -41,7 +54,7 @@ namespace Loykas.Scripting
                 return Exit;
             }
 
-            ColorHSV color = (ColorHSV)Value.GetValue();
+            ColorHSV color = Value.GetValue().ColorValue;
             meshEntity.SetColor(color.ToUnityColor());
             return Exit;
         }

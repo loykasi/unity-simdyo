@@ -149,7 +149,7 @@ public class DataService : MonoBehaviour, IDataService
         }
         catch (Exception exception)
         {
-            OnLoadFailed(exception.Message);
+            OnLoadFailed(exception.ToString());
         }
     }
 

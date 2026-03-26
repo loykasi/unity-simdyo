@@ -32,5 +32,10 @@ namespace Loykas.Scripting
         {
             return _key;
         }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateKey(_key);
+        }
     }
 }

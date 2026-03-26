@@ -12,14 +12,30 @@ namespace Loykas.Scripting
 
         public MakeVariableNode(DataType type) : base()
         {
-            Input = InputValue(nameof(Input), ScriptDataType.Single(type))
-                        .UseInput()
-                        .DisableConnection()
-                        .HideLabel();
+            Input = CreateInputValue
+            (
+                nameof(Input),
+                ScriptDataType.Single(type),
+                new PortSettings
+                {
+                    IsConnectionDisabled = true,
+                    HideLabel = true
+                }
+            )
+            .UseInput();
                         
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(type), Get).HideLabel();
+            Output = CreateOutputValue
+            (
+                nameof(Output),
+                Get,
+                ScriptDataType.Single(type),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
-        private object Get() => Input.GetValue();
+        private ValueTransfer Get() => Input.GetValue();
     }
 }

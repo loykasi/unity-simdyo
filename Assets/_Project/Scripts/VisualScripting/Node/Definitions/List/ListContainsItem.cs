@@ -19,23 +19,45 @@ namespace Loykas.Scripting
 
         public ListContainsItemNode()
         {
-            ListInput = InputValue(nameof(ListInput), ScriptDataType.List(DataType.Any))
-                        .UseGlobalLocalized();
+            ListInput = CreateInputValue
+            (
+                nameof(ListInput),
+                ScriptDataType.List(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(ListInput)
+                }
+            );
                         
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Any))
-                    .UseGlobalLocalized();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
             
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Boolean), Get)
-                    .HideLabel();
+            Output = CreateOutputValue
+            (
+                nameof(Output),
+                Get,
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
 
             ListInput.OnConnected += OnListInputConnected;
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            IList list = (IList)ListInput.GetValue();
+            IList list = ListInput.GetValue().ListValue;
             object item = Value.GetValue();
-            return list.Contains(item);
+            return ValueTransfer.CreateBool(list.Contains(item));
         }
         
         private void OnListInputConnected()

@@ -21,13 +21,28 @@ namespace Loykas.Scripting
 
         public GetVariableNode()
         {
-            Input = InputValue(nameof(Input), ScriptDataType.Single(DataType.String))
-                            .UseVariableInput()
-                            .DisableConnection()
-                            .HideLabel();
+            Input = CreateInputValue
+            (
+                nameof(Input),
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    IsConnectionDisabled = true,
+                    HideLabel = true
+                }
+            )
+            .UseInput(InputValueTypes.Variable);
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Any), Get)
-                    .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
 
             Input.OnValueChanged += OnInputValueChanged;
         }
@@ -43,10 +58,10 @@ namespace Loykas.Scripting
             OnNodeUpdated?.Invoke();
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            string name = Input.GetValue().ToString();
-            return Flow.GetVariable(name).Value;
+            string name = Input.GetValue().StringValue;
+            return Flow.GetVariable(name).GetValueTransfer();
         }
 
         private void OnVariableDeleted(Variable variable)
@@ -64,7 +79,7 @@ namespace Loykas.Scripting
 
             if (name.Equals(variable.Name))
             {
-                Input.SetValue("");
+                Input.SetValue(ValueTransfer.CreateString(string.Empty));
             }
         }
 
@@ -94,7 +109,7 @@ namespace Loykas.Scripting
 
         private void UpdateInputType()
         {
-            string name = Input.GetValue().ToString();
+            string name = Input.GetValue().StringValue;
             _variable = Flow.GetVariable(name);
             ScriptDataType type = _variable == null ? ScriptDataType.Single(DataType.Any) : _variable.Type;
             Value.SetType(type);

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
+using UnityEngine.Pool;
 
 namespace Loykas.Scripting
 {
@@ -10,31 +10,16 @@ namespace Loykas.Scripting
         public Dictionary<Type, ScriptNode> Nodes;
         private ScriptNode[] _nodes;
 
+        private Dictionary<Type, ObjectPool<ScriptNode>> _nodePools = new();
+
         protected override void Awake()
         {
             base.Awake();
-
             LoadNodes();
         }
 
         private void LoadNodes()
         {
-            // Assembly assembly = Assembly.GetExecutingAssembly();
-
-            // Type[] types = assembly.GetTypes();
-
-            // foreach (Type type in types)
-            // {
-            //     ScriptNodeAttribute attribute = type.GetCustomAttribute<ScriptNodeAttribute>();
-            //     if (attribute != null)
-            //     {
-            //         var content = (ScriptNodeContent)Activator.CreateInstance(type);
-            //         content.Category = attribute.Category;
-            //         content.ShouldIncludeInMenu = attribute.ShoudlIncludeInMenu;
-            //         Nodes.Add(content.Type, content);
-            //     }
-            // }
-
             _nodes = new ScriptNode[]
             {
                 // Event
@@ -59,7 +44,7 @@ namespace Loykas.Scripting
                 // new PauseNode(),
                 // new ResumeNode(),
 
-                // Motion,
+                // Motion
                 new MoveNode(),
                 new TranslateNode(),
                 new SetPositionNode(),
@@ -75,7 +60,7 @@ namespace Loykas.Scripting
                 new GetGravityNode(),
                 new GetVelocityNode(),
 
-                // Look,
+                // Look
                 new SetColorNode(),
                 new SetTextureSlotNode(),
                 new SetSizeNode(),
@@ -90,7 +75,7 @@ namespace Loykas.Scripting
                 new GetRadiusNode(),
                 new GetTextNode(),
 
-                // Operator,
+                // Operator
                 new AddNode(),
                 new SubtractNode(),
                 new MultiplyNode(),
@@ -118,7 +103,7 @@ namespace Loykas.Scripting
                 new LerpNode(),
                 new ClampNode(),
 
-                // Data,
+                // Data
                 new SetVariableNode(),
                 new GetVariableNode(),
                 new SetGlobalVariableNode(),
@@ -231,7 +216,7 @@ namespace Loykas.Scripting
                 }
                 if (port is OutputTrigger)
                 {
-                    if (node.InputTriggers.Count > 0)
+                    if (node.HasInputTrigger)
                     {
                         SortedAdd(nodes, node);
                     }
@@ -257,20 +242,41 @@ namespace Loykas.Scripting
 
         public T CreateNode<T>() where T : ScriptNode
         {
-            if (Nodes.TryGetValue(typeof(T), out ScriptNode node))
-            {
-                return (T)node.Create();
-            }
-            return null;
+            return (T)CreateNode(typeof(T));
         }
 
         public ScriptNode CreateNode(Type nodeType)
         {
-            if (Nodes.TryGetValue(nodeType, out ScriptNode node))
+            if (!Nodes.TryGetValue(nodeType, out ScriptNode node))
             {
-                return node.Create();
+                return null;
             }
-            return null;
+            if (!_nodePools.TryGetValue(nodeType, out ObjectPool<ScriptNode> pool))
+            {
+                _nodePools.Add(
+                    nodeType,
+                    pool = new ObjectPool<ScriptNode>
+                    (
+                        createFunc: node.Create,
+                        actionOnRelease: OnNodeRelease
+                    )
+                );
+            }
+            return pool.Get();
+        }
+
+        private void OnNodeRelease(ScriptNode node)
+        {
+            node.DefaultValues.Clear();
+        }
+
+        public void ReleaseNode(ScriptNode node)
+        {
+            Debug.Log($"Release node {node.GetType()}");
+            if (_nodePools.TryGetValue(node.GetType(), out ObjectPool<ScriptNode> pool))
+            {
+                pool.Release(node);
+            }
         }
     }
 }

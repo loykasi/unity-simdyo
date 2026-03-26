@@ -69,15 +69,13 @@ namespace Loykas.Scripting
             string name = Dropdown.options[index].text;
             if (name.Equals("Select..."))
             {
-                name = string.Empty;
+                _variableName = string.Empty;
             }
-            OnSubmit?.Invoke(name);
-
-            if (name == string.Empty)
+            else
             {
-                return;
+                _variableName = SceneManager.Instance.GlobalScript.GetVariable(name).Name;   
             }
-            _variableName = SceneManager.Instance.GlobalScript.GetVariable(name).Name;
+            OnSubmit?.Invoke(_variableName);
         }
 
         public override object GetValue()
@@ -107,6 +105,12 @@ namespace Loykas.Scripting
 
                 Dropdown.SetValueWithoutNotify(_selectedIndex);
             }
+        }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            Debug.Log("Set name: " + _variableName);
+            inputValue.SetValue(ValueTransfer.CreateString(_variableName));
         }
     }
 }

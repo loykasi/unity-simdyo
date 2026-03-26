@@ -11,13 +11,28 @@ namespace Loykas.Scripting
 
         public GetGravityNode()
         {
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), Get)
-                    .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
         }
 
         public override ScriptNode Create()
@@ -25,16 +40,16 @@ namespace Loykas.Scripting
             return new GetGravityNode();
         }
 
-        public object Get()
+        public ValueTransfer Get()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null || entity is not MeshEntity meshEntity)
             {
-                return default(float);
+                return ValueTransfer.CreateBool(default);
             }
 
-            return meshEntity.IsGravityEnabled;
+            return ValueTransfer.CreateBool(meshEntity.IsGravityEnabled);
         }
     }
 }

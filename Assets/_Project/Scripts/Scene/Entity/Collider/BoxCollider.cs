@@ -4,14 +4,17 @@ using UnityEngine;
 [System.Serializable]
 public class BoxCollider : Collider
 {
-    public override IEnumerable<Collider2D> Colliders => new Collider2D[]
-    {
-        Collider
-    };
-
     public override bool IsTrigger => Collider.isTrigger;
-    
+
     public BoxCollider2D Collider;
+
+    public override void Init()
+    {
+        Colliders = new Collider2D[]
+        {
+            Collider
+        };
+    }
 
     public void SetSize(Vector2 size)
     {

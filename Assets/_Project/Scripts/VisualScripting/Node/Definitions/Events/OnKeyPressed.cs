@@ -14,14 +14,23 @@ namespace Loykas.Scripting
 
         public OnKeyPressedNode()
         {
-            KeyCode = InputValue(nameof(KeyCode), ScriptDataType.Single(DataType.Key)).UseKeyCodeInput().DisableConnection();
+            KeyCode = CreateInputValue
+            (
+                nameof(KeyCode),
+                ScriptDataType.Single(DataType.Key),
+                new PortSettings
+                {
+                    IsConnectionDisabled = true
+                }
+            )
+            .UseInput(InputValueTypes.Key);
         }
 
         public override EventHook Hook => EventHook.Update;
 
         public override bool ShouldTrigger()
         {
-            var keyCode = (Key)KeyCode.GetValue();
+            Key keyCode = KeyCode.GetValue().KeyValue;
 
             if (keyCode.IsAny)
             {

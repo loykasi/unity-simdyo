@@ -63,6 +63,7 @@ namespace Loykas.Scripting
         {
             Source.DeleteConnection(this);
             Destination.DeleteConnection(this);
+            Connection.OnUpdated -= OnUpdated;
             Destroy(gameObject);
         }
 

@@ -22,14 +22,30 @@ namespace Loykas.Scripting
         public CreateCloneNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Clone);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit), new PortSettings
+            {
+                HideLabel = true
+            });
 
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true,
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
 
-            EntityOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Entity), Get);
+            EntityOutput = CreateOutputValue
+            (
+                nameof(EntityOutput),
+                Get,
+                ScriptDataType.Single(DataType.Entity),
+                PortSettings.Default
+            );
         }
 
         private OutputTrigger Clone(NodeTask task)
@@ -47,9 +63,9 @@ namespace Loykas.Scripting
             return Exit;
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            return _entity.Id;
+            return ValueTransfer.CreateEntity(_entity);
         }
     }
 }

@@ -12,8 +12,8 @@ namespace Loykas.Scripting
         public OutputValue PositionY;
         // public OutputValue NormalXOutput;
         // public OutputValue NormalYOutput;
-
-        private int _otherEntityId;
+        
+        private SceneEntity _entity;
         //private Vector3 _normal;
         private Vector3 _position;
 
@@ -24,10 +24,28 @@ namespace Loykas.Scripting
 
         public OnTouchedNode()
         {
-            OtherEntity = OutputValue(nameof(OtherEntity), ScriptDataType.Single(DataType.Entity), GetOtherEntity);
+            OtherEntity = CreateOutputValue
+            (
+                nameof(OtherEntity),
+                GetOtherEntity,
+                ScriptDataType.Single(DataType.Entity),
+                PortSettings.Default
+            );
 
-            PositionY = OutputValue(nameof(PositionX), ScriptDataType.Single(DataType.Number), GetPositionX);
-            PositionY = OutputValue(nameof(PositionY), ScriptDataType.Single(DataType.Number), GetPositionX);
+            PositionY = CreateOutputValue
+            (
+                nameof(PositionX),
+                GetPositionX,
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            );
+            PositionY = CreateOutputValue
+            (
+                nameof(PositionY),
+                GetPositionX,
+                ScriptDataType.Single(DataType.Number),
+                PortSettings.Default
+            );
 
             //NormalXOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Number), (flow) => _normal.x);
             //NormalYOutput = OutputValue(nameof(EntityOutput), ScriptDataType.Single(DataType.Number), (flow) => _normal.y);
@@ -35,9 +53,20 @@ namespace Loykas.Scripting
 
         public override EventHook Hook => EventHook.OnTouched;
 
-        public object GetOtherEntity() => _otherEntityId;
-        public object GetPositionX() => _position.x;
-        public object GetPositionY() => _position.y;
+        public ValueTransfer GetOtherEntity()
+        {
+            return ValueTransfer.CreateEntity(_entity);
+        }
+
+        public ValueTransfer GetPositionX()
+        {
+            return ValueTransfer.CreateNumber(_position.x);
+        }
+
+        public ValueTransfer GetPositionY()
+        {
+            return ValueTransfer.CreateNumber(_position.y);
+        }
 
         public override void AssignArgument(object value)
         {
@@ -45,13 +74,13 @@ namespace Loykas.Scripting
             {
                 ContactPoint2D point = collision2D.GetContact(0);
 
-                _otherEntityId = collision2D.collider.GetComponent<SceneEntity>().Id;
+                _entity = collision2D.collider.GetComponent<SceneEntity>();
                 _position = point.point;
                 // _normal = point.normal;
             }
             else if (value is Collider2D collider2D)
             {
-                _otherEntityId = collider2D.GetComponent<SceneEntity>().Id;
+                _entity = collider2D.GetComponent<SceneEntity>();
                 _position = Vector3.zero;
             }
         }

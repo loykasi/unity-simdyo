@@ -7,6 +7,8 @@ namespace Loykas.Scripting
     public class EntityInput : BaseInput
     {
         public TMP_Dropdown Dropdown;
+        
+        private SceneEntity _enttiy;
 
         private void Awake()
         {
@@ -15,14 +17,14 @@ namespace Loykas.Scripting
 
         private void OnValueChanged(int index)
         {
-            var entity = ObjectManager.Instance.GetEntityByIndex(index);
+            _enttiy = ObjectManager.Instance.GetEntityByIndex(index);
 
             if (ValueInstance != null)
             {
-                ValueHandler.SetValue(ValueInstance, entity);
+                ValueHandler.SetValue(ValueInstance, _enttiy);
             }
 
-            OnSubmit?.Invoke(entity ? entity.Id : null);
+            OnSubmit?.Invoke(_enttiy ? _enttiy.Id : null);
         }
 
         public void Init(List<string> options)
@@ -51,6 +53,11 @@ namespace Loykas.Scripting
         public override void SetWidth(float width)
         {
             Rect.sizeDelta = new Vector2(width, Rect.sizeDelta.y);
+        }
+
+        public override void SetDefaultValue(InputValue inputValue)
+        {
+            inputValue.Value = ValueTransfer.CreateEntity(_enttiy);
         }
     }
 }

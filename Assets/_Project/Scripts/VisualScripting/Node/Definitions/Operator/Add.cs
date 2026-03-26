@@ -18,17 +18,29 @@ namespace Loykas.Scripting
 
         public AddNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
             
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            B = CreateInputValue
+            (
+                nameof(B),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get() => OperatorUtility.Add(A.GetValue(), B.GetValue());
+        private ValueTransfer Get()
+        {
+            ValueTransfer a = A.GetValue();
+            ValueTransfer b = B.GetValue();
+
+            return ValueTransfer.CreateNumber(a.NumberValue + b.NumberValue);
+        }
     }
 }

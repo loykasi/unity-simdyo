@@ -26,7 +26,7 @@ public class CircleEntity : MeshEntity
         Mesh = meshWrapper;
         Material = Instantiate(material);
 
-        Renderer.material = Material;
+        Renderer.sharedMaterial = Material;
         meshWrapper.AssignTo(MeshFilter);
 
         Material.SetFloat(_radiusProperty, Radius);

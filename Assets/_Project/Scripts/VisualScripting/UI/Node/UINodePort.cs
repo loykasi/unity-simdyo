@@ -43,12 +43,12 @@ namespace Loykas.Scripting
         {
             if (_label != null)
             {
-                if (Port.ShouldShowLabel)
+                if (Port.ShowLabel)
                 {
                     string key = Port.Key;
-                    if (Port.ShouldLocalized)
+                    if (Port.UseLocalization)
                     {
-                        key = GlobalLocalization.Instance.GetValue(Port.GetLocalizedKey());   
+                        key = GlobalLocalization.Instance.GetValue(Port.LocalizationKey);   
                     }
                     _label.text = key;
                 }
@@ -65,10 +65,10 @@ namespace Loykas.Scripting
         {
             if (_label != null)
             {
-                if (Port.ShouldShowLabel)
+                if (Port.ShowLabel)
                 {
                     string key = Port.Key;
-                    if (Port.ShouldLocalized)
+                    if (Port.UseLocalization)
                     {
                         string name = Port.Node.GetNameKey();
                         key = name + "." + Port.Key;
@@ -95,7 +95,7 @@ namespace Loykas.Scripting
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (Port.IsDisableConnection)
+            if (Port.IsConnectionDisabled)
             {
                 return;
             }
@@ -105,7 +105,7 @@ namespace Loykas.Scripting
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (Port.IsDisableConnection)
+            if (Port.IsConnectionDisabled)
             {
                 return;
             }
@@ -115,7 +115,7 @@ namespace Loykas.Scripting
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (Port.IsDisableConnection)
+            if (Port.IsConnectionDisabled)
             {
                 return;
             }
@@ -125,7 +125,7 @@ namespace Loykas.Scripting
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (Port.IsDisableConnection)
+            if (Port.IsConnectionDisabled)
             {
                 return;
             }
@@ -135,7 +135,7 @@ namespace Loykas.Scripting
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (Port.IsDisableConnection)
+            if (Port.IsConnectionDisabled)
             {
                 return;
             }

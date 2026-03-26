@@ -19,27 +19,36 @@ namespace Loykas.Scripting
 
         public LerpNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
             
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            B = CreateInputValue
+            (
+                nameof(B),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            T = InputValue(nameof(T), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            T = CreateInputValue
+            (
+                nameof(T),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            float t = (float)T.GetValue();
-            float a = (float)A.GetValue();
-            float b = (float)B.GetValue();
-            return Mathf.Lerp(a, b, t);
+            float t = T.GetValue().NumberValue;
+            float a = A.GetValue().NumberValue;
+            float b = B.GetValue().NumberValue;
+            return ValueTransfer.CreateNumber(Mathf.Lerp(a, b, t));
         }
     }
 }

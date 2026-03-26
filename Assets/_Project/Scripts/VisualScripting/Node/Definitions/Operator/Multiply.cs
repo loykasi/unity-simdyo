@@ -18,17 +18,23 @@ namespace Loykas.Scripting
 
         public MultiplyNode()
         {
-            A = InputValue(nameof(A), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            A = CreateInputValue
+            (
+                nameof(A),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
+            
+            B = CreateInputValue
+            (
+                nameof(B),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            B = InputValue(nameof(B), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
-
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get() => OperatorUtility.Multiply(A.GetValue(), B.GetValue());
+        private ValueTransfer Get() => ValueTransfer.CreateNumber(A.GetValue().NumberValue * B.GetValue().NumberValue);
     }
 }

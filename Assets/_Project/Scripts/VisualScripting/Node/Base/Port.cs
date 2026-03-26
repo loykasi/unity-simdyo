@@ -10,19 +10,39 @@ namespace Loykas.Scripting
         public IScriptNode Node { get; set; }
         public string Key { get; set; }
 
-        public bool IsDisableConnection { get; set; } = false;
-        public virtual bool ShouldShowLabel { get; set; } = true;
-        public bool ShouldLocalized { get; set; } = true;
-        public bool ShouldLocalizedPerNode { get; set; } = true;
+        public bool ShowLabel { get; set; }
+        public bool IsConnectionDisabled { get; set; }
+        public bool UseLocalization { get; set; }
+        public string LocalizationKey { get; set; }
 
-        public Port(string key)
+        public Port(IScriptNode node, string key)
         {
+            Node = node;
             Key = key;
+        }
+
+        public Port(IScriptNode node, string key, PortSettings settings)
+        {
+            Node = node;
+            Key = key;
+
+            ShowLabel = !settings.HideLabel;
+            IsConnectionDisabled = settings.IsConnectionDisabled;
+            UseLocalization = !settings.IsLocalizationDisabled;
+
+            if (string.IsNullOrWhiteSpace(settings.LocalizationKey))
+            {
+                LocalizationKey = Node.GetNameKey() + "." + Key;
+            }
+            else
+            {
+                LocalizationKey = settings.LocalizationKey;
+            }
         }
 
         public virtual bool CanConnect(IPort port)
         {
-            return !IsDisableConnection && Node != port.Node && port is TOtherPort other && CanConnectTo(other);
+            return !IsConnectionDisabled && Node != port.Node && port is TOtherPort other && CanConnectTo(other);
         }
 
         public abstract bool CanConnectTo(TOtherPort port);
@@ -52,15 +72,15 @@ namespace Loykas.Scripting
 
         protected abstract void DisconnectPort(TOtherPort port);
 
-        public string GetLocalizedKey()
-        {
-            if (ShouldLocalizedPerNode)
-            {
-                string name = Node.GetNameKey();
-                return name + "." + Key;
-            }
+        // public string GetLocalizedKey()
+        // {
+        //     if (ShouldLocalizedPerNode)
+        //     {
+        //         string name = Node.GetNameKey();
+        //         return name + "." + Key;
+        //     }
 
-            return Key;
-        }
+        //     return Key;
+        // }
     }
 }

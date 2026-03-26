@@ -11,13 +11,28 @@ namespace Loykas.Scripting
 
         public GetAngleNode()
         {
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                    .HideLabel()
-                    .UseInput()
-                    .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
                         
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Number), Get)
-                    .UseGlobalLocalized();
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Value)
+                }
+            );
         }
 
         public override ScriptNode Create()
@@ -25,16 +40,16 @@ namespace Loykas.Scripting
             return new GetAngleNode();
         }
 
-        public object Get()
+        public ValueTransfer Get()
         {
             SceneEntity entity = Flow.GetEntity(Entity);
 
             if (entity == null)
             {
-                return default(float);
+                return ValueTransfer.CreateNumber(default);
             }
 
-            return entity.Angle;
+            return ValueTransfer.CreateNumber(entity.Angle);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace Loykas.Scripting
 
             float width = _handleSize;
 
-            if (_outputValue.ShouldShowLabel)
+            if (_outputValue.ShowLabel)
             {
                 width += _label.rectTransform.sizeDelta.x;
             }

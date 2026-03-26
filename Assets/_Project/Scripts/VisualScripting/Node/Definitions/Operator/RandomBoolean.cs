@@ -17,15 +17,15 @@ namespace Loykas.Scripting
 
         public RandomBooleanNode()
         {
-            Chance = InputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
+            Chance = CreateInputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Value = OutputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean), GetRandom).HideLabel();
+            Value = CreateOutputValue(nameof(Value), GetRandom, ScriptDataType.Single(DataType.Boolean));
         }
 
-        private object GetRandom()
+        private ValueTransfer GetRandom()
         {
-            float chance = (float)Chance.GetValue();
-            return Random.Range(0, 100) > chance;
+            float chance = Chance.GetValue().NumberValue;
+            return ValueTransfer.CreateBool(Random.Range(0, 100) > chance);
         }
     }
 }

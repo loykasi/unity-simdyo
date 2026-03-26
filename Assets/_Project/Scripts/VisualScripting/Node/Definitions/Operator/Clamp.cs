@@ -19,27 +19,36 @@ namespace Loykas.Scripting
 
         public ClampNode()
         {
-            Value = InputValue(nameof(Value), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .HideLabel();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Min = InputValue(nameof(Min), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            Min = CreateInputValue
+            (
+                nameof(Min),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
             
-            Max = InputValue(nameof(Max), ScriptDataType.Single(DataType.Number))
-                .UseInput()
-                .NoLocalize();
+            Max = CreateInputValue
+            (
+                nameof(Max),
+                ScriptDataType.Single(DataType.Number)
+            )
+            .UseInput();
 
-            Output = OutputValue(nameof(Output), ScriptDataType.Single(DataType.Number), Get).HideLabel();
+            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
         }
 
-        private object Get()
+        private ValueTransfer Get()
         {
-            float value = (float)Value.GetValue();
-            float min = (float)Min.GetValue();
-            float max = (float)Max.GetValue();
-            return Mathf.Clamp(value, min, max);
+            float value = Value.GetValue().NumberValue;
+            float min = Min.GetValue().NumberValue;
+            float max = Max.GetValue().NumberValue;
+            return ValueTransfer.CreateNumber(Mathf.Clamp(value, min, max));
         }
     }
 }

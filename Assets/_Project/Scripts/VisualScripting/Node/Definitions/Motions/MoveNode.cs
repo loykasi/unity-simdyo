@@ -28,16 +28,49 @@ namespace Loykas.Scripting
         public MoveNode()
         {
             Enter = CreateInputTrigger(nameof(Enter), Move);
-            Exit = OutputTrigger(nameof(Exit));
+            Exit = CreateOutputTrigger(nameof(Exit));
 
-            Entity = InputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .HideLabel()
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
 
-            X = InputValue(nameof(X), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
-            Y = InputValue(nameof(Y), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
-            Duration = InputValue(nameof(Duration), ScriptDataType.Single(DataType.Number)).UseInput().NoLocalize();
+            X = CreateInputValue
+            (
+                nameof(X),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
+
+            Y = CreateInputValue
+            (
+                nameof(Y),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            );
+
+            Duration = CreateInputValue
+            (
+                nameof(Duration),
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
+            ).UseInput();
         }
 
         public OutputTrigger Move(NodeTask task)
@@ -50,13 +83,13 @@ namespace Loykas.Scripting
 
             if (_isFirstFrame)
             {
-                _duration = (float)Duration.GetValue();
+                _duration = Duration.GetValue().NumberValue;
                 _time = _duration;
                 _isFirstFrame = false;
 
                 _start = entity.Position;
-                _target.x = (float)X.GetValue();
-                _target.y = (float)Y.GetValue();
+                _target.x = X.GetValue().NumberValue;
+                _target.y = Y.GetValue().NumberValue;
             }
 
             if (_time > 0)

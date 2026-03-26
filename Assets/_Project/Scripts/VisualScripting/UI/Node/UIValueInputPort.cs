@@ -27,7 +27,7 @@ namespace Loykas.Scripting
             }
             _inputValue = (InputValue)Port;
 
-            if (_inputValue.IsDisableConnection)
+            if (_inputValue.IsConnectionDisabled)
             {
                 _portHandle.gameObject.SetActive(false);
             }
@@ -42,7 +42,7 @@ namespace Loykas.Scripting
 
             _input = _inputDataReference.Get(_inputValue.InputType, UINode.Board.Entity);
             _input.Rect.SetParent(_inputHolder, false);
-            _input.SetValue(_inputValue.Value);
+            _input.SetValue(_inputValue.HasValue ? _inputValue.Value.GetObjectValue() : null);
 
             _input.OnValueUpdated += OnInputValueChanged;
             _input.OnSubmit += OnSubmit;
@@ -56,7 +56,7 @@ namespace Loykas.Scripting
 
             float width = _handleSize;
 
-            if (_inputValue.ShouldShowLabel)
+            if (_inputValue.ShowLabel)
             {
                 width += _label.rectTransform.sizeDelta.x + _inputOffset;
             }
@@ -100,8 +100,8 @@ namespace Loykas.Scripting
 
         private void OnSubmit(object value)
         {
-            Debug.Log($"Set value: {value}");
-            _inputValue.SetValue(value);
+            // Debug.Log($"Set value: {value}");
+            _input.SetDefaultValue(_inputValue);
         }
 
         private void OnInputValueChanged()

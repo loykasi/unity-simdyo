@@ -23,7 +23,7 @@ namespace Loykas.Scripting
 
             float width = _handleSize;
 
-            if (Port.ShouldShowLabel)
+        if (Port.ShowLabel)
             {
                 width += _label.rectTransform.sizeDelta.x;
             }
