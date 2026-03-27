@@ -15,7 +15,7 @@ namespace Loykas.Scripting
             return new DeleteSelfNode();
         }
 
-        public DeleteSelfNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Delete);
             Exit = CreateOutputTrigger

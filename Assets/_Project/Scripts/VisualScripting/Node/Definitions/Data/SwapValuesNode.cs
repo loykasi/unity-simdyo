@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -19,7 +18,7 @@ namespace Loykas.Scripting
             return new SwapValuesNode();
         }
 
-        public SwapValuesNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Swap);
             Exit = CreateOutputTrigger(nameof(Exit));

@@ -15,6 +15,8 @@ namespace Loykas.Scripting
         public bool UseLocalization { get; set; }
         public string LocalizationKey { get; set; }
 
+        public Port() { }
+
         public Port(IScriptNode node, string key)
         {
             Node = node;
@@ -22,6 +24,31 @@ namespace Loykas.Scripting
         }
 
         public Port(IScriptNode node, string key, PortSettings settings)
+        {
+            Node = node;
+            Key = key;
+
+            ShowLabel = !settings.HideLabel;
+            IsConnectionDisabled = settings.IsConnectionDisabled;
+            UseLocalization = !settings.IsLocalizationDisabled;
+
+            if (string.IsNullOrWhiteSpace(settings.LocalizationKey))
+            {
+                LocalizationKey = Node.GetNameKey() + "." + Key;
+            }
+            else
+            {
+                LocalizationKey = settings.LocalizationKey;
+            }
+        }
+
+        public void Init(IScriptNode node, string key)
+        {
+            Node = node;
+            Key = key;
+        }
+
+        public void Init(IScriptNode node, string key, PortSettings settings)
         {
             Node = node;
             Key = key;
@@ -71,6 +98,11 @@ namespace Loykas.Scripting
         }
 
         protected abstract void DisconnectPort(TOtherPort port);
+        public virtual void Release()
+        {
+            OnConnected = null;
+            OnDisconnected = null;
+        }
 
         // public string GetLocalizedKey()
         // {

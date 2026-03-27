@@ -1,21 +1,19 @@
-using System;
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
-    public class MakeVariableNode : ScriptNode
+    public abstract class MakeVariableNode : ScriptNode
     {
         public override ScriptNodeCategory Category => ScriptNodeCategory.Data;
         
+        public abstract DataType VariableType { get; }
         public InputValue Input;
         public OutputValue Output;
 
-        public MakeVariableNode(DataType type) : base()
+        public override void Build()
         {
             Input = CreateInputValue
             (
                 nameof(Input),
-                ScriptDataType.Single(type),
+                ScriptDataType.Single(VariableType),
                 new PortSettings
                 {
                     IsConnectionDisabled = true,
@@ -28,7 +26,7 @@ namespace Loykas.Scripting
             (
                 nameof(Output),
                 Get,
-                ScriptDataType.Single(type),
+                ScriptDataType.Single(VariableType),
                 new PortSettings
                 {
                     HideLabel = true

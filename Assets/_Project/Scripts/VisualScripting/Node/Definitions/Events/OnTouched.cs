@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loykas.Scripting
@@ -22,8 +21,10 @@ namespace Loykas.Scripting
             return new OnTouchedNode();
         }
 
-        public OnTouchedNode()
+        public override void Build()
         {
+            base.Build();
+            
             OtherEntity = CreateOutputValue
             (
                 nameof(OtherEntity),

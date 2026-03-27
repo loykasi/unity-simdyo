@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetVelocityNode : ScriptNode
@@ -10,7 +8,7 @@ namespace Loykas.Scripting
         public OutputValue X;
         public OutputValue Y;
 
-        public GetVelocityNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

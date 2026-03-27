@@ -8,7 +8,7 @@ namespace Loykas.Scripting
 
         public InputTrigger Enter;
 
-        public PauseNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Pause);
         }

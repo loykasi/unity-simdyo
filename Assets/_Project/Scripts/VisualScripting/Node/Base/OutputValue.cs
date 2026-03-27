@@ -9,15 +9,16 @@ namespace Loykas.Scripting
         public Func<ValueTransfer> action;
         public List<InputValue> Destinations = new();
 
-        public OutputValue
+        public void Init
         (
             IScriptNode node,
             string key,
             Func<ValueTransfer> getValue,
             ScriptDataType type,
             PortSettings settings
-        ) : base(node, key, settings)
+        )
         {
+            Init(node, key, settings);
             action = getValue;
             Type = type;
         }
@@ -48,6 +49,14 @@ namespace Loykas.Scripting
         public override bool CanConnectTo(InputValue port)
         {
             return ScriptDataType.IsCompatible(Type, port.Type);
+        }
+
+        public override void Release()
+        {
+            base.Release();
+            Destinations.Clear();
+            
+            ScriptPool.Instance.OutputValue.Release(this);
         }
     }
 }

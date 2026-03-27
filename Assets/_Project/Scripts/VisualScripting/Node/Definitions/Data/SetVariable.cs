@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {    
@@ -21,7 +20,7 @@ namespace Loykas.Scripting
             return new SetVariableNode();
         }
 
-        public SetVariableNode() : base()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit));

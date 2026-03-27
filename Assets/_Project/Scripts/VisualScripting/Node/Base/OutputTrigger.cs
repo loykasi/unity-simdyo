@@ -5,10 +5,6 @@ namespace Loykas.Scripting
         public string Name;
         public InputTrigger Destination;
 
-        public OutputTrigger(IScriptNode node, string key, PortSettings settings) : base(node, key, settings)
-        {
-        }
-
         public override bool CanConnectTo(InputTrigger port)
         {
             return true;
@@ -36,6 +32,14 @@ namespace Loykas.Scripting
                 return;
             }
             Destination = null;
+        }
+
+        public override void Release()
+        {
+            base.Release();
+            Destination = null;
+            
+            ScriptPool.Instance.OutputTrigger.Release(this);
         }
     }
 }

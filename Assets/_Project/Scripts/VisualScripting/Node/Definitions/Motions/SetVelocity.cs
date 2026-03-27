@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new SetVelocityNode();
         }
 
-        public SetVelocityNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit));

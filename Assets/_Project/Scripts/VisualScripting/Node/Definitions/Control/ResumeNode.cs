@@ -8,7 +8,7 @@ namespace Loykas.Scripting
 
         public InputTrigger Enter;
 
-        public ResumeNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Resume);
         }

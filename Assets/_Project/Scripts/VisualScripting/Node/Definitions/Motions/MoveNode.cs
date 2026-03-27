@@ -25,7 +25,7 @@ namespace Loykas.Scripting
             return new MoveNode();
         }
 
-        public MoveNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Move);
             Exit = CreateOutputTrigger(nameof(Exit));

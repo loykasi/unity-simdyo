@@ -17,7 +17,7 @@ namespace Loykas.Scripting
             return new LerpNode();
         }
 
-        public LerpNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

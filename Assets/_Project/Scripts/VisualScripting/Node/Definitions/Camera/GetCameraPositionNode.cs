@@ -14,7 +14,7 @@ namespace Loykas.Scripting
             return new GetCameraPositionNode();
         }
 
-        public GetCameraPositionNode()
+        public override void Build()
         {            
             X = CreateOutputValue
             (

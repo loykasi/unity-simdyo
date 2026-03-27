@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -17,7 +15,7 @@ namespace Loykas.Scripting
             return new ListContainsItemNode();
         }
 
-        public ListContainsItemNode()
+        public override void Build()
         {
             ListInput = CreateInputValue
             (

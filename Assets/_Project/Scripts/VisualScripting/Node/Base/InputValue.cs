@@ -42,8 +42,9 @@ namespace Loykas.Scripting
             }
         }
 
-        public InputValue(IScriptNode node, string key, ScriptDataType type, PortSettings settings) : base(node, key, settings)
+        public void Init(IScriptNode node, string key, ScriptDataType type, PortSettings settings)
         {
+            Init(node, key, settings);
             Type = type;
         }
 
@@ -138,6 +139,17 @@ namespace Loykas.Scripting
         public override bool CanConnectTo(OutputValue port)
         {            
             return ScriptDataType.IsCompatible(port.Type, Type);
+        }
+
+        public override void Release()
+        {
+            base.Release();
+            OnValueChanged = null;
+            IsNullMeanSelf = false;
+            InputType = InputValueTypes.None;
+            Source = null;
+
+            ScriptPool.Instance.InputValue.Release(this);
         }
     }
 }

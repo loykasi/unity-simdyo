@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetAngleNode : ScriptNode
@@ -9,7 +7,7 @@ namespace Loykas.Scripting
         public InputValue Entity;
         public OutputValue Value;
 
-        public GetAngleNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

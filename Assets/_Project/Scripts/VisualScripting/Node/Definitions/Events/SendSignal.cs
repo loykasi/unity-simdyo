@@ -7,10 +7,11 @@ namespace Loykas.Scripting
         public InputValue Name;
         public InputValue Entity;
 
-        public SendSignalNode()
+        public override void Build()
         {
+            base.Build();
+            
             Enter = CreateInputTrigger(nameof(Enter), SendSignal);
-
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
 
             Name = CreateInputValue

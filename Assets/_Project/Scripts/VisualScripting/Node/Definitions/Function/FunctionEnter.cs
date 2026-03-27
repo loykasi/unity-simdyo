@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     public class FunctionEnterNode : ScriptNode
@@ -16,7 +13,7 @@ namespace Loykas.Scripting
             return new FunctionEnterNode();
         }
 
-        public FunctionEnterNode()
+        public override void Build()
         {
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
         }
@@ -54,9 +51,9 @@ namespace Loykas.Scripting
             OnNodeUpdated?.Invoke();
         }
 
-        public OutputTrigger TriggerFunction(ScriptFlow flow)
-        {
-            return Exit;
-        }
+        // public OutputTrigger TriggerFunction(ScriptFlow flow)
+        // {
+        //     return Exit;
+        // }
     }
 }

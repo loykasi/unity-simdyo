@@ -16,7 +16,7 @@ namespace Loykas.Scripting
             return new SetCameraSizeNode();
         }
 
-        public SetCameraSizeNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetTextureSlotNode : ScriptNode
@@ -14,7 +12,7 @@ namespace Loykas.Scripting
             return new GetTextureSlotNode();
         }
 
-        public GetTextureSlotNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

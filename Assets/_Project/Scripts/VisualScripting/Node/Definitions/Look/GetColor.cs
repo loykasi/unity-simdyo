@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetColorNode : ScriptNode
@@ -14,7 +12,7 @@ namespace Loykas.Scripting
             return new GetColorNode();
         }
 
-        public GetColorNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

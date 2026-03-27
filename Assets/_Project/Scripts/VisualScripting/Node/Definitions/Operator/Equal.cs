@@ -1,6 +1,3 @@
-using System;
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class EqualNode : ScriptNode
@@ -17,7 +14,7 @@ namespace Loykas.Scripting
             return new EqualNode();
         }
 
-        public EqualNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

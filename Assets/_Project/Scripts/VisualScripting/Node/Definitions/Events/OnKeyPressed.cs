@@ -1,4 +1,3 @@
-using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Loykas.Scripting
@@ -12,8 +11,9 @@ namespace Loykas.Scripting
             return new OnKeyPressedNode();
         }
 
-        public OnKeyPressedNode()
+        public override void Build()
         {
+            base.Build();
             KeyCode = CreateInputValue
             (
                 nameof(KeyCode),

@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetRadiusNode : ScriptNode
@@ -14,7 +12,7 @@ namespace Loykas.Scripting
             return new GetRadiusNode();
         }
 
-        public GetRadiusNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

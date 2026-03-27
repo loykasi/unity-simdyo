@@ -61,7 +61,7 @@ namespace Loykas.Scripting
         {
             foreach (ScriptNode node in Nodes)
             {
-                node.Clear();
+                node.Release();
             }
             foreach (ScriptFunction function in Functions)
             {
@@ -198,7 +198,7 @@ namespace Loykas.Scripting
             //     Disconnect(port);
             // }
             
-            node.Clear();
+            node.Release();
             Nodes.Remove(node);
 
             if (node is FunctionEnterNode functionEnterNode)

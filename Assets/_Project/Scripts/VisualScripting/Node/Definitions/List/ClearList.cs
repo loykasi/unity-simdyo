@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -18,7 +16,7 @@ namespace Loykas.Scripting
             return new ClearListNode();
         }
 
-        public ClearListNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Clear);
             Exit = CreateOutputTrigger(nameof(Exit));

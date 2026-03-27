@@ -17,7 +17,7 @@ namespace Loykas.Scripting
             return new ClampNode();
         }
 
-        public ClampNode()
+        public override void Build()
         {
             Value = CreateInputValue
             (

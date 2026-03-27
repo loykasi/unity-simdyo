@@ -50,6 +50,11 @@ namespace Loykas.Scripting
             ID = Guid.NewGuid();
         }
 
+        public virtual void Build()
+        {
+            
+        }
+
         public virtual void FlowAssigned()
         {
             
@@ -72,7 +77,8 @@ namespace Loykas.Scripting
 
         protected InputTrigger CreateInputTrigger(string key, Func<NodeTask, OutputTrigger> action)
         {
-            InputTrigger = new
+            InputTrigger = ScriptPool.Instance.InputTrigger.Get();
+            InputTrigger.Init
             (
                 node: this,
                 key: key,
@@ -90,7 +96,8 @@ namespace Loykas.Scripting
 
         public OutputTrigger CreateOutputTrigger(string key, PortSettings settings)
         {
-            OutputTrigger outputTrigger = new
+            OutputTrigger outputTrigger = ScriptPool.Instance.OutputTrigger.Get();
+            outputTrigger.Init
             (
                 node: this,
                 key: key,
@@ -109,7 +116,8 @@ namespace Loykas.Scripting
 
         protected InputValue CreateInputValue(string key, ScriptDataType type, PortSettings settings)
         {
-            InputValue valueInput = new
+            InputValue valueInput = ScriptPool.Instance.InputValue.Get();
+            valueInput.Init
             (
                 node: this,
                 key: key,
@@ -129,7 +137,8 @@ namespace Loykas.Scripting
 
         public OutputValue CreateOutputValue(string key, Func<ValueTransfer> getValue, ScriptDataType type, PortSettings settings)
         {
-            OutputValue valueOutput = new
+            OutputValue valueOutput = ScriptPool.Instance.OutputValue.Get();
+            valueOutput.Init
             (
                 node: this,
                 key: key,
@@ -148,13 +157,25 @@ namespace Loykas.Scripting
 
         }
 
-        public void Clear()
+        public void Release()
         {
+            OnNodeRemove();
             foreach (IPort port in Ports)
             {
                 Flow.Disconnect(port);
+                port.Release();
             }
+            Ports.Clear();
+            InputTrigger = null;
+            OutputTriggers.Clear();
+            ValueInputs.Clear();
+            ValueOutputs.Clear();
             ScriptNodeFactory.Instance.ReleaseNode(this);
+        }
+
+        protected virtual void OnNodeRemove()
+        {
+            
         }
     }
 }

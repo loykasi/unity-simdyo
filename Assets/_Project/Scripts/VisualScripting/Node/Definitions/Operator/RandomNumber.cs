@@ -17,7 +17,7 @@ namespace Loykas.Scripting
             return new RandomNumberNode();
         }
 
-        public RandomNumberNode()
+        public override void Build()
         {
             Min = CreateInputValue
             (

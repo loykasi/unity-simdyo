@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class DivideNode : ScriptNode
@@ -16,7 +14,7 @@ namespace Loykas.Scripting
             return new DivideNode();
         }
 
-        public DivideNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

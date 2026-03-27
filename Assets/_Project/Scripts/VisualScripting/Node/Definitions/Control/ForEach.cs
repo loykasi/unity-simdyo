@@ -19,7 +19,7 @@ namespace Loykas.Scripting
         private int _index;
         private bool _firstRun = true;
 
-        public ForEachNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Loop);
 

@@ -12,7 +12,7 @@ namespace Loykas.Scripting
 
         public InputValue Condition;
 
-        public BranchNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Branching);
 

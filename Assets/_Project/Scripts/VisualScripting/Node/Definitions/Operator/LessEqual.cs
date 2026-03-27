@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class LessEqualNode : ScriptNode
@@ -16,7 +14,7 @@ namespace Loykas.Scripting
             return new LessEqualNode();
         }
 
-        public LessEqualNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

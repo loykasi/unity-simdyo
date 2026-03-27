@@ -24,7 +24,7 @@ namespace Loykas.Scripting
             _isFirstFrame = true;
         }
 
-        public WaitNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Wait);
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);

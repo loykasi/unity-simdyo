@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetPositionNode : ScriptNode
@@ -10,7 +8,7 @@ namespace Loykas.Scripting
         public OutputValue X;
         public OutputValue Y;
 
-        public GetPositionNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

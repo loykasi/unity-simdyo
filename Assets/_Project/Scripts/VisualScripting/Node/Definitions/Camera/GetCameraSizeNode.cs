@@ -8,9 +8,12 @@ namespace Loykas.Scripting
 
         public OutputValue Value;
 
-        public override ScriptNode Create() => new GetCameraSizeNode();
+        public override ScriptNode Create()
+        {
+            return new GetCameraSizeNode();
+        }
 
-        public GetCameraSizeNode()
+        public override void Build()
         {
             Value = CreateOutputValue
             (

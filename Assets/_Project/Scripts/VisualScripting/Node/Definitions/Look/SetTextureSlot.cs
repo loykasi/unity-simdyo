@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class SetTextureSlotNode : ScriptNode
@@ -17,7 +15,7 @@ namespace Loykas.Scripting
             return new SetTextureSlotNode();
         }
 
-        public SetTextureSlotNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit));

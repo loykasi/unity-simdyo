@@ -1,5 +1,3 @@
-using System;
-
 namespace Loykas.Scripting
 {
     public class FunctionCallNode : ScriptNode
@@ -20,7 +18,7 @@ namespace Loykas.Scripting
             return new FunctionCallNode();
         }
 
-        public FunctionCallNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), TriggerFunction);
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);

@@ -19,7 +19,7 @@ namespace Loykas.Scripting
             return new CreateCloneNode();
         }
 
-        public CreateCloneNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Clone);
             Exit = CreateOutputTrigger(nameof(Exit), new PortSettings

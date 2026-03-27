@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -19,7 +18,7 @@ namespace Loykas.Scripting
             return new InsertListItemNode();
         }
 
-        public InsertListItemNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit));

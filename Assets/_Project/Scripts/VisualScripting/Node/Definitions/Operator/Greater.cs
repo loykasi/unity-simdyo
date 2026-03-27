@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GreaterNode : ScriptNode
@@ -16,7 +14,7 @@ namespace Loykas.Scripting
             return new GreaterNode();
         }
 
-        public GreaterNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

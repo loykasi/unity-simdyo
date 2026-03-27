@@ -6,8 +6,9 @@ namespace Loykas.Scripting
     {
         public InputValue Name;
         
-        public OnReceiveSignalNode()
+        public override void Build()
         {
+            base.Build();
             Name = CreateInputValue
             (
                 nameof(Name),

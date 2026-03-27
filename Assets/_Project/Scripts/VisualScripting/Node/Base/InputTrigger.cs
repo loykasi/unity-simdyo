@@ -7,17 +7,16 @@ namespace Loykas.Scripting
     {
         public Func<NodeTask, OutputTrigger> Action;
         public List<OutputTrigger> Sources = new();
-
         public OutputTrigger TargetOutputTrigger;
-        public bool IsDone = true;
 
-        public InputTrigger
+        public void Init
         (
             IScriptNode node,
             string key,
             Func<NodeTask,OutputTrigger> action
-        ) : base(node, key)
+        )
         {
+            Init(node, key);
             Action = action;
         }
 
@@ -43,6 +42,16 @@ namespace Loykas.Scripting
             {
                 Sources.Remove(port);
             }
+        }
+
+        public override void Release()
+        {
+            base.Release();
+            Sources.Clear();
+            Action = null;
+            TargetOutputTrigger = null;
+
+            ScriptPool.Instance.InputTrigger.Release(this);
         }
     }
 }

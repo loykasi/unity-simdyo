@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new TranslateNode();
         }
 
-        public TranslateNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Move);
             Exit = CreateOutputTrigger(nameof(Exit));

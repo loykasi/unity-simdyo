@@ -17,7 +17,7 @@ namespace Loykas.Scripting
             return new SetCameraPositionNode();
         }
 
-        public SetCameraPositionNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);

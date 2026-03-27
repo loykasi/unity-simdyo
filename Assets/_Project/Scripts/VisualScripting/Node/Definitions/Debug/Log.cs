@@ -13,7 +13,7 @@ namespace Loykas.Scripting
             return new LogNode();
         }
 
-        public LogNode() : base()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Log);
             Exit = CreateOutputTrigger(nameof(Exit));

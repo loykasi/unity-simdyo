@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class NotNode : ScriptNode
@@ -15,7 +13,7 @@ namespace Loykas.Scripting
             return new NotNode();
         }
 
-        public NotNode()
+        public override void Build()
         {
             Value = CreateInputValue
             (

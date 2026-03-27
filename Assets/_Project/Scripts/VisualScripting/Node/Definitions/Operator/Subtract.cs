@@ -13,7 +13,7 @@ namespace Loykas.Scripting
             return new SubtractNode();
         }
 
-        public SubtractNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

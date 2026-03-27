@@ -258,11 +258,17 @@ namespace Loykas.Scripting
                     pool = new ObjectPool<ScriptNode>
                     (
                         createFunc: node.Create,
+                        actionOnGet: OnNodeGet,
                         actionOnRelease: OnNodeRelease
                     )
                 );
             }
             return pool.Get();
+        }
+
+        private void OnNodeGet(ScriptNode node)
+        {
+            node.Build();
         }
 
         private void OnNodeRelease(ScriptNode node)
@@ -272,7 +278,6 @@ namespace Loykas.Scripting
 
         public void ReleaseNode(ScriptNode node)
         {
-            Debug.Log($"Release node {node.GetType()}");
             if (_nodePools.TryGetValue(node.GetType(), out ObjectPool<ScriptNode> pool))
             {
                 pool.Release(node);

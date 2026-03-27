@@ -15,7 +15,7 @@ namespace Loykas.Scripting
             return new RandomBooleanNode();
         }
 
-        public RandomBooleanNode()
+        public override void Build()
         {
             Chance = CreateInputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
 

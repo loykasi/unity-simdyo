@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class GetSizeNode : ScriptNode
@@ -15,7 +13,7 @@ namespace Loykas.Scripting
             return new GetSizeNode();
         }
 
-        public GetSizeNode()
+        public override void Build()
         {
             Entity = CreateInputValue
             (

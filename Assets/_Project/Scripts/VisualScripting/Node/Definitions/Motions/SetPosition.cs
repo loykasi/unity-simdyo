@@ -18,7 +18,7 @@ namespace Loykas.Scripting
             return new SetPositionNode();
         }
 
-        public SetPositionNode()
+        public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
             Exit = CreateOutputTrigger(nameof(Exit));

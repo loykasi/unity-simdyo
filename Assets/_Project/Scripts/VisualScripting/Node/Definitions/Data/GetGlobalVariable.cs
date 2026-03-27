@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
@@ -18,7 +16,7 @@ namespace Loykas.Scripting
             return new GetGlobalVariableNode();
         }
 
-        public GetGlobalVariableNode() : base()
+        public override void Build()
         {
             Input = CreateInputValue
             (

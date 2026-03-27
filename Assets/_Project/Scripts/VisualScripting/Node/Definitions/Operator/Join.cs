@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Loykas.Scripting
 {
     class JoinNode : ScriptNode
@@ -16,7 +14,7 @@ namespace Loykas.Scripting
             return new JoinNode();
         }
 
-        public JoinNode()
+        public override void Build()
         {
             A = CreateInputValue
             (

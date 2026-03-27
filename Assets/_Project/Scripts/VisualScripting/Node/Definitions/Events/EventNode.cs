@@ -7,7 +7,7 @@ namespace Loykas.Scripting
         public OutputTrigger Exit;
         public abstract EventHook Hook { get; }
 
-        public EventNode()
+        public override void Build()
         {
             Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
         }
