@@ -6,8 +6,7 @@ namespace Loykas.Scripting
 
         public InputValue A;
         public InputValue B;
-
-        public OutputValue Output;
+        public OutputValue Value;
 
         public override ScriptNode Create()
         {
@@ -19,18 +18,35 @@ namespace Loykas.Scripting
             A = CreateInputValue
             (
                 nameof(A),
-                ScriptDataType.Single(DataType.Number)
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
             )
             .UseInput();
             
             B = CreateInputValue
             (
                 nameof(B),
-                ScriptDataType.Single(DataType.Number)
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
             )
             .UseInput();
 
-            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Boolean));
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
         private ValueTransfer Get() => ValueTransfer.CreateBool(A.GetValue().BoolValue || B.GetValue().BoolValue);

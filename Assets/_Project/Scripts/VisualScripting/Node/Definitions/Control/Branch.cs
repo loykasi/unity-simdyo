@@ -16,11 +16,8 @@ namespace Loykas.Scripting
         {
             Enter = CreateInputTrigger(nameof(Enter), Branching);
 
-            PortSettings outputPortSettings = PortSettings.Default;
-            outputPortSettings.HideLabel = true;
-
-            IfTrue = CreateOutputTrigger(nameof(IfTrue), outputPortSettings);
-            IfFalse = CreateOutputTrigger(nameof(IfFalse), outputPortSettings);
+            IfTrue = CreateOutputTrigger(nameof(IfTrue), PortSettings.Default);
+            IfFalse = CreateOutputTrigger(nameof(IfFalse), PortSettings.Default);
             
             Condition = CreateInputValue
             (

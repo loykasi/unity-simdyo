@@ -490,6 +490,18 @@ MonoBehaviour:
     m_Localized: Lerp
     m_Metadata:
       m_Items: []
+  - m_Id: 59823772490784768
+    m_Localized: "S\u1ED1 nguy\xEAn"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722752
+    m_Localized: "Nh\u1ECF nh\u1EA5t"
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722753
+    m_Localized: "L\u1EDBn nh\u1EA5t"
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

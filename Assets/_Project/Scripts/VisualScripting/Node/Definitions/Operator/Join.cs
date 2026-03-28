@@ -19,16 +19,33 @@ namespace Loykas.Scripting
             A = CreateInputValue
             (
                 nameof(A),
-                ScriptDataType.Single(DataType.Any)
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
             );
 
             B = CreateInputValue
             (
                 nameof(B),
-                ScriptDataType.Single(DataType.Any)
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    IsLocalizationDisabled = true
+                }
             );
 
-            Value = CreateOutputValue(nameof(Value), Get, ScriptDataType.Single(DataType.String));
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                Get,
+                ScriptDataType.Single(DataType.String),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
         private ValueTransfer Get() => ValueTransfer.CreateString(A.GetValue().ToString() + B.GetValue().ToString());

@@ -490,6 +490,18 @@ MonoBehaviour:
     m_Localized: Lerp
     m_Metadata:
       m_Items: []
+  - m_Id: 59823772490784768
+    m_Localized: Integers only
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722752
+    m_Localized: Min
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722753
+    m_Localized: Max
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []

@@ -22,9 +22,7 @@ namespace Loykas.Scripting
                 ScriptDataType.Single(DataType.Number),
                 new PortSettings
                 {
-                    IsConnectionDisabled = false,
-                    IsLocalizationDisabled = true,
-                    LocalizationKey = nameof(Value)
+                    IsLocalizationDisabled = true
                 }
             );
         }

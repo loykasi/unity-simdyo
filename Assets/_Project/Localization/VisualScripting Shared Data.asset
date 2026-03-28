@@ -363,6 +363,10 @@ MonoBehaviour:
     m_Key: RandomNumberNode.Max
     m_Metadata:
       m_Items: []
+  - m_Id: 59823772490784768
+    m_Key: RandomNumberNode.IntegersOnly
+    m_Metadata:
+      m_Items: []
   - m_Id: 24612314664796189
     m_Key: RandomBooleanNode
     m_Metadata:
@@ -481,6 +485,14 @@ MonoBehaviour:
       m_Items: []
   - m_Id: 33716264600993792
     m_Key: ClampNode
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722752
+    m_Key: Min
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59823772683722753
+    m_Key: Max
     m_Metadata:
       m_Items: []
   - m_Id: 33716264600993793

@@ -12,7 +12,15 @@ namespace Loykas.Scripting
             base.Build();
             
             Enter = CreateInputTrigger(nameof(Enter), SendSignal);
-            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
+            
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
 
             Name = CreateInputValue
             (

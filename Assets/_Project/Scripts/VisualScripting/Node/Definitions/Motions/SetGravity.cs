@@ -18,12 +18,28 @@ namespace Loykas.Scripting
         public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = CreateOutputTrigger(nameof(Exit));
+            
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
 
             Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Boolean)).UseInput();
-            Entity = CreateInputValue(nameof(Entity), ScriptDataType.Single(DataType.Entity))
-                        .UseInput()
-                        .NullMeanSelf();
+            Entity = CreateInputValue
+            (
+                nameof(Entity),
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Entity)
+                }
+            )
+            .UseInput()
+            .NullMeanSelf();
         }
 
         public OutputTrigger Set(NodeTask task)

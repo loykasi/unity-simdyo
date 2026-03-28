@@ -18,10 +18,23 @@ namespace Loykas.Scripting
             Value = CreateInputValue
             (
                 nameof(Value),
-                ScriptDataType.Single(DataType.Boolean)
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
             ).UseInput();
 
-            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Boolean));
+            Output = CreateOutputValue
+            (
+                nameof(Output),
+                Get,
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
         
         private ValueTransfer Get() => ValueTransfer.CreateBool(!Value.GetValue().BoolValue);

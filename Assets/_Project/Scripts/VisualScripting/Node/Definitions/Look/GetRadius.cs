@@ -17,7 +17,11 @@ namespace Loykas.Scripting
             Entity = CreateInputValue
             (
                 nameof(Entity),
-                ScriptDataType.Single(DataType.Entity)
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Entity)
+                }
             )
             .UseInput()
             .NullMeanSelf();

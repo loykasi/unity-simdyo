@@ -20,7 +20,15 @@ namespace Loykas.Scripting
         public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = CreateOutputTrigger(nameof(Exit), PortSettings.Default);
+
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
 
             X = CreateInputValue
             (

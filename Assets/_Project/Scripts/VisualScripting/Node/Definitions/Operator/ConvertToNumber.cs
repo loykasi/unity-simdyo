@@ -14,9 +14,26 @@ namespace Loykas.Scripting
 
         public override void Build()
         {
-            Value = CreateInputValue(nameof(Value), ScriptDataType.Single(DataType.Any)).UseInput();
+            Value = CreateInputValue
+            (
+                nameof(Value),
+                ScriptDataType.Single(DataType.Any),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            ).UseInput();
 
-            Output = CreateOutputValue(nameof(Output), Get, ScriptDataType.Single(DataType.Number));
+            Output = CreateOutputValue
+            (
+                nameof(Output),
+                Get,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
         private ValueTransfer Get()

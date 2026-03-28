@@ -39,7 +39,6 @@ namespace Loykas.Scripting
             input.Type = type;
 
             OnUpdated?.Invoke();
-            Debug.Log($"Updated {index}");
 
             StartNode.Init(this);
         }

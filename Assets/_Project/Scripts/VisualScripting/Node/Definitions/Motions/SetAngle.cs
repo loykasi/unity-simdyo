@@ -18,7 +18,15 @@ namespace Loykas.Scripting
         public override void Build()
         {
             Enter = CreateInputTrigger(nameof(Enter), Set);
-            Exit = CreateOutputTrigger(nameof(Exit));
+            
+            Exit = CreateOutputTrigger
+            (
+                nameof(Exit),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
 
             Value = CreateInputValue
             (
@@ -34,7 +42,11 @@ namespace Loykas.Scripting
             Entity = CreateInputValue
             (
                 nameof(Entity),
-                ScriptDataType.Single(DataType.Entity)
+                ScriptDataType.Single(DataType.Entity),
+                new PortSettings
+                {
+                    LocalizationKey = nameof(Entity)
+                }
             )
             .UseInput()
             .NullMeanSelf();

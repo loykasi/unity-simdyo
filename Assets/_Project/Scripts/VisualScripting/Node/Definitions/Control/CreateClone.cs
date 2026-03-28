@@ -33,7 +33,7 @@ namespace Loykas.Scripting
                 ScriptDataType.Single(DataType.Entity),
                 new PortSettings
                 {
-                    HideLabel = true,
+                    LocalizationKey = "Entity"
                 }
             )
             .UseInput()

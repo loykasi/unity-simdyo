@@ -19,7 +19,16 @@ namespace Loykas.Scripting
         {
             Chance = CreateInputValue(nameof(Chance), ScriptDataType.Single(DataType.Number)).UseInput();
 
-            Value = CreateOutputValue(nameof(Value), GetRandom, ScriptDataType.Single(DataType.Boolean));
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                GetRandom,
+                ScriptDataType.Single(DataType.Boolean),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
         private ValueTransfer GetRandom()

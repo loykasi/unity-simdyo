@@ -44,7 +44,16 @@ namespace Loykas.Scripting
             )
             .UseInput();
 
-            Value = CreateOutputValue(nameof(Value), GetRandom, ScriptDataType.Single(DataType.Number));
+            Value = CreateOutputValue
+            (
+                nameof(Value),
+                GetRandom,
+                ScriptDataType.Single(DataType.Number),
+                new PortSettings
+                {
+                    HideLabel = true
+                }
+            );
         }
 
         private ValueTransfer GetRandom()
