@@ -50,8 +50,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93d95c89813681f499873f8d565e4935, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: 
-  _label: {fileID: 8328652427441173699}
   _input: {fileID: 6235052359160478488}
 --- !u!1 &2261659721851424723
 GameObject:
@@ -207,6 +205,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -308,7 +307,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -433,6 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rect: {fileID: 3054127479099747361}
   InputField: {fileID: 233167932769712000}
+  AutoRezise: 1
   MinWidth: 90
   MaxWidth: 90
 --- !u!1 &7139532915612998171
@@ -538,6 +538,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

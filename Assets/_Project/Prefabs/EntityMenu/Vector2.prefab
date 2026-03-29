@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -193,6 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rect: {fileID: 6642620660842954208}
   InputField: {fileID: 3343525760712016085}
+  AutoRezise: 1
   MinWidth: 90
   MaxWidth: 90
 --- !u!1 &1132402855152159589
@@ -298,6 +299,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -473,6 +475,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -609,6 +612,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -796,6 +800,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -879,8 +884,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba7503523c37a5c409fb4ce71d128d0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: 
-  _label: {fileID: 8450590011980838204}
   _xInput: {fileID: 4326201771446647860}
   _yInput: {fileID: 2066144953699452394}
 --- !u!1 &7298795835335691584
@@ -951,7 +954,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1076,6 +1079,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Rect: {fileID: 8844472136024857345}
   InputField: {fileID: 1054463546460945816}
+  AutoRezise: 1
   MinWidth: 90
   MaxWidth: 90
 --- !u!1 &7421136475619081716
@@ -1181,6 +1185,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
