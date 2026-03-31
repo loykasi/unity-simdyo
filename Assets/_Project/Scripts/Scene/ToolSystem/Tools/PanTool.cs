@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PanTool : ITool
+public class PanTool : BaseTool
 {
-    public virtual ToolType Type => ToolType.Pan;
+    public override ToolType Type => ToolType.Pan;
 
     protected bool _onMouseLeftDown;
     protected bool _onMouseRightDown;
@@ -17,17 +17,17 @@ public class PanTool : ITool
 
     private Vector3 _startMousePosition;
 
-    public virtual void Disable()
+    public override void Disable()
     {
 
     }
 
-    public virtual void Enable()
+    public override void Enable()
     {
 
     }
 
-    public virtual void OnUpdate()
+    public override void OnUpdate()
     {
         Zoom();
         HandlePanLeftMouse();

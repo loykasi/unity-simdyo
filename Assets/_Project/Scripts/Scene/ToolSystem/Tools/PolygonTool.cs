@@ -11,6 +11,11 @@ public class PolygonTool : PanTool
     private List<Vector3> _points = new();
     private float _minimumDistance = 0.1f;
 
+    [Header("Preview")]
+    [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private float _baseWidth = 0.05f;
+    private int _pointCount = 1;
+
     public override void OnUpdate()
     {
         Zoom();
@@ -18,6 +23,13 @@ public class PolygonTool : PanTool
         HandleContextMenu();
         HandlePanRightMouse();
         Create();
+
+        if (_lineRenderer.gameObject.activeInHierarchy)
+        {
+            Camera camera = EngineManager.Instance.EditorCamera;
+            float width = camera.orthographicSize / 5f * _baseWidth;
+            _lineRenderer.widthMultiplier = width;
+        }
     }
 
     private void Create()
@@ -31,15 +43,15 @@ public class PolygonTool : PanTool
             Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
             _points.Add(point);
             
-            PolygonController.Instance.StartPreview();
-            PolygonController.Instance.AddPoint(point);
-            PolygonController.Instance.SetLastPoint(point);
+            StartPreview();
+            AddPoint(point);
+            SetLastPoint(point);
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             _onMouseHold = false;
-            PolygonController.Instance.StopPreview();
+            StopPreview();
             
             Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
             if (_points.Count > 0 && Vector3.Distance(point, _points[^1]) > _minimumDistance)
@@ -98,10 +110,10 @@ public class PolygonTool : PanTool
                     _points.Add(current);
                     shouldAddPoint = false;
 
-                    PolygonController.Instance.AddPoint(current);
+                    AddPoint(current);
                 }
 
-                PolygonController.Instance.SetLastPoint(current);
+                SetLastPoint(current);
             }
             
         }
@@ -118,5 +130,31 @@ public class PolygonTool : PanTool
         //     ObjectManager.Instance.AddPolygon(_points);
         //     _points.Clear();
         // }
+    }
+
+    public void StartPreview()
+    {
+        _pointCount = 1;
+        _lineRenderer.positionCount = _pointCount;
+
+        _lineRenderer.gameObject.SetActive(true);
+    }
+
+    public void AddPoint(Vector3 point)
+    {
+        _lineRenderer.SetPosition(_pointCount - 1, point);
+        _pointCount += 1;
+        _lineRenderer.positionCount = _pointCount;
+    }
+
+    public void SetLastPoint(Vector3 point)
+    {
+        _lineRenderer.SetPosition(_pointCount - 1, point);
+    }
+    
+    public void StopPreview()
+    {
+        _lineRenderer.gameObject.SetActive(false);
+        _pointCount = 1;
     }
 }

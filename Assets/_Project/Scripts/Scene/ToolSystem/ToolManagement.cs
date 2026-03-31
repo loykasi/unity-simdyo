@@ -16,16 +16,18 @@ public class ToolManagement : Singleton<ToolManagement>
     [SerializeField] private ToolType _defaultTool;
     
     private ITool _tool;
-    private ITool[] _tools = new ITool[]
-    {
-        new MoveTool(),
-        new RotateTool(),
-        new PanTool(),
-        new ResizeTool(),
-        new BoxTool(),
-        new CircleTool(),
-        new PolygonTool()
-    };
+    // private ITool[] _tools;
+    [SerializeField] private BaseTool[] _tools;
+    // private ITool[] _tools = new ITool[]
+    // {
+    //     new MoveTool(),
+    //     new RotateTool(),
+    //     new PanTool(),
+    //     new ResizeTool(),
+    //     new BoxTool(),
+    //     new CircleTool(),
+    //     new PolygonTool()
+    // };
     private Dictionary<ToolType, ITool> _toolTable = new();
 
     protected override void Awake()
