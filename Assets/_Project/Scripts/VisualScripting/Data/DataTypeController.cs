@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace Loykas.Scripting
 {
-    public class DataTypeController : Singleton<DataTypeController>
+    public static class DataTypeController
     {
-        public List<DataType> DataTypes = new();
-
         public static ScriptDataType[] DataTypeList = new ScriptDataType[]
         {
             ScriptDataType.Single(DataType.String),
