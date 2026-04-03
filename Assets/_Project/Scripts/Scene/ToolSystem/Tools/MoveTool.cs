@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,11 +6,10 @@ public class MoveTool : PanTool
     public override ToolType Type => ToolType.Move;
 
     private bool _onMovingObject = false;
-    // private Vector3 _offsetFromMouse;
     private Vector3 _mouseStartPosition;
     private Vector3 _entityStartPosition;
     private Bounds _bounds;
-    List<Vector3> points = new();
+    private float[] _asixPoints = new float[3];
 
     public override void OnUpdate()
     {
@@ -40,106 +38,80 @@ public class MoveTool : PanTool
                 Mouse.current.position.ReadValue(),
                 out SceneEntity onMouseEntity
             );
-            if (onMouseEntity != selected)
-            {
-                return;
-            }
 
-            // _offsetFromMouse = selected.transform.position - Vector3Utils.GetGridPosition(mousePosition);
-            _onMovingObject = true;
-            _mouseStartPosition = mousePosition;
-            _entityStartPosition = selected.Position;
-            _bounds = selected.Bounds;
+            if (onMouseEntity == selected)
+            {
+                _onMovingObject = true;
+                _mouseStartPosition = mousePosition;
+                _entityStartPosition = selected.Position;
+                _bounds = selected.Bounds;
+            }
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame)
         {
             _onMovingObject = false;
+
+            var selected = ObjectManager.Instance.SelectedObject;
+            if (selected is TracerEntity tracerEntity)
+            {
+                tracerEntity.AutoAttachToMeshEntity();
+            }
+
             Physics2D.SyncTransforms();
         }
 
         if (_onMovingObject)
         {
-            var selected = ObjectManager.Instance.SelectedObject;
-
-            float halfWidth = _bounds.size.x / 2f;
-            float halfHeight = _bounds.size.y / 2f;
-
-            Vector3 center = _bounds.center;
-            Vector3 top = _bounds.center + new Vector3(0f, halfHeight, 0f);
-            Vector3 bottom = _bounds.center + new Vector3(0f, - halfHeight, 0f);
-            Vector3 left = _bounds.center + new Vector3(- halfWidth, 0f, 0f);
-            Vector3 right = _bounds.center + new Vector3(halfWidth, 0f, 0f);
-
-            Vector3 mouseOffset = mousePosition - _mouseStartPosition;
-            float minSqrLen = 0;
-
-            points.Clear();
-            points.Add(center);
-            points.Add(top);
-            points.Add(bottom);
-
-            Vector3 moveOffset = Vector3.zero;
-
-            CalculateOffSetAndDistanceY(points[0], mouseOffset, out moveOffset.y, out minSqrLen);
-            for (int i = 1; i < points.Count; i++)
-            {
-                CalculateOffSetAndDistanceY(points[i], mouseOffset, out float offset, out float sqrLen);
-                if (sqrLen < minSqrLen)
-                {
-                    minSqrLen = sqrLen;
-                    moveOffset.y = offset;
-                }
-            }
-
-            points.Clear();
-            points.Add(center);
-            points.Add(left);
-            points.Add(right);
-
-            CalculateOffSetAndDistanceX(points[0], mouseOffset, out moveOffset.x, out minSqrLen);
-            for (int i = 1; i < points.Count; i++)
-            {
-                CalculateOffSetAndDistanceX(points[i], mouseOffset, out float offset, out float sqrLen);
-                if (sqrLen < minSqrLen)
-                {
-                    minSqrLen = sqrLen;
-                    moveOffset.x = offset;
-                }
-            }
-
-            selected.Position = _entityStartPosition + moveOffset;
-
-            // DebugPoint(center + mouseOffset, Color.black);
-            // DebugPoint(top + mouseOffset, Color.black);
-            // DebugPoint(bottom + mouseOffset, Color.black);
-            // DebugPoint(Vector3Utils.GetGridPosition(center + mouseOffset) + Vector3.left * 0.2f, Color.red);
-            // DebugPoint(Vector3Utils.GetGridPosition(top + mouseOffset), Color.red);
-            // DebugPoint(Vector3Utils.GetGridPosition(bottom + mouseOffset) + Vector3.right * 0.2f, Color.red);
+            ApplyMovementWithSnapping(mousePosition);
         }
     }
 
-    private void CalculateOffSetAndDistanceY(Vector3 point, Vector3 mouseOffset, out float moveOffset, out float minSqrLen)
+    private void ApplyMovementWithSnapping(Vector3 mousePosition)
     {
-        Vector3 movePoint = point + mouseOffset;
-        moveOffset = (Vector3Utils.GetGridPosition(movePoint) - point).y;
-        minSqrLen = (Vector3Utils.GetGridPosition(movePoint) - movePoint).y;
-        minSqrLen = Mathf.Abs(minSqrLen);
+        var selected = ObjectManager.Instance.SelectedObject;
+
+        Vector3 center = _bounds.center;
+        Vector3 extents = _bounds.extents;
+
+        Vector3 mouseOffset = mousePosition - _mouseStartPosition;
+
+        float snappedX = GetSnappedOffset(mouseOffset, center, extents.x, isYAsis: false);
+        float snappedY = GetSnappedOffset(mouseOffset, center, extents.y, isYAsis: true);
+
+        selected.Position = _entityStartPosition + new Vector3(snappedX, snappedY, 0);
     }
 
-    private void CalculateOffSetAndDistanceX(Vector3 point, Vector3 mouseOffset, out float moveOffset, out float minSqrLen)
+    private float GetSnappedOffset(Vector3 mouseOffset, Vector3 center, float extent, bool isYAsis)
     {
-        Vector3 movePoint = point + mouseOffset;
-        moveOffset = (Vector3Utils.GetGridPosition(movePoint) - point).x;
-        minSqrLen = (Vector3Utils.GetGridPosition(movePoint) - movePoint).x;
-        minSqrLen = Mathf.Abs(minSqrLen);
+        _asixPoints[0] = 0;
+        _asixPoints[1] = extent;
+        _asixPoints[2] = - extent;
+        
+        float bestOffset = 0;
+        float minSqrLen = float.MaxValue;
+
+        foreach (float axisPoint in _asixPoints)
+        {
+            Vector3 point = center + (isYAsis ? new Vector3(0, axisPoint, 0) : new Vector3(axisPoint, 0, 0));
+            CalculateSnapping(point, mouseOffset, isYAsis: isYAsis, out float offset, out float sqrLen);
+
+            if (sqrLen < minSqrLen)
+            {
+                minSqrLen = sqrLen;
+                bestOffset = offset;
+            }
+        }
+
+        return bestOffset;
     }
 
-    private void DebugPoint(Vector3 point, Color color)
+    private void CalculateSnapping(Vector3 point, Vector3 mouseOffset, bool isYAsis, out float moveOffset, out float minSqrLen)
     {
-        Debug.DrawRay(point, Vector3.up * 0.2f, color);
-        Debug.DrawRay(point, Vector3.down * 0.2f, color);
-        Debug.DrawRay(point, Vector3.right * 0.2f, color);
-        Debug.DrawRay(point, Vector3.left * 0.2f, color);
+        Vector3 movePoint = point + mouseOffset;
+        Vector3 gridPos = Vector3Utils.GetGridPosition(movePoint);
+        
+        moveOffset = isYAsis ? (gridPos.y - point.y) : (gridPos.x - point.x);
+        minSqrLen = Mathf.Abs(isYAsis ? (gridPos.y - movePoint.y) : (gridPos.x - movePoint.x));
     }
 }

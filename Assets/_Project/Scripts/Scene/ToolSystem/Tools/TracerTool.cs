@@ -1,0 +1,32 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class TracerTool : PanTool
+{
+    public override ToolType Type => ToolType.Tracer;
+
+    private Vector3 _startPosition;
+
+    public override void OnUpdate()
+    {
+        Zoom();
+        HandleContextMenu();
+        HandlePanRightMouse();
+        Create();
+        HandleSelection();
+    }
+
+    private void Create()
+    {
+        Vector3 mousePosition = GetMouseWorldPositon();
+        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        {
+            _startPosition = Vector3Utils.GetGridPosition(mousePosition);
+        }
+
+        if (Mouse.current.leftButton.wasReleasedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        {
+            ObjectManager.Instance.AddTracer(_startPosition);
+        }
+    }
+}

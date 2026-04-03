@@ -3,6 +3,7 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
     [SerializeField] private EntityMenu _meshEntityMenu;
+    [SerializeField] private TracerMenu _tracerEntityMenu;
     [SerializeField] private SceneMenu _sceneMenu;
 
     private void OnEnable()
@@ -20,19 +21,30 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        _sceneMenu.Open();
+    }
+
     private void OnObjectSelected(SceneEntity entity)
     {
         _sceneMenu.Close();
 
-        if (entity is MeshEntity meshEntity)
+        switch (entity)
         {
-            _meshEntityMenu.Open(meshEntity);
+            case MeshEntity meshEntity:
+                _meshEntityMenu.Open(meshEntity);
+                break;
+            case TracerEntity tracerEntity:
+                _tracerEntityMenu.Open(tracerEntity);
+                break;
         }
     }
 
     private void OnObjectDeselected()
     {
         _meshEntityMenu.Close();
+        _tracerEntityMenu.Close();
         _sceneMenu.Open();
     }
 

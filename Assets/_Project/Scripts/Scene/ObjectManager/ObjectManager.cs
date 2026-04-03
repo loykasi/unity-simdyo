@@ -11,12 +11,13 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public event UnityAction OnObjectDeleted;
 
     public Dictionary<int, SceneEntity> SceneEntityDict = new();
-    public List<SceneEntity> SceneEntities = new();
+    public List<SceneEntity> SceneEntities { get; set; } = new();
     public SceneEntity SelectedObject { get; set; }
     public int SaveLoadOrder { get; set; } = 1;
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;
+    [SerializeField] private TracerEntity _tracerPrefab;
 
     private int _indexForId = 1;
 
@@ -121,6 +122,34 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         entity = _selectionResults[0].collider.GetComponent<Interactable>().Get();
         return true;
+    }
+
+    public bool TryGetSceneEntityBelow(Vector3 point, int zDepth, out SceneEntity entity)
+    {
+        Vector3 offset = new(0f, 0f, -10f);
+        Ray ray = new(point + offset, Vector3.forward);
+        int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
+
+        if (count == 0)
+        {
+            entity = null;
+            return false;
+        }
+
+        SceneEntity targetEntity = null;
+        for (int i = 0; i < _selectionResults.Count; i++)
+        {
+            SceneEntity checkEntity = _selectionResults[i].collider.GetComponent<Interactable>().Get();
+
+            if ((targetEntity == null && checkEntity.ZDepth < zDepth)
+            || (targetEntity != null && checkEntity.ZDepth > targetEntity.ZDepth && checkEntity.ZDepth < zDepth))
+            {
+                targetEntity = checkEntity;
+            }
+        }
+
+        entity = targetEntity;
+        return entity != null;
     }
 
     public SceneEntity GetEntityById(int id)
@@ -239,6 +268,19 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
         AddEntity(entity);
         return entity;
+    }
+
+    public TracerEntity AddTracer(Vector3 position)
+    {
+        TracerEntity tracer = Instantiate(_tracerPrefab, position, Quaternion.identity);
+        tracer.Init();
+        tracer.Diameter = 0.3f;
+
+        AddEntity(tracer);
+
+        tracer.AutoAttachToMeshEntity();
+
+        return tracer;
     }
 
     public void AddEntity(SceneEntity entity)

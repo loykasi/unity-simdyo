@@ -254,14 +254,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PolygonEntity
   Id: 0
+  Name: 
+  Script: {fileID: 37466095803576586}
+  SortingGroup: {fileID: 5987322468340314905}
   MeshFilter: {fileID: 7041058589520857695}
   Renderer: {fileID: 3200159185015626168}
   Rigidbody: {fileID: 6200347384814489336}
-  Script: {fileID: 37466095803576586}
   Layer: 1
-  SortingGroup: {fileID: 5987322468340314905}
   TextureSlotKey: 
-  Texture: {fileID: 0}
+  Material: {fileID: 0}
   _collider:
     EdgeCollider: {fileID: 4272118382621847602}
     AreaCollider: {fileID: -4965821092403916477}
@@ -377,7 +378,7 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_SortAtRoot: 0
+  m_SortAtRoot: 1
   m_Sort3DAs2D: 0
 --- !u!60 &-4965821092403916477
 PolygonCollider2D:

@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+  Name: 
   Script: {fileID: 4180602330645767054}
   SortingGroup: {fileID: 3122655478566186995}
   MeshFilter: {fileID: 3394529686914236234}
@@ -329,7 +330,7 @@ SortingGroup:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_SortAtRoot: 0
+  m_SortAtRoot: 1
   m_Sort3DAs2D: 0
 --- !u!1 &8627524090936669520
 GameObject:

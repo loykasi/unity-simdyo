@@ -3,10 +3,13 @@ using UnityEngine;
 public class TracerEntity : SceneEntity
 {
     public override EntityType EntityType => EntityType.Tracer;
-    public override Bounds Bounds => throw new System.NotImplementedException();
+    public override Bounds Bounds => _bounds;
+    public Bounds _bounds = new();
 
     public SpriteRenderer SpriteRenderer;
     public TrailRenderer TrailRenderer;
+
+    public SceneEntity Parent;
 
     public float Time
     {
@@ -25,9 +28,47 @@ public class TracerEntity : SceneEntity
             _diameter = value;
             TrailRenderer.startWidth = _diameter;
             SpriteRenderer.size = new(_diameter, _diameter);
+            _interactionCircle.radius = _diameter / 2f;
+            _highlight.SetRadius(_diameter / 2f);
         }
     }
     private float _diameter;
+
+    public ColorHSV Color
+    {
+        get => _color;
+        set
+        {
+            _color = value;
+            Color color = _color.ToUnityColor();
+            SpriteRenderer.color = color;
+            TrailRenderer.startColor = color;
+
+            color.a = 0f;
+            TrailRenderer.endColor = color;
+        }
+    }
+    private ColorHSV _color;
+
+    [SerializeField] private CircleCollider2D _interactionCircle;
+    [SerializeField] private CircleHighlight _highlight;
+
+    public void Init()
+    {
+        _highlight.Create(Diameter);
+    }
+
+    public override void OnSceneStart()
+    {
+        TrailRenderer.emitting = true;
+        TrailRenderer.Clear();
+    }
+
+    public override void OnSceneStop()
+    {
+        TrailRenderer.emitting = false;
+        TrailRenderer.Clear();
+    }
 
     public override SceneEntity CloneEntity()
     {
@@ -41,11 +82,28 @@ public class TracerEntity : SceneEntity
 
     public override void Deselect()
     {
-        throw new System.NotImplementedException();
+        _highlight.Disable();
     }
 
     public override void Select()
     {
-        throw new System.NotImplementedException();
+        _highlight.Enable();
+        _highlight.SetRadius(Diameter / 2f);
+    }
+
+    public void AutoAttachToMeshEntity()
+    {
+        bool result = ObjectManager.Instance.TryGetSceneEntityBelow(Position, ZDepth, out SceneEntity entity);
+        if (result)
+        {
+            if (Parent != null)
+            {
+                Parent.RemoveRelationship(this);
+            }
+
+            Parent = entity;
+            transform.SetParent(entity.transform);
+            entity.AddRelationship(this);
+        }
     }
 }

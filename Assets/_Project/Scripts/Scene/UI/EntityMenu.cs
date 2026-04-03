@@ -5,11 +5,15 @@ using UnityEngine.UI;
 
 public class EntityMenu : MonoBehaviour
 {
-    [Header("Menu")]
+    public bool IsOpened;
+
+    [Header("Entity")]
     [SerializeField] private StringInput _idInput;
     [SerializeField] private StringInput _nameInput;
     [SerializeField] private MenuVectorInput _positionInput;
     [SerializeField] private MenuNumberInput _angleInput;
+
+    [Header("Tracer Properties")]
     [SerializeField] private Toggle _gravityToggle;
     [SerializeField] private MenuVectorInput _velocityInput;
     [SerializeField] private Toggle _colliderToggle;
@@ -96,13 +100,18 @@ public class EntityMenu : MonoBehaviour
         _entity.OnPropertyUpdated += OnPropertyUpdated;
 
         Init(entity);
+        IsOpened = true;
     }
 
     public void Close()
     {
-        gameObject.SetActive(false);
-        _entity.OnPropertyUpdated -= OnPropertyUpdated;
-        _entity = null;
+        if (IsOpened)
+        {
+            gameObject.SetActive(false);
+            _entity.OnPropertyUpdated -= OnPropertyUpdated;
+            _entity = null;
+            IsOpened = false;
+        }
     }
 
     private void OnPropertyUpdated()

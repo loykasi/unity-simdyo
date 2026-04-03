@@ -6,5 +6,6 @@ public enum ToolType
     Rotate,
     Box,
     Circle,
-    Polygon
+    Polygon,
+    Tracer
 }

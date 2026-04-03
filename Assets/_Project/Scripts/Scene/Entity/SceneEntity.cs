@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
+using System.Collections.Generic;
 
 public abstract class SceneEntity : MonoBehaviour
 {
@@ -11,18 +12,9 @@ public abstract class SceneEntity : MonoBehaviour
     public bool IsAddOnRuntime { get; set; } = false;
 
     public int Id;
+    public string Name;
     public ScriptFlow Script;
     public SortingGroup SortingGroup;
-    
-    public string Name;
-    // {
-    //     get => gameObject.name;
-    //     set
-    //     {
-    //         gameObject.name = value;
-    //         OnPropertyUpdated?.Invoke();
-    //     }
-    // }
 
     public virtual Vector3 Position
     {
@@ -66,6 +58,8 @@ public abstract class SceneEntity : MonoBehaviour
 
     public abstract Bounds Bounds { get; }
 
+    public List<SceneEntity> Relationships = new();
+
     protected TransformState _transformState;
 
     protected virtual void Awake()
@@ -93,6 +87,12 @@ public abstract class SceneEntity : MonoBehaviour
     public void Delete()
     {
         Script.ResetState();
+
+        foreach (SceneEntity entity in Relationships)
+        {
+            ObjectManager.Instance.DeleteEntity(entity);
+        }
+
         Destroy(gameObject);
     }
 
@@ -147,4 +147,14 @@ public abstract class SceneEntity : MonoBehaviour
     }
 
     public abstract EntityData CreateSaveData();
+
+    public void AddRelationship(SceneEntity entity)
+    {
+        Relationships.Add(entity);
+    }
+
+    public void RemoveRelationship(SceneEntity entity)
+    {
+        Relationships.Remove(entity);
+    }
 }
