@@ -141,6 +141,7 @@ namespace Loykas.Scripting
             Nodes = new(_nodes.Length);
             foreach (ScriptNode node in _nodes)
             {
+                node.Build();
                 Nodes.Add(node.GetType(), node);
             }
         }
@@ -150,21 +151,23 @@ namespace Loykas.Scripting
             nodes.Clear();
             foreach (ScriptNode node in _nodes)
             {
-                if (node.ShouldIncludeInMenu)
+                if (!node.ShouldIncludeInMenu)
                 {
-                    if (isGlobal && !node.CanUseGlobal)
-                    {
-                        continue;
-                    }
-
-                    if (nodes.Count == 0)
-                    {
-                        nodes.Add(node);
-                        continue;
-                    }
-
-                    SortedAdd(nodes, node);
+                    continue;
                 }
+                
+                if (isGlobal && !node.CanUseGlobal)
+                {
+                    continue;
+                }
+
+                if (nodes.Count == 0)
+                {
+                    nodes.Add(node);
+                    continue;
+                }
+
+                SortedAdd(nodes, node);
             }
         }
 
