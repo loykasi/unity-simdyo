@@ -28,4 +28,6 @@ public struct ColorHSV
         color.a = A;
         return color;
     }
+
+    public static ColorHSV Default => new(0, 0, 1, 1);
 }

@@ -8,7 +8,7 @@ public class TracerEntity : SceneEntity
 
     public SpriteRenderer SpriteRenderer;
     public TrailRenderer TrailRenderer;
-
+    public int ParentId;
     public SceneEntity Parent;
 
     public float Time
@@ -48,7 +48,7 @@ public class TracerEntity : SceneEntity
             TrailRenderer.endColor = color;
         }
     }
-    private ColorHSV _color;
+    private ColorHSV _color = ColorHSV.Default;
 
     [SerializeField] private CircleCollider2D _interactionCircle;
     [SerializeField] private CircleHighlight _highlight;
@@ -75,11 +75,6 @@ public class TracerEntity : SceneEntity
         throw new System.NotImplementedException();
     }
 
-    public override EntityData CreateSaveData()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public override void Deselect()
     {
         _highlight.Disable();
@@ -101,9 +96,41 @@ public class TracerEntity : SceneEntity
                 Parent.RemoveRelationship(this);
             }
 
+            ParentId = entity.Id;
             Parent = entity;
             transform.SetParent(entity.transform);
             entity.AddRelationship(this);
         }
+    }
+
+    public override void LoadRelationship()
+    {
+        Parent = ObjectManager.Instance.GetEntityById(ParentId);
+        if (Parent == null)
+        {
+            ParentId = 0;
+        }
+        else
+        {
+            transform.SetParent(Parent.transform);
+            Parent.AddRelationship(this);
+        }
+    }
+
+    public override EntityData CreateSaveData()
+    {
+        return new TracerEntityData
+        {
+            Id = Id,
+            Name = Name,
+            Type = EntityType,
+            Position = transform.position,
+            Rotation = transform.rotation,
+            ZDepth = ZDepth,
+            Time = Time,
+            Diameter = Diameter,
+            Color = Color,
+            ParentId = ParentId,
+        };
     }
 }

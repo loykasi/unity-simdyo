@@ -141,6 +141,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             SceneEntity checkEntity = _selectionResults[i].collider.GetComponent<Interactable>().Get();
 
+            if (checkEntity is not MeshEntity) continue;
+
             if ((targetEntity == null && checkEntity.ZDepth < zDepth)
             || (targetEntity != null && checkEntity.ZDepth > targetEntity.ZDepth && checkEntity.ZDepth < zDepth))
             {
@@ -276,9 +278,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         tracer.Init();
         tracer.Diameter = 0.3f;
 
-        AddEntity(tracer);
+        Debug.Log("Add tracer");
 
-        tracer.AutoAttachToMeshEntity();
+        AddEntity(tracer);
 
         return tracer;
     }
@@ -464,6 +466,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         {
             SceneEntity entity = entityData.CreateEntity();
             ScriptSaveHandler.Load(entityData.Script, entity.Script);
+        }
+
+        foreach (SceneEntity entity in SceneEntities)
+        {
+            entity.LoadRelationship();
         }
 
         SceneEntities.Sort((a, b) => a.Id.CompareTo(b.Id));

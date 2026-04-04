@@ -226,7 +226,6 @@ public class BoxEntity : MeshEntity
 
     public override EntityData CreateSaveData()
     {
-        Debug.Log("Create box entity save data");
         return new BoxEntityData
         {
             Id = Id,

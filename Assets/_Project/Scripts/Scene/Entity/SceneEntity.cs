@@ -157,4 +157,9 @@ public abstract class SceneEntity : MonoBehaviour
     {
         Relationships.Remove(entity);
     }
+
+    public virtual void LoadRelationship()
+    {
+        
+    }
 }

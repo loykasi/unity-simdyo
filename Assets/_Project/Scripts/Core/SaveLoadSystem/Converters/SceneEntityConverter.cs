@@ -17,6 +17,7 @@ public class SceneEntityConverter : JsonConverter<EntityData>
             EntityType.Box => new BoxEntityData(),
             EntityType.Circle => new CircleEntityData(),
             EntityType.Polygon => new PolygonEntityData(),
+            EntityType.Tracer => new TracerEntityData(),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Unexpected entity type.")
         };
         serializer.Populate(obj.CreateReader(), entityData);
