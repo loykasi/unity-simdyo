@@ -3,9 +3,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
+using UnityEngine.InputSystem;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
+    public int SaveLoadOrder { get; set; } = 1;
+
     public event UnityAction<SceneEntity> OnObjectSelected;
     public event UnityAction OnObjectDeselected;
     public event UnityAction OnObjectDeleted;
@@ -13,7 +16,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public Dictionary<int, SceneEntity> SceneEntityDict = new();
     public List<SceneEntity> SceneEntities { get; set; } = new();
     public SceneEntity SelectedObject { get; set; }
-    public int SaveLoadOrder { get; set; } = 1;
+    [HideInInspector] public List<SceneEntity> Selections = new();
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;
@@ -63,6 +66,31 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
     }
 
+    public void Select(Vector3 screenPoint)
+    {
+        // bool isMultipleSelecting = Keyboard.current.ctrlKey.isPressed;
+        // if (!isMultipleSelecting)
+        // {
+        //     Deselect();
+        // }
+        Deselect();
+
+        if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
+        {
+            return;
+        }
+
+        // if (!Selections.Contains(entity))
+        // {
+        //     entity.Select();
+        //     Selections.Add(entity);
+        // }
+
+        SelectedObject = entity;
+        SelectedObject.Select();
+        OnObjectSelected?.Invoke(SelectedObject);
+    }
+
     public void Deselect()
     {
         if (SelectedObject != null)
@@ -72,21 +100,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
             OnObjectDeselected?.Invoke();
         }
-    }
-
-    public void Select(Vector3 screenPoint)
-    {
-        Deselect();
-
-        if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
-        {
-            return;
-        }
-
-        SelectedObject = entity;
-        SelectedObject.Select();
-
-        OnObjectSelected?.Invoke(SelectedObject);
+        // foreach (SceneEntity entity in Selections)
+        // {
+        //     entity.Deselect();
+        // }
+        // Selections.Clear();
     }
 
     public void Click(Vector3 screenPoint)

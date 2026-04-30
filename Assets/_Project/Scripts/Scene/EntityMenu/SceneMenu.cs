@@ -14,7 +14,7 @@ public class SceneMenu : MonoBehaviour
 
     public CameraSettings Settings => SceneManager.Instance.CameraSettings;
 
-    private void Awake()
+    public void Setup()
     {
         _positionInput.OnSubmit += OnPositionSubmit;
         _sizeInput.OnSubmit += OnSizeSubmit;

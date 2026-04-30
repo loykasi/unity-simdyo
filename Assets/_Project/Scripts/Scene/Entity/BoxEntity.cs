@@ -107,6 +107,36 @@ public class BoxEntity : MeshEntity
         TextBox.Resize(Size);
     }
 
+    public void SetSize(Vector3 from, Vector3 to)
+    {
+        UpdateSize(from, to, out float width, out float height);
+        transform.position = (from + to) / 2f;;
+        SetSize(width, height);
+    }
+
+    private void UpdateSize(Vector3 from, Vector3 to, out float width, out float height)
+    {
+        Vector3 right = transform.right;
+        Vector3 xRight = Vector3Utils.ProjectOnVector(from, transform.position, right);
+        Vector3 xLeft = Vector3Utils.ProjectOnVector(to, transform.position, right);
+        width = Vector3.Distance(xLeft, xRight);
+
+        Vector3 up = transform.up;
+        Vector3 yTop = Vector3Utils.ProjectOnVector(from, transform.position, up);
+        Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
+        height = Vector3.Distance(yTop, yBottom);
+    }
+
+    public void SetWidth(float value)
+    {
+        SetSize(value, Height);
+    }
+
+    public void SetHeight(float value)
+    {
+        SetSize(Width, value);
+    }
+
     public void SetSize(float width, float height)
     {
         Width = width;
@@ -124,27 +154,7 @@ public class BoxEntity : MeshEntity
         _border.SetSize(Size);
         _collider.SetSize(Size);
         TextBox.Resize(Size);
-    }
-
-    public void SetSize(Vector3 from, Vector3 to)
-    {
-        UpdateSize(from, to, out float width, out float height);
-        transform.position = (from + to) / 2f;;
-
-        SetSize(width, height);
-    }
-
-    private void UpdateSize(Vector3 from, Vector3 to, out float width, out float height)
-    {
-        Vector3 right = transform.right;
-        Vector3 xRight = Vector3Utils.ProjectOnVector(from, transform.position, right);
-        Vector3 xLeft = Vector3Utils.ProjectOnVector(to, transform.position, right);
-        width = Vector3.Distance(xLeft, xRight);
-
-        Vector3 up = transform.up;
-        Vector3 yTop = Vector3Utils.ProjectOnVector(from, transform.position, up);
-        Vector3 yBottom = Vector3Utils.ProjectOnVector(to, transform.position, up);
-        height = Vector3.Distance(yTop, yBottom);
+        OnPropertyUpdated?.Invoke();
     }
 
     public void ResizeByTexture()

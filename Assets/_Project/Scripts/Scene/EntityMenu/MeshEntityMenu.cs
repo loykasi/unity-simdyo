@@ -1,19 +1,10 @@
 using System;
-using Loykas.Scripting;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EntityMenu : MonoBehaviour
+public class MeshEntityMenu : BaseEntityMenu
 {
-    public bool IsOpened;
-
-    [Header("Entity")]
-    [SerializeField] private StringInput _idInput;
-    [SerializeField] private StringInput _nameInput;
-    [SerializeField] private MenuVectorInput _positionInput;
-    [SerializeField] private MenuNumberInput _angleInput;
-
-    [Header("Tracer Properties")]
+    [Header("Properties")]
     [SerializeField] private Toggle _gravityToggle;
     [SerializeField] private MenuVectorInput _velocityInput;
     [SerializeField] private Toggle _colliderToggle;
@@ -38,23 +29,20 @@ public class EntityMenu : MonoBehaviour
     [SerializeField] private float _spaceBetweenLayer;
     private CollisionLayerToggle[] _collisionLayerToggles;
 
-    [Header("Selection")]
-    [SerializeField] private MenuNumberInput _depthInput;
-
     private MeshEntity _entity;
+    private BoxEntity _box;
+    private CircleEntity _circle;
 
-    private void Awake()
+    public override void Setup()
     {
         CreateCollisionLayerMenu();
-
-        _nameInput.OnSubmit += OnNameSubmit;
-        _positionInput.OnSubmit += OnPositionSubmit;
-        _angleInput.OnSubmit += OnAngleSubmit;
+        
+        _gravityToggle.onValueChanged.AddListener(ToggleGravity);
+        _colliderToggle.onValueChanged.AddListener(ToggleCollider);
         _velocityInput.OnSubmit += OnVelocitySubmit;
         _radiusInput.OnSubmit += OnRadiusSubmit;
         _widthInput.OnSubmit += OnWidthSubmit;
         _heightInput.OnSubmit += OnHeightSubmit;
-        _depthInput.OnSubmit += OnDepthSubmit;
         _frictionInput.OnSubmit += OnFrictionSubmit;
         _bouncinessInput.OnSubmit += OnBouncinessSubmit;
     }
@@ -91,73 +79,45 @@ public class EntityMenu : MonoBehaviour
         int totalRow = layers.Length / _totalLayerPerRow;
         float height = totalRow * 30f + totalRow * _spaceBetweenLayer;
         _collisionLayer.sizeDelta = new(_collisionLayer.sizeDelta.x, _collisionLayer.sizeDelta.y + height);
+        Debug.Log(_collisionLayer.sizeDelta);
     }
 
-    public void Open(MeshEntity entity)
+    public override void UpdateUI()
     {
-        gameObject.SetActive(true);
-        _entity = entity;
-        _entity.OnPropertyUpdated += OnPropertyUpdated;
-
-        Init(entity);
-        IsOpened = true;
-    }
-
-    public void Close()
-    {
-        if (IsOpened)
+        if (_entity == null)
         {
-            gameObject.SetActive(false);
-            _entity.OnPropertyUpdated -= OnPropertyUpdated;
-            _entity = null;
-            IsOpened = false;
+            return;
         }
-    }
 
-    private void OnPropertyUpdated()
-    {
-        Init(_entity);
-    }
+        _velocityInput.SetValue(_entity.Velocity);
+        _frictionInput.SetValue(_entity.Friction);
+        _bouncinessInput.SetValue(_entity.Bounciness);
 
-    private void Init(MeshEntity entity)
-    {
-        _idInput.SetValue(entity.Id.ToString());
-        _nameInput.SetValue(entity.Name);
-        _positionInput.SetValue(entity.Position);
-        _angleInput.SetValue(entity.Angle);
-        _velocityInput.SetValue(entity.Velocity);
-        _frictionInput.SetValue(entity.Friction);
-        _bouncinessInput.SetValue(entity.Bounciness);
-
-        _gravityToggle.isOn = entity.IsGravityEnabled;
-        _colliderToggle.isOn = entity.IsColliderEnabled;
-        _buttonColor.color = entity.CurrentColor.ToUnityColor();;
-
-        _depthInput.SetValue(entity.ZDepth);
+        _gravityToggle.isOn = _entity.IsGravityEnabled;
+        _colliderToggle.isOn = _entity.IsColliderEnabled;
+        _buttonColor.color = _entity.CurrentColor.ToUnityColor();;
 
         for (int i = 0; i < _collisionLayerToggles.Length; i++)
         {
             var toogle = _collisionLayerToggles[i];
-            bool isSelected = (entity.Layer & toogle.Layer) != 0;
+            bool isSelected = (_entity.Layer & toogle.Layer) != 0;
             toogle.SetState(isSelected);
         }
 
-        switch (entity.EntityType)
+        switch (_entity.EntityType)
         {
             case EntityType.Box:
                 _boxMenu.SetActive(true);
                 _circleMenu.SetActive(false);
-                BoxEntity boxEntity = (BoxEntity)entity;
 
-                _widthInput.SetValue(boxEntity.Width);
-                _heightInput.SetValue(boxEntity.Height);
+                _widthInput.SetValue(_box.Width);
+                _heightInput.SetValue(_box.Height);
                 break;
             case EntityType.Circle:
                 _boxMenu.SetActive(false);
                 _circleMenu.SetActive(true);
 
-                CircleEntity circleEntity = (CircleEntity)entity;
-                _radiusInput.SetValue(circleEntity.Radius);
+                _radiusInput.SetValue(_circle.Radius);
                 break;
             case EntityType.Polygon:
                 _boxMenu.SetActive(false);
@@ -166,21 +126,57 @@ public class EntityMenu : MonoBehaviour
         }
     }
 
-    public void OnNameSubmit(object value)
+    public void ToggleLayer(CollisionLayer layer, bool isActive)
     {
-        ObjectManager.Instance.RenameEntity(_entity, (string)value);
+        _entity.SetLayer(layer, isActive);
     }
 
-    private void OnPositionSubmit(Vector3 value)
+    public override void AddEntity(SceneEntity entity)
     {
-        _entity.Position = new Vector3(value.x, value.y);
-        Physics2D.SyncTransforms();
+        if (entity is MeshEntity meshEntity)
+        {
+            _entity = meshEntity;
+            _entity.OnPropertyUpdated += OnPropertyUpdated;
+            switch (entity)
+            {
+                case BoxEntity boxEntity:
+                    _box = boxEntity;
+                    break;
+                case CircleEntity circleEntity:
+                    _circle = circleEntity;
+                    break;
+            }
+        }
     }
 
-    private void OnAngleSubmit(float value)
+    public override void Clear()
     {
-        _entity.Angle = value;
-        Physics2D.SyncTransforms();
+        if (_entity != null)
+        {
+            _entity.OnPropertyUpdated -= OnPropertyUpdated;
+            _entity = null;
+            _box = null;
+            _circle = null;
+        }
+    }
+
+    public override void Show()
+    {
+        if (_entity != null)
+        {
+            _menuGameObject.SetActive(true);
+        }
+    }
+
+    public override void Close()
+    {
+        Clear();
+        _menuGameObject.SetActive(false);
+    }
+
+    private void OnPropertyUpdated()
+    {
+        UpdateUI();
     }
 
     private void OnVelocitySubmit(Vector3 value)
@@ -211,43 +207,20 @@ public class EntityMenu : MonoBehaviour
 
     public void OnRadiusSubmit(float value)
     {
-        if (_entity is CircleEntity circleEntity)
-        {
-            circleEntity.SetRadius(value);
-            Physics2D.SyncTransforms();
-        }
+        _circle.SetRadius(value);
+        Physics2D.SyncTransforms();
     }
 
     public void OnWidthSubmit(float value)
     {
-        if (_entity is BoxEntity boxEntity)
-        {
-            boxEntity.SetSize(value, boxEntity.Height);
-            Physics2D.SyncTransforms();
-        }
+        _box.SetWidth(value);
+        Physics2D.SyncTransforms();
     }
 
     public void OnHeightSubmit(float value)
     {
-        if (_entity is BoxEntity boxEntity)
-        {
-            boxEntity.SetSize(boxEntity.Width, value);
-            Physics2D.SyncTransforms();
-        }
-    }
-
-    public void OnDepthSubmit(float value)
-    {
-        _entity.ZDepth = (int)value;
-    }
-
-    public void ResizeByTexture()
-    {
-        if (_entity is BoxEntity boxEntity)
-        {
-            boxEntity.ResizeByTexture();
-            Physics2D.SyncTransforms();
-        }
+        _box.SetHeight(value);
+        Physics2D.SyncTransforms();
     }
 
     private void OnBouncinessSubmit(float value)
@@ -260,27 +233,8 @@ public class EntityMenu : MonoBehaviour
         _entity.Friction = value;
     }
 
-    public void OpenGraph()
-    {
-        SceneEntity selected = ObjectManager.Instance.SelectedObject;
-        ScriptGraph.Instance.TogglePanel(selected.Script);
-    }
-
-    public void ToggleLayer(CollisionLayer layer, bool isActive)
-    {
-        _entity.SetLayer(layer, isActive);
-    }
-
-    public void ChooseTexture()
-    {
-        TextureController.Instance.OpenMenu(_entity);
-    }
-
     public void OpenTextEditor()
     {
-        if (_entity is BoxEntity boxEntity)
-        {
-            TextBoxMenu.Instance.Open(boxEntity.TextBox);
-        }
+        TextBoxMenu.Instance.Open(_box.TextBox);
     }
 }
