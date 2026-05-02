@@ -1,6 +1,7 @@
 using System;
 using Loykas.Scripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TracerMenu : BaseEntityMenu
 {
@@ -8,6 +9,7 @@ public class TracerMenu : BaseEntityMenu
     [SerializeField] private NumberInput _timeInput;
     [SerializeField] private NumberInput _diameterInput;
     [SerializeField] private ColorInput _colorInput;
+    [SerializeField] private Toggle _hideIndicatorOnStartToggle;
 
     private TracerEntity _entity;
 
@@ -31,11 +33,17 @@ public class TracerMenu : BaseEntityMenu
         _entity.Color = (ColorHSV)value;
     }
 
+    private void ToggleHideIndicatorOnStart(bool value)
+    {
+        _entity.ShouldHideIndicatorOnStart = value;
+    }
+
     public override void Setup()
     {
         _timeInput.OnSubmit += OnTimeSubmit;
         _diameterInput.OnSubmit += OnDiameterSubmit;
         _colorInput.OnSubmit += OnColorSubmit;
+        _hideIndicatorOnStartToggle.onValueChanged.AddListener(ToggleHideIndicatorOnStart);
     }
 
     public override void UpdateUI()

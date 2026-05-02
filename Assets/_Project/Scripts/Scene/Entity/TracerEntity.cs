@@ -34,6 +34,8 @@ public class TracerEntity : SceneEntity
     }
     private float _diameter;
 
+    public bool ShouldHideIndicatorOnStart;
+
     public ColorHSV Color
     {
         get => _color;
@@ -62,12 +64,19 @@ public class TracerEntity : SceneEntity
     {
         TrailRenderer.emitting = true;
         TrailRenderer.Clear();
+        
+        if (ShouldHideIndicatorOnStart)
+        {
+            SpriteRenderer.enabled = false;
+        }
     }
 
     public override void OnSceneStop()
     {
         TrailRenderer.emitting = false;
         TrailRenderer.Clear();
+
+        SpriteRenderer.enabled = true;
     }
 
     public override SceneEntity CloneEntity()

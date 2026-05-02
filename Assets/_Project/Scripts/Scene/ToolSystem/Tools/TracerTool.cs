@@ -26,6 +26,16 @@ public class TracerTool : PanTool
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && !ScreenInteractionUtils.IsOverUI())
         {
+            if (!ObjectManager.Instance.TryGetSceneEntity(_startPosition, out SceneEntity onHoveredEntity))
+            {
+                return;
+            }
+            
+            if (onHoveredEntity is TracerEntity)
+            {
+                return;
+            }
+            
             TracerEntity entity = ObjectManager.Instance.AddTracer(_startPosition);
             entity.AutoAttachToMeshEntity();
         }

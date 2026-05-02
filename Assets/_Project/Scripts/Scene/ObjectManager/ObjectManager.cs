@@ -142,6 +142,30 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return true;
     }
 
+    public bool TryGetSceneEntity(Vector3 point, out SceneEntity entity)
+    {
+        Vector3 offset = new(0f, 0f, -10f);
+        Ray ray = new(point + offset, Vector3.forward);
+        int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
+
+        if (count == 0)
+        {
+            entity = null;
+            return false;
+        }
+
+        _selectionResults.Sort((a, b) =>
+        {
+           var entityA = a.collider.GetComponent<Interactable>().Get();
+           var entityB = b.collider.GetComponent<Interactable>().Get();
+
+           return entityB.ZDepth.CompareTo(entityA.ZDepth);
+        });
+
+        entity = _selectionResults[0].collider.GetComponent<Interactable>().Get();
+        return true;
+    }
+
     public bool TryGetSceneEntityBelow(Vector3 point, int zDepth, out SceneEntity entity)
     {
         Vector3 offset = new(0f, 0f, -10f);
