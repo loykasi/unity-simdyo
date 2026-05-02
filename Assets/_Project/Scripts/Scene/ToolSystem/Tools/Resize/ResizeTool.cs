@@ -57,6 +57,8 @@ public class ResizeTool : PanTool
         {
             return;
         }
+
+        _bound.rotation = Quaternion.identity;
         
         if (entity is BoxEntity boxEntity)
         {
