@@ -22,10 +22,6 @@ public class ValuePicker : ColorPropertyPicker
 
     private void OnColorUpdated(float hue, float saturation, float value, float alpha)
     {
-        if (_value == value)
-        {
-            return;
-        }
         UpdateTexture();
         _slider.SetValueWithoutNotify(value * _range);
         _input.text = (value * _range).ToString();

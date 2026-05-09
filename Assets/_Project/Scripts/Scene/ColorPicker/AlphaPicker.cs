@@ -23,10 +23,6 @@ public class AlphaPicker : ColorPropertyPicker
 
     private void OnColorUpdated(float hue, float saturation, float value, float alpha)
     {
-        if (_value == alpha)
-        {
-            return;
-        }
         UpdateTexture();
         _slider.SetValueWithoutNotify(alpha * _range);
     }

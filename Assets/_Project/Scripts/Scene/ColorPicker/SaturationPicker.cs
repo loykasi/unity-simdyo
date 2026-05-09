@@ -19,10 +19,6 @@ public class SaturationPicker : ColorPropertyPicker
 
     private void OnColorUpdated(float hue, float saturation, float value, float alpha)
     {
-        if (_value == saturation)
-        {
-            return;
-        }
         UpdateTexture();
         _slider.SetValueWithoutNotify(saturation * _range);
         _input.text = (saturation * _range).ToString();
