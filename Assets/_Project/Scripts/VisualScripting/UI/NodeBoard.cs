@@ -34,8 +34,6 @@ namespace Loykas.Scripting
         private UINodePort _fromUIPort;
         private UINodePort _toUIPort;
 
-        private IGraphElement _selectedElement;
-
         private Vector2 _previousMousePosition;
 
         private List<UINode> _nodes = new();
@@ -47,6 +45,16 @@ namespace Loykas.Scripting
         private bool _waitToAddNode = false;
         
         private readonly WaitForEndOfFrame _waitForEndOfFrame = new();
+
+        // selection
+        private List<RaycastResult> _results = new();
+        private readonly PointerEventData _pointerData = new(EventSystem.current);
+        private List<IGraphElement> _selectedElements = new();
+        private bool _hasHandleSelection;
+        private bool _isCursorMoving;
+
+        // element dragging
+        private Vector2 _initialMousePosition;
 
         public void Init()
         {
@@ -67,7 +75,8 @@ namespace Loykas.Scripting
                 Flow.OnNodeDeleted -= OnNodeDeleted;
                 Flow.OnConnectionDeleted -= OnConnectionDeleted;
             }
-            _selectedElement = null;
+            // _selectedElement = null;
+            _selectedElements.Clear();
         }
 
         private void ClearBoard()
@@ -98,22 +107,6 @@ namespace Loykas.Scripting
             {
                 AddNodeToBoard(nodes[i]);
             }
-            // for (int i = 0; i < connections.Count; i++)
-            // {
-            //     NodeConnection connection = connections[i];
-
-            //     UINode source = _nodes.Find((node) => node.Node == connection.Source.Node);
-            //     UINode destination = _nodes.Find((node) => node.Node == connection.Destination.Node);
-            //     UINodePort sourcePort = source.Ports.Find((port) => port.Port == connection.Source);
-            //     UINodePort destinationPort = destination.Ports.Find((port) => port.Port == connection.Destination);
-
-            //     if (connection.Source == null || connection.Destination == null || source == null || destination == null || sourcePort == null || destinationPort == null)
-            //     {
-            //         continue;
-            //     }
-            //     //Connect(sourcePort, destinationPort);
-            //     AddConnectionToBoard(sourcePort, destinationPort);
-            // }
 
             RenderConnections(connections);
 
@@ -269,56 +262,145 @@ namespace Loykas.Scripting
             _nodeConnectionPreview.EndPreviewConnect();
         }
 
-        public List<RaycastResult> results = new();
         private void Update()
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-            {
-                _previousMousePosition = Mouse.current.position.ReadValue();
-            }
-            if (Mouse.current.leftButton.wasReleasedThisFrame)
-            {
-                if (Mouse.current.position.ReadValue() != _previousMousePosition)
-                {
-                    return;
-                }
-
-                var data = new PointerEventData(EventSystem.current)
-                {
-                    position = Mouse.current.position.ReadValue()
-                };
-                EventSystem.current.RaycastAll(data, results);
-
-                if (results.Count == 0)
-                {
-                    _selectedElement?.Unselect();
-                    return;
-                }
-
-                if (results[0].gameObject.TryGetComponent(out IGraphElement element))
-                {
-                    _selectedElement?.Unselect();
-                    element.Select();
-                    _selectedElement = element;
-                    return;
-                }
-
-                element = results[0].gameObject.GetComponentInParent<IGraphElement>();
-                if (element != null)
-                {
-                    _selectedElement?.Unselect();
-                    element.Select();
-                    _selectedElement = element;
-                    return;
-                }
-
-                _selectedElement?.Unselect();
-                _selectedElement = null;
-            }
-
+            HandleSelection();
             HandleDelete();
             HandleMenu();
             HandleResetPan();
+        }
+
+        private void HandleSelection()
+        {
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                _isCursorMoving = false;
+                _previousMousePosition = mousePosition;
+            }
+
+            if (Mouse.current.leftButton.wasReleasedThisFrame)
+            {
+                if (_hasHandleSelection ||
+                    mousePosition != _previousMousePosition)
+                {
+                    return;
+                }
+
+                SelectFromCursorPosition(mousePosition);
+                return;
+            }
+
+            if (Mouse.current.leftButton.isPressed)
+            {
+                if (_hasHandleSelection)
+                {
+                    return;
+                }
+
+                if ((mousePosition - _previousMousePosition).sqrMagnitude == 0)
+                {
+                    return;
+                }
+
+                _isCursorMoving = true;
+                _hasHandleSelection = true;
+
+                SelectFromCursorPosition(mousePosition);
+                if (_selectedElements.Count > 0)
+                {
+                    OnBeginDragElement();
+                }
+                return;
+            }
+
+            _hasHandleSelection = false;
+        }
+
+        private void SelectFromCursorPosition(Vector2 mousePosition)
+        {
+            _pointerData.position = mousePosition;
+            EventSystem.current.RaycastAll(_pointerData, _results);
+
+            bool isMultipleSelect = Keyboard.current.ctrlKey.isPressed;
+            if (isMultipleSelect)
+            {
+                HandleMultiSelection();
+            }
+            else
+            {
+                HandleSingleSelection();
+            }
+        }
+
+        private void HandleMultiSelection()
+        {
+            if (!TryGetTopGraphElement(out IGraphElement element))
+            {
+                return;
+            }
+
+            if (_selectedElements.Contains(element))
+            {
+                if (_isCursorMoving)
+                {
+                    return;
+                }
+
+                element.Unselect();
+                _selectedElements.Remove(element);
+                return;
+            }
+            element.Select();
+            _selectedElements.Add(element);
+        }
+
+        private void HandleSingleSelection()
+        {
+            // results contains only node board
+            if (_results.Count <= 1 && !_isCursorMoving)
+            {
+                DeselectAll();
+                return;
+            }
+
+            if (!TryGetTopGraphElement(out IGraphElement element))
+            {
+                return;
+            }
+
+            if (_selectedElements.Contains(element))
+            {
+                return;
+            }
+
+            DeselectAll();
+            element.Select();
+            _selectedElements.Add(element);
+        }
+
+        private bool TryGetTopGraphElement(out IGraphElement element)
+        {
+            // Get graph element component from object or their parent
+            GameObject targetGameObject = _results[0].gameObject;
+
+            if (targetGameObject.TryGetComponent(out element))
+            {
+                return true;
+            }
+
+            element = targetGameObject.GetComponentInParent<IGraphElement>();
+            return element != null;
+        }
+
+        private void DeselectAll()
+        {
+            foreach (var element in _selectedElements)
+            {
+                element.Unselect();
+            }
+            _selectedElements.Clear();
         }
 
         private void HandleResetPan()
@@ -359,8 +441,13 @@ namespace Loykas.Scripting
         {
             if (Keyboard.current.deleteKey.wasPressedThisFrame)
             {
-                _selectedElement?.Delete();
-                _selectedElement = null;
+                // _selectedElement?.Delete();
+                // _selectedElement = null;
+                foreach (var element in _selectedElements)
+                {
+                    element.Delete();
+                }
+                _selectedElements.Clear();
             }
         }
 
@@ -418,6 +505,26 @@ namespace Loykas.Scripting
         public void OnScroll(PointerEventData eventData)
         {
             HandleZoom(eventData);
+        }
+
+        public void OnBeginDragElement()
+        {
+            Debug.Log($"{Time.frameCount}::Begin drag element");
+            foreach (var element in _selectedElements)
+            {
+                element.BeginMove();
+            }
+            _initialMousePosition = Mouse.current.position.ReadValue();
+        }
+
+        public void OnDragElement()
+        {
+            Debug.Log($"Dragging::{_selectedElements.Count}");
+            Vector2 delta = Mouse.current.position.ReadValue() - _initialMousePosition;
+            foreach (var element in _selectedElements)
+            {
+                element.Move(delta);
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Loykas.Scripting
@@ -47,13 +46,13 @@ namespace Loykas.Scripting
         [SerializeField] private UINodePort _outputTriggerPrefab;
         [SerializeField] private UINodePort _outputValuePrefab;
 
-        private Vector2 _offsetFromMouse;
+        private Vector3 _initialPosition;
+        private bool _isSelected;
         // private bool _isMouseOver = false;
 
         private readonly float _inputOutputDistance = 10f;
         private float _minWidth = 50f;
         private readonly float _topBottomPadding = 20f;
-
 
         private void SetNode(ScriptNode node)
         {
@@ -227,15 +226,18 @@ namespace Loykas.Scripting
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _offsetFromMouse = Mouse.current.position.ReadValue() - new Vector2(transform.position.x, transform.position.y);
+            if (_isSelected)
+            {
+                Board.OnBeginDragElement();   
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            transform.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
-            Node.Position = transform.localPosition;
-
-            UpdateLineVisual();
+            if (_isSelected)
+            {
+                Board.OnDragElement();
+            }
         }
 
         public void UpdateLineVisual()
@@ -248,12 +250,14 @@ namespace Loykas.Scripting
 
         public void Select()
         {
+            _isSelected = true;
             _selectedBorder.gameObject.SetActive(true);
         }
 
         public void Delete()
         {
             Board.DeleteNode(this);
+            _isSelected = false;
         }
 
         public void DeleteVisual()
@@ -264,6 +268,20 @@ namespace Loykas.Scripting
         public void Unselect()
         {
             _selectedBorder.gameObject.SetActive(false);
+            _isSelected = false;
+        }
+
+        public void BeginMove()
+        {
+            _initialPosition = transform.position;
+        }
+
+        public void Move(Vector2 delta)
+        {
+            transform.position = _initialPosition + (Vector3)delta;
+            Node.Position = transform.localPosition;
+
+            UpdateLineVisual();
         }
 
         public void OnPointerEnter(PointerEventData eventData)

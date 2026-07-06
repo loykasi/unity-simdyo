@@ -72,5 +72,15 @@ namespace Loykas.Scripting
             LineRenderer.color = Color.white;
             LineRenderer.UpdateVertex();
         }
+
+        public void BeginMove()
+        {
+            
+        }
+
+        public void Move(Vector2 delta)
+        {
+            
+        }
     }
 }
