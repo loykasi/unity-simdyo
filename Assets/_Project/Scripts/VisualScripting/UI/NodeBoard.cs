@@ -428,7 +428,7 @@ namespace Loykas.Scripting
 
         private void HandleMenu()
         {
-            if (Mouse.current.rightButton.wasPressedThisFrame && _isHover)
+            if (Mouse.current.rightButton.wasReleasedThisFrame && _isHover)
             {
                 Vector3 mousePosition = Mouse.current.position.ReadValue();
                 _nodeMenu.Open(this, mousePosition);
