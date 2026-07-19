@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace Loykas.Scripting
 {
@@ -28,6 +29,13 @@ namespace Loykas.Scripting
 
         [Space]
         [SerializeField] private NodeMenu _nodeMenu;
+
+        // Dot grid background
+        [Space]
+        [SerializeField] private RawImage _backgroundImage;
+        [SerializeField] private Material _backgroundMaterial;
+        private readonly int _backgroundOffsetProperty = Shader.PropertyToID("_Offset");
+        private readonly int _backgroundZoomProperty = Shader.PropertyToID("_Zoom");
 
         private bool _hasPort;
 
@@ -55,6 +63,11 @@ namespace Loykas.Scripting
 
         // element dragging
         private Vector2 _initialMousePosition;
+
+        private void Awake()
+        {
+            _backgroundImage.material = Instantiate(_backgroundMaterial);;
+        }
 
         public void Init()
         {
@@ -97,8 +110,8 @@ namespace Loykas.Scripting
 
         private void LoadBoard()
         {
-            _holder.localScale = Vector3.one;
             _holder.localPosition = Flow.Pan;
+            _holder.localScale = Flow.Scale * Vector3.one;
 
             List<ScriptNode> nodes = Flow.Nodes;
             List<NodeConnection> connections = Flow.Connections;
@@ -422,8 +435,11 @@ namespace Loykas.Scripting
 
             float delta = scale / _holder.localScale.x;
             _holder.localScale = scale * Vector3.one;
-
             _holder.anchoredPosition = mouseLocalPoint + (_holder.anchoredPosition - mouseLocalPoint) * delta;
+            Flow.Scale = scale;
+
+            UpdateBackgroundMaterial();
+            _backgroundImage.materialForRendering.SetFloat(_backgroundZoomProperty, 1f / scale);
         }
 
         private void HandleMenu()
@@ -536,6 +552,8 @@ namespace Loykas.Scripting
         {
             _holder.position = Mouse.current.position.ReadValue() - _offsetFromMouse;
             Flow.Pan = _holder.localPosition;
+            
+            UpdateBackgroundMaterial();
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -712,6 +730,13 @@ namespace Loykas.Scripting
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_holder, screenPosition, camera, out Vector2 point);
             return point;
             // return (worldPosition - _holder.position) * 1f / _holder.localScale.x;
+        }
+
+        private void UpdateBackgroundMaterial()
+        {
+            Vector2 tiling = new(_rect.rect.size.x / _rect.rect.size.y, 1f);
+            Vector2 offset = - _holder.localPosition;
+            _backgroundImage.materialForRendering.SetVector(_backgroundOffsetProperty, offset);
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ScriptFlowData
 {
     public Vector2 Pan;
+    public float Scale;
     public List<ScriptNodeSaveData> Nodes = new();
     public List<ScriptConnectionSaveData> Connections = new();
     public List<ScriptVariableSaveData> Variables = new();

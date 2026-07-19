@@ -7,6 +7,7 @@ public static class ScriptSaveHandler
     public static void Save(ScriptFlowData flowData, ScriptFlow flow)
     {
         flowData.Pan = flow.Pan;
+        flowData.Scale = flow.Scale;
 
         for (int i = 0; i < flow.Nodes.Count; i++)
         {
@@ -113,6 +114,7 @@ public static class ScriptSaveHandler
     public static void Load(ScriptFlowData flowData, ScriptFlow flow)
     {
         flow.Pan = flowData.Pan;
+        flow.Scale = flowData.Scale;
 
         flow.Variables.Clear();
         foreach (var item in flowData.Variables)

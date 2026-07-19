@@ -17,7 +17,7 @@ namespace Loykas.Scripting
         public event UnityAction<ScriptFunction> OnFunctionDeleted;
 
         public Vector2 Pan { get; set; }
-        public float Scale { get; set;}
+        public float Scale { get; set; } = 1f;
 
         public SceneEntity Entity;
         public bool IsGlobal => Entity == null;
