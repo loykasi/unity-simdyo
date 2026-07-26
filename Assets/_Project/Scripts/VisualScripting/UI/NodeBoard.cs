@@ -226,8 +226,6 @@ namespace Loykas.Scripting
 
             node.Board = this;
             node.Node = scriptNode;
-            // node.transform.position = _openMenuPosition;
-            // scriptNode.Position = node.transform.localPosition;
 
             IEnumerable<NodeConnection> connections = Flow.GetConnections(scriptNode);
 

@@ -455,6 +455,7 @@ namespace Loykas.Scripting
             node.Init(function);
 
             node.Flow = this;
+            node.Position = - Pan;
             Nodes.Add(node);
             OnNodeAdded?.Invoke(node);
         }

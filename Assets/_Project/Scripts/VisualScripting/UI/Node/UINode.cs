@@ -51,7 +51,7 @@ namespace Loykas.Scripting
         // private bool _isMouseOver = false;
 
         private readonly float _inputOutputDistance = 10f;
-        private float _minWidth = 50f;
+        private float _minWidth = 80f;
         private readonly float _topBottomPadding = 20f;
 
         private void SetNode(ScriptNode node)
@@ -93,7 +93,7 @@ namespace Loykas.Scripting
             _nodeTitle.SetText(title);
             
             Vector2 labelSize = _nodeTitle.GetPreferredValues();
-            _minWidth = labelSize.x + 20f;
+            _minWidth = Mathf.Max(labelSize.x + 20f, 80f);
 
             if (Node.HasInputTrigger)
             {

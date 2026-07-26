@@ -54,7 +54,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _ColorMask: 15
-    - _DotRadius: 0.04
+    - _DotRadius: 0.05
     - _DotSoftness: 0.02
     - _EnableExternalAlpha: 0
     - _Size: 32
@@ -68,10 +68,10 @@ Material:
     - _ZWrite: 0
     - _Zoom: 1
     m_Colors:
-    - _BackgroundColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BackgroundColor: {r: 0.09411765, g: 0.101960786, b: 0.1254902, a: 1}
     - _ClipRect: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DotColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+    - _DotColor: {r: 0.16499999, g: 0.17875, b: 0.22, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
     - _Tiling: {r: 1.238095, g: 1, b: 0, a: 0}

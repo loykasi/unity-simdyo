@@ -9,21 +9,18 @@ public class DragPreviewSystem : Singleton<DragPreviewSystem>
     [SerializeField] private TMP_Text _previewText;
     [SerializeField] private Image _image;
     [SerializeField] private Color _defaultColor;
-    
-    private Vector2 _offset;
 
     public void Update()
     {
         if (_previewObject.gameObject.activeInHierarchy)
         {
-            _previewObject.position = Mouse.current.position.ReadValue() + _offset;
+            _previewObject.position = Mouse.current.position.ReadValue();
             CursorSystem.Instance.SetCursor(CursorType.Grabbing, 2);
         }
     }
 
     public void BeginDrag(Vector2 position, string name = "", Color? color = null)
     {
-        _offset = position - Mouse.current.position.ReadValue();
         _previewObject.gameObject.SetActive(true);
         _previewText.text = name;
 
