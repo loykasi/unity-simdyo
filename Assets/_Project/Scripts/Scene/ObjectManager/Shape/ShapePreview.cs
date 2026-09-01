@@ -12,6 +12,11 @@ public class ShapePreview : Singleton<ShapePreview>
 
     [SerializeField] private int _totalVert;
 
+    [Header("Polygon")]
+    [SerializeField] private LineRenderer _lineRenderer;
+    [SerializeField] private float _baseWidth = 0.05f;
+    private int _pointCount = 1;
+
     private readonly int _radiusProperty = Shader.PropertyToID("_Radius");
 
     private void Start()
@@ -19,6 +24,8 @@ public class ShapePreview : Singleton<ShapePreview>
         _boxMesh = _boxPreview.mesh;
         _circleMesh = _circlePreview.mesh;
     }
+
+#region Box
 
     public void StartBoxPreview()
     {
@@ -46,6 +53,10 @@ public class ShapePreview : Singleton<ShapePreview>
     {
         _boxPreview.gameObject.SetActive(false);
     }
+
+#endregion
+
+#region Circle
 
     public void StartCirclePreview()
     {
@@ -76,4 +87,45 @@ public class ShapePreview : Singleton<ShapePreview>
     {
         _circlePreview.gameObject.SetActive(false);
     }
+
+#endregion
+
+#region Polygon
+
+    public void StartPolygonPreview()
+    {
+        _pointCount = 1;
+        _lineRenderer.positionCount = _pointCount;
+        _lineRenderer.gameObject.SetActive(true);
+    }
+
+    public void AddPolygonPoint(Vector3 point)
+    {
+        _lineRenderer.SetPosition(_pointCount - 1, point);
+        _pointCount += 1;
+        _lineRenderer.positionCount = _pointCount;
+    }
+
+    public void SetLastPoint(Vector3 point)
+    {
+        _lineRenderer.SetPosition(_pointCount - 1, point);   
+    }
+
+    public void StopPolygonPreview()
+    {
+        _lineRenderer.gameObject.SetActive(false);
+        _pointCount = 1;
+    }
+
+    private void Update()
+    {
+        if (_lineRenderer.gameObject.activeInHierarchy)
+        {
+            Camera camera = EngineManager.Instance.EditorCamera;
+            float width = camera.orthographicSize / 5f * _baseWidth;
+            _lineRenderer.widthMultiplier = width;
+        }
+    }
+
+#endregion
 }

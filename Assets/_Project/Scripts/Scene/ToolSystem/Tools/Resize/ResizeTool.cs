@@ -1,10 +1,9 @@
+using System;
 using UnityEngine;
 
-public class ResizeTool : PanTool
+public class ResizeTool : BaseTool
 {
     public override ToolType Type => ToolType.Resize;
-
-    [SerializeField] private RectTransform _bound;
 
     private ResizeBox _resizeBox = new();
     private ResizeCircle _circleHandler = new();
@@ -12,80 +11,88 @@ public class ResizeTool : PanTool
 
     private IResize _handler;
 
-    private bool _enabled;
+    private UIToolManager _uiToolManager;
+    private EntityGroup _selectionGroup => ObjectManager.Instance.SelectionGroup;
 
-    private void Start()
+    public override void Enable()
     {
+        base.Enable();
+
+        if (_uiToolManager == null)
+        {
+            _uiToolManager = UIManager.Instance.Get<UIToolManager>();
+        }
+
+        if (_selectionGroup.Count == 1)
+        {
+            ShowResizeUI(_selectionGroup.Entities[0]);
+        }
+
         ObjectManager.Instance.OnObjectSelected += OnObjectSelected;
         ObjectManager.Instance.OnObjectDeselected += OnObjectDeselected;
     }
 
-    private void OnObjectDeselected()
-    {
-        _bound.gameObject.SetActive(false);
-        _handler = null;
-    }
-
-    public override void Enable()
-    {
-        _enabled = true;
-        var entity = ObjectManager.Instance.SelectedObject;
-        OnObjectSelected(entity);
-    }
-
     public override void Disable()
     {
-        _enabled = false;
-        _bound.gameObject.SetActive(false);
+        base.Disable();
+
+        _handler = null;
+        _uiToolManager.ResizeBound.gameObject.SetActive(false);
+
+        ObjectManager.Instance.OnObjectSelected -= OnObjectSelected;
+        ObjectManager.Instance.OnObjectDeselected -= OnObjectDeselected;
+
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
         
-        if (!_enabled || _handler == null)
+        _handler?.UpdateBound();
+    }
+
+    private void ShowResizeUI(SceneEntity entity)
+    {
+        _uiToolManager.ResizeBound.rotation = Quaternion.identity;
+
+        switch (entity)
         {
-            return;
+            case BoxEntity boxEntity:
+                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+                _handler = _resizeBox;
+                _handler.Init(boxEntity, _uiToolManager.ResizeBound);
+                break;
+            case CircleEntity circleEntity:
+                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+                _handler = _circleHandler;
+                _handler.Init(circleEntity, _uiToolManager.ResizeBound);
+                break;
+            case PolygonEntity polygonEntity:
+                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+                _handler = _polygonHandler;
+                _handler.Init(polygonEntity, _uiToolManager.ResizeBound);
+                break;
         }
 
-        _handler?.UpdateBound();
+        KDebug.Log($"[Resize Tool] Handle {entity.EntityType}");
     }
 
     private void OnObjectSelected(SceneEntity entity)
     {
-        if (!_enabled)
+        if (_selectionGroup.Count == 1)
         {
+            ShowResizeUI(entity);
             return;
         }
 
-        _bound.rotation = Quaternion.identity;
-        
-        if (entity is BoxEntity boxEntity)
-        {
-            _bound.gameObject.SetActive(true);
+        _handler = null;
+        _uiToolManager.ResizeBound.gameObject.SetActive(false);
+    }
 
-            _handler = _resizeBox;
-            _handler.Init(boxEntity, _bound);
-            return;
-        }
-
-        if (entity is CircleEntity circleEntity)
-        {
-            _bound.gameObject.SetActive(true);
-
-            _handler = _circleHandler;
-            _handler.Init(circleEntity, _bound);
-            return;
-        }
-
-        if (entity is PolygonEntity polygonEntity)
-        {
-            _bound.gameObject.SetActive(true);
-
-            _handler = _polygonHandler;
-            _handler.Init(polygonEntity, _bound);
-            return;
-        }
+    private void OnObjectDeselected()
+    {
+        _handler = null;
+        _uiToolManager.ResizeBound.gameObject.SetActive(false);
     }
 
     public void BeginResize(BoundsHandleDirection direction)

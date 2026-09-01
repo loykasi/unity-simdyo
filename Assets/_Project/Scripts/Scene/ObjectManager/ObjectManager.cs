@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.InputSystem;
+using System;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
@@ -15,8 +16,9 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public Dictionary<int, SceneEntity> SceneEntityDict = new();
     public List<SceneEntity> SceneEntities { get; set; } = new();
-    public SceneEntity SelectedObject { get; set; }
-    [HideInInspector] public List<SceneEntity> Selections = new();
+    public EntityGroup SelectionGroup { get; set; } = new();
+    [Obsolete] public List<SceneEntity> Selections { get; set; } = new();   // TODO: remove this
+    [Obsolete] public SceneEntity SelectedObject { get; set; }              // TODO: remove this
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;
@@ -29,7 +31,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     private List<RaycastHit2D> _selectionResults = new();
 
     private List<SceneEntity> _snapshotEntities = new();    // use on running scene
-    private List<string> _entityNames = new();    // For generate unique name
+    private List<string> _entityNames = new();              // For generate unique name
     private readonly string _baseEntityName = "Entity";
 
     private void OnEnable()
@@ -68,43 +70,29 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void Select(Vector3 screenPoint)
     {
-        // bool isMultipleSelecting = Keyboard.current.ctrlKey.isPressed;
-        // if (!isMultipleSelecting)
-        // {
-        //     Deselect();
-        // }
-        Deselect();
+        bool isMultipleSelecting = InputManager.Instance.IsMultipleSelect;
+        if (!isMultipleSelecting)
+        {
+            Deselect();
+        }
 
         if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
         {
             return;
         }
 
-        // if (!Selections.Contains(entity))
-        // {
-        //     entity.Select();
-        //     Selections.Add(entity);
-        // }
-
-        SelectedObject = entity;
-        SelectedObject.Select();
-        OnObjectSelected?.Invoke(SelectedObject);
+        if (!SelectionGroup.Contains(entity))
+        {
+            entity.Select();
+            SelectionGroup.Add(entity);
+            OnObjectSelected?.Invoke(entity);
+        }
     }
 
     public void Deselect()
     {
-        if (SelectedObject != null)
-        {
-            SelectedObject.Deselect();
-            SelectedObject = null;
-
-            OnObjectDeselected?.Invoke();
-        }
-        // foreach (SceneEntity entity in Selections)
-        // {
-        //     entity.Deselect();
-        // }
-        // Selections.Clear();
+        SelectionGroup.Deselect();
+        OnObjectDeselected?.Invoke();
     }
 
     public void Click(Vector3 screenPoint)
@@ -215,11 +203,6 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         list.Insert(0, "All");
         return list;
     }
-
-    // public int GetIndexByEntity(SceneEntity entity)
-    // {
-    //     return SceneEntities.FindIndex(e => e == entity) + 1;
-    // }
 
     public int GetIndexByEntityID(int id)
     {
@@ -377,11 +360,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void DeleteEntity(SceneEntity entity)
     {
-        if (SelectedObject == entity)
-        {
-            SelectedObject = null;
-            OnObjectDeselected?.Invoke();
-        }
+        // TODO: remove from selection group
 
         SceneEntities.Remove(entity);
         SceneEntityDict.Remove(entity.Id);
@@ -466,11 +445,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void ResetState()
     {
-        if (SelectedObject != null)
-        {
-            SelectedObject.Deselect();
-            SelectedObject = null;
-        }
+        SelectionGroup.Deselect();
 
         for (int i = 0; i < SceneEntities.Count; i++)
         {

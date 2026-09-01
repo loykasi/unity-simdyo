@@ -2,7 +2,12 @@ using UnityEngine;
 
 public class UIResizeBounds : MonoBehaviour
 {
-    [SerializeField] private ResizeTool _resizeTool;
+    private ResizeTool _resizeTool;
+
+    private void Start()
+    {
+        _resizeTool = (ResizeTool)ToolManager.Instance.GetTool(ToolType.Resize);
+    }
 
     public void BeginDrag(BoundsHandleDirection direction)
     {

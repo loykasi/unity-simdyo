@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PolygonTool : PanTool
+public class PolygonTool : BaseTool
 {
     public override ToolType Type => ToolType.Polygon;
 
@@ -11,57 +11,9 @@ public class PolygonTool : PanTool
     private List<Vector3> _points = new();
     private float _minimumDistance = 0.1f;
 
-    [Header("Preview")]
-    [SerializeField] private LineRenderer _lineRenderer;
-    [SerializeField] private float _baseWidth = 0.05f;
-    private int _pointCount = 1;
-
     public override void OnUpdate()
     {
-        Zoom();
-        HandleSelection();
-        HandleContextMenu();
-        HandlePanRightMouse();
-        Create();
-
-        if (_lineRenderer.gameObject.activeInHierarchy)
-        {
-            Camera camera = EngineManager.Instance.EditorCamera;
-            float width = camera.orthographicSize / 5f * _baseWidth;
-            _lineRenderer.widthMultiplier = width;
-        }
-    }
-
-    private void Create()
-    {
-        Vector3 mousePosition = GetMouseWorldPositon();
-
-        if (Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            _onMouseHold = true;
-            
-            Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
-            _points.Add(point);
-            
-            StartPreview();
-            AddPoint(point);
-            SetLastPoint(point);
-        }
-
-        if (Mouse.current.leftButton.wasReleasedThisFrame)
-        {
-            _onMouseHold = false;
-            StopPreview();
-            
-            Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
-            if (_points.Count > 0 && Vector3.Distance(point, _points[^1]) > _minimumDistance)
-            {
-                _points.Add(point);
-            }
-
-            ObjectManager.Instance.AddPolygon(_points);
-            _points.Clear();
-        }
+        base.OnUpdate();
 
         if (Keyboard.current.shiftKey.wasPressedThisFrame)
         {
@@ -72,9 +24,47 @@ public class PolygonTool : PanTool
         {
             _isDrawStraightLine = false;
         }
+    }
+
+    protected override void OnClick()
+    {
+        _onMouseHold = true;
+        Vector3 mouseWorldPosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
+        Vector3 point = Vector3Utils.GetGridPosition(mouseWorldPosition);
+        _points.Add(point);
+        
+        ShapePreview.Instance.StartPolygonPreview();
+        ShapePreview.Instance.AddPolygonPoint(point);
+        ShapePreview.Instance.SetLastPoint(point);
+    }
+
+    protected override void OnClickReleased()
+    {
+        if (_onMouseHold)
+        {
+            _onMouseHold = false;
+            ShapePreview.Instance.StopPolygonPreview();
+            
+            Vector3 mouseWorldPosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
+            Vector3 point = Vector3Utils.GetGridPosition(mouseWorldPosition);
+            if (_points.Count > 0 && Vector3.Distance(point, _points[^1]) > _minimumDistance)
+            {
+                _points.Add(point);
+            }
+
+            ObjectManager.Instance.AddPolygon(_points);
+            _points.Clear();   
+        }
+    }
+
+    protected override void OnPointMove(Vector2 value)
+    {
+        base.OnPointMove(value);
 
         if (_onMouseHold)
         {
+            Vector3 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
+
             bool shouldAddPoint = false;
             Vector3 current = Vector3Utils.GetGridPosition(mousePosition);
             Vector3 last = _points[^1];
@@ -110,51 +100,11 @@ public class PolygonTool : PanTool
                     _points.Add(current);
                     shouldAddPoint = false;
 
-                    AddPoint(current);
+                    ShapePreview.Instance.AddPolygonPoint(current);
                 }
 
-                SetLastPoint(current);
-            }
-            
+                ShapePreview.Instance.SetLastPoint(current);
+            }   
         }
-
-        // if (Mouse.current.leftButton.wasPressedThisFrame)
-        // {
-        //     Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
-        //     _points.Add(point);
-        //     Debug.Log($"Add {point}");
-        // }
-
-        // if (Keyboard.current.enterKey.wasPressedThisFrame)
-        // {
-        //     ObjectManager.Instance.AddPolygon(_points);
-        //     _points.Clear();
-        // }
-    }
-
-    public void StartPreview()
-    {
-        _pointCount = 1;
-        _lineRenderer.positionCount = _pointCount;
-
-        _lineRenderer.gameObject.SetActive(true);
-    }
-
-    public void AddPoint(Vector3 point)
-    {
-        _lineRenderer.SetPosition(_pointCount - 1, point);
-        _pointCount += 1;
-        _lineRenderer.positionCount = _pointCount;
-    }
-
-    public void SetLastPoint(Vector3 point)
-    {
-        _lineRenderer.SetPosition(_pointCount - 1, point);
-    }
-    
-    public void StopPreview()
-    {
-        _lineRenderer.gameObject.SetActive(false);
-        _pointCount = 1;
     }
 }

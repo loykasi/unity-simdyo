@@ -18,7 +18,7 @@ public class UIToolSelection : MonoBehaviour
 
     private void OnEnable()
     {
-        ToolManagement.Instance.OnToolChanged += OnToolChanged;
+        ToolManager.Instance.OnToolChanged += OnToolChanged;
     }
 
     private void InitToolButton()
@@ -42,18 +42,18 @@ public class UIToolSelection : MonoBehaviour
 
     private void OnToolChanged()
     {
-        if (!ToolManagement.Instance.HasTool)
+        if (!ToolManager.Instance.HasTool)
         {
             return;
         }
 
-        ToolType type = ToolManagement.Instance.CurrentTool;
+        ToolType type = ToolManager.Instance.CurrentTool;
         SetSelectionBorder(type);
     }
 
     public void SelectTool(ToolType type)
     {
-        ToolManagement.Instance.SwitchTool(type);
+        ToolManager.Instance.SwitchTool(type);
     }
 
     public void SetSelectionBorder(ToolType type)

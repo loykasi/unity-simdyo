@@ -3,31 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ToolManagement : Singleton<ToolManagement>
+public class ToolManager : Singleton<ToolManager>
 {
     public UnityAction OnToolChanged;
 
     public ToolType CurrentTool { get; private set; }
     public bool HasTool => _tool != null;
 
-    public float PanZoomSpeed;
-
     [SerializeField] private Camera _camera;
     [SerializeField] private ToolType _defaultTool;
+
+    [Header("Rotate Tool")]
+    public float SnapRadius;
+
+    [Header("Polygon Tool")]
+    public float _baseWidth = 0.05f;
     
+    // tools
     private ITool _tool;
-    // private ITool[] _tools;
-    [SerializeField] private BaseTool[] _tools;
-    // private ITool[] _tools = new ITool[]
-    // {
-    //     new MoveTool(),
-    //     new RotateTool(),
-    //     new PanTool(),
-    //     new ResizeTool(),
-    //     new BoxTool(),
-    //     new CircleTool(),
-    //     new PolygonTool()
-    // };
+    private ITool[] _tools = new ITool[]
+    {
+        new MoveTool(),
+        new RotateTool(),
+        new PanTool(),
+        new ResizeTool(),
+        new BoxTool(),
+        new CircleTool(),
+        new PolygonTool(),
+        new TracerTool(),
+    };
     private Dictionary<ToolType, ITool> _toolTable = new();
 
     protected override void Awake()
@@ -68,5 +72,14 @@ public class ToolManagement : Singleton<ToolManagement>
             _tool.Enable();
         }
         OnToolChanged?.Invoke();
+    }
+
+    public ITool GetTool(ToolType type)
+    {
+        if (_toolTable.TryGetValue(type, out ITool tool))
+        {
+            return tool;
+        }
+        return default;
     }
 }

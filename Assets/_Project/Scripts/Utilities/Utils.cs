@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Loykas.Scripting;
+using UnityEngine;
 
 public static class Utils
 {
@@ -60,5 +61,37 @@ public static class Utils
             }
         }
         return null;
+    }
+
+    public static Vector3 ToWorldPositon(Vector2 mousePosition)
+    {
+        Camera camera = EngineManager.Instance.EditorCamera;
+        Vector3 worldPoint = camera.ScreenToWorldPoint(mousePosition);
+        worldPoint.z = 0;
+        return worldPoint;
+    }
+
+    public static bool IsMouseOverSelections(Vector3 mousePosition)
+    {
+        bool hasEntity = ObjectManager.Instance.TryGetSceneEntity
+        (
+            EngineManager.Instance.EditorCamera,
+            mousePosition,
+            out SceneEntity onMouseEntity
+        );
+
+        return hasEntity && ObjectManager.Instance.SelectionGroup.Contains(onMouseEntity);
+    }
+
+    public static bool IsMouseOverSelections(Vector3 mousePosition, out SceneEntity entity)
+    {
+        bool hasEntity = ObjectManager.Instance.TryGetSceneEntity
+        (
+            EngineManager.Instance.EditorCamera,
+            mousePosition,
+            out entity
+        );
+
+        return hasEntity && ObjectManager.Instance.SelectionGroup.Contains(entity);
     }
 }

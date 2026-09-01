@@ -1,43 +1,41 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class TracerTool : PanTool
+public class TracerTool : BaseTool
 {
     public override ToolType Type => ToolType.Tracer;
 
-    private Vector3 _startPosition;
+    private Vector2 _startPosition;
 
-    public override void OnUpdate()
+    protected override void OnClick()
     {
-        Zoom();
-        HandleContextMenu();
-        HandlePanRightMouse();
-        Create();
-        HandleSelection();
+        if (ScreenInteractionUtils.IsOverUI())
+        {
+            return;
+        }
+
+        _startPosition = InputManager.Instance.MousePosition;
     }
 
-    private void Create()
+    protected override void OnClickReleased()
     {
-        Vector3 mousePosition = GetMouseWorldPositon();
-        if (Mouse.current.leftButton.wasPressedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        if (ScreenInteractionUtils.IsOverUI())
         {
-            _startPosition = Vector3Utils.GetGridPosition(mousePosition);
+            return;
+        }
+        
+        if (_startPosition != InputManager.Instance.MousePosition)
+        {
+            return;
         }
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame && !ScreenInteractionUtils.IsOverUI())
+        if (!ObjectManager.Instance.TryGetSceneEntity(_startPosition, out SceneEntity onHoveredEntity)
+            && onHoveredEntity is TracerEntity)
         {
-            if (!ObjectManager.Instance.TryGetSceneEntity(_startPosition, out SceneEntity onHoveredEntity))
-            {
-                return;
-            }
-            
-            if (onHoveredEntity is TracerEntity)
-            {
-                return;
-            }
-            
-            TracerEntity entity = ObjectManager.Instance.AddTracer(_startPosition);
-            entity.AutoAttachToMeshEntity();
+            return;
         }
+        
+        Vector3 position = Utils.ToWorldPositon(_startPosition);
+        TracerEntity entity = ObjectManager.Instance.AddTracer(position);
+        entity.AutoAttachToMeshEntity();
     }
 }
