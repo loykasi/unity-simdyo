@@ -17,15 +17,18 @@ public abstract class MeshEntity : SceneEntity
     {
         get
         {
-            return Rigidbody.linearVelocity;
+            return SceneManager.Instance.IsRuning ? Rigidbody.linearVelocity : _velocity;
         }
         set
         {
-            // _velocity = value;
-            Rigidbody.linearVelocity = value;
+            _velocity = value;
+            if (SceneManager.Instance.IsRuning)
+            {
+                Rigidbody.linearVelocity = value;   
+            }
         }
     }
-    // private Vector2 _velocity;
+    private Vector2 _velocity;
 
     public bool IsColliderEnabled
     {
@@ -89,6 +92,7 @@ public abstract class MeshEntity : SceneEntity
 
     protected override void Awake()
     {
+        base.Awake();
         Collider.Init();
         CollisionLayerController.Instance.UpdateObjectLayer(this);
 
@@ -163,6 +167,12 @@ public abstract class MeshEntity : SceneEntity
     public override void OnSceneStart()
     {
         base.OnSceneStart();
+
+        if (Rigidbody.bodyType != RigidbodyType2D.Static)
+        {
+            Rigidbody.linearVelocity = _velocity;   
+        }
+
         _meshState = new()
         {
             ColorHSV = CurrentColor,
@@ -199,6 +209,81 @@ public abstract class MeshEntity : SceneEntity
             meshEntity.Bounciness = Bounciness;   
         }
         base.CopyPropertyTo(entity);
+    }
+
+    protected override void DefineProperties()
+    {
+        base.DefineProperties();
+
+        RegisterProperty
+        (
+            EntityPropertyType.Gravity,
+            new EntityProperty<bool>
+            (
+                getter: () => IsGravityEnabled,
+                setter: (value) => IsGravityEnabled = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Collider,
+            new EntityProperty<bool>
+            (
+                getter: () => IsColliderEnabled,
+                setter: (value) => IsColliderEnabled = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Velocity,
+            new EntityProperty<Vector2>
+            (
+                getter: () => Velocity,
+                setter: (value) => Velocity = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Friction,
+            new EntityProperty<float>
+            (
+                getter: () => Friction,
+                setter: (value) => Friction = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Bounciness,
+            new EntityProperty<float>
+            (
+                getter: () => Bounciness,
+                setter: (value) => Bounciness = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Color,
+            new EntityProperty<ColorHSV>
+            (
+                getter: () => CurrentColor,
+                setter: (value) => CurrentColor = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.CollisionLayer,
+            new EntityProperty<CollisionLayer>
+            (
+                getter: () => Layer,
+                setter: (value) => Layer = value
+            )
+        );
     }
 
     public abstract PathsD ToPaths();

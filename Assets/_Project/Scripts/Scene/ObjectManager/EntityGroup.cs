@@ -8,6 +8,11 @@ public class EntityGroup
     public Vector3 Center;
 
     public int Count => Entities.Count;
+    public int MeshEntityCount;
+    public int BoxCount;
+    public int CircleCount;
+    public int PolygonCount;
+    public int TracerCount;
 
     public bool Contains(SceneEntity entity) => Entities.Contains(entity);
     
@@ -16,6 +21,25 @@ public class EntityGroup
         Entities.Add(entity);
         CalculateBounds();
         CalculateCenter();
+
+        switch (entity)
+        {
+            case BoxEntity:
+                MeshEntityCount++;
+                BoxCount++;
+                break;
+            case CircleEntity:
+                MeshEntityCount++;
+                CircleCount++;
+                break;
+            case PolygonEntity:
+                MeshEntityCount++;
+                PolygonCount++;
+                break;
+            case TracerEntity:
+                TracerCount++;
+                break;
+        }
     }
 
     private void CalculateBounds()
@@ -44,6 +68,12 @@ public class EntityGroup
             entity.Deselect();
         }
         Entities.Clear();
+
+        MeshEntityCount = 0;
+        BoxCount = 0;
+        CircleCount = 0;
+        PolygonCount = 0;
+        TracerCount = 0;
     }
 
     public void Update()

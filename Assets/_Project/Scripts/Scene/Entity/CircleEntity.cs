@@ -158,4 +158,19 @@ public class CircleEntity : MeshEntity
             TextureSlotKey = TextureSlotKey
         };
     }
+
+    protected override void DefineProperties()
+    {
+        base.DefineProperties();
+
+        RegisterProperty
+        (
+            EntityPropertyType.Radius,
+            new EntityProperty<float>
+            (
+                getter: () => Radius,
+                setter: (value) => SetRadius(value)
+            )
+        );
+    }
 }

@@ -5,6 +5,11 @@ public class MenuController : MonoBehaviour
     [SerializeField] private EntityMenu _entityMenu;
     [SerializeField] private SceneMenu _sceneMenu;
 
+    private void Awake()
+    {
+        _entityMenu.Setup();
+    }
+
     private void OnEnable()
     {
         ObjectManager.Instance.OnObjectSelected += OnObjectSelected;
@@ -20,12 +25,6 @@ public class MenuController : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        _sceneMenu.Setup();
-        _entityMenu.Setup();
-    }
-
     private void Start()
     {
         _entityMenu.Close();
@@ -35,7 +34,7 @@ public class MenuController : MonoBehaviour
     private void OnObjectSelected(SceneEntity entity)
     {
         _sceneMenu.Close();
-        _entityMenu.Open(entity);
+        _entityMenu.Open();
     }
 
     private void OnObjectDeselected()

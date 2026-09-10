@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using Loykas.Scripting;
 using UnityEngine.Rendering;
 using System.Collections.Generic;
+using System;
 
 public abstract class SceneEntity : MonoBehaviour
 {
@@ -22,7 +23,12 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.position = value;
-            OnPropertyUpdated?.Invoke();
+            TriggerPropertyUpdate(EntityPropertyType.Position);
+            
+            if (!SceneManager.Instance.IsRuning)
+            {
+                Physics2D.SyncTransforms();
+            }
         }
     }
 
@@ -32,7 +38,12 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.rotation = Quaternion.Euler(0f, 0f, value);
-            OnPropertyUpdated?.Invoke();
+            TriggerPropertyUpdate(EntityPropertyType.Angle);
+
+            if (!SceneManager.Instance.IsRuning)
+            {
+                Physics2D.SyncTransforms();
+            }
         }
     }
 
@@ -42,7 +53,12 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             transform.rotation = value;
-            OnPropertyUpdated?.Invoke();
+            TriggerPropertyUpdate(EntityPropertyType.Angle);
+
+            if (!SceneManager.Instance.IsRuning)
+            {
+                Physics2D.SyncTransforms();
+            }
         }
     }
 
@@ -52,7 +68,12 @@ public abstract class SceneEntity : MonoBehaviour
         set
         {
             SortingGroup.sortingOrder = value;
-            OnPropertyUpdated?.Invoke();
+            TriggerPropertyUpdate(EntityPropertyType.ZDepth);
+            
+            if (!SceneManager.Instance.IsRuning)
+            {
+                Physics2D.SyncTransforms();
+            }
         }
     }
 
@@ -64,6 +85,7 @@ public abstract class SceneEntity : MonoBehaviour
 
     protected virtual void Awake()
     {
+        DefineProperties();
     }
 
     private void OnEnable()
@@ -162,4 +184,85 @@ public abstract class SceneEntity : MonoBehaviour
     {
         
     }
+
+#region Menu Property
+
+    private Dictionary<EntityPropertyType, EntityProperty> _properties = new();
+
+    protected virtual void DefineProperties()
+    {
+        RegisterProperty
+        (
+            EntityPropertyType.Id,
+            new EntityProperty<int>
+            (
+                getter: () => Id,
+                setter: (value) => Id = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Name,
+            new EntityProperty<string>
+            (
+                getter: () => Name,
+                setter: (value) => Name = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Position,
+            new EntityProperty<Vector3>
+            (
+                getter: () => Position,
+                setter: (value) => Position = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Angle,
+            new EntityProperty<float>
+            (
+                getter: () => Angle,
+                setter: (value) => Angle = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.ZDepth,
+            new EntityProperty<int>
+            (
+                getter: () => ZDepth,
+                setter: (value) => ZDepth = value
+            )
+        );
+    }
+
+    public void RegisterProperty(EntityPropertyType type, EntityProperty property)
+    {
+        if (!_properties.ContainsKey(type))
+        {
+            _properties.Add(type, property);
+        }
+    }
+    
+    public EntityProperty GetProperty(EntityPropertyType type)
+    {
+        if (_properties.TryGetValue(type, out EntityProperty value))
+        {
+            return value;
+        }
+        return null;
+    }
+
+    public void TriggerPropertyUpdate(EntityPropertyType type)
+    {
+        GetProperty(type).OnChanged();
+    }
+
+#endregion
 }

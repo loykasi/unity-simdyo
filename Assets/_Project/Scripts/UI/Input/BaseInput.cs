@@ -43,5 +43,10 @@ namespace Loykas.Scripting
         {
             
         }
+
+        public virtual void SetUnknownState()
+        {
+            
+        }
     }
 }

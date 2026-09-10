@@ -6,8 +6,6 @@ public abstract class BaseEntityMenu : MonoBehaviour
 
     public abstract void Setup();
     public abstract void UpdateUI();
-    public abstract void AddEntity(SceneEntity entity);
-    public abstract void Clear();
     public abstract void Show();
     public abstract void Close();
 }

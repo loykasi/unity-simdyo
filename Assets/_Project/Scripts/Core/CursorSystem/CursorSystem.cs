@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CursorSystem : Singleton<CursorSystem>
 {
+    [SerializeField] private bool _isEnabled;
     [SerializeField] private CursorSO _cursorData;
     private CursorType _currentType;
     private CursorType _targetType;
@@ -13,12 +13,14 @@ public class CursorSystem : Singleton<CursorSystem>
 
     private void Start()
     {
+        if (!_isEnabled) return;
         Texture2D cursor = _cursorData.Get(CursorType.Default);
         Cursor.SetCursor(cursor, _hotspot, CursorMode.Auto);
     }
 
     private void LateUpdate()
     {
+        if (!_isEnabled) return;
         if (!_shouldSetCursor || _targetType == _currentType)
         {
             _shouldSetCursor = false;
@@ -34,6 +36,7 @@ public class CursorSystem : Singleton<CursorSystem>
 
     public void SetCursor(CursorType type, int priority = 0)
     {
+        if (!_isEnabled) return;
         if (priority < _priority)
         {
             return;
@@ -46,6 +49,7 @@ public class CursorSystem : Singleton<CursorSystem>
 
     public void ToDefault(int priority = 0)
     {
+        if (!_isEnabled) return;
         if (_priority <= priority)
         {
             _priority = 0;

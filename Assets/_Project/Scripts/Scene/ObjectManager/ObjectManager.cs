@@ -17,8 +17,8 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public Dictionary<int, SceneEntity> SceneEntityDict = new();
     public List<SceneEntity> SceneEntities { get; set; } = new();
     public EntityGroup SelectionGroup { get; set; } = new();
-    [Obsolete] public List<SceneEntity> Selections { get; set; } = new();   // TODO: remove this
-    [Obsolete] public SceneEntity SelectedObject { get; set; }              // TODO: remove this
+    [Obsolete("Use SelectionGroup")] public List<SceneEntity> Selections { get; set; } = new();   // TODO: remove this
+    [Obsolete("Use SelectionGroup")] public SceneEntity SelectedObject { get; set; }              // TODO: remove this
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;

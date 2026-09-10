@@ -130,11 +130,13 @@ public class BoxEntity : MeshEntity
     public void SetWidth(float value)
     {
         SetSize(value, Height);
+        TriggerPropertyUpdate(EntityPropertyType.Width);
     }
 
     public void SetHeight(float value)
     {
         SetSize(Width, value);
+        TriggerPropertyUpdate(EntityPropertyType.Height);
     }
 
     public void SetSize(float width, float height)
@@ -257,5 +259,30 @@ public class BoxEntity : MeshEntity
             Color = CurrentColor,
             TextureSlotKey = TextureSlotKey
         };
+    }
+
+    protected override void DefineProperties()
+    {
+        base.DefineProperties();
+
+        RegisterProperty
+        (
+            EntityPropertyType.Width,
+            new EntityProperty<float>
+            (
+                getter: () => Width,
+                setter: (value) => SetWidth(value)
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.Height,
+            new EntityProperty<float>
+            (
+                getter: () => Height,
+                setter: (value) => SetHeight(value)
+            )
+        );
     }
 }

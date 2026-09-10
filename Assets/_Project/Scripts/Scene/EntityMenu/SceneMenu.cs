@@ -14,14 +14,11 @@ public class SceneMenu : MonoBehaviour
 
     public CameraSettings Settings => SceneManager.Instance.CameraSettings;
 
-    public void Setup()
+    private void Start()
     {
         _positionInput.OnSubmit += OnPositionSubmit;
         _sizeInput.OnSubmit += OnSizeSubmit;
-    }
-
-    private void Start()
-    {
+        
         UpdateMenu(Settings);
     }
 

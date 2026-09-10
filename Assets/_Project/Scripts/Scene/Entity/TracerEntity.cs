@@ -142,4 +142,49 @@ public class TracerEntity : SceneEntity
             ParentId = ParentId,
         };
     }
+
+    protected override void DefineProperties()
+    {
+        base.DefineProperties();
+
+        RegisterProperty
+        (
+            EntityPropertyType.TracerTime,
+            new EntityProperty<float>
+            (
+                getter: () => Time,
+                setter: (value) => Time = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.TracerDiameter,
+            new EntityProperty<float>
+            (
+                getter: () => Diameter,
+                setter: (value) => Diameter = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.TracerColor,
+            new EntityProperty<ColorHSV>
+            (
+                getter: () => Color,
+                setter: (value) => Color = value
+            )
+        );
+
+        RegisterProperty
+        (
+            EntityPropertyType.TracerHideOnStart,
+            new EntityProperty<bool>
+            (
+                getter: () => ShouldHideIndicatorOnStart,
+                setter: (value) => ShouldHideIndicatorOnStart = value
+            )
+        );
+    }
 }

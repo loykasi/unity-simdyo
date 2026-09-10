@@ -12,12 +12,12 @@ public class CollisionLayerToggle : MonoBehaviour
     [SerializeField] private RectTransform _rect;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private TextMeshProUGUI _label;
+    [SerializeField] private GameObject _unknownState;
 
     private UnityAction<CollisionLayer, bool> _action;
 
-    public void Init(Vector3 position, CollisionLayer layer, UnityAction<CollisionLayer, bool> action)
+    public void Init(CollisionLayer layer, UnityAction<CollisionLayer, bool> action)
     {
-        _rect.anchoredPosition = position;
         _label.text = layer.ToString();
         Layer = layer;
         _action = action;
@@ -26,10 +26,18 @@ public class CollisionLayerToggle : MonoBehaviour
     public void SetState(bool value)
     {
         _toggle.SetIsOnWithoutNotify(value);
+        _unknownState.SetActive(false);
     }
 
     public void OnChanged(bool value)
     {
         _action?.Invoke(Layer, value);
+        _unknownState.SetActive(false);
+    }
+
+    public void SetUnknownState()
+    {
+        _unknownState.SetActive(true);
+        _toggle.SetIsOnWithoutNotify(false);
     }
 }
