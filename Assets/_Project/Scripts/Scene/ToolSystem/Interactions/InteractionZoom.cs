@@ -9,30 +9,8 @@ public class InteractionZoom
         set => EngineManager.Instance.EditorCameraHeight = value;
     }
 
-    private Action<float> _scrollEvent;
-
-    public InteractionZoom()
+    public void OnScroll(float value)
     {
-        _scrollEvent = OnScroll;
-    }
-
-    public void Enable()
-    {
-        InputManager.Instance.ScrollEvent += _scrollEvent;
-    }
-
-    public void Disable()
-    {
-        InputManager.Instance.ScrollEvent -= _scrollEvent;
-    }
-
-    private void OnScroll(float value)
-    {
-        if (ScreenInteractionUtils.IsOverUI())
-        {
-            return;
-        }
-
         float scroll = value;
         if (scroll != 0)
         {

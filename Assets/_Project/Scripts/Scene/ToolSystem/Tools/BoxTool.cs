@@ -7,22 +7,28 @@ public class BoxTool : BaseTool
     private bool _onMouseMove;
     private Vector3 _startPosition;
 
-    protected override void OnClick()
+    public override void Disable()
     {
-        if (ScreenInteractionUtils.IsOverUI())
+        if (_onMouseMove)
         {
-            return;
+            _onMouseMove = false;
+            ShapePreview.Instance.StopBoxPreview();
         }
+    }
 
+    public override bool OnPointerLeftDown(Vector2 position)
+    {
         Vector2 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
         _startPosition = Vector3Utils.GetGridPosition(mousePosition);
 
         _onMouseMove = true;
         ShapePreview.Instance.StartBoxPreview();
         ShapePreview.Instance.PreviewBox(_startPosition, _startPosition);
+
+        return true;
     }
 
-    protected override void OnClickReleased()
+    public override void OnPointerLeftUp(Vector2 position)
     {
         if (_onMouseMove)
         {
@@ -30,14 +36,12 @@ public class BoxTool : BaseTool
 
             Vector2 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);;
             ObjectManager.Instance.AddBox(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
-            ShapePreview.Instance.StopBoxPreview();   
+            ShapePreview.Instance.StopBoxPreview();
         }
     }
 
-    protected override void OnPointMove(Vector2 value)
+    public override void OnPointerMove(Vector2 value)
     {
-        base.OnPointMove(value);
-
         if (_onMouseMove)
         {
             Vector2 mouseWorldPostiion = Utils.ToWorldPositon(value);

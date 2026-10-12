@@ -5,27 +5,24 @@ public class ResizeTool : BaseTool
 {
     public override ToolType Type => ToolType.Resize;
 
-    private ResizeBox _resizeBox = new();
-    private ResizeCircle _circleHandler = new();
-    private ResizePolygon _polygonHandler = new();
+    private readonly ResizeBox _resizeBox = new();
+    private readonly ResizeCircle _circleHandler = new();
+    private readonly ResizePolygon _polygonHandler = new();
 
     private IResize _handler;
-
     private UIToolManager _uiToolManager;
-    private EntityGroup _selectionGroup => ObjectManager.Instance.SelectionGroup;
+    private EntityGroup SelectionGroup => ObjectManager.Instance.SelectionGroup;
 
     public override void Enable()
     {
-        base.Enable();
-
         if (_uiToolManager == null)
         {
             _uiToolManager = UIManager.Instance.Get<UIToolManager>();
         }
 
-        if (_selectionGroup.Count == 1)
+        if (SelectionGroup.Count == 1)
         {
-            ShowResizeUI(_selectionGroup.Entities[0]);
+            ShowResizeUI(SelectionGroup.Entities[0]);
         }
 
         ObjectManager.Instance.OnObjectSelected += OnObjectSelected;
@@ -34,44 +31,50 @@ public class ResizeTool : BaseTool
 
     public override void Disable()
     {
-        base.Disable();
-
         _handler = null;
-        _uiToolManager.ResizeBound.gameObject.SetActive(false);
-
         ObjectManager.Instance.OnObjectSelected -= OnObjectSelected;
         ObjectManager.Instance.OnObjectDeselected -= OnObjectDeselected;
 
+        if (_uiToolManager)
+        {
+            _uiToolManager.ResizeBound.gameObject.SetActive(false);
+        }
     }
 
     public override void OnUpdate()
     {
-        base.OnUpdate();
-        
         _handler?.UpdateBound();
     }
 
     private void ShowResizeUI(SceneEntity entity)
     {
-        _uiToolManager.ResizeBound.rotation = Quaternion.identity;
-
         switch (entity)
         {
-            case BoxEntity boxEntity:
-                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+            case BoxEntity:
                 _handler = _resizeBox;
-                _handler.Init(boxEntity, _uiToolManager.ResizeBound);
                 break;
-            case CircleEntity circleEntity:
-                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+            case CircleEntity:
                 _handler = _circleHandler;
-                _handler.Init(circleEntity, _uiToolManager.ResizeBound);
                 break;
-            case PolygonEntity polygonEntity:
-                _uiToolManager.ResizeBound.gameObject.SetActive(true);
+            case PolygonEntity:
                 _handler = _polygonHandler;
-                _handler.Init(polygonEntity, _uiToolManager.ResizeBound);
                 break;
+            default:
+                _handler = null;
+                break;
+        }
+
+        if (_handler == null)
+        {
+            return;
+        }
+
+        _handler.Init(entity, _uiToolManager.ResizeBound);
+
+        if (_uiToolManager)
+        {
+            _uiToolManager.ResizeBound.rotation = Quaternion.identity;
+            _uiToolManager.ResizeBound.gameObject.SetActive(true);
         }
 
         KDebug.Log($"[Resize Tool] Handle {entity.EntityType}");
@@ -79,29 +82,39 @@ public class ResizeTool : BaseTool
 
     private void OnObjectSelected(SceneEntity entity)
     {
-        if (_selectionGroup.Count == 1)
+        if (SelectionGroup.Count == 1)
         {
             ShowResizeUI(entity);
             return;
         }
 
         _handler = null;
-        _uiToolManager.ResizeBound.gameObject.SetActive(false);
+        if (_uiToolManager)
+        {
+            _uiToolManager.ResizeBound.gameObject.SetActive(false);   
+        }
     }
 
     private void OnObjectDeselected()
     {
         _handler = null;
-        _uiToolManager.ResizeBound.gameObject.SetActive(false);
+        if (_uiToolManager)
+        {
+            _uiToolManager.ResizeBound.gameObject.SetActive(false);
+        }
     }
 
     public void BeginResize(BoundsHandleDirection direction)
     {
-        _handler.BeginResize(direction);
+        _handler?.BeginResize(direction);
     }
 
     public void Resize(BoundsHandleDirection direction, Vector3 mousePosition)
     {
+        if (_handler == null)
+        {
+            return;
+        }
         _handler.Resize(direction, mousePosition);
         Physics2D.SyncTransforms();
     }

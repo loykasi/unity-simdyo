@@ -17,31 +17,51 @@ public class RotateTool : BaseTool
 
     public override void Enable()
     {
-        base.Enable();
-
         if (_uiToolManager == null)
         {
             _uiToolManager = UIManager.Instance.Get<UIToolManager>();
         }
     }
 
-    protected override void OnClick()
+    public override void Disable()
     {
-        if (ScreenInteractionUtils.IsOverUI())
+        if (_onRotation)
         {
-            return;
+            DisableVisualization();
         }
+        _onRotation = false;
+        _isFirstRun = false;
 
+        if (_uiToolManager)
+        {
+            _uiToolManager._visualization.gameObject.SetActive(false);   
+        }
+    }
+
+    public override bool OnPointerLeftDown(Vector2 position)
+    {
         if (_selectionGroup.Count == 0)
         {
-            return;
+            return false;
+        }
+
+        if (!ObjectManager.Instance.TryGetSceneEntity(Utils.ToWorldPositon(position), out SceneEntity onHoveredEntity))
+        {
+            return false;
+        }
+
+        if (!_selectionGroup.Contains(onHoveredEntity))
+        {
+            return false;
         }
 
         _onRotation = true;
         _isFirstRun = false;
+        
+        return true;
     }
 
-    protected override void OnClickReleased()
+    public override void OnPointerLeftUp(Vector2 position)
     {
         if (_onRotation)
         {
@@ -50,13 +70,11 @@ public class RotateTool : BaseTool
         }
     }
 
-    protected override void OnPointMove(Vector2 value)
+    public override void OnPointerMove(Vector2 position)
     {
-        base.OnPointMove(value);
-
         if (_onRotation)
         {
-            Vector3 mouseWorldPosition = Utils.ToWorldPositon(value);
+            Vector3 mouseWorldPosition = Utils.ToWorldPositon(position);
             List<SceneEntity> entites = _selectionGroup.Entities;
             
             if (!_isFirstRun)
@@ -92,7 +110,10 @@ public class RotateTool : BaseTool
                 entites[i].Angle = _angles[i] + angle;
             }
 
-            UpdateUI(_selectionGroup.Center, mouseWorldPosition);
+            if (_uiToolManager)
+            {
+                UpdateUI(_selectionGroup.Center, mouseWorldPosition);   
+            }
             
             Physics2D.SyncTransforms();
             Debug.DrawRay(_selectionGroup.Center, _fromDirection, Color.red);
@@ -105,14 +126,20 @@ public class RotateTool : BaseTool
         _startMouseDirection = mousePosition - entityPosition;
         float angle = Mathf.Atan2(_startMouseDirection.y, _startMouseDirection.x) * Mathf.Rad2Deg + 90f;
         
-        _uiToolManager._mouseRotateIndicator.rectTransform.rotation = Quaternion.Euler(0f, 0f, angle);
-        _uiToolManager._visualization.gameObject.SetActive(true);
-        UpdateUI(_selectionGroup.Center, mousePosition);
+        if (_uiToolManager)
+        {
+            _uiToolManager._mouseRotateIndicator.rectTransform.rotation = Quaternion.Euler(0f, 0f, angle);
+            _uiToolManager._visualization.gameObject.SetActive(true);
+            UpdateUI(_selectionGroup.Center, mousePosition);
+        }
     }
 
     public void DisableVisualization()
     {
-        _uiToolManager._visualization.gameObject.SetActive(false);
+        if (_uiToolManager)
+        {
+            _uiToolManager._visualization.gameObject.SetActive(false);
+        }
     }
 
     public bool IsSnapping(Vector3 mousePosition, Vector3 entityPosition)
@@ -153,14 +180,13 @@ public class RotateTool : BaseTool
         // _mouseRotateImage.fillClockwise = angle < 0;
         // _mouseRotateImage.fillAmount = Mathf.Abs(angle / 360f);
 
-        _uiToolManager._mouseRotateIndicator.material.SetFloat("_Percentage", Mathf.Abs(angle / 360f));
-        _uiToolManager._mouseRotateIndicator.material.SetFloat("_Flip", angle < 0 ? 1 : -1);
-
         Camera camera = EngineManager.Instance.EditorCamera;
         Vector3 screenPoint = camera.WorldToScreenPoint(worldPosition);
         Vector3 mouseScreenPoint = camera.WorldToScreenPoint(mousePosition);
         float size = Vector3.Distance(mouseScreenPoint, screenPoint) * 2f / EngineManager.Instance.CanvasScale;
 
+        _uiToolManager._mouseRotateIndicator.material.SetFloat("_Percentage", Mathf.Abs(angle / 360f));
+        _uiToolManager._mouseRotateIndicator.material.SetFloat("_Flip", angle < 0 ? 1 : -1);
         _uiToolManager._mouseRotateIndicator.rectTransform.sizeDelta = new Vector2(size, size);
     }
 }

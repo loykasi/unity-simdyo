@@ -10,7 +10,6 @@ public class ToolManager : Singleton<ToolManager>
     public ToolType CurrentTool { get; private set; }
     public bool HasTool => _tool != null;
 
-    [SerializeField] private Camera _camera;
     [SerializeField] private ToolType _defaultTool;
 
     [Header("Rotate Tool")]
@@ -20,6 +19,7 @@ public class ToolManager : Singleton<ToolManager>
     public float _baseWidth = 0.05f;
     
     // tools
+    private readonly MasterTool _masterTool = new();
     private ITool _tool;
     private ITool[] _tools = new ITool[]
     {
@@ -39,12 +39,18 @@ public class ToolManager : Singleton<ToolManager>
         base.Awake();
 
         CreateToolTable();
+        _masterTool.Subscribe();
     }
 
     private IEnumerator Start()
     {
         yield return new WaitForEndOfFrame();
         SwitchTool(_defaultTool);
+    }
+
+    private void OnDestroy()
+    {
+        _masterTool.Unsubscribe();
     }
 
     private void CreateToolTable()
@@ -60,26 +66,23 @@ public class ToolManager : Singleton<ToolManager>
 
     private void Update()
     {
-        _tool?.OnUpdate();
+        _masterTool.Update();
     }
 
     public void SwitchTool(ToolType type)
     {
+        if (!_toolTable.TryGetValue(type, out ITool tool)) return;
+        
         _tool?.Disable();
-        if (_toolTable.TryGetValue(type, out _tool))
-        {
-            CurrentTool = type;
-            _tool.Enable();
-        }
+        _tool = tool;
+        _masterTool.SetTool(_tool);
+        CurrentTool = type;
+        _tool.Enable();
         OnToolChanged?.Invoke();
     }
 
     public ITool GetTool(ToolType type)
     {
-        if (_toolTable.TryGetValue(type, out ITool tool))
-        {
-            return tool;
-        }
-        return default;
+        return _toolTable.TryGetValue(type, out ITool tool) ? tool : null;
     }
 }

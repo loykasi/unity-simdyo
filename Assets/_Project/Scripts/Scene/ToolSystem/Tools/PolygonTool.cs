@@ -8,8 +8,19 @@ public class PolygonTool : BaseTool
 
     private bool _onMouseHold;
     private bool _isDrawStraightLine;
-    private List<Vector3> _points = new();
+    private readonly List<Vector3> _points = new();
     private float _minimumDistance = 0.1f;
+
+    public override void Disable()
+    {
+        if (_onMouseHold)
+        {
+            ShapePreview.Instance.StopPolygonPreview();
+            _onMouseHold = false;
+            _isDrawStraightLine = false;
+            _points.Clear();
+        }
+    }
 
     public override void OnUpdate()
     {
@@ -26,7 +37,7 @@ public class PolygonTool : BaseTool
         }
     }
 
-    protected override void OnClick()
+    public override bool OnPointerLeftDown(Vector2 position)
     {
         _onMouseHold = true;
         Vector3 mouseWorldPosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
@@ -36,9 +47,11 @@ public class PolygonTool : BaseTool
         ShapePreview.Instance.StartPolygonPreview();
         ShapePreview.Instance.AddPolygonPoint(point);
         ShapePreview.Instance.SetLastPoint(point);
+
+        return true;
     }
 
-    protected override void OnClickReleased()
+    public override void OnPointerLeftUp(Vector2 position)
     {
         if (_onMouseHold)
         {
@@ -53,14 +66,12 @@ public class PolygonTool : BaseTool
             }
 
             ObjectManager.Instance.AddPolygon(_points);
-            _points.Clear();   
+            _points.Clear();
         }
     }
 
-    protected override void OnPointMove(Vector2 value)
+    public override void OnPointerMove(Vector2 position)
     {
-        base.OnPointMove(value);
-
         if (_onMouseHold)
         {
             Vector3 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);

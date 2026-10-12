@@ -10,37 +10,11 @@ public class InteractionMove
     private readonly float[] _asixPoints = new float[3];
     private readonly List<Vector3> _startPositions = new();
 
-    private readonly Action _clickEvent;
-    private readonly Action _clickReleasedEvent;
-    private readonly Action<Vector2> _mouseMoveEvent;
-
     private EntityGroup _selectionGroup => ObjectManager.Instance.SelectionGroup;
 
-    public InteractionMove()
+    public void Begin()
     {
-        _clickEvent = OnClick;
-        _clickReleasedEvent = OnClickReleased;
-        _mouseMoveEvent = OnPointMove;
-    }
-
-    public void Enable()
-    {
-        InputManager.Instance.ClickEvent += _clickEvent;
-        InputManager.Instance.ClickReleasedEvent += _clickReleasedEvent;
-        InputManager.Instance.MouseMoveEvent += _mouseMoveEvent;
-    }
-
-    public void Disable()
-    {
-        InputManager.Instance.ClickEvent -= _clickEvent;
-        InputManager.Instance.ClickReleasedEvent -= _clickReleasedEvent;
-        InputManager.Instance.MouseMoveEvent -= _mouseMoveEvent;
-    }
-
-    private void OnClick()
-    {
-        if (ScreenInteractionUtils.IsOverUI()
-            || _selectionGroup.Count == 0)
+        if (_selectionGroup.Count == 0)
         {
             return;
         }
@@ -54,7 +28,7 @@ public class InteractionMove
         }
     }
 
-    private void OnClickReleased()
+    public void End()
     {
         _onMovingObject = false;
 
@@ -69,7 +43,7 @@ public class InteractionMove
         Physics2D.SyncTransforms();
     }
 
-    private void OnPointMove(Vector2 value)
+    public void Update(Vector2 value)
     {
         if (_onMovingObject)
         {

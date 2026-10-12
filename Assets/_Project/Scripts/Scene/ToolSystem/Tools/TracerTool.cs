@@ -3,39 +3,31 @@ using UnityEngine;
 public class TracerTool : BaseTool
 {
     public override ToolType Type => ToolType.Tracer;
+    public override bool IsAllowSelectOnClick => false;
 
     private Vector2 _startPosition;
 
-    protected override void OnClick()
+    public override bool OnPointerLeftDown(Vector2 position)
     {
-        if (ScreenInteractionUtils.IsOverUI())
-        {
-            return;
-        }
-
-        _startPosition = InputManager.Instance.MousePosition;
+        _startPosition = position;
+        return true;
     }
 
-    protected override void OnClickReleased()
-    {
-        if (ScreenInteractionUtils.IsOverUI())
-        {
-            return;
-        }
-        
-        if (_startPosition != InputManager.Instance.MousePosition)
+    public override void OnPointerLeftUp(Vector2 position)
+    {        
+        if (_startPosition != position)
         {
             return;
         }
 
-        if (!ObjectManager.Instance.TryGetSceneEntity(_startPosition, out SceneEntity onHoveredEntity)
+        Vector3 worldPosition = Utils.ToWorldPositon(_startPosition);
+        if (ObjectManager.Instance.TryGetSceneEntity(worldPosition, out SceneEntity onHoveredEntity)
             && onHoveredEntity is TracerEntity)
         {
             return;
         }
         
-        Vector3 position = Utils.ToWorldPositon(_startPosition);
-        TracerEntity entity = ObjectManager.Instance.AddTracer(position);
+        TracerEntity entity = ObjectManager.Instance.AddTracer(worldPosition);
         entity.AutoAttachToMeshEntity();
     }
 }

@@ -7,22 +7,28 @@ public class CircleTool : BaseTool
     private bool _onMouseMove;
     private Vector3 _startPosition;
 
-    protected override void OnClick()
+    public override void Disable()
     {
-        if (ScreenInteractionUtils.IsOverUI())
+        if (_onMouseMove)
         {
-            return;
+            _onMouseMove = false;
+            ShapePreview.Instance.StopCirclePreview();
         }
+    }
 
+    public override bool OnPointerLeftDown(Vector2 position)
+    {
         Vector2 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
         _startPosition = Vector3Utils.GetGridPosition(mousePosition);
 
         _onMouseMove = true;
         ShapePreview.Instance.StartCirclePreview();
         ShapePreview.Instance.PreviewCircle(_startPosition, Vector3Utils.GetGridPosition(mousePosition));
+
+        return true;
     }
 
-    protected override void OnClickReleased()
+    public override void OnPointerLeftUp(Vector2 position)
     {
         if (_onMouseMove)
         {
@@ -34,13 +40,11 @@ public class CircleTool : BaseTool
         }
     }
 
-    protected override void OnPointMove(Vector2 value)
+    public override void OnPointerMove(Vector2 position)
     {
-        base.OnPointMove(value);
-
         if (_onMouseMove)
         {
-            Vector2 mouseWorldPostiion = Utils.ToWorldPositon(value);
+            Vector2 mouseWorldPostiion = Utils.ToWorldPositon(position);
             ShapePreview.Instance.PreviewCircle(_startPosition, Vector3Utils.GetGridPosition(mouseWorldPostiion));
 
             // Debug.DrawRay(_startPosition, Vector3.up, Color.red);
