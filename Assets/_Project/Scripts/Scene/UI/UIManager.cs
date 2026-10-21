@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class UIManager : Singleton<UIManager>
 {
+    public UIContextMenu EntityContextMenu;
+
     private readonly Dictionary<Type, object> _services = new();
 
     public void Register(object service)

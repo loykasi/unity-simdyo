@@ -42,23 +42,59 @@ public class EntityGroup
         }
     }
 
+    public void Remove(SceneEntity entity)
+    {
+        if (Contains(entity))
+        {
+            entity.Deselect();
+            Entities.Remove(entity);
+            CalculateBounds();
+            CalculateCenter();
+
+            switch (entity)
+            {
+                case BoxEntity:
+                    MeshEntityCount--;
+                    BoxCount--;
+                    break;
+                case CircleEntity:
+                    MeshEntityCount--;
+                    CircleCount--;
+                    break;
+                case PolygonEntity:
+                    MeshEntityCount--;
+                    PolygonCount--;
+                    break;
+                case TracerEntity:
+                    TracerCount--;
+                    break;
+            }
+        }
+    }
+
     private void CalculateBounds()
     {
-        Bounds = Entities[0].Bounds;
-        for (int i = 1; i < Count; i++)
+        if (Count > 0)
         {
-            Bounds.Encapsulate(Entities[i].Bounds);
+            Bounds = Entities[0].Bounds;
+            for (int i = 1; i < Count; i++)
+            {
+                Bounds.Encapsulate(Entities[i].Bounds);
+            }   
         }
     }
 
     private void CalculateCenter()
     {
-        Center = Vector3.zero;
-        for (int i = 0; i < Count; i++)
+        if (Count > 0)
         {
-            Center += Entities[i].Position;
+            Center = Vector3.zero;
+            for (int i = 0; i < Count; i++)
+            {
+                Center += Entities[i].Position;
+            }
+            Center /= Count;
         }
-        Center /= Count;
     }
 
     public void Deselect()

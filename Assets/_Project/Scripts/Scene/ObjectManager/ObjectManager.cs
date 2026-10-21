@@ -76,11 +76,14 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             Deselect();
         }
 
-        if (!TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
+        if (TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
         {
-            return;
+            Select(entity);
         }
+    }
 
+    public void Select(SceneEntity entity)
+    {
         if (!SelectionGroup.Contains(entity))
         {
             entity.Select();
@@ -93,6 +96,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         SelectionGroup.Deselect();
         OnObjectDeselected?.Invoke();
+    }
+
+    public void Deselect(SceneEntity entity)
+    {
+        SelectionGroup.Remove(entity);
     }
 
     public void Click(Vector3 screenPoint)
@@ -360,8 +368,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void DeleteEntity(SceneEntity entity)
     {
-        // TODO: remove from selection group
-
+        SelectionGroup.Remove(entity);
         SceneEntities.Remove(entity);
         SceneEntityDict.Remove(entity.Id);
 

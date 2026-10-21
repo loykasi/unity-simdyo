@@ -115,7 +115,7 @@ public class MasterTool
         
         if (!_isDragged)
         {
-            EntityContextMenuController.Instance.Open();
+            ContextMenuManager.Instance.Open(pos);
         }
     }
 
