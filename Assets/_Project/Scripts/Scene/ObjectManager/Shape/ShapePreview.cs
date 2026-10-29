@@ -121,7 +121,7 @@ public class ShapePreview : Singleton<ShapePreview>
     {
         if (_lineRenderer.gameObject.activeInHierarchy)
         {
-            Camera camera = EngineManager.Instance.EditorCamera;
+            Camera camera = CameraManager.Instance.EditorCamera;
             float width = camera.orthographicSize / 5f * _baseWidth;
             _lineRenderer.widthMultiplier = width;
         }

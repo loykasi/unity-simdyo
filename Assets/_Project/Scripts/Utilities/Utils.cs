@@ -65,7 +65,7 @@ public static class Utils
 
     public static Vector3 ToWorldPositon(Vector2 mousePosition)
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         Vector3 worldPoint = camera.ScreenToWorldPoint(mousePosition);
         worldPoint.z = 0;
         return worldPoint;
@@ -75,7 +75,7 @@ public static class Utils
     {
         bool hasEntity = ObjectManager.Instance.TryGetSceneEntity
         (
-            EngineManager.Instance.EditorCamera,
+            CameraManager.Instance.EditorCamera,
             mousePosition,
             out SceneEntity onMouseEntity
         );
@@ -87,7 +87,7 @@ public static class Utils
     {
         bool hasEntity = ObjectManager.Instance.TryGetSceneEntity
         (
-            EngineManager.Instance.EditorCamera,
+            CameraManager.Instance.EditorCamera,
             mousePosition,
             out entity
         );

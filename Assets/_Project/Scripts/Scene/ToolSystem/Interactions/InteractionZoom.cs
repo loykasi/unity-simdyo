@@ -5,8 +5,8 @@ public class InteractionZoom
 {
     private float TargetHeight
     {
-        get => EngineManager.Instance.EditorCameraHeight;
-        set => EngineManager.Instance.EditorCameraHeight = value;
+        get => CameraManager.Instance.EditorCameraHeight;
+        set => CameraManager.Instance.EditorCameraHeight = value;
     }
 
     public void OnScroll(float value)
@@ -29,7 +29,7 @@ public class InteractionZoom
 
     public void Update()
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         Vector3 mousePosition = Utils.ToWorldPositon(InputManager.Instance.MousePosition);
 
         camera.orthographicSize = ExponentialDecay(camera.orthographicSize, TargetHeight, EngineManager.Instance.SmoothFactor, Time.unscaledDeltaTime);

@@ -17,12 +17,12 @@ public abstract class MeshEntity : SceneEntity
     {
         get
         {
-            return SceneManager.Instance.IsRuning ? Rigidbody.linearVelocity : _velocity;
+            return SceneManager.Instance.IsRunning ? Rigidbody.linearVelocity : _velocity;
         }
         set
         {
             _velocity = value;
-            if (SceneManager.Instance.IsRuning)
+            if (SceneManager.Instance.IsRunning)
             {
                 Rigidbody.linearVelocity = value;   
             }

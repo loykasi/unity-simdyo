@@ -31,7 +31,7 @@ public class InteractionPan
             }
             Vector3 mousePosition = Utils.ToWorldPositon(value);
             Vector3 delta = _origin - mousePosition;
-            EngineManager.Instance.EditorCamera.transform.position += delta;
+            CameraManager.Instance.EditorCamera.transform.position += delta;
         }
     }
 }

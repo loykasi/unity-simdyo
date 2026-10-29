@@ -41,13 +41,13 @@ namespace Loykas.Scripting
 
         public ValueTransfer GetX()
         {
-            Camera camera = SceneManager.Instance.SceneCamera;
+            Camera camera = CameraManager.Instance.SceneCamera;
             return ValueTransfer.CreateNumber(camera.transform.position.x);
         }
 
         public ValueTransfer GetY()
         {
-            Camera camera = SceneManager.Instance.SceneCamera;
+            Camera camera = CameraManager.Instance.SceneCamera;
             return ValueTransfer.CreateNumber(camera.transform.position.y);
         }
     }

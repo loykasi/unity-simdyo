@@ -17,7 +17,7 @@ public class GridOverlay : MonoBehaviour
 
     private void Start()
     {
-        _camera = EngineManager.Instance.EditorCamera;
+        _camera = CameraManager.Instance.EditorCamera;
     }
 
     private void Update()

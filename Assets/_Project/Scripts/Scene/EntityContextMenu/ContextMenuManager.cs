@@ -16,7 +16,7 @@ public class ContextMenuManager : Singleton<ContextMenuManager>
 
     public void Open(Vector3 screenPosition)
     {
-        bool isOverEntity = ObjectManager.Instance.TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPosition, out SceneEntity hovered);
+        bool isOverEntity = ObjectManager.Instance.TryGetSceneEntity(CameraManager.Instance.EditorCamera, screenPosition, out SceneEntity hovered);
 
         if (!isOverEntity)
         {

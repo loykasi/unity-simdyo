@@ -9,7 +9,7 @@ public class ThumbnailRender : Singleton<ThumbnailRender>
     {
         if (_thumbnailCamera.gameObject.activeInHierarchy)
         {
-            Camera editorCamera = EngineManager.Instance.EditorCamera;
+            Camera editorCamera = CameraManager.Instance.EditorCamera;
             _thumbnailCamera.transform.position = editorCamera.transform.position;
             _thumbnailCamera.orthographicSize = editorCamera.orthographicSize;
             _thumbnailCamera.backgroundColor = editorCamera.backgroundColor;

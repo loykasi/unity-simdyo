@@ -26,7 +26,7 @@ public class ResizeCircle : IResize
         _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
         float diameter = _entity.Radius * 2;
 
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         float scale = Screen.height / (camera.orthographicSize * 2);
 
         _bound.position = camera.WorldToScreenPoint(position);
@@ -55,7 +55,7 @@ public class ResizeCircle : IResize
 
     private Vector3 GetMouseWorldPosition(Vector3 mousePosition)
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         
         Vector3 position = camera.ScreenToWorldPoint(mousePosition);
         position.z = 0;

@@ -723,7 +723,7 @@ namespace Loykas.Scripting
         {
             // world to screen point
             // screen point to canvas
-            Camera camera = EngineManager.Instance.EditorCamera;
+            Camera camera = CameraManager.Instance.EditorCamera;
             Vector2 screenPosition = camera.WorldToScreenPoint(worldPosition);
             RectTransformUtility.ScreenPointToLocalPointInRectangle(_holder, screenPosition, camera, out Vector2 point);
             return point;

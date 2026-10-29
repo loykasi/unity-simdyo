@@ -39,7 +39,7 @@ namespace Loykas.Scripting
 
         public OutputTrigger Set(NodeTask task)
         {
-            Camera camera = SceneManager.Instance.SceneCamera;
+            Camera camera = CameraManager.Instance.SceneCamera;
 
             float size = Value.GetValue().NumberValue;
             camera.orthographicSize = size;

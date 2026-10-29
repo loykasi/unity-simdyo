@@ -76,7 +76,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
             Deselect();
         }
 
-        if (TryGetSceneEntity(EngineManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
+        if (TryGetSceneEntity(CameraManager.Instance.EditorCamera, screenPoint, out SceneEntity entity))
         {
             Select(entity);
         }
@@ -107,7 +107,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     {
         SceneManager.Instance.GlobalScript.TriggerEvent(EventHook.Clicked);
 
-        if (!TryGetSceneEntity(SceneManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
+        if (!TryGetSceneEntity(CameraManager.Instance.SceneCamera, screenPoint, out SceneEntity entity))
         {
             return;
         }
@@ -338,7 +338,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
         entity.ZDepth = depth + 1;
 
-        if (SceneManager.Instance.IsRuning)
+        if (SceneManager.Instance.IsRunning)
         {
             entity.IsAddOnRuntime = true;
         }
@@ -372,7 +372,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         SceneEntities.Remove(entity);
         SceneEntityDict.Remove(entity.Id);
 
-        if (SceneManager.Instance.IsRuning)
+        if (SceneManager.Instance.IsRunning)
         {
             if (entity.IsAddOnRuntime)
             {

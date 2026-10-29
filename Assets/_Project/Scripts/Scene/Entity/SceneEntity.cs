@@ -25,7 +25,7 @@ public abstract class SceneEntity : MonoBehaviour
             transform.position = value;
             TriggerPropertyUpdate(EntityPropertyType.Position);
             
-            if (!SceneManager.Instance.IsRuning)
+            if (!SceneManager.Instance.IsRunning)
             {
                 Physics2D.SyncTransforms();
             }
@@ -40,7 +40,7 @@ public abstract class SceneEntity : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, 0f, value);
             TriggerPropertyUpdate(EntityPropertyType.Angle);
 
-            if (!SceneManager.Instance.IsRuning)
+            if (!SceneManager.Instance.IsRunning)
             {
                 Physics2D.SyncTransforms();
             }
@@ -55,7 +55,7 @@ public abstract class SceneEntity : MonoBehaviour
             transform.rotation = value;
             TriggerPropertyUpdate(EntityPropertyType.Angle);
 
-            if (!SceneManager.Instance.IsRuning)
+            if (!SceneManager.Instance.IsRunning)
             {
                 Physics2D.SyncTransforms();
             }
@@ -70,7 +70,7 @@ public abstract class SceneEntity : MonoBehaviour
             SortingGroup.sortingOrder = value;
             TriggerPropertyUpdate(EntityPropertyType.ZDepth);
             
-            if (!SceneManager.Instance.IsRuning)
+            if (!SceneManager.Instance.IsRunning)
             {
                 Physics2D.SyncTransforms();
             }

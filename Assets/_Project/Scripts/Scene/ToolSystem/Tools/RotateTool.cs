@@ -10,7 +10,7 @@ public class RotateTool : BaseTool
     private List<float> _angles = new();
     private List<Vector3> _directions = new();
     private Vector3 _startMouseDirection;
-    private bool _isFirstRun = true;
+    private bool _isFirstRun = false;
 
     private UIToolManager _uiToolManager;
     private EntityGroup _selectionGroup => ObjectManager.Instance.SelectionGroup;
@@ -56,7 +56,7 @@ public class RotateTool : BaseTool
         }
 
         _onRotation = true;
-        _isFirstRun = false;
+        _isFirstRun = true;
         
         return true;
     }
@@ -70,14 +70,19 @@ public class RotateTool : BaseTool
         }
     }
 
-    public override void OnPointerMove(Vector2 position)
+    public override void OnUpdate()
     {
-        if (_onRotation)
+        Rotate(InputManager.Instance.MousePosition);
+    }
+
+    private void Rotate(Vector2 screenPosition)
+    {
+        if (_onRotation|| _isFirstRun)
         {
-            Vector3 mouseWorldPosition = Utils.ToWorldPositon(position);
+            Vector3 mouseWorldPosition = Utils.ToWorldPositon(screenPosition);
             List<SceneEntity> entites = _selectionGroup.Entities;
             
-            if (!_isFirstRun)
+            if (_isFirstRun)
             {
                 int count = entites.Count;
                 _angles.Clear();
@@ -90,7 +95,7 @@ public class RotateTool : BaseTool
                 }
                 
                 EnableVisualization(_selectionGroup.Center, mouseWorldPosition);
-                _isFirstRun = true;
+                _isFirstRun = false;
             }
 
             Vector3 toDirection = mouseWorldPosition - _selectionGroup.Center;
@@ -151,7 +156,7 @@ public class RotateTool : BaseTool
 
     public float GetSnapRadiusWorld()
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         float scale = camera.orthographicSize * 2 / Screen.height * EngineManager.Instance.CanvasScale;
         return ToolManager.Instance.SnapRadius * scale;
     }
@@ -160,7 +165,7 @@ public class RotateTool : BaseTool
     {
         UpdateMouseRotateIndicator(worldPosition, mousePosition);
 
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         Vector3 screenPoint = camera.WorldToScreenPoint(worldPosition);
 
         _uiToolManager._visualization.position = screenPoint;
@@ -180,7 +185,7 @@ public class RotateTool : BaseTool
         // _mouseRotateImage.fillClockwise = angle < 0;
         // _mouseRotateImage.fillAmount = Mathf.Abs(angle / 360f);
 
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         Vector3 screenPoint = camera.WorldToScreenPoint(worldPosition);
         Vector3 mouseScreenPoint = camera.WorldToScreenPoint(mousePosition);
         float size = Vector3.Distance(mouseScreenPoint, screenPoint) * 2f / EngineManager.Instance.CanvasScale;

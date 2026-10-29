@@ -1,28 +1,30 @@
 using Loykas.Scripting;
 using UnityEngine;
-using UnityEngine.Events;
 using System.Runtime.InteropServices;
+using System;
+
+public enum SceneState
+{
+    Stopped,
+    Running,
+    Paused,
+}
 
 public class SceneManager : Singleton<SceneManager>, ISaveable
 {
-    public event UnityAction OnSceneStart;
-    public event UnityAction OnSceneStop;
+    public SceneState State { get; private set; } = SceneState.Stopped;
+    public bool IsRunning => State == SceneState.Running;
+
+    public event Action<SceneState> OnSceneStateChanged = delegate { };
+    public event Action OnSceneStart = delegate { };
+    public event Action OnSceneStop = delegate { };
 
     public int SaveLoadOrder { get; set; } = 0;
 
     public float TimeScale = 1f;
 
-    [Header("Camera")]
-    public Camera SceneCamera;
-    [SerializeField] private Color _backgroundColor;
-    public CameraSettings CameraSettings = new();
-    public CameraSettings CameraState = new();
-
     [Header("References")]
     public ScriptFlow GlobalScript;
-
-    public bool IsRuning => _isRunning;
-    private bool _isRunning = false;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
@@ -38,10 +40,6 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     protected override void Awake()
     {
         base.Awake();
-
-        CameraSettings.Color = new ColorHSV(_backgroundColor);
-        CameraSettings.Size = SceneCamera.orthographicSize;
-        CameraSettings.Position = SceneCamera.transform.position;
     }
 
     private void Update()
@@ -51,46 +49,38 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Play()
     {
+        State = SceneState.Running;
+
         Time.timeScale = TimeScale;
-        SceneCamera.gameObject.SetActive(true);
-
-        CameraState.Color = new ColorHSV(SceneCamera.backgroundColor);
-        CameraState.Position = SceneCamera.transform.position;
-        CameraState.Size = SceneCamera.orthographicSize;
-        OnSceneStart?.Invoke();
-
+        CameraManager.Instance.EnterPlay();
+        OnSceneStart.Invoke();
         GlobalScript.StartVS();
-
         var entities = ObjectManager.Instance.SceneEntities;
         for (int i = 0; i < entities.Count; i++)
         {
             entities[i].OnStart();
         }
-
-        _isRunning = true;
+        OnSceneStateChanged.Invoke(State);
     }
 
     public void Stop()
     {
-        Time.timeScale = 0;
-
-        SceneCamera.gameObject.SetActive(false);
-
-        SceneCamera.backgroundColor = CameraState.Color.ToUnityColor();
-        SceneCamera.transform.position = CameraState.Position;
-        SceneCamera.orthographicSize = CameraState.Size;
         OnSceneStop?.Invoke();
-
-        _isRunning = false;
+        Time.timeScale = 0;
+        CameraManager.Instance.ExitPlay();
         Physics2D.SyncTransforms();
+        
+        State = SceneState.Stopped;
+        OnSceneStateChanged.Invoke(State);
     }
 
     public void Restart()
     {
-        Time.timeScale = TimeScale;
         OnSceneStop?.Invoke();
-        OnSceneStart?.Invoke();
-
+        
+        CameraManager.Instance.RestartPlay();
+        Time.timeScale = TimeScale;
+        OnSceneStart.Invoke();
         GlobalScript.StartVS();
 
         var entities = ObjectManager.Instance.SceneEntities;
@@ -106,6 +96,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Pause()
     {
+        State = SceneState.Paused;
         Time.timeScale = 0;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -115,6 +106,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
 
     public void Resume()
     {
+        State = SceneState.Running;
         Time.timeScale = TimeScale;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -124,7 +116,7 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     
     private void UpdateGame()
     {
-        if (!_isRunning)
+        if (!IsRunning)
         {
             return;
         }
@@ -149,40 +141,18 @@ public class SceneManager : Singleton<SceneManager>, ISaveable
     {
         ScriptSaveHandler.Save(data.Scene.GlobalScript, GlobalScript);
 
-        data.Scene.BackgroundColor = CameraSettings.Color;
-        data.Scene.CameraPosition = CameraSettings.Position;
-        data.Scene.CameraSize = CameraSettings.Size;
+        CameraSettings settings = CameraManager.Instance.CameraSettings;
+        data.Scene.BackgroundColor = settings.Color;
+        data.Scene.CameraPosition = settings.Position;
+        data.Scene.CameraSize = settings.Size;
     }
 
     public void LoadData(GameData data)
     {
         ScriptSaveHandler.Load(data.Scene.GlobalScript, GlobalScript);
 
-        UpdatePosition(data.Scene.CameraPosition);
-        UpdateSize(data.Scene.CameraSize);
-        UpdateColor(data.Scene.BackgroundColor);
+        CameraManager.Instance.UpdatePosition(data.Scene.CameraPosition);
+        CameraManager.Instance.UpdateSize(data.Scene.CameraSize);
+        CameraManager.Instance.UpdateColor(data.Scene.BackgroundColor);
     }
-
-    #region Camera
-
-    public void UpdatePosition(Vector3 position)
-    {
-        CameraSettings.Position = new Vector3(position.x, position.y, SceneCamera.transform.position.z);
-        SceneCamera.transform.position = CameraSettings.Position;
-    }
-
-    public void UpdateSize(float value)
-    {
-        CameraSettings.Size = value;
-        SceneCamera.orthographicSize = CameraSettings.Size;
-    }
-
-    public void UpdateColor(ColorHSV color)
-    {
-        CameraSettings.Color = color;
-        // SceneCamera.backgroundColor = color.ToUnityColor();
-        BackgroundColor.Instance.SetColor(color.ToUnityColor());
-    }
-
-    #endregion
 }

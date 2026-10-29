@@ -53,7 +53,7 @@ namespace Loykas.Scripting
 
         public OutputTrigger Set(NodeTask task)
         {
-            Camera camera = SceneManager.Instance.SceneCamera;
+            Camera camera = CameraManager.Instance.SceneCamera;
 
             float x = X.GetValue().NumberValue;
             float y = Y.GetValue().NumberValue;

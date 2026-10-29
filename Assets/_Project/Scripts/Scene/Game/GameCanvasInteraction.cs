@@ -7,7 +7,7 @@ public class GameCanvasInteraction : MonoBehaviour, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        Camera camera = EngineManager.Instance.SceneCamera;
+        Camera camera = CameraManager.Instance.SceneCamera;
 
         RectTransformUtility.ScreenPointToLocalPointInRectangle(_rect, eventData.position, eventData.pressEventCamera, out Vector2 localPoint);
 

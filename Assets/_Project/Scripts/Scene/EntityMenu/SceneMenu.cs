@@ -6,13 +6,9 @@ public class SceneMenu : MonoBehaviour
     [SerializeField] private Image _bgButtonColor;
     [SerializeField] private MenuVectorInput _positionInput;
     [SerializeField] private MenuNumberInput _sizeInput;
-
     [SerializeField] private SceneCameraArea _sceneCameraArea;
 
-    private Camera _editorCamera => EngineManager.Instance.EditorCamera;
-    private Camera _sceneCamera => EngineManager.Instance.SceneCamera;
-
-    public CameraSettings Settings => SceneManager.Instance.CameraSettings;
+    public CameraSettings Settings => CameraManager.Instance.CameraSettings;
 
     private void Start()
     {
@@ -48,10 +44,8 @@ public class SceneMenu : MonoBehaviour
 
     private void OnColorUpdated(ColorHSV color)
     {
-        SceneManager.Instance.UpdateColor(color);
+        CameraManager.Instance.UpdateColor(color);
         UpdateMenu(Settings);
-
-        _editorCamera.backgroundColor = color.ToUnityColor();
     }
 
     public void OpenGlobalScript()
@@ -61,17 +55,17 @@ public class SceneMenu : MonoBehaviour
 
     private void OnSizeSubmit(float value)
     {
-        SceneManager.Instance.UpdateSize(value);
+        CameraManager.Instance.UpdateSize(value);
 
         float height = Settings.Size * 2f;
-        float width = height * _sceneCamera.aspect;
+        float width = height * CameraManager.Instance.SceneCamera.aspect;
         _sceneCameraArea.SetSize(new Vector2(width, height));
     }
 
     private void OnPositionSubmit(Vector3 value)
     {
         Vector3 cameraPosition = new(value.x, value.y);
-        SceneManager.Instance.UpdatePosition(cameraPosition);
+        CameraManager.Instance.UpdatePosition(cameraPosition);
         _sceneCameraArea.transform.position = cameraPosition;
     }
 }

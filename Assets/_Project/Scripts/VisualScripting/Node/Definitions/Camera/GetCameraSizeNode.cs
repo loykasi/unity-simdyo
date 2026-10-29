@@ -29,7 +29,7 @@ namespace Loykas.Scripting
 
         public ValueTransfer Get()
         {
-            Camera camera = SceneManager.Instance.SceneCamera;
+            Camera camera = CameraManager.Instance.SceneCamera;
             return ValueTransfer.CreateNumber(camera.orthographicSize);
         }
     }

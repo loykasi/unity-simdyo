@@ -20,7 +20,7 @@ public class SceneCameraArea : MonoBehaviour
         UpdateMesh();
     }
 
-    [ContextMenu("Create Mesh")]
+    [UnityEngine.ContextMenu("Create Mesh")]
     private void CreateMesh()
     {
         Vector2 halfSize = Size / 2f;
@@ -69,7 +69,7 @@ public class SceneCameraArea : MonoBehaviour
         _boxUV[3] = new Vector2(1f, 0f);
     }
 
-    [ContextMenu("Update Mesh")]
+    [UnityEngine.ContextMenu("Update Mesh")]
     private void UpdateMesh()
     {
         if (_meshFilter == null || _meshFilter.sharedMesh == null)

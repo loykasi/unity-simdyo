@@ -21,7 +21,7 @@ public class ResizePolygon: IResize
         // _entity.transform.GetPositionAndRotation(out Vector3 position, out Quaternion rotation);
         Vector2 size = new(_entity.Width, _entity.Height);
 
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
         float scale = Screen.height / (camera.orthographicSize * 2);
 
         _bound.position = camera.WorldToScreenPoint(_entity.Bounds.center);
@@ -37,7 +37,7 @@ public class ResizePolygon: IResize
 
     public void Resize(BoundsHandleDirection direction, Vector3 mousePosition)
     {
-        Camera camera = EngineManager.Instance.EditorCamera;
+        Camera camera = CameraManager.Instance.EditorCamera;
 
         Vector3 position = camera.ScreenToWorldPoint(mousePosition);
         position.z = 0;

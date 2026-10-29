@@ -28,10 +28,10 @@ public class GridController : Singleton<GridController>
 
     private void Start()
     {
-        _camera = EngineManager.Instance.EditorCamera;
+        _camera = CameraManager.Instance.EditorCamera;
         _subSize = _size / _gridBase;
 
-        BackgroundColor.Instance.OnColorChanged += OnColorChanged;
+        CameraManager.Instance.OnColorChanged += OnColorChanged;
     }
 
     private void OnColorChanged(Color color)
@@ -102,7 +102,7 @@ public class GridController : Singleton<GridController>
         {
             CalculateRange();
             UpdateGridSize();
-            OnColorChanged(BackgroundColor.Instance.Color);
+            OnColorChanged(CameraManager.Instance.Color);
         }
     }
 
