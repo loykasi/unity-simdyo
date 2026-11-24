@@ -1,32 +1,9 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-3000)]
 public class Singleton<T> : MonoBehaviour where T : Component
 {
-    public static T Instance
-    {
-        get
-        {
-            if (_isQuitting)
-            {
-                return null;
-            }
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<T>();
-                if (_instance == null)
-                {
-                    GameObject gameObject = new GameObject(nameof(T));
-                    _instance = gameObject.AddComponent<T>();
-                }
-            }
-            return _instance;
-        }
-    }
-
-    // [Header("Singleton")]
-    public bool isAutoUnparentOnAwake;
-    public bool isNotDestroyOnLoad;
-
+    public static T Instance => _instance;
     private static T _instance;
     private static bool _isQuitting;
 
@@ -35,11 +12,13 @@ public class Singleton<T> : MonoBehaviour where T : Component
         InitializeSingleton();
     }
 
-    // [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-    // static void OnBeforeSceneLoad()
-    // {
-    //     _isQuitting = false;
-    // }
+    protected virtual void OnDestroy()
+    {
+        if (_instance == this)
+        {
+            _instance = null;
+        }
+    }
 
     private void OnApplicationQuit()
     {
@@ -48,21 +27,13 @@ public class Singleton<T> : MonoBehaviour where T : Component
 
     private void InitializeSingleton()
     {
-        if (_instance != null &&_instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
         }
         else
         {
             _instance = this as T;
-            if (isAutoUnparentOnAwake)
-            {
-                transform.SetParent(null);
-            }
-            if (isNotDestroyOnLoad)
-            {
-                DontDestroyOnLoad(this);
-            }
         }
     }
 }
