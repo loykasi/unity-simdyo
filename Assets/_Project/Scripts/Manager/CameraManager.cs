@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CameraManager : Singleton<CameraManager>
 {
@@ -18,6 +19,8 @@ public class CameraManager : Singleton<CameraManager>
     public CameraSettings CameraSettings = new();
     private CameraSettings _playSnapshot = new();
 
+    private const float GameAspectRatio = 16.0f/ 9.0f;
+
     private bool _isGameMode;
 
     protected override void Awake()
@@ -28,6 +31,51 @@ public class CameraManager : Singleton<CameraManager>
         CameraSettings.Position = _sceneCamera.transform.position;
         CameraSettings.Size = _sceneCamera.orthographicSize;
         CameraSettings.Color = new(_defaultBackground);
+    }
+
+    private void Start()
+    {
+        RenderPipelineManager.beginCameraRendering += OnBeginCameraRendering;
+    }
+
+    private void OnDestroy()
+    {
+        RenderPipelineManager.beginCameraRendering -= OnBeginCameraRendering;
+    }
+
+    private void OnBeginCameraRendering(ScriptableRenderContext context, Camera camera)
+    {
+        if (camera != _sceneCamera) return;
+
+        Rect rect = camera.rect;
+        camera.rect = new(0f, 0f, 1f, 1f);
+        GL.Clear(true, true, Color.black);
+        camera.rect = rect;
+    }
+
+    private void Update()
+    {
+        float screenRatio = (float)Screen.width / Screen.height;
+        float scale = GameAspectRatio / screenRatio;
+
+        Rect rect = new(0f, 0f, 1f, 1f);
+        if (scale < 1f)
+        {
+            rect.x = (1f - scale) / 2f;
+            rect.y = 0f;
+            rect.width = scale;
+            rect.height = 1f;
+        }
+        else
+        {
+            scale = 1 / scale;
+            rect.x = 0f;
+            rect.y = (1f - scale) / 2f;
+            rect.width = 1f;
+            rect.height = scale;
+        }
+
+        _sceneCamera.rect = rect;
     }
 
     public void EnterPlay()

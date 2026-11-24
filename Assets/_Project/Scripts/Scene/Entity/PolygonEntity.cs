@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using Clipper2Lib;
 using GameCore.Extensions;
+using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PolygonEntity : MeshEntity
 {
@@ -49,9 +51,25 @@ public class PolygonEntity : MeshEntity
     [HideInInspector] public Vector2[] PolygonPoints;
 
     [SerializeField] private PolygonCollider2D _interactionArea;
-    [SerializeField] private PolygonBorder _border;
 
     private Vector3[] _temporaryPoints;
+    private int _sdBakedSize = 128;
+    private Texture2D _pointTexture;
+    private RenderTexture _rt;
+    [SerializeField] private Material _bakeMaterial;
+
+    private static readonly int SDTextureProperty = Shader.PropertyToID("_SDTexture");
+    private static readonly int SizeProperty = Shader.PropertyToID("_Size");
+    private static readonly int CenterProperty = Shader.PropertyToID("_Center");
+    private static readonly int PointTextureProperty = Shader.PropertyToID("_PointTexture");
+    private static readonly int PointCountProperty = Shader.PropertyToID("_PointCount");
+    private static readonly int SDRangeProperty = Shader.PropertyToID("_SDRange");
+
+    protected override void Awake()
+    {
+        base.Awake();
+        _rt = new RenderTexture(_sdBakedSize, _sdBakedSize, 0, RenderTextureFormat.R8, RenderTextureReadWrite.Linear);
+    }
 
     public void SetMesh(MeshWrapper meshWrapper, Material material, Vector2[] points)
     {
@@ -64,9 +82,104 @@ public class PolygonEntity : MeshEntity
         PolygonPoints = points;
         _collider.SetPoints(PolygonPoints);
         _interactionArea.points = PolygonPoints;
-        _border.SetMesh(Mesh);
         UpdateBounds();
+
+        BakeSDF(points);
     }
+
+    private void BakeSDF(Vector2[] points)
+    {
+        float range = 1f;
+
+        if (!_pointTexture)
+        {
+            _pointTexture = new(points.Length, 1, TextureFormat.RGFloat, false, true)
+            {
+                filterMode = FilterMode.Point,
+                wrapMode = TextureWrapMode.Clamp
+            };
+        }
+        NativeArray<Vector2> pointData = _pointTexture.GetRawTextureData<Vector2>();
+
+        Vector2 min = points[0];
+        Vector2 max = points[0];
+        for (int i = 0; i < points.Length; i++)
+        {
+            Vector2 point = points[i];
+            min = Vector2.Min(min, point);
+            max = Vector2.Max(max, point);
+            pointData[i] = point;
+        }
+        _pointTexture.Apply();
+        float size = Mathf.Max(max.x - min.x, max.y - min.y) + 2f * range;
+        Vector2 center = (min + max) * 0.5f;
+
+        _bakeMaterial.SetVector(CenterProperty, center);
+        _bakeMaterial.SetFloat(SizeProperty, size);
+        _bakeMaterial.SetTexture(PointTextureProperty, _pointTexture);
+        _bakeMaterial.SetFloat(PointCountProperty, points.Length);
+        _bakeMaterial.SetFloat(SDRangeProperty, range);
+
+        Graphics.Blit(null, _rt, _bakeMaterial);
+
+        Material.SetTexture(SDTextureProperty, _rt);
+        Material.SetFloat(SizeProperty, size);
+        Material.SetVector(CenterProperty, center);
+        Material.SetFloat(SDRangeProperty, range);
+
+        // keep cpu bake code, to test on webgl, low end devices
+        
+        // if (!_sdTexture)
+        // {
+        //     _sdTexture = new(_sdBakedSize, _sdBakedSize, TextureFormat.RHalf, false, true)
+        //     {
+        //         filterMode = FilterMode.Bilinear,
+        //         wrapMode = TextureWrapMode.Clamp
+        //     };    
+        // }
+        
+        // NativeArray<ushort> data = _sdTexture.GetRawTextureData<ushort>();
+        // float texelSize = size / _sdBakedSize;
+        // for (int i = 0; i < _sdBakedSize * _sdBakedSize; i++)
+        // {
+        //     Vector2Int texel = new(i % _sdBakedSize, i / _sdBakedSize);
+        //     Vector2 point = center + new Vector2
+        //     (
+        //         (texel.x + 0.5f) * texelSize - size * 0.5f,
+        //         (texel.y + 0.5f) * texelSize - size * 0.5f
+        //     );
+
+        //     float d = SDPolygon(points, point);
+        //     // float encoded = Mathf.Clamp01(d / (2f * range) + 0.5f);
+        //     // data[i] = (byte)(encoded * 255f);
+        //     data[i] = Mathf.FloatToHalf(d);
+        // }
+        // _sdTexture.Apply(false, false);
+
+        // Material.SetTexture(SDTextureProperty, _sdTexture);
+        // Material.SetFloat(SizeProperty, size);
+        // Material.SetVector(CenterProperty, center);
+    }
+
+    // private float SDPolygon(Vector2[] points, Vector2 position)
+    // {
+    //     float d = Vector2.Dot(position - points[0], position - points[0]);
+    //     float s = 1.0f;
+    //     for(int i = 0, j = points.Length - 1; i < points.Length; j = i, i++)
+    //     {
+    //         Vector2 e = points[j] - points[i];
+    //         Vector2 w = position - points[i];
+    //         Vector2 b = w - e * Mathf.Clamp(Vector2.Dot(w, e) / Vector2.Dot(e, e), 0.0f, 1.0f);
+    //         d = Mathf.Min(d, Vector2.Dot(b, b));
+            
+    //         bool x = position.y >= points[i].y;
+    //         bool y = position.y < points[j].y;
+    //         bool z = e.x*w.y>e.y*w.x;
+    //         if((x && y && z) || (!x && !y && !z))
+    //             s *= -1.0f;
+    //     }
+    //     return s * Mathf.Sqrt(d);
+    // }
 
     private void UpdateBounds()
     {
@@ -158,21 +271,12 @@ public class PolygonEntity : MeshEntity
 
         Mesh.Update();
         UpdateBounds();
-    }
-
-    public override void Select()
-    {
-        _border.Enable(CurrentColor);
-    }
-
-    public override void Deselect()
-    {
-        _border.Disable();
+        BakeSDF(PolygonPoints);
     }
 
     public override SceneEntity CloneEntity()
     {
-        PolygonEntity entity = ShapeGenerator.Instance.Clone(this);
+        PolygonEntity entity = ShapeGenerator.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 

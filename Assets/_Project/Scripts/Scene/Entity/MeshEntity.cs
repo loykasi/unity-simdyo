@@ -196,6 +196,16 @@ public abstract class MeshEntity : SceneEntity
         SetTexture(_meshState.TextureSlotKey);
     }
 
+    public override void Select()
+    {
+        Material.SetFloat("_Selected", 1f);
+    }
+
+    public override void Deselect()
+    {
+        Material.SetFloat("_Selected", 0f);
+    }
+
     public override void CopyPropertyTo(SceneEntity entity)
     {
         if (entity is MeshEntity meshEntity)

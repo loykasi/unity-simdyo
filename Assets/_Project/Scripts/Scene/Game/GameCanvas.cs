@@ -1,7 +1,8 @@
+using Loykas.Scripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class GameCanvas : MonoBehaviour
+public class UISceneGame : MonoBehaviour
 {
     [SerializeField] private GameObject[] _uiElements;
 
@@ -11,6 +12,21 @@ public class GameCanvas : MonoBehaviour
         {
             ToggleHideUI();
         }
+    }
+
+    public void OnActionStopClicked()
+    {
+        EngineManager.Instance.RequestStop();
+    }
+
+    public void OnActionConsoleClicked()
+    {
+        LogConsole.Instance.Toggle();
+    }
+    
+    public void OnActionHideUIClicked()
+    {
+        ToggleHideUI();
     }
 
     public void ToggleHideUI()

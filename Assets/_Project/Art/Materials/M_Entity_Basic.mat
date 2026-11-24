@@ -71,6 +71,7 @@ Material:
     - _EnableExternalAlpha: 0
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Radius: 0.1
     - _SampleGI: 0
     - _SrcBlend: 5
     - _SrcBlendAlpha: 1

@@ -38,7 +38,7 @@ public class CircleHighlight : MonoBehaviour
     {
         _renderer.material.SetFloat(_sizeProperty, radius);
 
-        int length = ShapeGenerator.TotalVert;
+        int length = GameConstants.CircleVertexCount;
         float angleStep = 2 * Mathf.PI / length;
         float vertRadius = radius / Mathf.Cos(Mathf.PI / length);
         for (int i = 0; i < length; i++)

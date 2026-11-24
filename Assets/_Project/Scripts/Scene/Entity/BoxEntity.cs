@@ -14,6 +14,8 @@ public class BoxEntity : MeshEntity
 
     public override Bounds Bounds => Renderer.bounds;
 
+    private readonly int _sizeProperty = Shader.PropertyToID("_Size");
+
     public Vector3 TopLeft
     {
         get
@@ -87,7 +89,6 @@ public class BoxEntity : MeshEntity
     }
 
     [SerializeField] private BoxCollider2D _interactionBox;
-    [SerializeField] private BoxBorder _border;
     private BoxState _boxState;
 
     public void SetMesh(MeshWrapper meshWrapper, Material material, float width, float height)
@@ -100,9 +101,8 @@ public class BoxEntity : MeshEntity
         meshWrapper.AssignTo(MeshFilter);
         Renderer.sharedMaterial = Material;
 
+        Material.SetVector(_sizeProperty, Size);
         _interactionBox.size = Size;
-        _border.SetMesh(meshWrapper);
-        _border.SetSize(Size);
         _collider.SetSize(Size);
         TextBox.Resize(Size);
     }
@@ -152,8 +152,8 @@ public class BoxEntity : MeshEntity
         Mesh.Vertices[3] = new Vector3(halfSize.x, - halfSize.y);
         Mesh.Update();
 
+        Material.SetVector(_sizeProperty, Size);
         _interactionBox.size = Size;
-        _border.SetSize(Size);
         _collider.SetSize(Size);
         TextBox.Resize(Size);
         OnPropertyUpdated?.Invoke();
@@ -164,17 +164,6 @@ public class BoxEntity : MeshEntity
         if (TextureSlot == null) return;
         float height = Width * TextureSlot.Texture.height / TextureSlot.Texture.width;
         SetSize(Width, height);
-    }
-
-    public override void Select()
-    {
-        _border.Enable();
-        _border.SetSize(Size);
-    }
-
-    public override void Deselect()
-    {
-        _border.Disable();
     }
 
     public override void OnSceneStart()
@@ -198,7 +187,7 @@ public class BoxEntity : MeshEntity
 
     public override SceneEntity CloneEntity()
     {
-        BoxEntity entity = ShapeGenerator.Instance.Clone(this);
+        BoxEntity entity = ShapeGenerator.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 

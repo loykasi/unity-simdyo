@@ -3,8 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Loykas.Scripting;
-using UnityEngine.InputSystem;
-using System;
 
 public class ObjectManager : Singleton<ObjectManager>, ISaveable
 {
@@ -17,12 +15,18 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     public Dictionary<int, SceneEntity> SceneEntityDict = new();
     public List<SceneEntity> SceneEntities { get; set; } = new();
     public EntityGroup SelectionGroup { get; set; } = new();
-    [Obsolete("Use SelectionGroup")] public List<SceneEntity> Selections { get; set; } = new();   // TODO: remove this
-    [Obsolete("Use SelectionGroup")] public SceneEntity SelectedObject { get; set; }              // TODO: remove this
 
     [SerializeField] private Transform _holder;
     [SerializeField] private LayerMask _interactionLayer;
-    [SerializeField] private TracerEntity _tracerPrefab;
+
+    [Header("Entity Data")]
+    public TracerEntity TracerPrefab;
+    public BoxEntity BoxPrefab;
+    public CircleEntity CirclePrefab;
+    public PolygonEntity PolygonPrefab;
+    public Material BoxMaterial;
+    public Material CircleMaterial;
+    public Material PolygonMaterial;
 
     private int _indexForId = 1;
 
@@ -115,6 +119,11 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         entity.Script.TriggerEvent(EventHook.Clicked);
     }
 
+    public bool TryGetSceneEntity(Vector3 screenPoint, out SceneEntity entity)
+    {
+        return TryGetSceneEntity(CameraManager.Instance.Current, screenPoint, out entity);
+    }
+
     public bool TryGetSceneEntity(Camera camera, Vector3 screenPoint, out SceneEntity entity)
     {
         Ray ray = camera.ScreenPointToRay(screenPoint);
@@ -138,10 +147,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return true;
     }
 
-    public bool TryGetSceneEntity(Vector3 point, out SceneEntity entity)
+    public bool TryGetSceneEntityWorldSpace(Vector3 worldPoint, out SceneEntity entity)
     {
         Vector3 offset = new(0f, 0f, -10f);
-        Ray ray = new(point + offset, Vector3.forward);
+        Ray ray = new(worldPoint + offset, Vector3.forward);
         int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
 
         if (count == 0)
@@ -162,10 +171,10 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         return true;
     }
 
-    public bool TryGetSceneEntityBelow(Vector3 point, int zDepth, out SceneEntity entity)
+    public bool TryGetSceneEntityBelowWorldSpace(Vector3 worldPoint, int zDepth, out SceneEntity entity)
     {
         Vector3 offset = new(0f, 0f, -10f);
-        Ray ray = new(point + offset, Vector3.forward);
+        Ray ray = new(worldPoint + offset, Vector3.forward);
         int count = Physics2D.GetRayIntersection(ray, 20f, _selectionResults, _interactionLayer);
 
         if (count == 0)
@@ -231,7 +240,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
     
     public void AddBox(Vector3 from, Vector3 to)
     {
-        MeshEntity entity = ShapeGenerator.Instance.AddBox(from, to);
+        MeshEntity entity = ShapeGenerator.AddBox(from, to);
         if (entity == null)
         {
             return;
@@ -242,7 +251,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public BoxEntity AddBox(Vector3 center, float width, float height)
     {
-        BoxEntity entity = ShapeGenerator.Instance.AddBox(center, width, height);
+        BoxEntity entity = ShapeGenerator.AddBox(center, width, height);
         if (entity == null)
         {
             return null;
@@ -254,7 +263,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public void AddCircle(Vector3 from, Vector3 to)
     {
-        CircleEntity entity = ShapeGenerator.Instance.AddCircle(from, to);
+        CircleEntity entity = ShapeGenerator.AddCircle(from, to);
         if (entity == null)
         {
             return;
@@ -265,7 +274,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public CircleEntity AddCircle(Vector3 center, float radius)
     {
-        CircleEntity entity = ShapeGenerator.Instance.AddCircle(center, radius);
+        CircleEntity entity = ShapeGenerator.AddCircle(center, radius);
         if (entity == null)
         {
             return null;
@@ -283,7 +292,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
         }
 
         points.Add(points[0]);
-        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(points);
+        PolygonEntity entity = ShapeGenerator.AddPolygon(points);
         if (entity == null)
         {
             return null;
@@ -295,7 +304,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public PolygonEntity AddPolygon(Vector3 position, Vector2[] points)
     {
-        PolygonEntity entity = ShapeGenerator.Instance.AddPolygon(position, points);
+        PolygonEntity entity = ShapeGenerator.AddPolygon(position, points);
         if (entity == null)
         {
             return null;
@@ -307,7 +316,7 @@ public class ObjectManager : Singleton<ObjectManager>, ISaveable
 
     public TracerEntity AddTracer(Vector3 position)
     {
-        TracerEntity tracer = Instantiate(_tracerPrefab, position, Quaternion.identity);
+        TracerEntity tracer = Instantiate(TracerPrefab, position, Quaternion.identity);
         tracer.Init();
         tracer.Diameter = 0.3f;
 

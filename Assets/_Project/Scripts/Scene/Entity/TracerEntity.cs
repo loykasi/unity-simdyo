@@ -97,7 +97,7 @@ public class TracerEntity : SceneEntity
 
     public void AutoAttachToMeshEntity()
     {
-        bool result = ObjectManager.Instance.TryGetSceneEntityBelow(Position, ZDepth, out SceneEntity entity);
+        bool result = ObjectManager.Instance.TryGetSceneEntityBelowWorldSpace(Position, ZDepth, out SceneEntity entity);
         if (result)
         {
             if (Parent != null)

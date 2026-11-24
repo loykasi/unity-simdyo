@@ -9,7 +9,9 @@ public class PolygonTool : BaseTool
     private bool _onMouseHold;
     private bool _isDrawStraightLine;
     private readonly List<Vector3> _points = new();
-    private float _minimumDistance = 0.1f;
+    // private float _minimumDistance = 0.1f;
+    private float _minimumDistance = 5f;
+    private Vector2 _previousScreenPosition;
 
     public override void Disable()
     {
@@ -70,7 +72,7 @@ public class PolygonTool : BaseTool
         }
     }
 
-    public override void OnPointerMove(Vector2 position)
+    public override void OnPointerMove(Vector2 screenPosition)
     {
         if (_onMouseHold)
         {
@@ -78,18 +80,19 @@ public class PolygonTool : BaseTool
 
             bool shouldAddPoint = false;
             Vector3 current = Vector3Utils.GetGridPosition(mousePosition);
-            Vector3 last = _points[^1];
+            // Vector3 last = _points[^1];
 
             if (GridController.Instance.ShouldSnap)
             {
-                Vector3 point = Vector3Utils.GetGridPosition(mousePosition);
-                current = point;
-
-                if (Vector3.Distance(current, last) > _minimumDistance)
+                if (Vector3.Distance(screenPosition, _previousScreenPosition) > _minimumDistance)
                 {
-                    bool isDiagonal = (point.x != last.x) && (point.y != last.y);
-                    float distSqr = (point - last).sqrMagnitude * (isDiagonal ? 0.5f : 0.2f);
-                    float mouseToPoint = (point - mousePosition).sqrMagnitude;
+                    Vector3 worldPosition = Utils.ToWorldPositon(screenPosition);
+                    Vector3 point = Vector3Utils.GetGridPosition(worldPosition);
+                    Vector3 previous = _points[^1];
+                    
+                    bool isDiagonal = (point.x != previous.x) && (point.y != previous.y);
+                    float distSqr = (point - previous).sqrMagnitude * (isDiagonal ? 0.5f : 0.2f);
+                    float mouseToPoint = (point - worldPosition).sqrMagnitude;
 
                     if (mouseToPoint < distSqr)
                     {
@@ -106,7 +109,7 @@ public class PolygonTool : BaseTool
 
             if (shouldAddPoint)
             {
-                if (!_isDrawStraightLine && Vector3.Distance(current, last) > _minimumDistance)
+                if (!_isDrawStraightLine && Vector3.Distance(screenPosition, _previousScreenPosition) > _minimumDistance)
                 {
                     _points.Add(current);
                     shouldAddPoint = false;

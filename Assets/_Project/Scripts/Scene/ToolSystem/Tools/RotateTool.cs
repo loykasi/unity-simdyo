@@ -45,7 +45,7 @@ public class RotateTool : BaseTool
             return false;
         }
 
-        if (!ObjectManager.Instance.TryGetSceneEntity(Utils.ToWorldPositon(position), out SceneEntity onHoveredEntity))
+        if (!ObjectManager.Instance.TryGetSceneEntityWorldSpace(Utils.ToWorldPositon(position), out SceneEntity onHoveredEntity))
         {
             return false;
         }
@@ -77,7 +77,7 @@ public class RotateTool : BaseTool
 
     private void Rotate(Vector2 screenPosition)
     {
-        if (_onRotation|| _isFirstRun)
+        if (_onRotation)
         {
             Vector3 mouseWorldPosition = Utils.ToWorldPositon(screenPosition);
             List<SceneEntity> entites = _selectionGroup.Entities;

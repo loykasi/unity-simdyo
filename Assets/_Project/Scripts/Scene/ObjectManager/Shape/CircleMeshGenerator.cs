@@ -5,7 +5,7 @@ public static class CircleMeshGenerator
 {
     public static MeshWrapper Generate(float radius)
     {
-        int totalVert = ShapeGenerator.TotalVert;
+        int totalVert = GameConstants.CircleVertexCount;
         MeshWrapper mesh = new(totalVert, (totalVert - 2) * 3, totalVert);
         
         GenerateVertices(mesh.Vertices, radius);
@@ -19,7 +19,7 @@ public static class CircleMeshGenerator
 
     public static void GenerateVertices(Vector3[] vertices, float radius)
     {
-        int length = ShapeGenerator.TotalVert;
+        int length = GameConstants.CircleVertexCount;
         float angleStep = 2 * Mathf.PI / length;
         float vertRadius = radius / Mathf.Cos(Mathf.PI / length);
         for (int i = 0; i < length; i++)
@@ -36,7 +36,7 @@ public static class CircleMeshGenerator
 
     private static void GenerateTriangles(int[] triangles)
     {
-        int length = ShapeGenerator.TotalVert - 2;
+        int length = GameConstants.CircleVertexCount - 2;
         for (int i = 0; i < length; i++)
         {
             triangles[i * 3] = 0;
@@ -47,7 +47,7 @@ public static class CircleMeshGenerator
 
     private static void GenerateUV(Vector2[] uv)
     {
-        int totalVert = ShapeGenerator.TotalVert;
+        int totalVert = GameConstants.CircleVertexCount;
         for (int i = 0; i < totalVert; i++)
         {
             float angle = i * 2 * Mathf.PI / totalVert;

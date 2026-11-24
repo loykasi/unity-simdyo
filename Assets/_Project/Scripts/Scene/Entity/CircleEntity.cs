@@ -14,7 +14,6 @@ public class CircleEntity : MeshEntity
     public override Bounds Bounds => _bounds;
     private Bounds _bounds = new();
 
-    [SerializeField] private CircleBorder _border;
     [SerializeField] private CircleCollider2D _interactionCircle;
 
     private CircleState _circleState;
@@ -31,8 +30,6 @@ public class CircleEntity : MeshEntity
 
         Material.SetFloat(_radiusProperty, Radius);
         _interactionCircle.radius = Radius;
-        _border.SetMesh(meshWrapper);
-        _border.SetRadius(Radius);
         _collider.SetRadius(Radius);
 
         _bounds.center = Position;
@@ -43,7 +40,7 @@ public class CircleEntity : MeshEntity
     {
         Radius = radius;
 
-        int length = ShapeGenerator.TotalVert;
+        int length = GameConstants.CircleVertexCount;
         float angleStep = 2 * Mathf.PI / length;
         float vertRadius = Radius / Mathf.Cos(Mathf.PI / length);
         for (int i = 0; i < length; i++)
@@ -60,7 +57,6 @@ public class CircleEntity : MeshEntity
 
         Material.SetFloat(_radiusProperty, Radius);
         _interactionCircle.radius = Radius;
-        _border.SetRadius(Radius);
         _collider.SetRadius(Radius);
 
         _bounds.center = Position;
@@ -75,17 +71,6 @@ public class CircleEntity : MeshEntity
         transform.position = center;
 
         SetRadius(Radius);
-    }
-
-    public override void Select()
-    {
-        _border.Enable();
-        _border.SetRadius(Radius);
-    }
-
-    public override void Deselect()
-    {
-        _border.Disable();
     }
 
     public override void OnSceneStart()
@@ -109,7 +94,7 @@ public class CircleEntity : MeshEntity
 
     public override SceneEntity CloneEntity()
     {
-        CircleEntity entity = ShapeGenerator.Instance.Clone(this);
+        CircleEntity entity = ShapeGenerator.Clone(this);
         CopyPropertyTo(entity);
         ObjectManager.Instance.AddEntity(entity);
 
